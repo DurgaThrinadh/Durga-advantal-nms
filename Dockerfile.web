@@ -1,0 +1,22 @@
+# =====================================================
+# Advantal Custom Zabbix Web Frontend
+# Built from source (ui/ folder)
+# =====================================================
+FROM zabbix/zabbix-web-nginx-pgsql:ubuntu-7.0-latest
+
+LABEL maintainer="Advantal Technologies Pvt Ltd"
+LABEL description="Custom Zabbix NMS with Advantal branding - built from source"
+
+USER root
+
+# Copy our modified ui/ folder ON TOP of existing files (overlay)
+# This keeps compiled CSS/JS from official image, and applies our PHP/image changes
+COPY ui/ /usr/share/zabbix/
+
+# Fix permissions
+RUN chown -R 1997:0 /usr/share/zabbix && \
+    chmod -R g=u /usr/share/zabbix
+
+USER 1997
+
+EXPOSE 8080 8443

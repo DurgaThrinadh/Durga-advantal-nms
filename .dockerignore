@@ -1,0 +1,8 @@
+.git
+tests
+ChangeLog.d
+man
+misc
+sass
+templates
+*.md
