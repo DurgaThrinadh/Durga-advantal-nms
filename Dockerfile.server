@@ -1,0 +1,86 @@
+# =====================================================
+# Advantal NMS - Zabbix Server (built from source)
+# Compiles the C backend from src/
+# =====================================================
+
+# Stage 1: Build
+FROM ubuntu:22.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    autoconf automake gcc make pkg-config \
+    libpcre2-dev libssl-dev libpq-dev \
+    libcurl4-openssl-dev libxml2-dev \
+    libsnmp-dev libevent-dev libldap2-dev \
+    libssh2-1-dev unixodbc-dev \
+    default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+# Copy source files needed for compilation
+COPY src/ /build/src/
+COPY include/ /build/include/
+COPY conf/ /build/conf/
+COPY database/ /build/database/
+COPY configure.ac Makefile.am bootstrap.sh build-backend.xml /build/
+COPY m4/ /build/m4/
+COPY build/ /build/build/
+
+# Generate configure script and compile
+RUN cd /build && \
+    ./bootstrap.sh && \
+    ./configure \
+        --enable-server \
+        --enable-agent2 \
+        --enable-proxy \
+        --with-postgresql \
+        --with-net-snmp \
+        --with-libcurl \
+        --with-libxml2 \
+        --with-openssl \
+        --with-ldap \
+        --with-ssh2 \
+        --with-unixodbc && \
+    make -j$(nproc) && \
+    make install
+
+# Stage 2: Runtime
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    libpcre2-8-0 libssl3 libpq5 \
+    libcurl4 libxml2 libsnmp40 \
+    libevent-2.1-7 libldap-2.5-0 \
+    libssh2-1 unixodbc \
+    snmp-mibs-downloader fping \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create zabbix user
+RUN groupadd --system zabbix && \
+    useradd --system -g zabbix -d /var/lib/zabbix zabbix && \
+    mkdir -p /var/lib/zabbix /var/log/zabbix /var/run/zabbix \
+             /etc/zabbix /usr/lib/zabbix/alertscripts \
+             /usr/lib/zabbix/externalscripts && \
+    chown -R zabbix:zabbix /var/lib/zabbix /var/log/zabbix /var/run/zabbix
+
+# Copy compiled binaries from builder
+COPY --from=builder /usr/local/sbin/zabbix_server /usr/local/sbin/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+COPY --from=builder /usr/local/lib/ /usr/local/lib/
+COPY --from=builder /build/conf/zabbix_server.conf /etc/zabbix/
+
+# Copy database schemas
+COPY --from=builder /build/database/postgresql/ /usr/share/zabbix-sql-scripts/postgresql/
+
+# Configure
+RUN ldconfig
+
+USER zabbix
+
+EXPOSE 10051
+
+CMD ["/usr/local/sbin/zabbix_server", "-f", "-c", "/etc/zabbix/zabbix_server.conf"]
