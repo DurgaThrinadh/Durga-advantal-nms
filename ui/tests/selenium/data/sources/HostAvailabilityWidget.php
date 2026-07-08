@@ -14,8 +14,10 @@
 **/
 
 
-class HostAvailabilityWidget {
-	public static function load() {
+class HostAvailabilityWidget
+{
+	public static function load()
+	{
 		CDataHelper::call('hostgroup.create', [
 			['name' => 'Group for Host availability widget'],
 			['name' => 'Group in maintenance for Host availability widget']
@@ -267,16 +269,16 @@ class HostAvailabilityWidget {
 
 		$data = [
 			$interfaces['default_interfaces']['Not available host'][1] => [
-					[
-						'available' => 2,
-						'error' => 'ERROR Agent'
-					]
+				[
+					'available' => 2,
+					'error' => 'ERROR Agent'
+				]
 			],
 			$interfaces['default_interfaces']['Not available host'][2] => [
-					[
-						'available' => 2,
-						'error' => 'ERROR SNMP'
-					]
+				[
+					'available' => 2,
+					'error' => 'ERROR SNMP'
+				]
 			],
 			$interfaces['default_interfaces']['Not available host'][3] => [
 				[
@@ -364,8 +366,9 @@ class HostAvailabilityWidget {
 		foreach ($data as $interfaceid => $values) {
 			foreach ($values as $value) {
 				$error = (array_key_exists('error', $value)) ? $value['error'] : '';
-				DBexecute('UPDATE interface SET available='.zbx_dbstr($value['available']).', error='.zbx_dbstr($error).
-						' WHERE interfaceid='.zbx_dbstr($interfaceid)
+				DBexecute(
+					'UPDATE interface SET available=' . zbx_dbstr($value['available']) . ', error=' . zbx_dbstr($error) .
+						' WHERE interfaceid=' . zbx_dbstr($interfaceid)
 				);
 			}
 		}
@@ -377,13 +380,15 @@ class HostAvailabilityWidget {
 			$hostids['Available host in maintenance']
 		];
 		foreach ($maintenace_hostids as $hostid) {
-			DBexecute('INSERT INTO maintenances_hosts (maintenance_hostid, maintenanceid, hostid) VALUES ('.
-					zbx_dbstr($hostid).', '.zbx_dbstr($maintenanceid).','.zbx_dbstr($hostid).')'
+			DBexecute(
+				'INSERT INTO maintenances_hosts (maintenance_hostid, maintenanceid, hostid) VALUES (' .
+					zbx_dbstr($hostid) . ', ' . zbx_dbstr($maintenanceid) . ',' . zbx_dbstr($hostid) . ')'
 			);
 
-			DBexecute('UPDATE hosts SET maintenanceid='.zbx_dbstr($maintenanceid).
-					', maintenance_status=1, maintenance_type='.MAINTENANCE_TYPE_NORMAL.', maintenance_from='.
-					zbx_dbstr(1534971600).' WHERE hostid='.zbx_dbstr($hostid)
+			DBexecute(
+				'UPDATE hosts SET maintenanceid=' . zbx_dbstr($maintenanceid) .
+					', maintenance_status=1, maintenance_type=' . MAINTENANCE_TYPE_NORMAL . ', maintenance_from=' .
+					zbx_dbstr(1534971600) . ' WHERE hostid=' . zbx_dbstr($hostid)
 			);
 		}
 
@@ -412,7 +417,7 @@ class HostAvailabilityWidget {
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_GROUP,
 										'name' => 'groupids',
-										'value' => 4 // Zabbix servers.
+										'value' => 4 // Advantal servers.
 									],
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_INT32,

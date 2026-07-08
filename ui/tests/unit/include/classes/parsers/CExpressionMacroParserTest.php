@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,9 +18,11 @@
 
 use PHPUnit\Framework\TestCase;
 
-class CExpressionMacroParserTest extends TestCase {
+class CExpressionMacroParserTest extends TestCase
+{
 
-	public static function dataProvider() {
+	public static function dataProvider()
+	{
 		return [
 			['', [], 0, [
 				'rc' => CParser::PARSE_FAIL,
@@ -55,14 +59,14 @@ class CExpressionMacroParserTest extends TestCase {
 				'match' => '{? 1 + 1   }',
 				'length' => 12
 			]],
-			['text {?last(/'.'/system.cpu.load)}', [], 5, [
+			['text {?last(/' . '/system.cpu.load)}', [], 5, [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'length' => 0
 			]],
-			['text {?last(/'.'/system.cpu.load)}', ['empty_host' => true], 5, [
+			['text {?last(/' . '/system.cpu.load)}', ['empty_host' => true], 5, [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '{?last(/'.'/system.cpu.load)}',
+				'match' => '{?last(/' . '/system.cpu.load)}',
 				'length' => 26
 			]],
 			['text {? last(/{HOST.HOST}/key, #25) } text', [], 5, [
@@ -95,24 +99,24 @@ class CExpressionMacroParserTest extends TestCase {
 				'match' => '{? last(/host/key, #25) + max(sum(/host/key, 1d:now/d), sum(/host/key, 1d:now/d-1d)) }',
 				'length' => 86
 			]],
-			['text {?last(/Zabbix server/system.cpu.load, {#LLD})}', [], 5, [
+			['text {?last(/Advantal server/system.cpu.load, {#LLD})}', [], 5, [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'length' => 0
 			]],
-			['text {?last(/Zabbix server/system.cpu.load, {#LLD})}', ['lldmacros' => true], 5, [
+			['text {?last(/Advantal server/system.cpu.load, {#LLD})}', ['lldmacros' => true], 5, [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '{?last(/Zabbix server/system.cpu.load, {#LLD})}',
+				'match' => '{?last(/Advantal server/system.cpu.load, {#LLD})}',
 				'length' => 47
 			]],
-			['text {?last(/Zabbix server/system.cpu.load, {$MACRO})}', [], 5, [
+			['text {?last(/Advantal server/system.cpu.load, {$MACRO})}', [], 5, [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'length' => 0
 			]],
-			['text {?last(/Zabbix server/system.cpu.load, {$MACRO})}', ['usermacros' => true], 5, [
+			['text {?last(/Advantal server/system.cpu.load, {$MACRO})}', ['usermacros' => true], 5, [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '{?last(/Zabbix server/system.cpu.load, {$MACRO})}',
+				'match' => '{?last(/Advantal server/system.cpu.load, {$MACRO})}',
 				'length' => 49
 			]],
 			['text {? 1 + 1   text', [], 5, [
@@ -120,19 +124,19 @@ class CExpressionMacroParserTest extends TestCase {
 				'match' => '',
 				'length' => 0
 			]],
-			['text {?nodata(/Zabbix server/system.cpu.load, "\\\\")}', [], 5, [
+			['text {?nodata(/Advantal server/system.cpu.load, "\\\\")}', [], 5, [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '{?nodata(/Zabbix server/system.cpu.load, "\\\\")}',
+				'match' => '{?nodata(/Advantal server/system.cpu.load, "\\\\")}',
 				'length' => 47
 			]],
-			['text {?nodata(/Zabbix server/system.cpu.load, "\\\\")}', ['escape_backslashes' => false], 5, [
+			['text {?nodata(/Advantal server/system.cpu.load, "\\\\")}', ['escape_backslashes' => false], 5, [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'length' => 0
 			]],
-			['text {?nodata(/Zabbix server/system.cpu.load, "\\ ")}', ['escape_backslashes' => false], 5, [
+			['text {?nodata(/Advantal server/system.cpu.load, "\\ ")}', ['escape_backslashes' => false], 5, [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '{?nodata(/Zabbix server/system.cpu.load, "\\ ")}',
+				'match' => '{?nodata(/Advantal server/system.cpu.load, "\\ ")}',
 				'length' => 47
 			]]
 		];
@@ -145,7 +149,8 @@ class CExpressionMacroParserTest extends TestCase {
 	 * @param int     $pos
 	 * @param array   $result
 	 */
-	public function testExpressionMacroParser(string $source, array $options, int $pos, array $result) {
+	public function testExpressionMacroParser(string $source, array $options, int $pos, array $result)
+	{
 		$expression_macro_parser = new CExpressionMacroParser($options);
 
 		$this->assertSame($result, [

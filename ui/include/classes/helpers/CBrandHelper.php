@@ -17,7 +17,8 @@
 /**
  * A class for Zabbix re-branding.
  */
-class CBrandHelper {
+class CBrandHelper
+{
 
 	const BRAND_CONFIG_FILE_PATH = '/../../../local/conf/brand.conf.php';
 
@@ -31,16 +32,16 @@ class CBrandHelper {
 	/**
 	 * Lazy configuration loading.
 	 */
-	private static function loadConfig() {
+	private static function loadConfig()
+	{
 		if (!self::$config) {
-			$config_file_path = realpath(dirname(__FILE__).self::BRAND_CONFIG_FILE_PATH);
+			$config_file_path = realpath(dirname(__FILE__) . self::BRAND_CONFIG_FILE_PATH);
 
 			if (file_exists($config_file_path)) {
 				self::$config = include $config_file_path;
 				if (is_array(self::$config)) {
 					self::$config['IS_REBRANDED'] = true;
-				}
-				else {
+				} else {
 					self::$config = [];
 				}
 			}
@@ -55,7 +56,8 @@ class CBrandHelper {
 	 *
 	 * @return mixed
 	 */
-	private static function getValue($key, $default = false) {
+	private static function getValue($key, $default = false)
+	{
 		self::loadConfig();
 
 		return (array_key_exists($key, self::$config) ? self::$config[$key] : $default);
@@ -66,7 +68,8 @@ class CBrandHelper {
 	 *
 	 * @return boolean
 	 */
-	public static function isRebranded() {
+	public static function isRebranded()
+	{
 		return self::getValue('IS_REBRANDED');
 	}
 
@@ -75,9 +78,12 @@ class CBrandHelper {
 	 *
 	 * @return string
 	 */
-	public static function getHelpUrl() {
-		return self::getValue('BRAND_HELP_URL', 'https://www.zabbix.com/documentation/'.
-			(preg_match('/^\d+\.\d+/', ZABBIX_VERSION, $version) ? $version[0].'/' : '')
+	public static function getHelpUrl()
+	{
+		return self::getValue(
+			'BRAND_HELP_URL',
+			'https://www.zabbix.com/documentation/' .
+				(preg_match('/^\d+\.\d+/', ZABBIX_VERSION, $version) ? $version[0] . '/' : '')
 		);
 	}
 
@@ -86,7 +92,8 @@ class CBrandHelper {
 	 *
 	 * @return string
 	 */
-	public static function getLogo(int $type): ?string {
+	public static function getLogo(int $type): ?string
+	{
 		switch ($type) {
 			case LOGO_TYPE_NORMAL:
 				return self::getValue('BRAND_LOGO', null);
@@ -108,23 +115,29 @@ class CBrandHelper {
 	 *
 	 * @return array
 	 */
-	public static function getFooterContent($with_version) {
-		$footer = self::getValue(
-			'BRAND_FOOTER',
-			[
-				$with_version ? 'Zabbix '.ZABBIX_VERSION.'. ' : null,
-				COPYR(), ' '.ZABBIX_COPYRIGHT_FROM, NDASH(), ZABBIX_COPYRIGHT_TO.', ',
-				(new CLink('Zabbix SIA', 'https://www.zabbix.com/'))
-					->addClass(ZBX_STYLE_GREY)
-					->addClass(ZBX_STYLE_LINK_ALT)
-					->setTarget('_blank')
-			]
-		);
-
-		if (!is_array($footer)) {
-			$footer = [$footer];
-		}
+	public static function getFooterContent($with_version)
+	{
+		$footer = [
+			'ADVANTAL NMS © 2026 ADVANTAL TECHNOLOGIES'
+		];
 
 		return $footer;
+		// $footer = self::getValue(
+		// 	'BRAND_FOOTER',
+		// 	[
+		// 		$with_version ? 'Zabbix '.ZABBIX_VERSION.'. ' : null,
+		// 		COPYR(), ' '.ZABBIX_COPYRIGHT_FROM, NDASH(), ZABBIX_COPYRIGHT_TO.', ',
+		// 		(new CLink('Zabbix SIA', 'https://www.zabbix.com/'))
+		// 			->addClass(ZBX_STYLE_GREY)
+		// 			->addClass(ZBX_STYLE_LINK_ALT)
+		// 			->setTarget('_blank')
+		// 	]
+		// );
+
+		// if (!is_array($footer)) {
+		// 	$footer = [$footer];
+		// }
+
+		// return $footer;
 	}
 }

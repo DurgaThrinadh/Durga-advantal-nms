@@ -13,14 +13,15 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
 
 /**
  * Test suite for High availability
  *
  * @backup hosts, proxy, host_rtdata, proxy_rtdata, proxy_group, host_proxy
  */
-class testProxyHa extends CIntegrationTest {
+class testProxyHa extends CIntegrationTest
+{
 
 	private static $proxy_groupid;
 	private static $proxyid1;
@@ -38,7 +39,8 @@ class testProxyHa extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function reassignmentConfigurationProvider() {
+	public function reassignmentConfigurationProvider()
+	{
 		return [
 			self::COMPONENT_SERVER => [
 				'DebugLevel' => 5,
@@ -50,7 +52,7 @@ class testProxyHa extends CIntegrationTest {
 				'Hostname' => self::PROXY1_HOSTNAME,
 				'DebugLevel' => 5,
 				'LogFileSize' => 0,
-				'Server' => '127.0.0.1:'.self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort')
+				'Server' => '127.0.0.1:' . self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort')
 			]
 		];
 	}
@@ -60,7 +62,8 @@ class testProxyHa extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function configurationProvider() {
+	public function configurationProvider()
+	{
 		return [
 			self::COMPONENT_SERVER => [
 				'DebugLevel' => 5,
@@ -72,13 +75,13 @@ class testProxyHa extends CIntegrationTest {
 				'DebugLevel' => 5,
 				'LogFileSize' => 0,
 				'Hostname' => self::PROXY1_HOSTNAME,
-				'Server' => '127.0.0.1:'.self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort')
+				'Server' => '127.0.0.1:' . self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort')
 			],
 			self::COMPONENT_PROXY_HANODE1 => [
 				'DebugLevel' => 5,
 				'LogFileSize' => 0,
 				'Hostname' => self::PROXY1_HA_HOSTNAME,
-				'Server' => '127.0.0.1:'.self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort')
+				'Server' => '127.0.0.1:' . self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort')
 			]
 		];
 	}
@@ -87,7 +90,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @required-components server, proxy, proxy_ha1
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		$socketDir = $this->getConfigurationValue(self::COMPONENT_PROXY_HANODE1, 'SocketDir');
 
 		if (file_exists($socketDir) === false) {
@@ -170,7 +174,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc1() {
+	public function testProxyHa_tc1()
+	{
 		$pg_logline = 'Proxy group "' . self::PG_NAME . '" changed state from \b[a-z]+\b to online';
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, $pg_logline, true, 90, 1, true);
 
@@ -183,7 +188,7 @@ class testProxyHa extends CIntegrationTest {
 			'preservekeys' => true
 		]);
 		$this->assertCount(2, $response['result']);
-		foreach	($response['result'] as $host) {
+		foreach ($response['result'] as $host) {
 			$this->assertArrayHasKey('hostid', $host);
 			$this->assertArrayHasKey('assigned_proxyid', $host);
 			$this->assertNotEquals('0', $host['assigned_proxyid']);
@@ -199,7 +204,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc2() {
+	public function testProxyHa_tc2()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
 		$this->startComponent(self::COMPONENT_SERVER);
 
@@ -215,7 +221,7 @@ class testProxyHa extends CIntegrationTest {
 			'preservekeys' => true
 		]);
 		$this->assertCount(2, $response['result']);
-		foreach	($response['result'] as $host) {
+		foreach ($response['result'] as $host) {
 			$this->assertArrayHasKey('hostid', $host);
 			$this->assertArrayHasKey('assigned_proxyid', $host);
 			$this->assertEquals($host['assigned_proxyid'], self::$assigned_proxyids[$host['hostid']]);
@@ -230,7 +236,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc3() {
+	public function testProxyHa_tc3()
+	{
 		$this->stopComponent(self::COMPONENT_PROXY);
 
 		$monitored_host = null;
@@ -257,7 +264,7 @@ class testProxyHa extends CIntegrationTest {
 			'preservekeys' => true
 		]);
 		$this->assertCount(2, $response['result']);
-		foreach	($response['result'] as $host) {
+		foreach ($response['result'] as $host) {
 			$this->assertEquals(self::$proxyid2, $host['assigned_proxyid']);
 		}
 
@@ -286,7 +293,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc4() {
+	public function testProxyHa_tc4()
+	{
 		$response = $this->call('proxy.update', [
 			'proxyid' => self::$proxyid1,
 			'proxy_groupid' => 0
@@ -316,7 +324,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc5() {
+	public function testProxyHa_tc5()
+	{
 		$response = $this->call('proxy.update', [
 			'proxyid' => self::$proxyid1,
 			'proxy_groupid' => self::$proxy_groupid,
@@ -348,7 +357,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc6() {
+	public function testProxyHa_tc6()
+	{
 		$response = $this->call('host.update', [
 			'hostid' => self::$hostid1,
 			'monitored_by' => ZBX_MONITORED_BY_SERVER,
@@ -379,7 +389,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc7() {
+	public function testProxyHa_tc7()
+	{
 		$response = $this->call('host.update', [
 			'hostid' => self::$hostid1,
 			'monitored_by' => ZBX_MONITORED_BY_PROXY_GROUP,
@@ -410,7 +421,8 @@ class testProxyHa extends CIntegrationTest {
 	 * @configurationDataProvider configurationProvider
 	 * @required-components server, proxy, proxy_ha1
 	 */
-	public function testProxyHa_tc8() {
+	public function testProxyHa_tc8()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
 		$this->stopComponent(self::COMPONENT_PROXY);
 		$this->stopComponent(self::COMPONENT_PROXY_HANODE1);
@@ -422,7 +434,7 @@ class testProxyHa extends CIntegrationTest {
 <host_groups>
 <host_group>
 	<uuid>6f6799aa69e844b4b3918f779f2abf08</uuid>
-	<name>Zabbix servers</name>
+	<name>Advantal servers</name>
 </host_group>
 </host_groups>
 <hosts>
@@ -435,7 +447,7 @@ class testProxyHa extends CIntegrationTest {
 	</proxy_group>
 	<groups>
 	<group>
-		<name>Zabbix servers</name>
+		<name>Advantal servers</name>
 	</group>
 	</groups>
 	<discovery_rules>
@@ -459,7 +471,7 @@ return JSON.stringify(hosts);</params>
 			<group_links>
 			<group_link>
 				<group>
-				<name>Zabbix servers</name>
+				<name>Advantal servers</name>
 				</group>
 			</group_link>
 			</group_links>
@@ -485,54 +497,54 @@ HEREDOC;
 			'rules' => [
 				'host_groups' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true
+					'updateExisting' => true,
+					'createMissing' => true
 				],
 				'hosts' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true
+					'updateExisting' => true,
+					'createMissing' => true
 				],
 				'valueMaps' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true,
-				'deleteMissing' => false
+					'updateExisting' => true,
+					'createMissing' => true,
+					'deleteMissing' => false
 				],
 				'templateLinkage' =>
 				[
-				'createMissing' => true,
-				'deleteMissing' => false
+					'createMissing' => true,
+					'deleteMissing' => false
 				],
 				'items' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true,
-				'deleteMissing' => false
+					'updateExisting' => true,
+					'createMissing' => true,
+					'deleteMissing' => false
 				],
 				'discoveryRules' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true,
-				'deleteMissing' => false
+					'updateExisting' => true,
+					'createMissing' => true,
+					'deleteMissing' => false
 				],
 				'triggers' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true,
-				'deleteMissing' => false
+					'updateExisting' => true,
+					'createMissing' => true,
+					'deleteMissing' => false
 				],
 				'graphs' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true,
-				'deleteMissing' => false
+					'updateExisting' => true,
+					'createMissing' => true,
+					'deleteMissing' => false
 				],
 				'httptests' =>
 				[
-				'updateExisting' => true,
-				'createMissing' => true,
-				'deleteMissing' => false
+					'updateExisting' => true,
+					'createMissing' => true,
+					'deleteMissing' => false
 				]
 
 			]
@@ -573,12 +585,12 @@ HEREDOC;
 
 		$proxy1_hostcount = CDBHelper::getCount(
 			'SELECT NULL FROM host_proxy ' .
-			'WHERE proxyid=' . self::$proxyid1 . ' AND hostid IN (' . CDBHelper::escape($hostids) . ')'
+				'WHERE proxyid=' . self::$proxyid1 . ' AND hostid IN (' . CDBHelper::escape($hostids) . ')'
 		);
 
 		$proxy2_hostcount = CDBHelper::getCount(
 			'SELECT NULL FROM host_proxy ' .
-			'WHERE proxyid=' . self::$proxyid2 . ' AND hostid IN (' . CDBHelper::escape($hostids) . ')'
+				'WHERE proxyid=' . self::$proxyid2 . ' AND hostid IN (' . CDBHelper::escape($hostids) . ')'
 		);
 
 
@@ -594,7 +606,8 @@ HEREDOC;
 	 * @configurationDataProvider reassignmentConfigurationProvider
 	 * @required-components server, proxy
 	 */
-	public function testProxyHa_tc9() {
+	public function testProxyHa_tc9()
+	{
 		$response = $this->call('host.get', []);
 		$hostids = [];
 		foreach ($response['result'] as $host) {

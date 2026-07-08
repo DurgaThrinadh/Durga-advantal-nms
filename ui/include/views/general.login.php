@@ -23,7 +23,7 @@ define('ZBX_PAGE_NO_FOOTER', 1);
 define('ZBX_PAGE_NO_MENU', true);
 define('ZBX_PAGE_NO_JSLOADER', true);
 
-require_once dirname(__FILE__).'/../page_header.php';
+require_once dirname(__FILE__) . '/../page_header.php';
 $error = null;
 
 if ($data['error']) {
@@ -34,7 +34,7 @@ if ($data['error']) {
 
 $guest = $data['guest_login_url']
 	? (new CListItem([_('or'), ' ', new CLink(_('sign in as guest'), $data['guest_login_url'])]))
-		->addClass(ZBX_STYLE_SIGN_IN_TXT)
+	->addClass(ZBX_STYLE_SIGN_IN_TXT)
 	: null;
 
 $http_login_link = $data['http_login_url']
@@ -43,7 +43,7 @@ $http_login_link = $data['http_login_url']
 
 $saml_login_link = $data['saml_login_url']
 	? (new CListItem(new CLink(_('Sign in with Single Sign-On (SAML)'), $data['saml_login_url'])))
-		->addClass(ZBX_STYLE_SIGN_IN_TXT)
+	->addClass(ZBX_STYLE_SIGN_IN_TXT)
 	: null;
 
 global $ZBX_SERVER_NAME;
@@ -80,19 +80,19 @@ global $ZBX_SERVER_NAME;
 						->addItem($saml_login_link)
 				)
 		]))->addClass(ZBX_STYLE_SIGNIN_CONTAINER),
-		(new CDiv([
-			(new CLink(_('Help'), CBrandHelper::getHelpUrl()))
-				->setTarget('_blank')
-				->addClass(ZBX_STYLE_GREY)
-				->addClass(ZBX_STYLE_LINK_ALT),
-			CBrandHelper::isRebranded() ? null : [NBSP(), NBSP(), BULLET(), NBSP(), NBSP()],
-			CBrandHelper::isRebranded()
-				? null
-				: (new CLink(_('Support'), getSupportUrl(CWebUser::getLang())))
-					->setTarget('_blank')
-					->addClass(ZBX_STYLE_GREY)
-					->addClass(ZBX_STYLE_LINK_ALT)
-		]))->addClass(ZBX_STYLE_SIGNIN_LINKS)
+		// (new CDiv([
+		// 	(new CLink(_('Help'), CBrandHelper::getHelpUrl()))
+		// 		->setTarget('_blank')
+		// 		->addClass(ZBX_STYLE_GREY)
+		// 		->addClass(ZBX_STYLE_LINK_ALT),
+		// 	CBrandHelper::isRebranded() ? null : [NBSP(), NBSP(), BULLET(), NBSP(), NBSP()],
+		// 	CBrandHelper::isRebranded()
+		// 		? null
+		// 		: (new CLink(_('Support'), getSupportUrl(CWebUser::getLang())))
+		// 		->setTarget('_blank')
+		// 		->addClass(ZBX_STYLE_GREY)
+		// 		->addClass(ZBX_STYLE_LINK_ALT)
+		// ]))->addClass(ZBX_STYLE_SIGNIN_LINKS)
 	])),
 	makePageFooter(false)
 ]))

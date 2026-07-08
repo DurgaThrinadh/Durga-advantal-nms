@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormGroups.php';
+require_once __DIR__ . '/../common/testFormGroups.php';
 
 /**
  * @backup hosts
@@ -23,21 +23,25 @@ require_once __DIR__.'/../common/testFormGroups.php';
  *
  * @dataSource DiscoveredHosts, HostTemplateGroups
  */
-class testFormHostGroup extends testFormGroups {
+class testFormHostGroup extends testFormGroups
+{
 
 	protected $link = 'zabbix.php?action=hostgroup.list';
 	protected $object = 'host';
 	protected static $update_group = 'Group for Update test';
 
-	public function testFormHostGroup_Layout() {
-		$this->layout('Zabbix servers');
+	public function testFormHostGroup_Layout()
+	{
+		$this->layout('Advantal servers');
 	}
 
-	public function testFormHostGroup_DiscoveredLayout() {
+	public function testFormHostGroup_DiscoveredLayout()
+	{
 		$this->layout(self::DISCOVERED_GROUP, true);
 	}
 
-	public static function getHostValidationData() {
+	public static function getHostValidationData()
+	{
 		return [
 			[
 				[
@@ -45,21 +49,22 @@ class testFormHostGroup extends testFormGroups {
 					'fields' => [
 						'Group name' => self::DISCOVERED_GROUP
 					],
-					'error' => 'Host group "'.self::DISCOVERED_GROUP.'" already exists.'
+					'error' => 'Host group "' . self::DISCOVERED_GROUP . '" already exists.'
 				]
 			]
 		];
 	}
 
-	public static function getHostCreateData() {
+	public static function getHostCreateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Group name' => 'Zabbix servers'
+						'Group name' => 'Advantal servers'
 					],
-					'error' => 'Host group "Zabbix servers" already exists.'
+					'error' => 'Host group "Advantal servers" already exists.'
 				]
 			],
 			[
@@ -86,20 +91,22 @@ class testFormHostGroup extends testFormGroups {
 	 * @dataProvider getHostValidationData
 	 * @dataProvider getHostCreateData
 	 */
-	public function testFormHostGroup_Create($data) {
+	public function testFormHostGroup_Create($data)
+	{
 		$this->checkForm($data, 'create');
 	}
 
-	public static function getHostUpdateData() {
+	public static function getHostUpdateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Group name' => 'Zabbix servers',
+						'Group name' => 'Advantal servers',
 						'Apply permissions and tag filters to all subgroups' => true
 					],
-					'error' => 'Host group "Zabbix servers" already exists.'
+					'error' => 'Host group "Advantal servers" already exists.'
 				]
 			],
 			[
@@ -126,25 +133,28 @@ class testFormHostGroup extends testFormGroups {
 	 * @dataProvider getHostValidationData
 	 * @dataProvider getHostUpdateData
 	 */
-	public function testFormHostGroup_Update($data) {
+	public function testFormHostGroup_Update($data)
+	{
 		$this->checkForm($data, 'update');
 	}
 
 	/**
 	 * Test group simple update without changing data.
 	 */
-	public function testFormHostGroup_SimpleUpdate() {
+	public function testFormHostGroup_SimpleUpdate()
+	{
 		$this->simpleUpdate(self::DISCOVERED_GROUP, true);
 	}
 
-	public static function getHostCloneData() {
+	public static function getHostCloneData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_GOOD,
 					'name' => self::DISCOVERED_GROUP,
 					'fields' => [
-						'Group name' => self::DISCOVERED_GROUP.' cloned group'
+						'Group name' => self::DISCOVERED_GROUP . ' cloned group'
 					],
 					'discovered' => true
 				]
@@ -156,18 +166,21 @@ class testFormHostGroup extends testFormGroups {
 	 * @dataProvider getCloneData
 	 * @dataProvider getHostCloneData
 	 */
-	public function testFormHostGroup_Clone($data) {
+	public function testFormHostGroup_Clone($data)
+	{
 		$this->clone($data);
 	}
 
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testFormHostGroup_Cancel($data) {
+	public function testFormHostGroup_Cancel($data)
+	{
 		$this->cancel($data);
 	}
 
-	public static function getHostDeleteData() {
+	public static function getHostDeleteData()
+	{
 		return [
 			[
 				[
@@ -180,7 +193,7 @@ class testFormHostGroup extends testFormGroups {
 				[
 					'expected' => TEST_BAD,
 					'name' => 'Group for Maintenance',
-					'error' => 'Cannot delete host group "Group for Maintenance" because maintenance'.
+					'error' => 'Cannot delete host group "Group for Maintenance" because maintenance' .
 						' "Maintenance for host group testing" must contain at least one host or host group.'
 				]
 			],
@@ -219,7 +232,8 @@ class testFormHostGroup extends testFormGroups {
 	 * @dataProvider getDeleteData
 	 * @dataProvider getHostDeleteData
 	 */
-	public function testFormHostGroup_Delete($data) {
+	public function testFormHostGroup_Delete($data)
+	{
 		$this->delete($data);
 	}
 
@@ -227,11 +241,13 @@ class testFormHostGroup extends testFormGroups {
 	 * @onBeforeOnce prepareSubgroupData
 	 * @dataProvider getSubgroupsData
 	 */
-	public function testFormHostGroup_ApplyPermissionsToSubgroups($data) {
+	public function testFormHostGroup_ApplyPermissionsToSubgroups($data)
+	{
 		$this->checkSubgroupsPermissions($data);
 	}
 
-	public static function getLLDLinksData() {
+	public static function getLLDLinksData()
+	{
 		return [
 			[
 				[
@@ -264,7 +280,8 @@ class testFormHostGroup extends testFormGroups {
 	/**
 	 * @dataProvider getLLDLinksData
 	 */
-	public function testFormHostGroup_CheckLLDLinks($data) {
+	public function testFormHostGroup_CheckLLDLinks($data)
+	{
 		$link_ids = CDataHelper::get('HostTemplateGroups.lld_host_prototype_ids');
 
 		$this->page->login()->open($this->link)->waitUntilReady();
@@ -277,8 +294,8 @@ class testFormHostGroup extends testFormGroups {
 			$link = $discovered_by->query('link', $lld_name)->one();
 			$this->assertTrue($link->isClickable());
 
-			$link_url = 'host_prototypes.php?form=update&parent_discoveryid='.$link_ids[$lld_name]['lld_id'].'&hostid='.
-					$link_ids[$lld_name]['host_prototype_id'].'&context=host';
+			$link_url = 'host_prototypes.php?form=update&parent_discoveryid=' . $link_ids[$lld_name]['lld_id'] . '&hostid=' .
+				$link_ids[$lld_name]['host_prototype_id'] . '&context=host';
 			$this->assertEquals($link_url, $link->getAttribute('href'));
 		}
 

@@ -1,5 +1,5 @@
--- Activate Zabbix Server, set visible name and make it a more unique name
-UPDATE hosts SET status=0,name='ЗАББИКС Сервер',host='Test host' WHERE host='Zabbix server';
+-- Activate Advantal server, set visible name and make it a more unique name
+UPDATE hosts SET status=0,name='ЗАББИКС Сервер',host='Test host' WHERE host='Advantal server';
 
 -- inheritance testing
 INSERT INTO hosts (hostid, host, name, status, description) VALUES (15000, 'Inheritance test template', 'Inheritance test template', 3, '');
@@ -711,7 +711,7 @@ INSERT INTO triggers (triggerid,expression,description,url,status,value,priority
 INSERT INTO functions (functionid,itemid,triggerid,name,parameter) VALUES (100026,400650,100026,'last','$,#1');
 INSERT INTO functions (functionid,itemid,triggerid,name,parameter) VALUES (100027,42237,100026,'last','$,#1');
 INSERT INTO sysmaps (sysmapid, name, width, height, backgroundid, label_type, label_location, highlight, expandproblem, markelements, show_unack, grid_size, grid_show, grid_align, label_format, label_type_host, label_type_hostgroup, label_type_trigger, label_type_map, label_type_image, label_string_host, label_string_hostgroup, label_string_trigger, label_string_map, label_string_image, iconmapid, expand_macros, severity_min, userid, private) VALUES (5, 'testZBX6840', 800, 600, NULL, 0, 0, 0, 0, 0, 0, 50, 1, 1, 0, 2, 2, 2, 2, 2, '', '', '', '', '', NULL, 0, 0, 1, 0);
-INSERT INTO sysmaps_elements (selementid,sysmapid,elementid,elementtype,iconid_off,iconid_on,label,label_location,x,y,iconid_disabled,iconid_maintenance,elementsubtype,areatype,width,height,viewtype,use_iconmap) VALUES (8,5,10084,0,19,NULL,'Host element (Zabbix Server)',-1,413,268,NULL,NULL,0,0,200,200,0,0);
+INSERT INTO sysmaps_elements (selementid,sysmapid,elementid,elementtype,iconid_off,iconid_on,label,label_location,x,y,iconid_disabled,iconid_maintenance,elementsubtype,areatype,width,height,viewtype,use_iconmap) VALUES (8,5,10084,0,19,NULL,'Host element (Advantal server)',-1,413,268,NULL,NULL,0,0,200,200,0,0);
 INSERT INTO sysmaps_elements (selementid,sysmapid,elementid,elementtype,iconid_off,iconid_on,label,label_location,x,y,iconid_disabled,iconid_maintenance,elementsubtype,areatype,width,height,viewtype,use_iconmap) VALUES (9,5,0,2,15,NULL,'Trigger element (zbx6840)',-1,213,218,NULL,NULL,0,0,200,200,0,0);
 INSERT INTO sysmap_element_trigger (selement_triggerid, selementid, triggerid) VALUES (2,9,100026);
 
@@ -776,7 +776,7 @@ INSERT INTO usrgrp (usrgrpid, name) VALUES (150, 'Selenium user group in configu
 INSERT INTO scripts (scriptid, type, name, command, host_access, usrgrpid, groupid, description, scope) VALUES (5, 0, 'Selenium script','test',2,140,NULL,'selenium script description', 1);
 UPDATE config SET alert_usrgrpid = 150 WHERE configid = 1;
 
--- Disable warning if Zabbix server is down
+-- Disable warning if Advantal server is down
 UPDATE config SET server_check_interval = 0 WHERE configid = 1;
 -- Super admin rows per page
 UPDATE users SET rows_per_page = 150 WHERE userid = 1;

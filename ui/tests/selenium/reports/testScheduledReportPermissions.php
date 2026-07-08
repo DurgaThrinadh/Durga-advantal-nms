@@ -14,10 +14,10 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
 
 /**
  * @dataSource ScheduledReports
@@ -26,14 +26,16 @@ require_once __DIR__.'/../../include/helpers/CDataHelper.php';
  *
  * @onBefore prepareData
  */
-class testScheduledReportPermissions extends CWebTest {
+class testScheduledReportPermissions extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -45,7 +47,8 @@ class testScheduledReportPermissions extends CWebTest {
 	protected static $usergroupids;
 	protected static $dashboardids;
 
-	public function prepareData() {
+	public function prepareData()
+	{
 		$roles = CDataHelper::call('role.create', [
 			[
 				'name' => 'admin role without access to reports',
@@ -255,7 +258,8 @@ class testScheduledReportPermissions extends CWebTest {
 		$this->assertArrayHasKey('reportids', $reports);
 	}
 
-	public static function getUsersWithoutPermissions() {
+	public static function getUsersWithoutPermissions()
+	{
 		return [
 			[
 				[
@@ -279,11 +283,12 @@ class testScheduledReportPermissions extends CWebTest {
 	 *
 	 * @dataProvider getUsersWithoutPermissions
 	 */
-	public function testScheduledReportPermissions_UsersWithoutPermissions($data) {
+	public function testScheduledReportPermissions_UsersWithoutPermissions($data)
+	{
 		$report = 'report to check users without permissions';
 		// User with admin type can't see other user alias or user group name.
-		$owner = ($data['type'] === 'admin') ? 'Inaccessible user' : 'Admin (Zabbix Administrator)';
-		$group = ($data['type'] === 'admin') ? 'Inaccessible user group' : 'Zabbix administrators';
+		$owner = ($data['type'] === 'admin') ? 'Inaccessible user' : 'Admin (Advantal Administrator)';
+		$group = ($data['type'] === 'admin') ? 'Inaccessible user group' : 'Advantal Administrators';
 		$this->page->userLogin($data['alias'], $data['password']);
 
 		// Check report in dashboard.
@@ -326,8 +331,7 @@ class testScheduledReportPermissions extends CWebTest {
 
 					if ($row->getColumn('Recipient')->query('class:zi-user-filled-small')->one(false)->isValid()) {
 						$this->assertEquals($owner, $row->getColumn('Recipient')->getText());
-					}
-					else {
+					} else {
 						$this->assertEquals($group, $row->getColumn('Recipient')->getText());
 					}
 
@@ -348,7 +352,8 @@ class testScheduledReportPermissions extends CWebTest {
 	/**
 	 * Check the report cloning, when the admin user see inaccessible user/user groups and dashboard.
 	 */
-	public function testScheduledReportPermissions_Clone() {
+	public function testScheduledReportPermissions_Clone()
+	{
 		$report = 'report to check the dashboard change';
 		$before = [
 			'fields' => ['Dashboard' => 'Inaccessible dashboard', 'Owner' => 'Inaccessible user'],
@@ -458,7 +463,8 @@ class testScheduledReportPermissions extends CWebTest {
 		$this->assertTableData($after['Subscriptions'], 'id:subscriptions-table');
 	}
 
-	public static function getReportData() {
+	public static function getReportData()
+	{
 		return [
 			[
 				[
@@ -498,7 +504,7 @@ class testScheduledReportPermissions extends CWebTest {
 					'password' => 'xibbaz123',
 					'Subscriptions' => [
 						[
-							'Recipient' => 'Admin (Zabbix Administrator)',
+							'Recipient' => 'Admin (Advantal Administrator)',
 							'Generate report by' => 'second super-admin report permissions'
 						],
 						[
@@ -542,7 +548,7 @@ class testScheduledReportPermissions extends CWebTest {
 							'Generate report by' => 'Recipient'
 						],
 						[
-							'Recipient' => 'Zabbix administrators',
+							'Recipient' => 'Advantal Administrators',
 							'Generate report by' => 'second super-admin report permissions'
 						]
 					]
@@ -558,7 +564,8 @@ class testScheduledReportPermissions extends CWebTest {
 	 *
 	 * @backup report
 	 */
-	public function testScheduledReportPermissions_ChangeDashboard($data) {
+	public function testScheduledReportPermissions_ChangeDashboard($data)
+	{
 		$report = 'report to check the dashboard change';
 		$this->page->userLogin($data['alias'], $data['password']);
 		$this->page->open('zabbix.php?action=scheduledreport.list')->waitUntilReady();
@@ -567,8 +574,10 @@ class testScheduledReportPermissions extends CWebTest {
 		$form->fill(['Dashboard' => 'Global view']);
 		$form->submit();
 		$overlay = COverlayDialogElement::find()->waitUntilReady()->one();
-		$this->assertEquals('Report generated by other users will be changed to the current user.',
-				$overlay->query('class:overlay-dialogue-body')->one()->getText());
+		$this->assertEquals(
+			'Report generated by other users will be changed to the current user.',
+			$overlay->query('class:overlay-dialogue-body')->one()->getText()
+		);
 		$overlay->query('button:OK')->one()->click();
 		$this->assertMessage(TEST_GOOD, 'Scheduled report updated');
 		$this->query('link', $report)->waitUntilClickable()->one()->click();
@@ -576,7 +585,8 @@ class testScheduledReportPermissions extends CWebTest {
 		$this->assertTableData($data['Subscriptions'], 'id:subscriptions-table');
 	}
 
-	public static function getCreateData() {
+	public static function getCreateData()
+	{
 		return [
 			[
 				[
@@ -600,7 +610,8 @@ class testScheduledReportPermissions extends CWebTest {
 	 *
 	 * @dataProvider getCreateData
 	 */
-	public function testScheduledReportPermissions_Create($data) {
+	public function testScheduledReportPermissions_Create($data)
+	{
 		$state = ($data['type'] === 'admin') ? false : true;
 
 		// Check create form on page.
@@ -621,7 +632,8 @@ class testScheduledReportPermissions extends CWebTest {
 		$this->assertTrue($form->getField('Owner')->isEnabled($state));
 	}
 
-	public static function getDeleteData() {
+	public static function getDeleteData()
+	{
 		return [
 			[
 				[
@@ -665,16 +677,16 @@ class testScheduledReportPermissions extends CWebTest {
 	 *
 	 * @backupOnce profiles
 	 */
-	public function testScheduledReportPermissions_Delete($data) {
+	public function testScheduledReportPermissions_Delete($data)
+	{
 		$this->page->userLogin('Admin', 'zabbix');
-		$this->page->open('zabbix.php?action='.$data['url'])->waitUntilReady();
+		$this->page->open('zabbix.php?action=' . $data['url'])->waitUntilReady();
 		$this->query('link', $data['name'])->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
 		if ($data['url'] === 'dashboard.list') {
 			$this->query('id:dashboard-actions')->waitUntilClickable()->one()->click();
 			CPopupMenuElement::find()->waitUntilVisible()->one()->select('Delete');
-		}
-		else {
+		} else {
 			$this->query('button:Delete')->waitUntilClickable()->one()->click();
 		}
 		$this->page->acceptAlert();

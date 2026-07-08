@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -106,13 +108,17 @@ $form_grid = (new CFormGrid())
 			(new CRadioButtonList('execute_on', (int) $data['execute_on']))
 				->addValue(_('Zabbix agent'), ZBX_SCRIPT_EXECUTE_ON_AGENT)
 				->addValue(_('Zabbix proxy or server'), ZBX_SCRIPT_EXECUTE_ON_PROXY)
-				->addValue(_('Zabbix server'), ZBX_SCRIPT_EXECUTE_ON_SERVER, null, null,
+				->addValue(
+					_('Advantal server'),
+					ZBX_SCRIPT_EXECUTE_ON_SERVER,
+					null,
+					null,
 					!$data['is_global_scripts_enabled']
 				)
 				->setModern()
 				->setId('execute-on'),
 			!$data['is_global_scripts_enabled']
-				? makeWarningIcon(_('Global script execution on Zabbix server is disabled by server configuration.'))
+				? makeWarningIcon(_('Global script execution on Advantal server is disabled by server configuration.'))
 				: null
 		]))->setId('execute-on')
 	])
@@ -209,7 +215,7 @@ $form_grid = (new CFormGrid())
 		(new CFormField(
 			(new CDiv($parameters_table))
 				->addClass(ZBX_STYLE_TABLE_FORMS_SEPARATOR)
-				->setAttribute('style', 'min-width: '.ZBX_TEXTAREA_STANDARD_WIDTH.'px;')
+				->setAttribute('style', 'min-width: ' . ZBX_TEXTAREA_STANDARD_WIDTH . 'px;')
 		))->setId('webhook-parameters')
 	])
 	->addItem([
@@ -327,76 +333,91 @@ $form_grid
 		))->setId('host-access-field')
 	])
 	->addItem((new CFormFieldsetCollapsible(_('Advanced configuration')))
-		->setId('advanced-configuration')
-		->addItem([
-			(new CLabel(_('Enable user input'), 'manualinput')),
-			new CFormField(
-				(new CCheckBox('manualinput'))->setChecked($data['manualinput'] == ZBX_SCRIPT_MANUALINPUT_ENABLED)
-			)
-		])
-		->addItem([
-			(new CLabel(_('Input prompt'), 'manualinput_prompt')),
-			new CFormField([
-				(new CTextBox('manualinput_prompt', $data['manualinput_prompt'], false,
-					DB::getFieldLength('scripts', 'manualinput_prompt')
-				))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH),
-				NBSP(),
-				(new CButton('test_user_input', _('Test user input')))->addClass(ZBX_STYLE_BTN_GREY)
+			->setId('advanced-configuration')
+			->addItem([
+				(new CLabel(_('Enable user input'), 'manualinput')),
+				new CFormField(
+					(new CCheckBox('manualinput'))->setChecked($data['manualinput'] == ZBX_SCRIPT_MANUALINPUT_ENABLED)
+				)
 			])
-		])
-		->addItem([
-			(new CLabel(_('Input type'), 'manualinput_validator_type')),
-			new CFormField(
-				(new CRadioButtonList('manualinput_validator_type', (int) $data['manualinput_validator_type']))
-					->addValue(_('String'), ZBX_SCRIPT_MANUALINPUT_TYPE_STRING)
-					->addValue(_('Dropdown'), ZBX_SCRIPT_MANUALINPUT_TYPE_LIST)
-					->setModern()
-			)
-		])
-		->addItem([
-			new CLabel(_('Default input string'), 'manualinput_default_value'),
-			new CFormField([
-				(new CTextBox('manualinput_default_value', $data['manualinput_default_value'], false,
-					DB::getFieldLength('scripts', 'manualinput_default_value')
-				))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
+			->addItem([
+				(new CLabel(_('Input prompt'), 'manualinput_prompt')),
+				new CFormField([
+					(new CTextBox(
+						'manualinput_prompt',
+						$data['manualinput_prompt'],
+						false,
+						DB::getFieldLength('scripts', 'manualinput_prompt')
+					))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH),
+					NBSP(),
+					(new CButton('test_user_input', _('Test user input')))->addClass(ZBX_STYLE_BTN_GREY)
+				])
 			])
-		])
-		->addItem([
-			new CLabel(_('Dropdown options'), 'dropdown_options'),
-			new CFormField([
-				(new CTextBox('dropdown_options', $dropdown_options, false,
-					DB::getFieldLength('scripts', 'manualinput_validator')
-				))
-					->setAttribute('placeholder', _('comma-separated list'))
-					->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
+			->addItem([
+				(new CLabel(_('Input type'), 'manualinput_validator_type')),
+				new CFormField(
+					(new CRadioButtonList('manualinput_validator_type', (int) $data['manualinput_validator_type']))
+						->addValue(_('String'), ZBX_SCRIPT_MANUALINPUT_TYPE_STRING)
+						->addValue(_('Dropdown'), ZBX_SCRIPT_MANUALINPUT_TYPE_LIST)
+						->setModern()
+				)
 			])
-		])
-		->addItem([
-			new CLabel(_('Input validation rule'), 'manualinput_validator'),
-			new CFormField([
-				(new CTextBox('manualinput_validator', $validation_rule, false,
-					DB::getFieldLength('scripts', 'manualinput_validator')
-				))
-					->setAttribute('placeholder', _('regular expression'))
-					->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
+			->addItem([
+				new CLabel(_('Default input string'), 'manualinput_default_value'),
+				new CFormField([
+					(new CTextBox(
+						'manualinput_default_value',
+						$data['manualinput_default_value'],
+						false,
+						DB::getFieldLength('scripts', 'manualinput_default_value')
+					))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
+				])
 			])
-		])
-		->addItem([
-			(new CLabel(_('Enable confirmation'), 'enable_confirmation')),
-			new CFormField(
-				(new CCheckBox('enable_confirmation'))->setChecked($data['enable_confirmation'])
-			)
-		])
-		->addItem([
-			(new CLabel(_('Confirmation text'), 'confirmation')),
-			new CFormField([
-				(new CTextBox('confirmation', $data['confirmation'], false,
-					DB::getFieldLength('scripts', 'confirmation')
-				))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH),
-				NBSP(),
-				(new CButton('test_confirmation', _('Test confirmation')))->addClass(ZBX_STYLE_BTN_GREY)
+			->addItem([
+				new CLabel(_('Dropdown options'), 'dropdown_options'),
+				new CFormField([
+					(new CTextBox(
+						'dropdown_options',
+						$dropdown_options,
+						false,
+						DB::getFieldLength('scripts', 'manualinput_validator')
+					))
+						->setAttribute('placeholder', _('comma-separated list'))
+						->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
+				])
 			])
-		])
+			->addItem([
+				new CLabel(_('Input validation rule'), 'manualinput_validator'),
+				new CFormField([
+					(new CTextBox(
+						'manualinput_validator',
+						$validation_rule,
+						false,
+						DB::getFieldLength('scripts', 'manualinput_validator')
+					))
+						->setAttribute('placeholder', _('regular expression'))
+						->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
+				])
+			])
+			->addItem([
+				(new CLabel(_('Enable confirmation'), 'enable_confirmation')),
+				new CFormField(
+					(new CCheckBox('enable_confirmation'))->setChecked($data['enable_confirmation'])
+				)
+			])
+			->addItem([
+				(new CLabel(_('Confirmation text'), 'confirmation')),
+				new CFormField([
+					(new CTextBox(
+						'confirmation',
+						$data['confirmation'],
+						false,
+						DB::getFieldLength('scripts', 'confirmation')
+					))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH),
+					NBSP(),
+					(new CButton('test_confirmation', _('Test confirmation')))->addClass(ZBX_STYLE_BTN_GREY)
+				])
+			])
 	);
 
 if ($data['scriptid'] === null) {
@@ -408,8 +429,7 @@ if ($data['scriptid'] === null) {
 			'action' => 'script_edit_popup.submit();'
 		]
 	];
-}
-else {
+} else {
 	$buttons = [
 		[
 			'title' => _('Update'),
@@ -419,10 +439,11 @@ else {
 		],
 		[
 			'title' => _('Clone'),
-			'class' => ZBX_STYLE_BTN_ALT, 'js-clone',
+			'class' => ZBX_STYLE_BTN_ALT,
+			'js-clone',
 			'keepOpen' => true,
 			'isSubmit' => false,
-			'action' => 'script_edit_popup.clone('.json_encode([
+			'action' => 'script_edit_popup.clone(' . json_encode([
 				'title' => _('New script'),
 				'buttons' => [
 					[
@@ -439,7 +460,7 @@ else {
 						'action' => ''
 					]
 				]
-			]).');'
+			]) . ');'
 		],
 		[
 			'title' => _('Delete'),
@@ -456,9 +477,9 @@ $form
 	->addItem($form_grid)
 	->addItem($row_template)
 	->addItem(
-		(new CScriptTag('script_edit_popup.init('.json_encode([
+		(new CScriptTag('script_edit_popup.init(' . json_encode([
 			'script' => $data
-		]).');'))->setOnDocumentReady()
+		]) . ');'))->setOnDocumentReady()
 	)
 	->addStyle('display: none;');
 
@@ -467,7 +488,7 @@ $output = [
 	'doc_url' => CDocHelper::getUrl(CDocHelper::ALERTS_SCRIPT_EDIT),
 	'body' => $form->toString(),
 	'buttons' => $buttons,
-	'script_inline' => getPagePostJs().$this->readJsFile('administration.script.edit.js.php')
+	'script_inline' => getPagePostJs() . $this->readJsFile('administration.script.edit.js.php')
 ];
 
 if ($data['user']['debug_mode'] == GROUP_DEBUG_MODE_ENABLED) {

@@ -14,10 +14,10 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../behaviors/CTagBehavior.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../behaviors/CTagBehavior.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 use Facebook\WebDriver\WebDriverBy;
 
@@ -26,14 +26,16 @@ use Facebook\WebDriver\WebDriverBy;
  *
  * @backup triggers
  */
-class testPageTriggers extends CLegacyWebTest {
+class testPageTriggers extends CLegacyWebTest
+{
 
 	/**
 	 * Attach TableBehavior, TagBehavior and MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CTableBehavior::class,
 			CTagBehavior::class,
@@ -45,15 +47,17 @@ class testPageTriggers extends CLegacyWebTest {
 
 	private $selector = 'xpath://form[@name="trigger_form"]/table[contains(@class, "list-table")]';
 
-	public static function data() {
+	public static function data()
+	{
 		return CDBHelper::getDataProvider(
-			'SELECT hostid,status'.
-			' FROM hosts'.
-			' WHERE host LIKE \'%-layout-test%\''
+			'SELECT hostid,status' .
+				' FROM hosts' .
+				' WHERE host LIKE \'%-layout-test%\''
 		);
 	}
 
-	public static function prepareTriggerData() {
+	public static function prepareTriggerData()
+	{
 		CDataHelper::call('trigger.create', [
 			[
 				'description' => 'Multiple   spaces   in trigger name',
@@ -66,9 +70,10 @@ class testPageTriggers extends CLegacyWebTest {
 	/**
 	 * @dataProvider data
 	 */
-	public function testPageTriggers_CheckLayout($data) {
+	public function testPageTriggers_CheckLayout($data)
+	{
 		$context = ($data['status'] === '3') ? '&context=template' : '&context=host';
-		$this->zbxTestLogin('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]='.$data['hostid'].$context);
+		$this->zbxTestLogin('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]=' . $data['hostid'] . $context);
 		$this->zbxTestCheckTitle('Configuration of triggers');
 		$this->zbxTestCheckHeader('Triggers');
 
@@ -87,8 +92,17 @@ class testPageTriggers extends CLegacyWebTest {
 
 			// Check the filter options text.
 			$labels = [
-				'Host groups', 'Hosts', 'Name', 'Severity', 'State', 'Status', 'Value', 'Tags', 'Inherited',
-				'Discovered', 'With dependencies'
+				'Host groups',
+				'Hosts',
+				'Name',
+				'Severity',
+				'State',
+				'Status',
+				'Value',
+				'Tags',
+				'Inherited',
+				'Discovered',
+				'With dependencies'
 			];
 		}
 
@@ -99,17 +113,25 @@ class testPageTriggers extends CLegacyWebTest {
 
 			// Check the filter options text.
 			$labels = [
-				'Template groups', 'Templates', 'Name', 'Severity', 'Status', 'Tags', 'Inherited', 'With dependencies'
+				'Template groups',
+				'Templates',
+				'Name',
+				'Severity',
+				'Status',
+				'Tags',
+				'Inherited',
+				'With dependencies'
 			];
 		}
 		foreach ($labels as $label) {
-			$this->zbxTestAssertElementPresentXpath('//label[text()="'.$label.'"]');
+			$this->zbxTestAssertElementPresentXpath('//label[text()="' . $label . '"]');
 		}
 		// TODO someday should check that interval is not shown for trapper items, trends not shown for non-numeric items etc.
 		$this->zbxTestTextPresent('Enable', 'Disable', 'Mass update', 'Copy', 'Delete');
 	}
 
-	public static function getTagsFilterData() {
+	public static function getTagsFilterData()
+	{
 		return [
 			[
 				[
@@ -457,8 +479,9 @@ class testPageTriggers extends CLegacyWebTest {
 	/**
 	 * @dataProvider getTagsFilterData
 	 */
-	public function testPageTriggers_TagsFilter($data) {
-		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]='.$this->hostid.'&context=host');
+	public function testPageTriggers_TagsFilter($data)
+	{
+		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]=' . $this->hostid . '&context=host');
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
 		$form->fill(['id:filter_evaltype' => $data['tag_options']['type']]);
 		$table = $this->getTable();
@@ -469,7 +492,8 @@ class testPageTriggers extends CLegacyWebTest {
 		$this->assertTableDataColumn(CTestArrayHelper::get($data, 'result', []), 'Name', $this->selector);
 	}
 
-	public function testPageTriggers_ResetTagsFilter() {
+	public function testPageTriggers_ResetTagsFilter()
+	{
 		$result = [
 			'Fifth trigger for tag filtering (no tags)',
 			'First trigger for tag filtering',
@@ -478,7 +502,7 @@ class testPageTriggers extends CLegacyWebTest {
 			'Third trigger for tag filtering'
 		];
 
-		$this->zbxTestLogin('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]='.$this->hostid.'&context=host');
+		$this->zbxTestLogin('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]=' . $this->hostid . '&context=host');
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 		$table = $this->getTable();
 		$form->getField('Tags')->query('id:filter_tags_0_tag')->one()->fill('Tag1234');
@@ -492,7 +516,8 @@ class testPageTriggers extends CLegacyWebTest {
 		$this->assertTableDataColumn($result, 'Name', $this->selector);
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// With all severity options. All triggers
 			[
@@ -646,7 +671,7 @@ class testPageTriggers extends CLegacyWebTest {
 			[
 				[
 					'filter_options' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Name' => 'Inheritance trigger',
 						'Severity' => 'Not classified',
 						'State' => 'Unknown',
@@ -671,7 +696,7 @@ class testPageTriggers extends CLegacyWebTest {
 			[
 				[
 					'filter_options' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					]
 				]
 			],
@@ -722,7 +747,8 @@ class testPageTriggers extends CLegacyWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageTriggers_Filter($data) {
+	public function testPageTriggers_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]=99062&context=host');
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 		$table = $this->getTable();
@@ -739,7 +765,8 @@ class testPageTriggers extends CLegacyWebTest {
 		$this->assertTableDataColumn(CTestArrayHelper::get($data, 'result', []), 'Name', $this->selector);
 	}
 
-	public static function getHostAndGroupData() {
+	public static function getHostAndGroupData()
+	{
 		return [
 			// One host group without host.
 			[
@@ -775,7 +802,7 @@ class testPageTriggers extends CLegacyWebTest {
 			[
 				[
 					'filter_options' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Severity' => 'Average',
 						'Name' => 'tag'
 					],
@@ -803,7 +830,7 @@ class testPageTriggers extends CLegacyWebTest {
 						'Hosts' => [
 							[
 								'values' => ['Host for trigger tags filtering'],
-								'context' => 'Zabbix servers'
+								'context' => 'Advantal servers'
 							],
 							[
 								'values' => ['Host for triggers filtering'],
@@ -827,11 +854,11 @@ class testPageTriggers extends CLegacyWebTest {
 			[
 				[
 					'filter_options' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Hosts' => [
 							[
 								'values' => ['Host for trigger tags filtering'],
-								'context' => 'Zabbix servers'
+								'context' => 'Advantal servers'
 							],
 							[
 								'values' => ['Host for triggers filtering'],
@@ -889,7 +916,8 @@ class testPageTriggers extends CLegacyWebTest {
 	/**
 	 * @dataProvider getHostAndGroupData
 	 */
-	public function testPageTriggers_FilterHostAndGroups($data) {
+	public function testPageTriggers_FilterHostAndGroups($data)
+	{
 		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]=99062&context=host');
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 		$table = $this->getTable();
@@ -917,10 +945,11 @@ class testPageTriggers extends CLegacyWebTest {
 	/**
 	 * @dataProvider data
 	 */
-	public function testPageTriggers_Delete($data) {
+	public function testPageTriggers_Delete($data)
+	{
 		$context = ((int) $data['status'] === HOST_STATUS_TEMPLATE) ? '&context=template' : '&context=host';
-		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]='.$data['hostid'].$context)
-				->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&filter_hostids[0]=' . $data['hostid'] . $context)
+			->waitUntilReady();
 
 		$table_rows_count = $this->query('class:list-table')->asTable()->one()->getRows()->count();
 		$this->assertTableStats($table_rows_count);

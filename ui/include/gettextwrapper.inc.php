@@ -26,7 +26,8 @@ if (!function_exists('_')) {
 	 *
 	 * @return string
 	 */
-	function _($string) {
+	function _($string)
+	{
 		return $string;
 	}
 }
@@ -43,7 +44,8 @@ if (!function_exists('ngettext')) {
 	 *
 	 * @return string
 	 */
-	function ngettext($string1, $string2, $n) {
+	function ngettext($string1, $string2, $n)
+	{
 		return ($n == 1) ? $string1 : $string2;
 	}
 }
@@ -58,8 +60,9 @@ if (!function_exists('ngettext')) {
  *
  * @return string
  */
-function pgettext($context, $msgId) {
-	$contextString = $context."\004".$msgId;
+function pgettext($context, $msgId)
+{
+	$contextString = $context . "\004" . $msgId;
 	$translation = _($contextString);
 
 	return ($translation == $contextString) ? $msgId : $translation;
@@ -77,9 +80,10 @@ function pgettext($context, $msgId) {
  *
  * @return string
  */
-function npgettext($context, $msgId, $msgIdPlural, $num) {
-	$contextString = $context."\004".$msgId;
-	$contextStringp = $context."\004".$msgIdPlural;
+function npgettext($context, $msgId, $msgIdPlural, $num)
+{
+	$contextString = $context . "\004" . $msgId;
+	$contextStringp = $context . "\004" . $msgIdPlural;
 	return ngettext($contextString, $contextStringp, $num);
 }
 
@@ -92,7 +96,8 @@ function npgettext($context, $msgId, $msgIdPlural, $num) {
  *
  * @return string
  */
-function _s($string) {
+function _s($string)
+{
 	$arguments = array_slice(func_get_args(), 1);
 
 	return _params(_($string), $arguments);
@@ -104,8 +109,8 @@ function _s($string) {
  * Supports unlimited parameters; placeholders must be defined as %1$s, %2$s etc.
  *
  * Examples:
- * _n('%2$s item on host %1$s', '%2$s items on host %1$s', 'Zabbix server', 1) // 1 item on host Zabbix server
- * _n('%2$s item on host %1$s', '%2$s items on host %1$s', 'Zabbix server', 2) // 2 items on host Zabbix server
+ * _n('%2$s item on host %1$s', '%2$s items on host %1$s', 'Advantal server', 1) // 1 item on host Advantal server
+ * _n('%2$s item on host %1$s', '%2$s items on host %1$s', 'Advantal server', 2) // 2 items on host Advantal server
  *
  * @param string $string1		singular string
  * @param string $string2		plural string
@@ -114,7 +119,8 @@ function _s($string) {
  *
  * @return string
  */
-function _n($string1, $string2) {
+function _n($string1, $string2)
+{
 	$arguments = array_slice(func_get_args(), 2);
 
 	return _params(ngettext($string1, $string2, end($arguments)), $arguments);
@@ -132,7 +138,8 @@ function _n($string1, $string2) {
  *
  * @return string
  */
-function _x($message, $context) {
+function _x($message, $context)
+{
 	return ($context == '')
 		? _($message)
 		: pgettext($context, $message);
@@ -152,7 +159,8 @@ function _x($message, $context) {
  *
  * @return string
  */
-function _xs($message, $context) {
+function _xs($message, $context)
+{
 	$arguments = array_slice(func_get_args(), 2);
 
 	return ($context == '')
@@ -177,7 +185,8 @@ function _xs($message, $context) {
  *
  * @return string
  */
-function _xn($message, $messagePlural, $num, $context) {
+function _xn($message, $messagePlural, $num, $context)
+{
 	$arguments = array_slice(func_get_args(), 4);
 	array_unshift($arguments, $num);
 
@@ -192,7 +201,8 @@ function _xn($message, $messagePlural, $num, $context) {
  *
  * @return string
  */
-function _params($format, array $arguments) {
+function _params($format, array $arguments)
+{
 	return vsprintf($format, $arguments);
 }
 
@@ -206,7 +216,8 @@ function _params($format, array $arguments) {
  *
  * @return bool    Whether locale could be switched.
  */
-function setupLocale(string $language, ?string &$error = null): bool {
+function setupLocale(string $language, ?string &$error = null): bool
+{
 	$locale_variants = zbx_locale_variants($language);
 	$locale_set = false;
 
@@ -237,8 +248,8 @@ function setupLocale(string $language, ?string &$error = null): bool {
 	setlocale(LC_CTYPE, 'C');
 
 	if (!$locale_set) {
-		$error = 'Locale for language "'.$language.'" is not found on the web server. Tried to set: '.
-			implode(', ', $locale_variants).'. Unable to translate Zabbix interface.';
+		$error = 'Locale for language "' . $language . '" is not found on the web server. Tried to set: ' .
+			implode(', ', $locale_variants) . '. Unable to translate Zabbix interface.';
 	}
 
 	return ($error === null);

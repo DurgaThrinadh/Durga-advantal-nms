@@ -13,24 +13,26 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
 
 /**
  * @dataSource ScheduledReports
  *
  * @backup report
  */
-class testPageScheduledReport extends CWebTest {
+class testPageScheduledReport extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -42,7 +44,8 @@ class testPageScheduledReport extends CWebTest {
 	 *
 	 * @return array
 	 */
-	private function getAllReportNames() {
+	private function getAllReportNames()
+	{
 		$result = [];
 
 		$names = CDBHelper::getAll('SELECT name FROM report');
@@ -56,16 +59,17 @@ class testPageScheduledReport extends CWebTest {
 		return $result;
 	}
 
-	public static function getDashboardData() {
+	public static function getDashboardData()
+	{
 		return [
 			[
 				[
-					'name' => 'Zabbix server'
+					'name' => 'Advantal server'
 				]
 			],
 			[
 				[
-					'name' => 'Zabbix server health',
+					'name' => 'Advantal server health',
 					'no_reports' => true
 				]
 			]
@@ -79,16 +83,16 @@ class testPageScheduledReport extends CWebTest {
 	 *
 	 * @backupOnce profiles
 	 */
-	public function testPageScheduledReport_Dashboard($data) {
-		$dashboardid = CDBHelper::getValue('SELECT dashboardid FROM dashboard WHERE name='.zbx_dbstr($data['name']));
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.$dashboardid)->waitUntilReady();
+	public function testPageScheduledReport_Dashboard($data)
+	{
+		$dashboardid = CDBHelper::getValue('SELECT dashboardid FROM dashboard WHERE name=' . zbx_dbstr($data['name']));
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . $dashboardid)->waitUntilReady();
 		$this->query('id:dashboard-actions')->one()->waitUntilClickable()->click();
 		$popup = CPopupMenuElement::find()->waitUntilVisible()->one();
 
 		if (array_key_exists('no_reports', $data)) {
 			$this->assertFalse($popup->getItem('View related reports')->isEnabled());
-		}
-		else {
+		} else {
 			$popup->select('View related reports');
 			$overlay = COverlayDialogElement::find()->waitUntilReady()->one();
 			$this->page->removeFocus();
@@ -98,10 +102,11 @@ class testPageScheduledReport extends CWebTest {
 		}
 	}
 
-	public function testPageScheduledReport_Layout() {
+	public function testPageScheduledReport_Layout()
+	{
 		$expired_report = [
 			'Name' => 'Report for filter - expired',
-			'Owner' => 'Admin (Zabbix Administrator)',
+			'Owner' => 'Admin (Advantal Administrator)',
 			'Repeats' => 'Yearly',
 			'Period' => 'Previous year',
 			'Last sent' => 'Never',
@@ -112,7 +117,7 @@ class testPageScheduledReport extends CWebTest {
 		$this->page->assertHeader('Scheduled reports');
 
 		$this->assertEquals(3, $this->query('button', ['Enable', 'Disable', 'Delete'])->all()
-				->filter(new CElementFilter(CElementFilter::ATTRIBUTES_PRESENT, ['disabled']))->count());
+			->filter(new CElementFilter(CElementFilter::ATTRIBUTES_PRESENT, ['disabled']))->count());
 
 		// Check displaying and hiding the filter.
 		$filter = CFilterElement::find()->one();
@@ -135,10 +140,10 @@ class testPageScheduledReport extends CWebTest {
 		$selected_count = $this->query('id:selected_count')->one();
 		$this->assertEquals('0 selected', $selected_count->getText());
 		$this->selectTableRows();
-		$this->assertEquals($reports.' selected', $selected_count->getText());
+		$this->assertEquals($reports . ' selected', $selected_count->getText());
 		// Check that buttons became enabled.
 		$this->assertEquals(3, $this->query('button', ['Enable', 'Disable', 'Delete'])->all()
-				->filter(new CElementFilter(CElementFilter::ATTRIBUTES_NOT_PRESENT, ['disabled']))->count());
+			->filter(new CElementFilter(CElementFilter::ATTRIBUTES_NOT_PRESENT, ['disabled']))->count());
 
 		// Reset filter and check that reports unselected.
 		$filter_form->query('button:Reset')->one()->click();
@@ -167,7 +172,8 @@ class testPageScheduledReport extends CWebTest {
 		$this->assertTrue($filter->isExpanded());
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// Retrieve only Created by me reports.
 			[
@@ -296,7 +302,8 @@ class testPageScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageScheduledReport_Filter($data) {
+	public function testPageScheduledReport_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=scheduledreport.list');
 		$table = $this->getTable();
 		$form = $this->query('name:zbx_filter')->asForm()->one();
@@ -313,7 +320,8 @@ class testPageScheduledReport extends CWebTest {
 		$this->assertTableStats(count($this->getAllReportNames()));
 	}
 
-	public static function getStatusData() {
+	public static function getStatusData()
+	{
 		return [
 			// Enable/disable single report by clicking on table column "Status".
 			[
@@ -384,7 +392,8 @@ class testPageScheduledReport extends CWebTest {
 	 *
 	 * @dataProvider getStatusData
 	 */
-	public function testPageScheduledReport_Status($data) {
+	public function testPageScheduledReport_Status($data)
+	{
 		// The status can't be "enabled" for expired reports.
 		$expired = [
 			'Report for filter - expired',
@@ -400,7 +409,7 @@ class testPageScheduledReport extends CWebTest {
 
 			// Prepare data to check status after changes.
 			$status = (in_array($data['Status'], ['Enabled', 'Expired'])) ? 'disabled' : 'enabled';
-			$message_title = 'Scheduled report '.$status;
+			$message_title = 'Scheduled report ' . $status;
 			$column_status = ucfirst($status);
 			$db_status = (in_array($data['Status'], ['Enabled', 'Expired'])) ? 1 : 0;
 		}
@@ -413,8 +422,8 @@ class testPageScheduledReport extends CWebTest {
 
 			// Prepare data to check status after changes.
 			$plural = (array_key_exists('Name', $data) && !is_array($data['Name'])) ? 'report' : 'reports';
-			$message_title = 'Scheduled '.$plural.' '.lcfirst($data['button']).'d';
-			$column_status = $data['button'].'d';
+			$message_title = 'Scheduled ' . $plural . ' ' . lcfirst($data['button']) . 'd';
+			$column_status = $data['button'] . 'd';
 			$db_status = ($data['button'] === 'Enable') ? 0 : 1;
 		}
 
@@ -437,22 +446,23 @@ class testPageScheduledReport extends CWebTest {
 		}
 		foreach ($names as $name) {
 			$name = ($name === 'Report for filter - disabled') ? 'Report for filter -   disabled' : $name;
-			$this->assertEquals($db_status, CDBHelper::getValue('SELECT status FROM report WHERE name='.zbx_dbstr($name)));
+			$this->assertEquals($db_status, CDBHelper::getValue('SELECT status FROM report WHERE name=' . zbx_dbstr($name)));
 		}
 	}
 
 	/**
 	 * Test reports sorting by Name column.
 	 */
-	public function testPageScheduledReport_Sorting() {
+	public function testPageScheduledReport_Sorting()
+	{
 		$this->page->login()->open('zabbix.php?action=scheduledreport.list');
 		$table = $this->query('class:list-table')->asTable()->one();
 		$header = $table->query('xpath:.//a[text()="Name"]')->one();
 
 		// in the HTML structure the names have several spaces, they need to be removed.
-		$names = preg_replace('/\s+/', ' ',$this->getAllReportNames());
+		$names = preg_replace('/\s+/', ' ', $this->getAllReportNames());
 
-		foreach(['asc', 'desc'] as $sorting) {
+		foreach (['asc', 'desc'] as $sorting) {
 			$expected = ($sorting === 'asc') ? $names : array_reverse($names);
 			$values = [];
 
@@ -464,7 +474,8 @@ class testPageScheduledReport extends CWebTest {
 		}
 	}
 
-	public static function getDeleteData() {
+	public static function getDeleteData()
+	{
 		return [
 			// Delete single, delete multiple and delete all reports.
 			[
@@ -491,7 +502,8 @@ class testPageScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testPageScheduledReport_Delete($data) {
+	public function testPageScheduledReport_Delete($data)
+	{
 		$reports = CDBHelper::getCount('SELECT reportid FROM report');
 		$this->page->login()->open('zabbix.php?action=scheduledreport.list');
 		$this->page->waitUntilReady();
@@ -505,8 +517,7 @@ class testPageScheduledReport extends CWebTest {
 		if (array_key_exists('delete_all', $data)) {
 			$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM report'));
 			$this->assertTableStats(0);
-		}
-		else {
+		} else {
 			if (!is_array($data['Name'])) {
 				$data['Name'] = [$data['Name']];
 			}
@@ -514,7 +525,7 @@ class testPageScheduledReport extends CWebTest {
 			$this->assertTableStats($remaining);
 
 			foreach ($data['Name'] as $name) {
-				$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM report WHERE name='.zbx_dbstr($name)));
+				$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM report WHERE name=' . zbx_dbstr($name)));
 			}
 		}
 	}

@@ -14,15 +14,17 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
 
-class testSystemInformation extends CWebTest {
+class testSystemInformation extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and CTableBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -41,7 +43,8 @@ class testSystemInformation extends CWebTest {
 	/**
 	 * Function inserts HA cluster data into ha_node table.
 	 */
-	public static function prepareHANodeData() {
+	public static function prepareHANodeData()
+	{
 		global $DB;
 		self::$active_lastaccess = time();
 		self::$standby_lastaccess = self::$active_lastaccess - 1;
@@ -88,32 +91,34 @@ class testSystemInformation extends CWebTest {
 		];
 
 		// Update Zabbix frontend config to make sure that the address of the active node is shown correctly in tests.
-		$file_path = __DIR__.'/../../../conf/zabbix.conf.php';
-		$pattern = array('/[$]ZBX_SERVER/','/[$]ZBX_SERVER_PORT/');
-		$replace = array('// $ZBX_SERVER','// $ZBX_SERVER_PORT');
+		$file_path = __DIR__ . '/../../../conf/zabbix.conf.php';
+		$pattern = array('/[$]ZBX_SERVER/', '/[$]ZBX_SERVER_PORT/');
+		$replace = array('// $ZBX_SERVER', '// $ZBX_SERVER_PORT');
 		$content = preg_replace($pattern, $replace, file_get_contents($file_path), 1);
 		file_put_contents($file_path, $content);
 
 		// Insert HA cluster data into ha_node table.
 		foreach ($nodes as $node) {
-			DBexecute('INSERT INTO ha_node (ha_nodeid, name, address, port, lastaccess, status, ha_sessionid) '.
-					'VALUES ('.zbx_dbstr($node['ha_nodeid']).', '.zbx_dbstr($node['name']).', '.zbx_dbstr($node['address']).
-					', '.$node['port'].', '.$node['lastaccess'].', '.$node['status'].', '.zbx_dbstr($node['ha_sessionid']).');'
+			DBexecute(
+				'INSERT INTO ha_node (ha_nodeid, name, address, port, lastaccess, status, ha_sessionid) ' .
+					'VALUES (' . zbx_dbstr($node['ha_nodeid']) . ', ' . zbx_dbstr($node['name']) . ', ' . zbx_dbstr($node['address']) .
+					', ' . $node['port'] . ', ' . $node['lastaccess'] . ', ' . $node['status'] . ', ' . zbx_dbstr($node['ha_sessionid']) . ');'
 			);
 		}
 
-		// Get the time when config is updated - it is needed to know how long to wait until update of Zabbix server status.
+		// Get the time when config is updated - it is needed to know how long to wait until update of Advantal server status.
 		self::$update_timestamp = time();
 	}
 
-	public function prepareUsersData() {
+	public function prepareUsersData()
+	{
 		CDataHelper::call('user.create', [
 			[
 				'username' => 'admin for system information test',
 				'passwd' => 'z@$$ix!#%1',
 				'roleid' => USER_TYPE_ZABBIX_ADMIN,
 				'usrgrps' => [
-					['usrgrpid' => 7] // Zabbix administrators.
+					['usrgrpid' => 7] // Advantal Administrators.
 				]
 			],
 			[
@@ -121,7 +126,7 @@ class testSystemInformation extends CWebTest {
 				'passwd' => 'z@$$ix!#%2',
 				'roleid' => USER_TYPE_ZABBIX_USER,
 				'usrgrps' => [
-					['usrgrpid' => 7] // Zabbix administrators.
+					['usrgrpid' => 7] // Advantal Administrators.
 				]
 			]
 		]);
@@ -138,8 +143,9 @@ class testSystemInformation extends CWebTest {
 	}
 
 	// Change failover delay not to wait too long for server to update its status.
-	public static function changeFailoverDelay() {
-		DBexecute('UPDATE config SET ha_failover_delay='.self::FAILOVER_DELAY);
+	public static function changeFailoverDelay()
+	{
+		DBexecute('UPDATE config SET ha_failover_delay=' . self::FAILOVER_DELAY);
 	}
 
 	/**
@@ -147,10 +153,11 @@ class testSystemInformation extends CWebTest {
 	 *
 	 * @param integer $dashboardid	id of the dashboard that the widgets are located in.
 	 */
-	public function assertEnabledHACluster($dashboardid = null) {
+	public function assertEnabledHACluster($dashboardid = null)
+	{
 		global $DB;
 		self::$skip_fields = [];
-		$url = (!$dashboardid) ? 'zabbix.php?action=report.status' : 'zabbix.php?action=dashboard.view&dashboardid='.$dashboardid;
+		$url = (!$dashboardid) ? 'zabbix.php?action=report.status' : 'zabbix.php?action=dashboard.view&dashboardid=' . $dashboardid;
 
 		// Wait for frontend to get the new config from updated zabbix.conf.php file.
 		sleep((int) ini_get('opcache.revalidate_freq') + 1);
@@ -160,9 +167,8 @@ class testSystemInformation extends CWebTest {
 
 		if (!$dashboardid) {
 			$nodes_table = $this->query('xpath://table[@class="list-table sticky-header sticky-footer"]')->asTable()->one();
-			$server_address = $this->query('xpath://th[text()="Zabbix server is running"]/../td[2]')->one();
-		}
-		else {
+			$server_address = $this->query('xpath://th[text()="Advantal server is running"]/../td[2]')->one();
+		} else {
 			$dashboard = CDashboardElement::find()->waitUntilReady()->one();
 			$nodes_table = $dashboard->getWidget('High availability nodes view')->query('xpath:.//table')->asTable()->one();
 			$server_address = $dashboard->getWidget('System stats view')->query('xpath:.//tbody/tr[1]/td[2]')->one();
@@ -198,24 +204,24 @@ class testSystemInformation extends CWebTest {
 			}
 
 			$last_actual = $last_seen->getText();
-			$this->assertContains($last_actual, $last_expected, $last_actual.' not in ['.implode(', ', $last_expected).']');
+			$this->assertContains($last_actual, $last_expected, $last_actual . ' not in [' . implode(', ', $last_expected) . ']');
 
-			// Check Zabbix server address and port for each record in the HA cluster nodes table.
+			// Check Advantal server address and port for each record in the HA cluster nodes table.
 			if ($name === 'Active node') {
 				self::$skip_fields[] = $row->getColumn('Address');
-				$this->assertEquals($DB['SERVER'].':0', $row->getColumn('Address')->getText());
+				$this->assertEquals($DB['SERVER'] . ':0', $row->getColumn('Address')->getText());
 			}
 		}
 
 		// Check fields that are not checked in screenshot with enabled HA.
 		$data = [
 			[
-				'Parameter' => 'Zabbix server is running',
+				'Parameter' => 'Advantal server is running',
 				'Value' => 'Yes',
-				'Details' => $DB['SERVER'].':0'
+				'Details' => $DB['SERVER'] . ':0'
 			],
 			[
-				'Parameter' => 'Zabbix frontend version',
+				'Parameter' => 'Advantal frontend version',
 				'Value' => ZABBIX_VERSION,
 				'Details' => ''
 			]
@@ -223,7 +229,7 @@ class testSystemInformation extends CWebTest {
 		$this->assertTableHasData($data);
 
 		/**
-		 * Hide the active Zabbix server address in widget that is working in System stats mode or in the part
+		 * Hide the active Advantal server address in widget that is working in System stats mode or in the part
 		 * of the report that displays the overall system statistics.
 		 */
 		self::$skip_fields[] = $server_address;
@@ -234,15 +240,16 @@ class testSystemInformation extends CWebTest {
 		}
 
 		// Remove zabbix version due to unstable screenshot which depends on column width with different version length.
-		CElementQuery::getDriver()->executeScript("arguments[0].textContent = '';",
-				[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
+		CElementQuery::getDriver()->executeScript(
+			"arguments[0].textContent = '';",
+			[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
 		);
 
 		// Check and hide the text of messages, because they contain ip addresses of the current host.
-		$error_text = "Connection to Zabbix server \"".$DB['SERVER'].":0\" failed. Possible reasons:\n".
-				"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-				"2. Incorrect DNS server configuration.\n".
-				"Failed to parse address \"".$DB['SERVER']."\"";
+		$error_text = "Connection to Advantal server \"" . $DB['SERVER'] . ":0\" failed. Possible reasons:\n" .
+			"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+			"2. Incorrect DNS server configuration.\n" .
+			"Failed to parse address \"" . $DB['SERVER'] . "\"";
 		$messages = CMessageElement::find()->all();
 		foreach ($messages as $message) {
 			$this->assertTrue($message->hasLine($error_text));
@@ -251,26 +258,27 @@ class testSystemInformation extends CWebTest {
 	}
 
 	/**
-	 * Function checks that Zabbix server status is updated after failover delay passes and frontend config is re-validated.
+	 * Function checks that Advantal server status is updated after failover delay passes and frontend config is re-validated.
 	 *
 	 * @param integer $dashboardid	id of the dashboard that the widgets are located in.
 	 */
-	public function assertServerStatusAfterFailover($dashboardid = null) {
-		$url = (!$dashboardid) ? 'zabbix.php?action=report.status' : 'zabbix.php?action=dashboard.view&dashboardid='.$dashboardid;
+	public function assertServerStatusAfterFailover($dashboardid = null)
+	{
+		$url = (!$dashboardid) ? 'zabbix.php?action=report.status' : 'zabbix.php?action=dashboard.view&dashboardid=' . $dashboardid;
 		$this->page->login()->open($url)->waitUntilReady();
 		if ($dashboardid !== null) {
 			CDashboardElement::find()->waitUntilReady();
 		}
 		$table = $this->query('xpath://table[@class="list-table sticky-header"]')->asTable()->waitUntilVisible()->one();
 
-		// Check that before failover delay passes frontend thinks that Zabbix server is running.
-		$this->assertEquals('Yes', $table->findRow('Parameter', 'Zabbix server is running')->getColumn('Value')->getText());
+		// Check that before failover delay passes frontend thinks that Advantal server is running.
+		$this->assertEquals('Yes', $table->findRow('Parameter', 'Advantal server is running')->getColumn('Value')->getText());
 
 		// Wait for failover delay to pass.
 		sleep(self::$update_timestamp + self::FAILOVER_DELAY - time());
 
-		// Check that after failover delay passes frontend re-validates Zabbix server status.
+		// Check that after failover delay passes frontend re-validates Advantal server status.
 		$this->page->refresh();
-		$this->assertEquals('No', $table->findRow('Parameter', 'Zabbix server is running')->getColumn('Value')->getText());
+		$this->assertEquals('No', $table->findRow('Parameter', 'Advantal server is running')->getColumn('Value')->getText());
 	}
 }

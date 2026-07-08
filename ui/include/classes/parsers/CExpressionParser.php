@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,7 +16,8 @@
 **/
 
 
-class CExpressionParser extends CParser {
+class CExpressionParser extends CParser
+{
 
 	// For parsing of expressions.
 	private const STATE_AFTER_OPEN_BRACE = 1;
@@ -81,11 +84,14 @@ class CExpressionParser extends CParser {
 	/**
 	 * @param array $options
 	 */
-	public function __construct(array $options = []) {
+	public function __construct(array $options = [])
+	{
 		$this->options = $options + $this->options;
 
-		if ($this->options['collapsed_expression']
-				&& ($this->options['host_macro'] || $this->options['host_macro_n'])) {
+		if (
+			$this->options['collapsed_expression']
+			&& ($this->options['host_macro'] || $this->options['host_macro_n'])
+		) {
 			exit('Incompatible options.');
 		}
 	}
@@ -94,14 +100,15 @@ class CExpressionParser extends CParser {
 	 * Parse an expression and set public variables $this->error, $this->result
 	 *
 	 * Examples:
-	 *   last(/Zabbix server/agent.ping,0) = 1 and {TRIGGER.VALUE} = {$MACRO}
+	 *   last(/Advantal server/agent.ping,0) = 1 and {TRIGGER.VALUE} = {$MACRO}
 	 *
 	 * @param string $source
 	 * @param int    $pos
 	 *
 	 * @return int
 	 */
-	public function parse($source, $pos = 0) {
+	public function parse($source, $pos = 0)
+	{
 		// initializing local variables
 		$this->error = '';
 		$this->match = '';
@@ -113,7 +120,7 @@ class CExpressionParser extends CParser {
 
 		if (self::parseExpression($source, $p, $tokens, $this->options, $parsed_pos)) {
 			// Including trailing whitespaces as part of the expression.
-			if (preg_match('/^['.self::WHITESPACES.']+$/', substr($source, $p), $matches)) {
+			if (preg_match('/^[' . self::WHITESPACES . ']+$/', substr($source, $p), $matches)) {
 				$p += strlen($matches[0]);
 			}
 			$len = $p - $pos;
@@ -151,8 +158,14 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private static function parseExpression(string $source, int &$pos, array &$tokens, array $options,
-			?int &$parsed_pos = null, int $depth = 0): bool {
+	private static function parseExpression(
+		string $source,
+		int &$pos,
+		array &$tokens,
+		array $options,
+		?int &$parsed_pos = null,
+		int $depth = 0
+	): bool {
 		$binary_operator_parser = new CSetParser(['<', '>', '<=', '>=', '+', '-', '/', '*', '=', '<>']);
 		$logical_operator_parser = new CSetParser(['and', 'or']);
 
@@ -201,16 +214,14 @@ class CExpressionParser extends CParser {
 						default:
 							if (self::parseNot($source, $p, $_tokens)) {
 								$state = self::STATE_AFTER_NOT_OPERATOR;
-							}
-							elseif (self::parseConstant($source, $p, $_tokens, $options, $depth)) {
+							} elseif (self::parseConstant($source, $p, $_tokens, $options, $depth)) {
 								$state = self::STATE_AFTER_CONSTANT;
 
 								if ($level == 0) {
 									$pos = $p + 1;
 									$tokens = $_tokens;
 								}
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -252,8 +263,7 @@ class CExpressionParser extends CParser {
 
 							if ($after_space && self::parseNot($source, $p, $_tokens)) {
 								$state = self::STATE_AFTER_NOT_OPERATOR;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -292,16 +302,14 @@ class CExpressionParser extends CParser {
 
 							if (self::parseNot($source, $p, $_tokens)) {
 								$state = self::STATE_AFTER_NOT_OPERATOR;
-							}
-							elseif (self::parseConstant($source, $p, $_tokens, $options, $depth)) {
+							} elseif (self::parseConstant($source, $p, $_tokens, $options, $depth)) {
 								$state = self::STATE_AFTER_CONSTANT;
 
 								if ($level == 0) {
 									$pos = $p + 1;
 									$tokens = $_tokens;
 								}
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -328,14 +336,24 @@ class CExpressionParser extends CParser {
 							break;
 
 						default:
-							if (self::parseUsing($binary_operator_parser, $source, $p, $_tokens,
-									CExpressionParserResult::TOKEN_TYPE_OPERATOR)) {
+							if (self::parseUsing(
+								$binary_operator_parser,
+								$source,
+								$p,
+								$_tokens,
+								CExpressionParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_BINARY_OPERATOR;
 								break;
 							}
 
-							if (self::parseUsing($logical_operator_parser, $source, $p, $_tokens,
-									CExpressionParserResult::TOKEN_TYPE_OPERATOR)) {
+							if (self::parseUsing(
+								$logical_operator_parser,
+								$source,
+								$p,
+								$_tokens,
+								CExpressionParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_LOGICAL_OPERATOR;
 								break;
 							}
@@ -365,17 +383,26 @@ class CExpressionParser extends CParser {
 							break;
 
 						default:
-							if (self::parseUsing($binary_operator_parser, $source, $p, $_tokens,
-									CExpressionParserResult::TOKEN_TYPE_OPERATOR)) {
+							if (self::parseUsing(
+								$binary_operator_parser,
+								$source,
+								$p,
+								$_tokens,
+								CExpressionParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_BINARY_OPERATOR;
 								break;
 							}
 
-							if ($after_space && self::parseUsing($logical_operator_parser, $source, $p, $_tokens,
-									CExpressionParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($after_space && self::parseUsing(
+								$logical_operator_parser,
+								$source,
+								$p,
+								$_tokens,
+								CExpressionParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_LOGICAL_OPERATOR;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -419,8 +446,7 @@ class CExpressionParser extends CParser {
 									$pos = $p + 1;
 									$tokens = $_tokens;
 								}
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -447,8 +473,7 @@ class CExpressionParser extends CParser {
 									$pos = $p + 1;
 									$tokens = $_tokens;
 								}
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -473,9 +498,12 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool
 	 */
-	private static function parseNot(string $source, int &$pos, array &$tokens): bool {
-		if (substr($source, $pos, 3) !== 'not' || !isset($source[$pos + 3])
-				|| strpos(self::WHITESPACES.'(', $source[$pos + 3]) === false) {
+	private static function parseNot(string $source, int &$pos, array &$tokens): bool
+	{
+		if (
+			substr($source, $pos, 3) !== 'not' || !isset($source[$pos + 3])
+			|| strpos(self::WHITESPACES . '(', $source[$pos + 3]) === false
+		) {
 			return false;
 		}
 
@@ -502,8 +530,13 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool
 	 */
-	private static function parseUsing(CParser $parser, string $source, int &$pos, array &$tokens,
-			int $token_type): bool {
+	private static function parseUsing(
+		CParser $parser,
+		string $source,
+		int &$pos,
+		array &$tokens,
+		int $token_type
+	): bool {
 		if ($parser->parse($source, $pos) == CParser::PARSE_FAIL) {
 			return false;
 		}
@@ -539,30 +572,45 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private static function parseConstant(string $source, int &$pos, array &$tokens, array $options, int $depth): bool {
+	private static function parseConstant(string $source, int &$pos, array &$tokens, array $options, int $depth): bool
+	{
 		if (self::parseNumber($source, $pos, $tokens) || self::parseString($source, $pos, $tokens)) {
 			return true;
 		}
 
 		if (!$options['calculated']) {
-			if (self::parseUsing(new CMacroParser(['macros' => ['{TRIGGER.VALUE}']]), $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_MACRO)) {
+			if (self::parseUsing(
+				new CMacroParser(['macros' => ['{TRIGGER.VALUE}']]),
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_MACRO
+			)) {
 				return true;
 			}
 
-			if (self::parseUsing(new CMacroFunctionParser(['macros' => ['{TRIGGER.VALUE}']]), $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_MACRO)) {
+			if (self::parseUsing(
+				new CMacroFunctionParser(['macros' => ['{TRIGGER.VALUE}']]),
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_MACRO
+			)) {
 				return true;
 			}
 		}
 
 		if ($options['collapsed_expression']) {
-			if (self::parseUsing(new CFunctionIdParser, $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_FUNCTIONID_MACRO)) {
+			if (self::parseUsing(
+				new CFunctionIdParser,
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_FUNCTIONID_MACRO
+			)) {
 				return true;
 			}
-		}
-		elseif (self::parseHistFunction($source, $pos, $tokens, $options)) {
+		} elseif (self::parseHistFunction($source, $pos, $tokens, $options)) {
 			return true;
 		}
 
@@ -571,25 +619,45 @@ class CExpressionParser extends CParser {
 		}
 
 		if ($options['usermacros']) {
-			if (self::parseUsing(new CUserMacroParser, $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_USER_MACRO)) {
+			if (self::parseUsing(
+				new CUserMacroParser,
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_USER_MACRO
+			)) {
 				return true;
 			}
 
-			if (self::parseUsing(new CUserMacroFunctionParser, $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_USER_MACRO)) {
+			if (self::parseUsing(
+				new CUserMacroFunctionParser,
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_USER_MACRO
+			)) {
 				return true;
 			}
 		}
 
 		if ($options['lldmacros']) {
-			if (self::parseUsing(new CLLDMacroParser, $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_LLD_MACRO)) {
+			if (self::parseUsing(
+				new CLLDMacroParser,
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_LLD_MACRO
+			)) {
 				return true;
 			}
 
-			if (self::parseUsing(new CLLDMacroFunctionParser, $source, $pos, $tokens,
-					CExpressionParserResult::TOKEN_TYPE_LLD_MACRO)) {
+			if (self::parseUsing(
+				new CLLDMacroFunctionParser,
+				$source,
+				$pos,
+				$tokens,
+				CExpressionParserResult::TOKEN_TYPE_LLD_MACRO
+			)) {
 				return true;
 			}
 		}
@@ -607,7 +675,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private static function parseHistFunction(string $source, int &$pos, array &$tokens, array $options): bool {
+	private static function parseHistFunction(string $source, int &$pos, array &$tokens, array $options): bool
+	{
 		$hist_function_parser = new CHistFunctionParser([
 			'usermacros' => $options['usermacros'],
 			'lldmacros' => $options['lldmacros'],
@@ -649,8 +718,13 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private static function parseMathFunction(string $source, int &$pos, array &$tokens, array $options,
-			int $depth): bool {
+	private static function parseMathFunction(
+		string $source,
+		int &$pos,
+		array &$tokens,
+		array $options,
+		int $depth
+	): bool {
 		$p = $pos;
 
 		if (!preg_match('/^([a-z0-9_]+)\(/', substr($source, $p), $matches)) {
@@ -681,8 +755,14 @@ class CExpressionParser extends CParser {
 							$expression_tokens = [];
 							$parsed_pos = 0;
 
-							if (!self::parseExpression($source, $_p, $expression_tokens, $options, $parsed_pos,
-									$depth)) {
+							if (!self::parseExpression(
+								$source,
+								$_p,
+								$expression_tokens,
+								$options,
+								$parsed_pos,
+								$depth
+							)) {
 								break 3;
 							}
 
@@ -755,7 +835,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool returns true if parsed successfully, false otherwise
 	 */
-	private static function parseNumber(string $source, int &$pos, array &$tokens): bool {
+	private static function parseNumber(string $source, int &$pos, array &$tokens): bool
+	{
 		$number_parser = new CNumberParser([
 			'with_minus' => false,
 			'with_size_suffix' => true,
@@ -793,7 +874,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return bool returns true if parsed successfully, false otherwise
 	 */
-	private static function parseString(string $source, int &$pos, array &$tokens): bool {
+	private static function parseString(string $source, int &$pos, array &$tokens): bool
+	{
 		if (!preg_match('/^"([^"\\\\]|\\\\["\\\\])*"/', substr($source, $pos), $matches)) {
 			return false;
 		}
@@ -817,7 +899,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return string
 	 */
-	public static function unquoteString(string $value): string {
+	public static function unquoteString(string $value): string
+	{
 		return strtr(substr($value, 1, -1), ['\\"' => '"', '\\\\' => '\\']);
 	}
 
@@ -830,7 +913,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return string
 	 */
-	public static function quoteString(string $value, bool $allow_macros = true, bool $force = false): string {
+	public static function quoteString(string $value, bool $allow_macros = true, bool $force = false): string
+	{
 		if (!$force) {
 			$number_parser = new CNumberParser(['with_size_suffix' => true, 'with_time_suffix' => true]);
 
@@ -841,17 +925,18 @@ class CExpressionParser extends CParser {
 			if ($allow_macros) {
 				$parser_options = ['macros' => ['{TRIGGER.VALUE}']];
 				if ((new CMacroParser($parser_options))->parse($value) == CParser::PARSE_SUCCESS
-						|| (new CMacroFunctionParser($parser_options))->parse($value) == CParser::PARSE_SUCCESS
-						|| (new CUserMacroParser)->parse($value) == CParser::PARSE_SUCCESS
-						|| (new CUserMacroFunctionParser)->parse($value) == CParser::PARSE_SUCCESS
-						|| (new CLLDMacroParser)->parse($value) == CParser::PARSE_SUCCESS
-						|| (new CLLDMacroFunctionParser)->parse($value) == CParser::PARSE_SUCCESS) {
+					|| (new CMacroFunctionParser($parser_options))->parse($value) == CParser::PARSE_SUCCESS
+					|| (new CUserMacroParser)->parse($value) == CParser::PARSE_SUCCESS
+					|| (new CUserMacroFunctionParser)->parse($value) == CParser::PARSE_SUCCESS
+					|| (new CLLDMacroParser)->parse($value) == CParser::PARSE_SUCCESS
+					|| (new CLLDMacroFunctionParser)->parse($value) == CParser::PARSE_SUCCESS
+				) {
 					return $value;
 				}
 			}
 		}
 
-		return '"'.strtr($value, ['\\' => '\\\\', '"' => '\\"']).'"';
+		return '"' . strtr($value, ['\\' => '\\\\', '"' => '\\"']) . '"';
 	}
 
 	/**
@@ -859,7 +944,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return null|CExpressionParserResult
 	 */
-	public function getResult(): ?CExpressionParserResult {
+	public function getResult(): ?CExpressionParserResult
+	{
 		return $this->result;
 	}
 
@@ -868,7 +954,8 @@ class CExpressionParser extends CParser {
 	 *
 	 * @return string
 	 */
-	public function getError(): string {
+	public function getError(): string
+	{
 		return $this->error;
 	}
 }

@@ -13,8 +13,8 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../common/testPageApiTokens.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../common/testPageApiTokens.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
 
 /**
  * @backup token
@@ -22,14 +22,16 @@ require_once __DIR__.'/../../include/helpers/CDataHelper.php';
  *
  * @onBefore prepareTokenData
  */
-class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
+class testPageApiTokensAdministrationGeneral extends testPageApiTokens
+{
 
 	public static $timestamp;
 
 	const STATUS_CHANGE_TOKEN = 'Admin: expired token for admin';
 	const DELETE_TOKEN = 'filter-create: future token for filter-create';
 
-	public static function prepareTokenData() {
+	public static function prepareTokenData()
+	{
 		self::$timestamp = time() + 172800;
 
 		$response = CDataHelper::call('token.create', [
@@ -102,37 +104,38 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 		// Update token "Last accessed" timestamp to be different for each token.
 		$i = 1;
 		foreach ($response['tokenids'] as $tokenid) {
-			DBexecute('UPDATE token SET lastaccess='.(1609452001+$i).' WHERE tokenid='.$tokenid);
+			DBexecute('UPDATE token SET lastaccess=' . (1609452001 + $i) . ' WHERE tokenid=' . $tokenid);
 			$i++;
 		}
 	}
 
-	public function testPageApiTokensAdministrationGeneral_Layout() {
+	public function testPageApiTokensAdministrationGeneral_Layout()
+	{
 		$token_data = [
 			[
 				'Name' => 'Admin: aktīvs токен - 頑張って',
-				'User' => 'Admin (Zabbix Administrator)',
+				'User' => 'Admin (Advantal Administrator)',
 				'Expires at' => 'Never',
 				'Created at' => '2021-01-01 00:00:01',
-				'Created by user' => 'Admin (Zabbix Administrator)',
+				'Created by user' => 'Admin (Advantal Administrator)',
 				'Last accessed at' => '2021-01-01 00:00:04',
 				'Status' => 'Disabled'
 			],
 			[
 				'Name' => 'Admin: expired token for admin',
-				'User' => 'Admin (Zabbix Administrator)',
+				'User' => 'Admin (Advantal Administrator)',
 				'Expires at' => '2021-01-01 00:06:00',
 				'Created at' => '2021-01-01 00:00:01',
-				'Created by user' => 'Admin (Zabbix Administrator)',
+				'Created by user' => 'Admin (Advantal Administrator)',
 				'Last accessed at' => '2021-01-01 00:00:03',
 				'Status' => 'Enabled'
 			],
 			[
 				'Name' => 'Admin: future token for admin',
-				'User' => 'Admin (Zabbix Administrator)',
+				'User' => 'Admin (Advantal Administrator)',
 				'Expires at' => '2026-12-31 23:59:59',
 				'Created at' => '2021-01-01 00:00:01',
-				'Created by user' => 'Admin (Zabbix Administrator)',
+				'Created by user' => 'Admin (Advantal Administrator)',
 				'Last accessed at' => '2021-01-01 00:00:02',
 				'Status' => 'Enabled'
 			],
@@ -141,7 +144,7 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 				'User' => 'filter-create',
 				'Expires at' => date('Y-m-d H:i:s', self::$timestamp),
 				'Created at' => '2021-01-01 00:00:01',
-				'Created by user' => 'Admin (Zabbix Administrator)',
+				'Created by user' => 'Admin (Advantal Administrator)',
 				'Last accessed at' => '2021-01-01 00:00:05',
 				'Status' => 'Disabled'
 			],
@@ -181,7 +184,7 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 			],
 			[
 				'Name' => 'filter-create: token for Admin',
-				'User' => 'Admin (Zabbix Administrator)',
+				'User' => 'Admin (Advantal Administrator)',
 				'Expires at' => date('Y-m-d H:i:s', self::$timestamp),
 				'Created at' => '2021-01-01 00:00:01',
 				'Created by user' => 'filter-create',
@@ -193,11 +196,13 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 		$this->checkLayout($token_data, 'administration');
 	}
 
-	public function testPageApiTokensAdministrationGeneral_ChangeStatus() {
+	public function testPageApiTokensAdministrationGeneral_ChangeStatus()
+	{
 		$this->checkStatusChange('zabbix.php?action=token.list', self::STATUS_CHANGE_TOKEN);
 	}
 
-	public function getFilterData() {
+	public function getFilterData()
+	{
 		return [
 			// Exact name match with special symbols.
 			[
@@ -242,17 +247,17 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 			],
 			// Filter by name with trailing and leading spaces.
 			// TODO Uncomment the below data provider once ZBX-18995 is fixed.
-//			[
-//				[
-//					'filter' => [
-//						'Name' => '   future token   '
-//					],
-//					'expected' => [
-//						'Admin: future token for admin',
-//						'filter-create: future token for filter-create'
-//					]
-//				]
-//			],
+			//			[
+			//				[
+			//					'filter' => [
+			//						'Name' => '   future token   '
+			//					],
+			//					'expected' => [
+			//						'Admin: future token for admin',
+			//						'filter-create: future token for filter-create'
+			//					]
+			//				]
+			//			],
 			// Several empty spaces between words in filter field "Name".
 			[
 				[
@@ -464,11 +469,13 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageApiTokensAdministrationGeneral_Filter($data) {
+	public function testPageApiTokensAdministrationGeneral_Filter($data)
+	{
 		$this->checkFilter($data, 'administration');
 	}
 
-	public function getSortData() {
+	public function getSortData()
+	{
 		return [
 			[
 				[
@@ -490,11 +497,11 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 				[
 					'sort_field' => 'User',
 					'expected' => [
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
 						'filter-create',
 						'filter-create',
 						'filter-create',
@@ -522,11 +529,11 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 				[
 					'sort_field' => 'Created by user',
 					'expected' => [
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
-						'Admin (Zabbix Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
+						'Admin (Advantal Administrator)',
 						'filter-create',
 						'filter-create',
 						'filter-create',
@@ -572,7 +579,8 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 	/**
 	 * @dataProvider getSortData
 	 */
-	public function testPageApiTokensAdministrationGeneral_Sort($data) {
+	public function testPageApiTokensAdministrationGeneral_Sort($data)
+	{
 		// Place $timestamp variable value in data provider as the data providers are formed before execution of onBefore.
 		if ($data['sort_field'] === 'Expires at') {
 			foreach ($data['expected'] as $i => $value) {
@@ -585,7 +593,8 @@ class testPageApiTokensAdministrationGeneral extends testPageApiTokens {
 		$this->checkSorting($data, 'zabbix.php?action=token.list');
 	}
 
-	public function testPageApiTokensAdministrationGeneral_Delete() {
+	public function testPageApiTokensAdministrationGeneral_Delete()
+	{
 		$this->checkDelete('zabbix.php?action=token.list', self::DELETE_TOKEN);
 	}
 }

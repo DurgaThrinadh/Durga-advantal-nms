@@ -23,11 +23,13 @@ require_once __DIR__ . '/../../include/CWebTest.php';
  *
  * @onBefore prepareData
  */
-class testDashboardsWidgetsPage extends CWebTest {
+class testDashboardsWidgetsPage extends CWebTest
+{
 
 	protected static $dashboardid;
 
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		// Create dashboard and widget for checkProblemHostsWidget test.
 		self::$dashboardid = CDataHelper::call('dashboard.create', [
 			[
@@ -56,7 +58,8 @@ class testDashboardsWidgetsPage extends CWebTest {
 	 * Default selected widget type.
 	 * The widget type should not be changed in frontend and in DB.
 	 */
-	public function testDashboardsWidgetsPage_checkUnchangedWidgetType() {
+	public function testDashboardsWidgetsPage_checkUnchangedWidgetType()
+	{
 		// Opening widget configuration form for new widget first time.
 		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=1');
 		$dashboard = CDashboardElement::find()->one()->edit();
@@ -73,7 +76,7 @@ class testDashboardsWidgetsPage extends CWebTest {
 		// Making changes in widget form that are not "Widget type".
 		$form_problems = $dashboard->getWidget('Current problems')->edit();
 		$this->assertEquals('Problems', $form_problems->getField('Type')->getValue());
-		$data =[
+		$data = [
 			'Name' => 'check widget type',
 			'Refresh interval' => 'No refresh',
 			'Show' => 'Recent problems',
@@ -100,7 +103,8 @@ class testDashboardsWidgetsPage extends CWebTest {
 	 * @param string $type			widget type name
 	 * @param string $db_type		widget type name stored in DB
 	 */
-	private function checkLastSelectedWidgetType($type = 'Action log', $db_type = null) {
+	private function checkLastSelectedWidgetType($type = 'Action log', $db_type = null)
+	{
 		$dashboard = CDashboardElement::find()->one();
 		COverlayDialogElement::ensureNotPresent();
 		$overlay = $dashboard->addWidget();
@@ -108,12 +112,11 @@ class testDashboardsWidgetsPage extends CWebTest {
 		$this->assertEquals($type, $form->getField('Type')->getValue());
 
 		if ($db_type) {
-			$this->assertEquals($db_type, CDBHelper::getValue("SELECT value_str FROM profiles".
-					" WHERE userid=1 AND idx='web.dashboard.last_widget_type'"));
-		}
-		else {
-			$this->assertEquals(0, CDBHelper::getCount("SELECT * FROM profiles".
-					" WHERE userid=1 AND idx='web.dashboard.last_widget_type'"));
+			$this->assertEquals($db_type, CDBHelper::getValue("SELECT value_str FROM profiles" .
+				" WHERE userid=1 AND idx='web.dashboard.last_widget_type'"));
+		} else {
+			$this->assertEquals(0, CDBHelper::getCount("SELECT * FROM profiles" .
+				" WHERE userid=1 AND idx='web.dashboard.last_widget_type'"));
 		}
 
 		$overlay->close();
@@ -122,7 +125,8 @@ class testDashboardsWidgetsPage extends CWebTest {
 	/**
 	 * Widget type should be inherited from the one that was selected last time.
 	 */
-	public function testDashboardsWidgetsPage_checkWidgetTypeRemembering() {
+	public function testDashboardsWidgetsPage_checkWidgetTypeRemembering()
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=1');
 		$dashboard = CDashboardElement::find()->one()->edit();
 		// Opening widget configuration form for new Clock widget.
@@ -156,9 +160,10 @@ class testDashboardsWidgetsPage extends CWebTest {
 	/**
 	 * Check "Problem Hosts" widget.
 	 */
-	public function testDashboardsWidgetsPage_checkProblemHostsWidget() {
+	public function testDashboardsWidgetsPage_checkProblemHostsWidget()
+	{
 		// Authorize user and open the page with the desired widget.
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 
 		// Find dashboard element.
 		$dashboard = CDashboardElement::find()->one();
@@ -178,7 +183,7 @@ class testDashboardsWidgetsPage extends CWebTest {
 
 		// Expected table values.
 		$expected = [
-			'Zabbix servers'					=> 18,
+			'Advantal servers'					=> 18,
 			'Inheritance test'					=> 1,
 			'Host group for suppression'		=> 1
 		];
@@ -202,7 +207,8 @@ class testDashboardsWidgetsPage extends CWebTest {
 	/**
 	 * Create dashboard with clock widget.
 	 */
-	public function testDashboardsWidgetsPage_checkDashboardCreate() {
+	public function testDashboardsWidgetsPage_checkDashboardCreate()
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.list');
 
 		$this->query('button:Create dashboard')->one()->click();
@@ -262,7 +268,8 @@ class testDashboardsWidgetsPage extends CWebTest {
 	/**
 	 * Edit widget.
 	 */
-	public function testDashboardsWidgetsPage_checkProblemWidgetEdit() {
+	public function testDashboardsWidgetsPage_checkProblemWidgetEdit()
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=1');
 
 		$dashboard = CDashboardElement::find()->one()->edit();
@@ -278,7 +285,7 @@ class testDashboardsWidgetsPage extends CWebTest {
 		$groups = $form->getField('Host groups');
 
 		// Select a single group.
-		$groups->select('Zabbix servers');
+		$groups->select('Advantal servers');
 
 		// Change the name of widget.
 		$form->getField('Name')->clear()->type('New widget name');
@@ -295,7 +302,7 @@ class testDashboardsWidgetsPage extends CWebTest {
 		$table = $dashboard->getWidget('New widget name')->getContent()->asTable();
 
 		// Check if only selected host group is shown.
-		$this->assertEquals(['Zabbix servers'], array_keys($table->index('Host group')));
+		$this->assertEquals(['Advantal servers'], array_keys($table->index('Host group')));
 
 		$dashboard->cancelEditing();
 	}

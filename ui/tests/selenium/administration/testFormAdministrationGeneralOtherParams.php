@@ -14,12 +14,13 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormAdministrationGeneral.php';
+require_once __DIR__ . '/../common/testFormAdministrationGeneral.php';
 
 /**
  * @backup config
  */
-class testFormAdministrationGeneralOtherParams extends testFormAdministrationGeneral {
+class testFormAdministrationGeneralOtherParams extends testFormAdministrationGeneral
+{
 
 	public $config_link = 'zabbix.php?action=miscconfig.edit';
 	public $form_selector = 'name:otherForm';
@@ -28,7 +29,7 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 		'Frontend URL' => '',
 		'Group for discovered hosts' => 'Empty group',
 		'Default host inventory mode' => 'Disabled',
-		'User group for database down message' => 'Zabbix administrators',
+		'User group for database down message' => 'Advantal Administrators',
 		'Log unmatched SNMP traps' => true,
 		// Authorization.
 		'Login attempts' => 5,
@@ -86,14 +87,15 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 	/**
 	 * Test for checking form layout.
 	 */
-	public function testFormAdministrationGeneralOtherParams_CheckLayout() {
+	public function testFormAdministrationGeneralOtherParams_CheckLayout()
+	{
 		$this->page->login()->open($this->config_link);
 		$this->page->assertTitle('Other configuration parameters');
 		$this->page->assertHeader('Other configuration parameters');
 		$form = $this->query($this->form_selector)->waitUntilReady()->asForm()->one();
 
 		foreach (['Authorization', 'Security'] as $header) {
-			$this->assertTrue($this->query('xpath://h4[text()="'.$header.'"]')->one()->isVisible());
+			$this->assertTrue($this->query('xpath://h4[text()="' . $header . '"]')->one()->isVisible());
 		}
 
 		$limits = [
@@ -116,10 +118,10 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 				'iframe_sandboxing_enabled'
 			];
 			foreach ($checkboxes as $checkbox) {
-				$form->getField('id:'.$checkbox)->fill($status);
+				$form->getField('id:' . $checkbox)->fill($status);
 			}
 
-			foreach (['uri_valid_schemes','iframe_sandboxing_exceptions', 'x_frame_options'] as $input) {
+			foreach (['uri_valid_schemes', 'iframe_sandboxing_exceptions', 'x_frame_options'] as $input) {
 				$this->assertTrue($this->query('id', $input)->one()->isEnabled($status));
 			}
 		}
@@ -128,12 +130,12 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 		$form->getLabel('Use X-Frame-Options HTTP header')->query('xpath:./button[@data-hintbox]')->one()->waitUntilClickable()->click();
 		$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->asOverlayDialog()->waitUntilPresent()->one();
 
-		$hint_text = "X-Frame-Options HTTP header supported values:\n".
-				"SAMEORIGIN or 'self' - allows the page to be displayed only in a frame on the same origin as the page itself\n".
-				"DENY or 'none' - prevents the page from being displayed in a frame, regardless of the site attempting to do so\n".
-				"a string of space-separated hostnames; adding 'self' to the list allows the page to be displayed in a frame on the same origin as the page itself\n".
-				"\n".
-				"Note that 'self' or 'none' will be regarded as hostnames if used without single quotes.";
+		$hint_text = "X-Frame-Options HTTP header supported values:\n" .
+			"SAMEORIGIN or 'self' - allows the page to be displayed only in a frame on the same origin as the page itself\n" .
+			"DENY or 'none' - prevents the page from being displayed in a frame, regardless of the site attempting to do so\n" .
+			"a string of space-separated hostnames; adding 'self' to the list allows the page to be displayed in a frame on the same origin as the page itself\n" .
+			"\n" .
+			"Note that 'self' or 'none' will be regarded as hostnames if used without single quotes.";
 
 		$this->assertEquals($hint_text, $hint->getText());
 		$hint->close();
@@ -146,21 +148,24 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 	/**
 	 * Test for checking form update without changing any data.
 	 */
-	public function testFormAdministrationGeneralOtherParams_SimpleUpdate() {
+	public function testFormAdministrationGeneralOtherParams_SimpleUpdate()
+	{
 		$this->executeSimpleUpdate();
 	}
 
 	/**
 	 * Test for checking 'Reset defaults' button.
 	 */
-	public function testFormAdministrationGeneralOtherParams_ResetButton() {
+	public function testFormAdministrationGeneralOtherParams_ResetButton()
+	{
 		$this->executeResetButtonTest(true);
 	}
 
 	/**
 	 * Test data for Other parameters form.
 	 */
-	public function getCheckFormData() {
+	public function getCheckFormData()
+	{
 		return [
 			// #0 Minimal valid values. In period fields minimal valid time in seconds with 's'.
 			[
@@ -260,17 +265,17 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 						'Login blocking interval' => '3600s',
 						// Security.
 						'id:validate_uri_schemes' => true,
-						'id:uri_valid_schemes' => 'http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,'.
-								'https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,'.
-								'tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https',
+						'id:uri_valid_schemes' => 'http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,' .
+							'https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,' .
+							'tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https',
 						'id:x_frame_header_enabled' => true,
-						'id:x_frame_options' => 'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN '.
-								'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN '.
-								'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SA',
+						'id:x_frame_options' => 'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN ' .
+							'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN ' .
+							'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SA',
 						'id:iframe_sandboxing_enabled' => true,
-						'id:iframe_sandboxing_exceptions' => 'some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-'.
-								'flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-'.
-								'flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-som'
+						'id:iframe_sandboxing_exceptions' => 'some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-' .
+							'flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-' .
+							'flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-som'
 					],
 					'db' => [
 						// Authorization.
@@ -278,16 +283,16 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 						'login_block' => '3600s',
 						// Security.
 						'validate_uri_schemes' => 1,
-						'uri_valid_schemes' => 'http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,'.
-								'ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,'.
-						'http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https',
-						'x_frame_options' => 'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN '.
-								'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN '.
-								'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SA',
+						'uri_valid_schemes' => 'http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,' .
+							'ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,' .
+							'http,https,ftp,file,mailto,tel,ssh,http,https,ftp,file,mailto,tel,ssh,http,https',
+						'x_frame_options' => 'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN ' .
+							'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN ' .
+							'SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SAMEORIGIN SA',
 						'iframe_sandboxing_enabled' => 1,
-						'iframe_sandboxing_exceptions' => 'some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag'.
-								'-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag'.
-								'-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-som'
+						'iframe_sandboxing_exceptions' => 'some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag' .
+							'-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag' .
+							'-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-some-new-flag-som'
 					]
 				]
 			],
@@ -586,7 +591,8 @@ class testFormAdministrationGeneralOtherParams extends testFormAdministrationGen
 	/**
 	 * @dataProvider getCheckFormData
 	 */
-	public function testFormAdministrationGeneralOtherParams_CheckForm($data) {
+	public function testFormAdministrationGeneralOtherParams_CheckForm($data)
+	{
 		$this->executeCheckForm($data, true);
 	}
 }

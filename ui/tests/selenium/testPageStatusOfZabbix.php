@@ -13,16 +13,18 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../include/CLegacyWebTest.php';
 
-class testPageStatusOfZabbix extends CLegacyWebTest {
-	public function testPageStatusOfZabbix_CheckLayout() {
+class testPageStatusOfZabbix extends CLegacyWebTest
+{
+	public function testPageStatusOfZabbix_CheckLayout()
+	{
 		$this->zbxTestLogin('zabbix.php?action=report.status');
 		$this->zbxTestCheckTitle('System information');
 		$this->zbxTestCheckHeader('System information');
 		$this->zbxTestTextPresent(['Parameter', 'Value', 'Details']);
 
-		$this->zbxTestTextPresent('Zabbix server is running');
+		$this->zbxTestTextPresent('Advantal server is running');
 		$this->zbxTestTextPresent('Number of hosts (enabled/disabled)');
 		$this->zbxTestTextPresent('Number of templates');
 		$this->zbxTestTextPresent('Number of items (enabled/disabled/not supported)');
@@ -30,5 +32,4 @@ class testPageStatusOfZabbix extends CLegacyWebTest {
 		$this->zbxTestTextPresent('Number of users (online)');
 		$this->zbxTestTextPresent('Required server performance, new values per second');
 	}
-
 }

@@ -26,7 +26,7 @@ $info_table = (new CTableInfo())
 	->setHeadingColumn(0)
 	->addClass(ZBX_STYLE_LIST_TABLE_STICKY_HEADER)
 	->addRow([
-		_('Zabbix server is running'),
+		_('Advantal server is running'),
 		(new CSpan($status['is_running'] ? _('Yes') : _('No')))
 			->addClass($status['is_running'] ? ZBX_STYLE_COLOR_POSITIVE : ZBX_STYLE_COLOR_NEGATIVE),
 		$data['system_info']['server_details']
@@ -51,8 +51,7 @@ if ($data['system_info']['is_software_update_check_enabled']) {
 		}
 
 		$frontend_version_details = $version_details;
-	}
-	elseif (array_key_exists('latest_release', $check_data)) {
+	} elseif (array_key_exists('latest_release', $check_data)) {
 		if ($status['has_status']) {
 			$server_version_details = version_compare($server_version, $check_data['latest_release'], '<')
 				? (new CSpan(_('New update available')))->addClass(ZBX_STYLE_COLOR_WARNING)
@@ -65,11 +64,12 @@ if ($data['system_info']['is_software_update_check_enabled']) {
 	}
 
 	if ($data['show_software_update_check_details'] && array_key_exists('lastcheck', $check_data)) {
-		$last_checked = (new DateTime('@'.$check_data['lastcheck']))->format(ZBX_DATE);
+		$last_checked = (new DateTime('@' . $check_data['lastcheck']))->format(ZBX_DATE);
 
 		if (array_key_exists('latest_release', $check_data)) {
 			$latest_release = $check_data['latest_release'];
-			$release_notes = (new CLink(_('Release notes'),
+			$release_notes = (new CLink(
+				_('Release notes'),
 				(new CUrl("https://www.zabbix.com/rn/rn{$latest_release}"))->getUrl()
 			))
 				->addClass(ZBX_STYLE_LINK_EXTERNAL)
@@ -80,14 +80,14 @@ if ($data['system_info']['is_software_update_check_enabled']) {
 
 if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 	$info_table->addRow([
-		_('Zabbix server version'),
+		_('Advantal server version'),
 		$server_version,
 		$server_version_details
 	]);
 }
 
 $info_table->addRow([
-	_('Zabbix frontend version'),
+	_('Advantal frontend version'),
 	$frontend_version,
 	$frontend_version_details
 ]);
@@ -130,8 +130,10 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 			$status['has_status'] ? $status['items_count'] : '',
 			$status['has_status']
 				? [
-					(new CSpan($status['items_count_monitored']))->addClass(ZBX_STYLE_COLOR_POSITIVE), ' / ',
-					(new CSpan($status['items_count_disabled']))->addClass(ZBX_STYLE_COLOR_NEGATIVE), ' / ',
+					(new CSpan($status['items_count_monitored']))->addClass(ZBX_STYLE_COLOR_POSITIVE),
+					' / ',
+					(new CSpan($status['items_count_disabled']))->addClass(ZBX_STYLE_COLOR_NEGATIVE),
+					' / ',
 					(new CSpan($status['items_count_not_supported']))->addClass(ZBX_STYLE_GREY)
 				]
 				: ''
@@ -195,7 +197,7 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 
 	if (!$data['system_info']['is_global_scripts_enabled']) {
 		$info_table->addRow([
-			_('Global scripts on Zabbix server'),
+			_('Global scripts on Advantal server'),
 			(new CSpan(_('Disabled'))),
 			''
 		]);
@@ -207,19 +209,23 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 
 		switch ($dbversion['flag']) {
 			case DB_VERSION_LOWER_THAN_MINIMUM:
-				$error = _s('Error! Unable to start Zabbix server.').' ';
+				$error = _s('Error! Unable to start Advantal server.') . ' ';
 				$error .= $dbversion['database'] === ZBX_DB_EXTENSION_TIMESCALEDB
-					? $timescaledb_error.' '._s('Minimum required version is %1$s.', $dbversion['min_version'])
-					: _s('Minimum required %1$s database version is %2$s.', $dbversion['database'],
+					? $timescaledb_error . ' ' . _s('Minimum required version is %1$s.', $dbversion['min_version'])
+					: _s(
+						'Minimum required %1$s database version is %2$s.',
+						$dbversion['database'],
 						$dbversion['min_version']
 					);
 				break;
 
 			case DB_VERSION_HIGHER_THAN_MAXIMUM:
-				$error = _s('Error! Unable to start Zabbix server.').' ';
+				$error = _s('Error! Unable to start Advantal server.') . ' ';
 				$error .= $dbversion['database'] === ZBX_DB_EXTENSION_TIMESCALEDB
-					? $timescaledb_error.' '._s('Maximum required version is %1$s.', $dbversion['max_version'])
-					: _s('Maximum required %1$s database version is %2$s.', $dbversion['database'],
+					? $timescaledb_error . ' ' . _s('Maximum required version is %1$s.', $dbversion['max_version'])
+					: _s(
+						'Maximum required %1$s database version is %2$s.',
+						$dbversion['database'],
 						$dbversion['max_version']
 					);
 				break;
@@ -230,40 +236,50 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 				break;
 
 			case DB_VERSION_NOT_SUPPORTED_ERROR:
-				$error = _s('Error! Unable to start Zabbix server.').' ';
+				$error = _s('Error! Unable to start Advantal server.') . ' ';
 				$error .= $dbversion['database'] === ZBX_DB_EXTENSION_TIMESCALEDB
-					? $timescaledb_error.' '._s('Must be at least %1$s.', $dbversion['min_supported_version'])
-					: _s('Unsupported %1$s database server version. Must be at least %2$s.',
-						$dbversion['database'], $dbversion['min_supported_version']
+					? $timescaledb_error . ' ' . _s('Must be at least %1$s.', $dbversion['min_supported_version'])
+					: _s(
+						'Unsupported %1$s database server version. Must be at least %2$s.',
+						$dbversion['database'],
+						$dbversion['min_supported_version']
 					);
 				break;
 
 			case DB_VERSION_NOT_SUPPORTED_WARNING:
 				$error = $dbversion['database'] === ZBX_DB_EXTENSION_TIMESCALEDB
-					? _('Warning!').' '.$timescaledb_error.' '._s('Should be at least %1$s.',
+					? _('Warning!') . ' ' . $timescaledb_error . ' ' . _s(
+						'Should be at least %1$s.',
 						$dbversion['min_supported_version']
 					)
-					: _s('Warning! Unsupported %1$s database server version. Should be at least %2$s.',
-						$dbversion['database'], $dbversion['min_supported_version']
+					: _s(
+						'Warning! Unsupported %1$s database server version. Should be at least %2$s.',
+						$dbversion['database'],
+						$dbversion['min_supported_version']
 					);
 				break;
 
 			case DB_VERSION_HIGHER_THAN_MAXIMUM_ERROR:
-				$error = _s('Error! Unable to start Zabbix server.').' ';
+				$error = _s('Error! Unable to start Advantal server.') . ' ';
 				$error .= $dbversion['database'] === ZBX_DB_EXTENSION_TIMESCALEDB
-					? $timescaledb_error.' '._s('Must not be higher than %1$s.', $dbversion['max_version'])
-					: _s('Unsupported %1$s database server version. Must not be higher than %2$s.',
-						$dbversion['database'], $dbversion['max_version']
+					? $timescaledb_error . ' ' . _s('Must not be higher than %1$s.', $dbversion['max_version'])
+					: _s(
+						'Unsupported %1$s database server version. Must not be higher than %2$s.',
+						$dbversion['database'],
+						$dbversion['max_version']
 					);
 				break;
 
 			case DB_VERSION_HIGHER_THAN_MAXIMUM_WARNING:
 				$error = $dbversion['database'] === ZBX_DB_EXTENSION_TIMESCALEDB
-					? _('Warning!').' '.$timescaledb_error.' '._s('Should not be higher than %1$s.',
+					? _('Warning!') . ' ' . $timescaledb_error . ' ' . _s(
+						'Should not be higher than %1$s.',
 						$dbversion['max_version']
 					)
-					: _s('Warning! Unsupported %1$s database server version. Should not be higher than %2$s.',
-						$dbversion['database'], $dbversion['max_version']
+					: _s(
+						'Warning! Unsupported %1$s database server version. Should not be higher than %2$s.',
+						$dbversion['database'],
+						$dbversion['max_version']
 					);
 				break;
 
@@ -278,7 +294,7 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 		);
 	}
 
-	foreach ($data['system_info']['dbversion_status'] as $dbversion ) {
+	foreach ($data['system_info']['dbversion_status'] as $dbversion) {
 		if ($dbversion['database'] === 'Oracle') {
 			$db_error = _(
 				'Warning! Support for Oracle DB is deprecated since Zabbix 7.0 and will be removed in future versions.'
@@ -297,7 +313,8 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 			(new CCol([
 				_('This setting should be enabled, because history tables contain compressed chunks.'),
 				' ',
-				new CLink([_('Configuration'), HELLIP()],
+				new CLink(
+					[_('Configuration'), HELLIP()],
 					(new CUrl('zabbix.php'))->setArgument('action', 'housekeeping.edit')
 				)
 			]))->addClass(ZBX_STYLE_COLOR_NEGATIVE)
@@ -311,7 +328,8 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 			(new CCol([
 				_('This setting should be enabled, because trend tables contain compressed chunks.'),
 				' ',
-				new CLink([_('Configuration'), HELLIP()],
+				new CLink(
+					[_('Configuration'), HELLIP()],
 					(new CUrl('zabbix.php'))->setArgument('action', 'housekeeping.edit')
 				)
 			]))->addClass(ZBX_STYLE_COLOR_NEGATIVE)
@@ -324,8 +342,7 @@ if ($data['user_type'] == USER_TYPE_SUPER_ADMIN) {
 			(new CSpan(_('Enabled')))->addClass(ZBX_STYLE_COLOR_POSITIVE),
 			_s('Fail-over delay: %1$s', $data['system_info']['failover_delay'])
 		]);
-	}
-	else {
+	} else {
 		$info_table->addRow([
 			_('High availability cluster'),
 			_('Disabled'),

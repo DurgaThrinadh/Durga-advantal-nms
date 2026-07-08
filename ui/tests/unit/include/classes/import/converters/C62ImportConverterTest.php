@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,48 +16,50 @@
 **/
 
 
-class C62ImportConverterTest extends CImportConverterTest {
+class C62ImportConverterTest extends CImportConverterTest
+{
 
-	public function importConverterDataProviderCalcItemFormula(): array {
+	public function importConverterDataProviderCalcItemFormula(): array
+	{
 		$formulas = [
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],0s))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 0m))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 0h ))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 0d ))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"],  0w ))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],0s))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 0m))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 0h ))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 0d ))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"],  0w ))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], 15s))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], 15s))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], 15s))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"], 15s))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], {$MACRO}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], {$MACRO}))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], {$MACRO}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"], {$MACRO}))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], "{$MACRO: context}"))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 1h ))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], "{$MACRO: context}"))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 1h ))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], "{$MACRO: context}"))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 1h ))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"], "{$MACRO: context}"))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 1h ))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],{#LLD}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],{#LLD}))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],{#LLD}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"],{#LLD}))',
 				'prototype' => true
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],  {#LLD}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],  {#LLD}))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],  {#LLD}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"],  {#LLD}))',
 				'prototype' => true
 			]
 		];
@@ -134,11 +138,13 @@ class C62ImportConverterTest extends CImportConverterTest {
 	 * @param array $data
 	 * @param array $expected
 	 */
-	public function testConvert(array $data, array $expected): void {
+	public function testConvert(array $data, array $expected): void
+	{
 		$this->assertConvert($this->createExpectedResult($expected), $this->createSource($data));
 	}
 
-	protected function createSource(array $data = []): array {
+	protected function createSource(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '6.2',
@@ -147,7 +153,8 @@ class C62ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function createExpectedResult(array $data = []): array {
+	protected function createExpectedResult(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '6.4'
@@ -155,12 +162,14 @@ class C62ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function assertConvert(array $expected, array $source): void {
+	protected function assertConvert(array $expected, array $source): void
+	{
 		$result = $this->createConverter()->convert($source);
 		$this->assertEquals($expected, $result);
 	}
 
-	protected function createConverter(): C62ImportConverter {
+	protected function createConverter(): C62ImportConverter
+	{
 		return new C62ImportConverter();
 	}
 }

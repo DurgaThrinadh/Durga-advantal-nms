@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testMultiselectDialogs.php';
+require_once __DIR__ . '/../common/testMultiselectDialogs.php';
 
 /**
  * Test for assuring that bug from ZBX-23302 is not reproducing, respectively
@@ -24,13 +24,16 @@ require_once __DIR__.'/../common/testMultiselectDialogs.php';
  *
  * @backup hosts
  */
-class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
+class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs
+{
 
 	const HOST = 'Template inheritance test host';
 	const TEMPLATE = 'AIX by Zabbix agent';
 
-	public static function prepareProxyData() {
-		CDataHelper::call('proxy.create',
+	public static function prepareProxyData()
+	{
+		CDataHelper::call(
+			'proxy.create',
 			[
 				[
 					'name' => 'Proxy for Multiselects test',
@@ -40,7 +43,8 @@ class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
 		);
 	}
 
-	public static function getCheckDialogsData() {
+	public static function getCheckDialogsData()
+	{
 		return [
 			// #0.
 			[
@@ -48,7 +52,7 @@ class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
 					'object' => 'Hosts',
 					'checked_multiselects' => [
 						['Host groups' => ['title' => 'Host groups']],
-						['Templates' => ['title' => 'Templates'], 'Template group' => ['title' =>'Template groups']],
+						['Templates' => ['title' => 'Templates'], 'Template group' => ['title' => 'Template groups']],
 						['Proxies' => ['title' => 'Proxies']]
 					],
 					// Fill this filter to enable 'Proxy' multiselect.
@@ -62,7 +66,7 @@ class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
 			[
 				[
 					'object' => 'Hosts',
-					'sub_object' => 'Items' ,
+					'sub_object' => 'Items',
 					'checked_multiselects' => [
 						['Value mapping' => ['title' => 'Value mapping']]
 					],
@@ -113,7 +117,7 @@ class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
 			[
 				[
 					'object' => 'Templates',
-					'sub_object' => 'Items' ,
+					'sub_object' => 'Items',
 					'checked_multiselects' => [
 						['Value mapping' => ['title' => 'Value mapping']]
 					],
@@ -156,13 +160,14 @@ class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
 	/**
 	 * @dataProvider getCheckDialogsData
 	 */
-	public function testMultiselectsErrorsHostsTemplates_CheckDialogs($data) {
+	public function testMultiselectsErrorsHostsTemplates_CheckDialogs($data)
+	{
 		$this->page->login()->open(($data['object'] === 'Hosts') ? 'zabbix.php?action=host.list' : 'zabbix.php?action=template.list');
 
 		if (array_key_exists('sub_object', $data)) {
 			$this->query('class:list-table')->asTable()->waitUntilPresent()->one()
-					->findRow('Name', ($data['object'] === 'Hosts') ? self::HOST : self::TEMPLATE)
-					->getColumn($data['sub_object'])->query('tag:a')->waitUntilClickable()->one()->click();
+				->findRow('Name', ($data['object'] === 'Hosts') ? self::HOST : self::TEMPLATE)
+				->getColumn($data['sub_object'])->query('tag:a')->waitUntilClickable()->one()->click();
 			$this->page->waitUntilReady();
 
 			// Add common multiselect fields to data provider.
@@ -176,17 +181,17 @@ class testMultiselectsErrorsHostsTemplates extends testMultiselectDialogs {
 					['Templates' => ['title' => 'Templates'], 'Template group' => ['title' => 'Template groups']]
 				];
 
-			$data['checked_multiselects'] = array_merge($common_multiselects,
-					CTestArrayHelper::get($data, 'checked_multiselects', [])
+			$data['checked_multiselects'] = array_merge(
+				$common_multiselects,
+				CTestArrayHelper::get($data, 'checked_multiselects', [])
 			);
 
 			$common_fields = ($data['object'] === 'Hosts')
-				? [['Host groups' => 'Zabbix servers'], ['Hosts' => 'ЗАББИКС Сервер']]
+				? [['Host groups' => 'Advantal servers'], ['Hosts' => 'ЗАББИКС Сервер']]
 				: [['Template groups' => 'Templates'], ['Templates' => 'Zabbix agent']];
-		}
-		else {
+		} else {
 			$common_fields = ($data['object'] === 'Hosts')
-				? [['Host groups' => 'Zabbix servers'], ['Templates' => 'Zabbix agent']]
+				? [['Host groups' => 'Advantal servers'], ['Templates' => 'Zabbix agent']]
 				: [['Template groups' => 'Templates'], ['Linked templates' => 'Zabbix agent']];
 		}
 

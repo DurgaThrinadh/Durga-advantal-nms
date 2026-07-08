@@ -14,7 +14,8 @@
 **/
 
 
-class CArrayHelper {
+class CArrayHelper
+{
 
 	/**
 	 * @var array
@@ -31,7 +32,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function copyObjectsKeys(array $array, array $field_map) {
+	public static function copyObjectsKeys(array $array, array $field_map)
+	{
 		foreach ($array as &$object) {
 			foreach ($field_map as $old_key => $new_key) {
 				$object[$new_key] = $object[$old_key];
@@ -53,7 +55,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function getByKeysStrict(array $array, array $keys) {
+	public static function getByKeysStrict(array $array, array $keys)
+	{
 		$result = [];
 		foreach ($keys as $key) {
 			if (!isset($array[$key])) {
@@ -74,7 +77,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function getByKeys(array $array, array $keys) {
+	public static function getByKeys(array $array, array $keys)
+	{
 		$result = [];
 		foreach ($keys as $key) {
 			if (array_key_exists($key, $array)) {
@@ -94,7 +98,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function getByKeysRange(array $array, $start, $end) {
+	public static function getByKeysRange(array $array, $start, $end)
+	{
 		$result = [];
 		foreach ($array as $key => $val) {
 			if ($key >= $start && $key <= $end) {
@@ -113,7 +118,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function renameKeys(array $array, array $field_map) {
+	public static function renameKeys(array $array, array $field_map)
+	{
 		foreach ($field_map as $old_key => $new_key) {
 			if (array_key_exists($old_key, $array)) {
 				$array[$new_key] = $array[$old_key];
@@ -132,7 +138,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function renameObjectsKeys(array $array, array $field_map) {
+	public static function renameObjectsKeys(array $array, array $field_map)
+	{
 		foreach ($array as &$object) {
 			foreach ($field_map as $old_key => $new_key) {
 				$object[$new_key] = $object[$old_key];
@@ -150,7 +157,8 @@ class CArrayHelper {
 	 * @param array $array  array to sort passed by reference
 	 * @param array $fields fields to sort, can be either string with field name or array with 'field' and 'order' keys
 	 */
-	public static function sort(array &$array, array $fields) {
+	public static function sort(array &$array, array $fields)
+	{
 		foreach ($fields as $fid => $field) {
 			if (!is_array($field)) {
 				$fields[$fid] = ['field' => $field, 'order' => ZBX_SORT_UP];
@@ -170,25 +178,23 @@ class CArrayHelper {
 	 *
 	 * @return int
 	 */
-	protected static function compare($a, $b) {
+	protected static function compare($a, $b)
+	{
 		foreach (self::$fields as $field) {
 			// if field is not set or is null, treat it as smallest string
 			// strnatcasecmp() has unexpected behaviour with null values
 			if (!isset($a[$field['field']]) && !isset($b[$field['field']])) {
 				$cmp = 0;
-			}
-			elseif (!isset($a[$field['field']])) {
+			} elseif (!isset($a[$field['field']])) {
 				$cmp = -1;
-			}
-			elseif (!isset($b[$field['field']])) {
+			} elseif (!isset($b[$field['field']])) {
 				$cmp = 1;
-			}
-			else {
+			} else {
 				$cmp = strnatcasecmp($a[$field['field']], $b[$field['field']]);
 			}
 
 			if ($cmp != 0) {
-				return $cmp * ($field['order'] == ZBX_SORT_UP?1:-1);
+				return $cmp * ($field['order'] == ZBX_SORT_UP ? 1 : -1);
 			}
 		}
 		return 0;
@@ -200,7 +206,8 @@ class CArrayHelper {
 	 *
 	 * @param array $array
 	 */
-	public static function ksort(array &$array): void {
+	public static function ksort(array &$array): void
+	{
 		uksort($array, 'strnatcasecmp');
 	}
 
@@ -213,7 +220,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function unsetEqualValues(array $a1, array $a2, array $skipKeys = []) {
+	public static function unsetEqualValues(array $a1, array $a2, array $skipKeys = [])
+	{
 		// ignore given fields
 		foreach ($skipKeys as $key) {
 			unset($a2[$key]);
@@ -221,8 +229,10 @@ class CArrayHelper {
 
 		foreach ($a1 as $key => $value) {
 			// check if the values under $key are equal, skip arrays
-			if (isset($a2[$key]) && !is_array($value) && !is_array($a2[$key])
-					&& (string) $a1[$key] === (string) $a2[$key]) {
+			if (
+				isset($a2[$key]) && !is_array($value) && !is_array($a2[$key])
+				&& (string) $a1[$key] === (string) $a2[$key]
+			) {
 				unset($a1[$key]);
 			}
 		}
@@ -244,10 +254,10 @@ class CArrayHelper {
 	 *
 	 * Example 2:
 	 * $data = array(
-	 *     array('host' => 'Zabbix server', 'name' => 'CPU load'),
-	 * 	   array('host' => 'Zabbix server', 'name' => 'Free memory'),
+	 *     array('host' => 'Advantal server', 'name' => 'CPU load'),
+	 * 	   array('host' => 'Advantal server', 'name' => 'Free memory'),
 	 * 	   array('host' => 'Linux server', 'name' => 'CPU load'),
-	 * 	   array('host' => 'Zabbix server', 'name' => 'CPU load')
+	 * 	   array('host' => 'Advantal server', 'name' => 'CPU load')
 	 * );
 	 * var_dump(CArrayHelper::findDuplicate($data, 'name', 'host')); // returns array with index 3
 	 *
@@ -257,7 +267,8 @@ class CArrayHelper {
 	 *
 	 * @return null|array           the first duplicate found or null if there are no duplicates
 	 */
-	public static function findDuplicate(array $arrays, $uniqueField, $uniqueField2 = null) {
+	public static function findDuplicate(array $arrays, $uniqueField, $uniqueField2 = null)
+	{
 		$uniqueValues = [];
 
 		foreach ($arrays as $array) {
@@ -270,8 +281,7 @@ class CArrayHelper {
 					return $array;
 				}
 				$uniqueValues[$uniqueByValue][$value] = $value;
-			}
-			else {
+			} else {
 				if (isset($uniqueValues[$value])) {
 					return $array;
 				}
@@ -291,7 +301,8 @@ class CArrayHelper {
 	 *
 	 * @return array
 	 */
-	public static function sortByPattern(array $array, $field, $pattern, $limit) {
+	public static function sortByPattern(array $array, $field, $pattern, $limit)
+	{
 		$chunk_size = $limit;
 
 		$result = [];
@@ -299,11 +310,9 @@ class CArrayHelper {
 		foreach ($array as $key => $value) {
 			if (mb_strtolower($value[$field]) === mb_strtolower($pattern)) {
 				$result = [$key => $value] + $result;
-			}
-			elseif ($limit > 0) {
+			} elseif ($limit > 0) {
 				$result[$key] = $value;
-			}
-			else {
+			} else {
 				continue;
 			}
 			$limit--;

@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup history_uint, profiles
@@ -25,7 +25,8 @@ require_once __DIR__.'/../behaviors/CTableBehavior.php';
  *
  * @onBefore prepareTestData
  */
-class testPageMonitoringLatestData extends CWebTest {
+class testPageMonitoringLatestData extends CWebTest
+{
 
 	const FILTER_HOSTNAME = 'Host for items tags filtering';
 	const MAINTENANCE_HOSTNAME = 'Host in maintenance';
@@ -37,19 +38,23 @@ class testPageMonitoringLatestData extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CTableBehavior::class];
 	}
 
-	private function getTableSelector() {
-		return 'xpath://table['.CXPathHelper::fromClass('list-table fixed').']';
+	private function getTableSelector()
+	{
+		return 'xpath://table[' . CXPathHelper::fromClass('list-table fixed') . ']';
 	}
 
-	private function getTable() {
+	private function getTable()
+	{
 		return $this->query($this->getTableSelector())->asTable()->one();
 	}
 
-	public function prepareTestData() {
+	public function prepareTestData()
+	{
 		// Create hostgroup for host with items and tags.
 		$hostgroups = CDataHelper::call('hostgroup.create', [['name' => 'Group for Items With tags']]);
 		$hostgroup = $hostgroups['groupids'][0];
@@ -60,13 +65,13 @@ class testPageMonitoringLatestData extends CWebTest {
 		foreach ($item_names as $i => $item) {
 			$items_tags_data[] = [
 				'name' => $item,
-				'key_' => 'trapper'.$i,
+				'key_' => 'trapper' . $i,
 				'type' => 2,
 				'value_type' => 0,
 				'tags' => [
 					['tag' => 'tag', 'value' => 'filtering_value'],
 					['tag' => 'tag_number', 'value' => strval($i)],
-					['tag' => 'component', 'value' => 'name:'.$item]
+					['tag' => 'component', 'value' => 'name:' . $item]
 				]
 			];
 		}
@@ -88,8 +93,8 @@ class testPageMonitoringLatestData extends CWebTest {
 		$items_descriptions_data = [];
 		foreach ($item_descriptions as $i => $description) {
 			$items_descriptions_data[] = [
-				'name' => 'Trapper_'.$i,
-				'key_' => 'trapper_'.$i,
+				'name' => 'Trapper_' . $i,
+				'key_' => 'trapper_' . $i,
 				'type' => ITEM_TYPE_TRAPPER,
 				'value_type' => ITEM_VALUE_TYPE_UINT64,
 				'description' => $description
@@ -105,7 +110,7 @@ class testPageMonitoringLatestData extends CWebTest {
 			],
 			[
 				'host' => self::MAINTENANCE_HOSTNAME,
-				'groups' => ['groupid' => 4], // Zabbix servers.
+				'groups' => ['groupid' => 4], // Advantal servers.
 				'items' => [
 					[
 						'name' => 'Trapper',
@@ -123,7 +128,7 @@ class testPageMonitoringLatestData extends CWebTest {
 			],
 			[
 				'host' => 'Host with item descriptions',
-				'groups' => ['groupid' => 4], // Zabbix servers.
+				'groups' => ['groupid' => 4], // Advantal servers.
 				'items' => $items_descriptions_data
 			]
 		]);
@@ -131,11 +136,11 @@ class testPageMonitoringLatestData extends CWebTest {
 		self::$hostids = $result['hostids'];
 		$maintenace_hostid = self::$hostids[self::MAINTENANCE_HOSTNAME];
 
-		$data_item_id = $result['itemids'][self::FILTER_HOSTNAME.':trapper0'];
+		$data_item_id = $result['itemids'][self::FILTER_HOSTNAME . ':trapper0'];
 
 		// Add data to one item to see "With data"/"Without data" subfilter.
 		$time = time() - 100;
-		DBexecute('INSERT INTO history (itemid, clock, value, ns) VALUES ('.zbx_dbstr($data_item_id).', '.zbx_dbstr($time).', 1, 0)');
+		DBexecute('INSERT INTO history (itemid, clock, value, ns) VALUES (' . zbx_dbstr($data_item_id) . ', ' . zbx_dbstr($time) . ', 1, 0)');
 
 		// Create maintenance for wrench icon checking in Latest data page.
 		$maintenances = CDataHelper::call('maintenance.create', [
@@ -145,43 +150,49 @@ class testPageMonitoringLatestData extends CWebTest {
 				'description' => 'Maintenance for icon check in Latest data',
 				'active_since' => $time,
 				'active_till' => time() + 31536000,
-				'groups' => [['groupid' => 4]], // Zabbix servers.
+				'groups' => [['groupid' => 4]], // Advantal servers.
 				'timeperiods' => [[]]
 			]
 		]);
 		$maintenanceid = $maintenances['maintenanceids'][0];
 
-		DBexecute('INSERT INTO maintenances_hosts (maintenance_hostid, maintenanceid, hostid) VALUES (1000000, '.
-				zbx_dbstr($maintenanceid).','.zbx_dbstr($maintenace_hostid).')'
+		DBexecute(
+			'INSERT INTO maintenances_hosts (maintenance_hostid, maintenanceid, hostid) VALUES (1000000, ' .
+				zbx_dbstr($maintenanceid) . ',' . zbx_dbstr($maintenace_hostid) . ')'
 		);
 
-		DBexecute('UPDATE hosts SET maintenanceid='.zbx_dbstr($maintenanceid).
-				', maintenance_status=1, maintenance_type='.MAINTENANCE_TYPE_NORMAL.', maintenance_from='.zbx_dbstr(time()-1000).
-				' WHERE hostid='.zbx_dbstr($maintenace_hostid)
+		DBexecute(
+			'UPDATE hosts SET maintenanceid=' . zbx_dbstr($maintenanceid) .
+				', maintenance_status=1, maintenance_type=' . MAINTENANCE_TYPE_NORMAL . ', maintenance_from=' . zbx_dbstr(time() - 1000) .
+				' WHERE hostid=' . zbx_dbstr($maintenace_hostid)
 		);
 	}
 
-	public function testPageMonitoringLatestData_CheckLayout() {
+	public function testPageMonitoringLatestData_CheckLayout()
+	{
 		$this->page->login()->open('zabbix.php?action=latest.view&filter_reset=1')->waitUntilReady();
 		$this->page->assertTitle('Latest data');
 		$this->page->assertHeader('Latest data');
 		$form = $this->query('name:zbx_filter')->asForm()->one();
-		$this->assertEquals(['Host groups', 'Hosts', 'Name', 'Tags', 'Show tags', 'Tag display priority', 'State', 'Show details'],
-				$form->getLabels()->asText()
+		$this->assertEquals(
+			['Host groups', 'Hosts', 'Name', 'Tags', 'Show tags', 'Tag display priority', 'State', 'Show details'],
+			$form->getLabels()->asText()
 		);
 		$this->assertTrue($this->query('button:Apply')->one()->isClickable());
 
 		// Subfilter is not visible if filter isn't set.
 		$this->assertFalse($this->query('id:latest-data-subfilter')->exists());
-		$this->assertEquals(['Filter is not set', 'Use the filter to display results'],
-				explode("\n", $this->query('class:no-data-message')->one()->getText())
+		$this->assertEquals(
+			['Filter is not set', 'Use the filter to display results'],
+			explode("\n", $this->query('class:no-data-message')->one()->getText())
 		);
 
 		$form->fill(['Hosts' => self::FILTER_HOSTNAME]);
 		$form->submit();
 
 		$subfilter = $this->query('id:latest-data-subfilter')->waitUntilVisible()->asTable()->one();
-		$this->assertTrue($subfilter->query('xpath:.//h4[text()="Subfilter "]/span[@class="grey" and '.
+		$this->assertTrue(
+			$subfilter->query('xpath:.//h4[text()="Subfilter "]/span[@class="grey" and ' .
 				'text()="affects only filtered data"]')->one()->isValid()
 		);
 		$this->assertEquals(['HOSTS', 'TAGS', 'TAG VALUES', 'DATA'], $subfilter->query('tag:h3')->all()->asText());
@@ -192,8 +203,21 @@ class testPageMonitoringLatestData extends CWebTest {
 
 		// Check table headers.
 		$details_headers = [
-			true => ['', 'Host', 'Name', 'Interval', 'History', 'Trends', 'Type', 'Last check', 'Last value',
-				'Change', 'Tags', '', 'Info'],
+			true => [
+				'',
+				'Host',
+				'Name',
+				'Interval',
+				'History',
+				'Trends',
+				'Type',
+				'Last check',
+				'Last value',
+				'Change',
+				'Tags',
+				'',
+				'Info'
+			],
 			false => ['', 'Host', 'Name', 'Last check', 'Last value', 'Change', 'Tags', '', 'Info']
 		];
 
@@ -211,21 +235,25 @@ class testPageMonitoringLatestData extends CWebTest {
 		// Subfilter is not visible again after Reset.
 		$this->query('button:Reset')->waitUntilClickable()->one()->click();
 		$this->assertFalse($this->query('id:latest-data-subfilter')->waitUntilNotVisible()->exists());
-		$this->assertEquals(['Filter is not set', 'Use the filter to display results'],
-				explode("\n", $this->query('class:no-data-message')->one()->getText())
+		$this->assertEquals(
+			['Filter is not set', 'Use the filter to display results'],
+			explode("\n", $this->query('class:no-data-message')->one()->getText())
 		);
 
 		// Check filter collapse/expand.
 		$filter_tab = $this->query('xpath://a[contains(@class, "tabfilter-item-link")]')->one();
 		foreach ([false, true] as $status) {
-			$this->assertEquals($status, $this->query('xpath://div[contains(@class, "tabfilter-collapsed")]')
+			$this->assertEquals(
+				$status,
+				$this->query('xpath://div[contains(@class, "tabfilter-collapsed")]')
 					->one(false)->isValid()
 			);
 			$filter_tab->click();
 		}
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// Host groups and Show details.
 			[
@@ -236,8 +264,8 @@ class testPageMonitoringLatestData extends CWebTest {
 					],
 					'result' => [
 						[
-							'Name' => "4_item".
-							"\ntrap[4]"
+							'Name' => "4_item" .
+								"\ntrap[4]"
 						]
 					]
 				]
@@ -520,7 +548,8 @@ class testPageMonitoringLatestData extends CWebTest {
 	 *
 	 * @dataProvider getFilterData
 	 */
-	public function testPageMonitoringLatestData_Filter($data) {
+	public function testPageMonitoringLatestData_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=latest.view')->waitUntilReady();
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
 		$table = $this->getTable()->waitUntilPresent();
@@ -552,8 +581,9 @@ class testPageMonitoringLatestData extends CWebTest {
 
 		// Check Show tags filter setting.
 		if (CTestArrayHelper::get($data, 'Show tags') === 'None') {
-			$this->assertEquals(['', 'Host', 'Name', 'Last check', 'Last value', 'Change', '', 'Info'],
-					$this->getTable()->getHeadersText()
+			$this->assertEquals(
+				['', 'Host', 'Name', 'Last check', 'Last value', 'Change', '', 'Info'],
+				$this->getTable()->getHeadersText()
 			);
 		}
 
@@ -562,7 +592,8 @@ class testPageMonitoringLatestData extends CWebTest {
 		$table->waitUntilReloaded();
 	}
 
-	public static function getSubfilterData() {
+	public static function getSubfilterData()
+	{
 		return [
 			// Tag values.
 			[
@@ -622,19 +653,20 @@ class testPageMonitoringLatestData extends CWebTest {
 	 *
 	 * @dataProvider getSubfilterData
 	 */
-	public function testPageMonitoringLatestData_Subfilter($data) {
-		$hostid = CDBHelper::getValue('SELECT hostid FROM hosts WHERE name='.zbx_dbstr(self::FILTER_HOSTNAME));
+	public function testPageMonitoringLatestData_Subfilter($data)
+	{
+		$hostid = CDBHelper::getValue('SELECT hostid FROM hosts WHERE name=' . zbx_dbstr(self::FILTER_HOSTNAME));
 
 		$link = (CTestArrayHelper::get($data['subfilter'], 'Data'))
-			? 'zabbix.php?action=latest.view&hostids%5B%5D='.$hostid
+			? 'zabbix.php?action=latest.view&hostids%5B%5D=' . $hostid
 			: 'zabbix.php?action=latest.view&name=item';
 
 		$this->page->login()->open($link)->waitUntilReady();
 
 		foreach ($data['subfilter'] as $header => $values) {
 			foreach ($values as $value) {
-				$this->query('xpath://h3[text()='.CXPathHelper::escapeQuotes($header).']/..//a[text()='.
-						CXPathHelper::escapeQuotes($value).']')->waitUntilClickable()->one()->click();
+				$this->query('xpath://h3[text()=' . CXPathHelper::escapeQuotes($header) . ']/..//a[text()=' .
+					CXPathHelper::escapeQuotes($value) . ']')->waitUntilClickable()->one()->click();
 				$this->page->waitUntilReady();
 			}
 		}
@@ -652,7 +684,8 @@ class testPageMonitoringLatestData extends CWebTest {
 			$table->waitUntilReloaded();
 
 			foreach ($data['subfilter']['Tag values'] as $subfilter) {
-				$this->assertTrue($this->query('xpath://a[text()='.CXPathHelper::escapeQuotes($subfilter).']/..')
+				$this->assertTrue(
+					$this->query('xpath://a[text()=' . CXPathHelper::escapeQuotes($subfilter) . ']/..')
 						->one()->isAttributePresent(['class' => 'subfilter subfilter-enabled'])
 				);
 			}
@@ -663,11 +696,13 @@ class testPageMonitoringLatestData extends CWebTest {
 		$this->query('button:Reset')->waitUntilClickable()->one()->click();
 	}
 
-	public function testPageMonitoringLatestData_ClickTag() {
+	public function testPageMonitoringLatestData_ClickTag()
+	{
 		$this->checkClickTag();
 	}
 
-	public function testPageMonitoringLatestData_ClickTagKiosk() {
+	public function testPageMonitoringLatestData_ClickTagKiosk()
+	{
 		$this->checkClickTag(true);
 	}
 
@@ -676,10 +711,11 @@ class testPageMonitoringLatestData extends CWebTest {
 	 *
 	 * @param boolean $kiosk_mode	is kiosk mode applied on the page or not
 	 */
-	protected function checkClickTag($kiosk_mode = false) {
+	protected function checkClickTag($kiosk_mode = false)
+	{
 		$tag = ['tag' => 'component: ', 'value' => 'storage'];
-		$hostid = CDBHelper::getValue('SELECT hostid FROM hosts WHERE name='.zbx_dbstr('ЗАББИКС Сервер'));
-		$this->page->login()->open('zabbix.php?action=latest.view&hostids%5B%5D='.$hostid)->waitUntilReady();
+		$hostid = CDBHelper::getValue('SELECT hostid FROM hosts WHERE name=' . zbx_dbstr('ЗАББИКС Сервер'));
+		$this->page->login()->open('zabbix.php?action=latest.view&hostids%5B%5D=' . $hostid)->waitUntilReady();
 
 		if ($kiosk_mode) {
 			$this->query('xpath://button[@title="Kiosk mode"]')->one()->click();
@@ -687,14 +723,15 @@ class testPageMonitoringLatestData extends CWebTest {
 			$this->assertTrue($this->query('xpath://button[@title="Normal view"]')->exists());
 		}
 
-		$this->getTable()->query('button', $tag['tag'].$tag['value'])->waitUntilClickable()->one()->click();
+		$this->getTable()->query('button', $tag['tag'] . $tag['value'])->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
 
 		// Check that tag value is selected in subfilter under correct header.
-		$this->assertTrue($this->query('xpath://td/h3[text()="Tag values"]/..//label[text()='.
-				CXPathHelper::escapeQuotes($tag['tag']).']/../..//span[@class='.
-				CXPathHelper::fromClass('subfilter-enabled').']/a[text()='.
-				CXPathHelper::escapeQuotes($tag['value']).']')->exists()
+		$this->assertTrue(
+			$this->query('xpath://td/h3[text()="Tag values"]/..//label[text()=' .
+				CXPathHelper::escapeQuotes($tag['tag']) . ']/../..//span[@class=' .
+				CXPathHelper::fromClass('subfilter-enabled') . ']/a[text()=' .
+				CXPathHelper::escapeQuotes($tag['value']) . ']')->exists()
 		);
 
 		$data = [
@@ -709,12 +746,12 @@ class testPageMonitoringLatestData extends CWebTest {
 			$this->page->waitUntilReady();
 			$this->assertTrue($this->query('xpath://button[@title="Kiosk mode"]')->exists());
 			$this->assertTableData($data, $this->getTableSelector());
-		}
-		else {
+		} else {
 			$this->query('button:Reset')->one()->click();
 			$this->page->waitUntilReady();
-			$this->assertEquals(['Filter is not set', 'Use the filter to display results'],
-					explode("\n", $this->query('class:no-data-message')->one()->getText())
+			$this->assertEquals(
+				['Filter is not set', 'Use the filter to display results'],
+				explode("\n", $this->query('class:no-data-message')->one()->getText())
 			);
 		}
 	}
@@ -722,27 +759,31 @@ class testPageMonitoringLatestData extends CWebTest {
 	/**
 	 * Test that checks if host has visible name, it cannot be found by host name on Latest Data page.
 	 */
-	public function testPageMonitoringLatestData_NoHostNames() {
+	public function testPageMonitoringLatestData_NoHostNames()
+	{
 		$result = [
 			CDBHelper::getRandom(
-				'SELECT host'.
-				' FROM hosts'.
-				' WHERE status IN ('.HOST_STATUS_MONITORED.')'.
-					' AND name <> host', 3
+				'SELECT host' .
+					' FROM hosts' .
+					' WHERE status IN (' . HOST_STATUS_MONITORED . ')' .
+					' AND name <> host',
+				3
 			),
 
 			CDBHelper::getRandom(
-				'SELECT host'.
-				' FROM hosts'.
-				' WHERE status IN ('.HOST_STATUS_NOT_MONITORED.')'.
-					' AND name <> host', 3
+				'SELECT host' .
+					' FROM hosts' .
+					' WHERE status IN (' . HOST_STATUS_NOT_MONITORED . ')' .
+					' AND name <> host',
+				3
 			),
 
 			CDBHelper::getRandom(
-				'SELECT host'.
-				' FROM hosts'.
-				' WHERE status IN ('.HOST_STATUS_TEMPLATE.')'.
-					' AND name <> host', 3
+				'SELECT host' .
+					' FROM hosts' .
+					' WHERE status IN (' . HOST_STATUS_TEMPLATE . ')' .
+					' AND name <> host',
+				3
 			)
 		];
 
@@ -776,7 +817,8 @@ class testPageMonitoringLatestData extends CWebTest {
 		$this->page->waitUntilReady();
 	}
 
-	public static function getItemDescription() {
+	public static function getItemDescription()
+	{
 		return [
 			// Item without description.
 			[
@@ -860,15 +902,16 @@ class testPageMonitoringLatestData extends CWebTest {
 	/**
 	 * @dataProvider getItemDescription
 	 */
-	public function testPageMonitoringLatestData_checkItemDescription($data) {
+	public function testPageMonitoringLatestData_checkItemDescription($data)
+	{
 		// Open Latest data for host 'Host with item descriptions'
-		$this->page->login()->open('zabbix.php?&action=latest.view&show_details=0&hostids%5B%5D='.
-				self::$hostids['Host with item descriptions'])->waitUntilReady();
+		$this->page->login()->open('zabbix.php?&action=latest.view&show_details=0&hostids%5B%5D=' .
+			self::$hostids['Host with item descriptions'])->waitUntilReady();
 
 		// Find rows from the data provider and click on the description icon if such should persist.
 		$row = $this->getTable()->findRow('Name', $data['Item name'], true);
 
-		if (CTestArrayHelper::get($data,'description', false)) {
+		if (CTestArrayHelper::get($data, 'description', false)) {
 			$row->query('class:zi-alert-with-content')->one()->click()->waitUntilReady();
 			$overlay = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->one();
 
@@ -880,7 +923,7 @@ class testPageMonitoringLatestData extends CWebTest {
 			preg_match_all('/https?:\/\/\S+/', $data['description'], $urls);
 			// Verify that each of the urls is clickable.
 			foreach ($urls[0] as $url) {
-				$this->assertTrue($overlay->query('xpath:./div/a[@href="'.$url.'"]')->one()->isClickable());
+				$this->assertTrue($overlay->query('xpath:./div/a[@href="' . $url . '"]')->one()->isClickable());
 			}
 
 			// Verify that the tool-tip can be closed.
@@ -896,30 +939,33 @@ class testPageMonitoringLatestData extends CWebTest {
 	/**
 	 * Maintenance icon hintbox.
 	 */
-	public function testPageMonitoringLatestData_checkMaintenanceIcon() {
+	public function testPageMonitoringLatestData_checkMaintenanceIcon()
+	{
 		$this->page->login()->open('zabbix.php?action=latest.view')->waitUntilReady();
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 		$form->fill(['Hosts' => self::MAINTENANCE_HOSTNAME]);
 		$form->submit();
 
-		$this->query('xpath://button['.CXPathHelper::fromClass('zi-wrench-alt-small').']')->waitUntilClickable()->one()->click();
+		$this->query('xpath://button[' . CXPathHelper::fromClass('zi-wrench-alt-small') . ']')->waitUntilClickable()->one()->click();
 		$hint = $this->query('xpath://div[@data-hintboxid]')->asOverlayDialog()->waitUntilPresent()->all()->last()->getText();
-		$hint_text = "Maintenance for latest data [Maintenance with data collection]\n".
-				"Maintenance for icon check in Latest data";
+		$hint_text = "Maintenance for latest data [Maintenance with data collection]\n" .
+			"Maintenance for icon check in Latest data";
 		$this->assertEquals($hint_text, $hint);
 	}
 
 	/**
 	 * Check hint text for Last check and Last value columns
 	 */
-	public function testPageMonitoringLatestData_checkHints() {
-		$itemid = CDBHelper::getValue('SELECT itemid FROM items WHERE name='.zbx_dbstr('4_item'));
+	public function testPageMonitoringLatestData_checkHints()
+	{
+		$itemid = CDBHelper::getValue('SELECT itemid FROM items WHERE name=' . zbx_dbstr('4_item'));
 		$time = time();
 		$value = '15';
 		$true_time = date('Y-m-d H:i:s', $time);
 
-		DBexecute('INSERT INTO history_uint (itemid, clock, value, ns) VALUES ('.zbx_dbstr($itemid).
-				', '.zbx_dbstr($time).', '.zbx_dbstr($value).', 0)'
+		DBexecute(
+			'INSERT INTO history_uint (itemid, clock, value, ns) VALUES (' . zbx_dbstr($itemid) .
+				', ' . zbx_dbstr($time) . ', ' . zbx_dbstr($value) . ', 0)'
 		);
 
 		$this->page->login()->open('zabbix.php?action=latest.view')->waitUntilReady();

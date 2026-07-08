@@ -14,15 +14,17 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
 
-class testTriggerExpressions extends CWebTest {
+class testTriggerExpressions extends CWebTest
+{
 
 	const TRIGGER_ID = 17094;		//'PHP-FPM: Pool has been restarted'
 
-	public function testTriggerExpressions_SimpleTest() {
+	public function testTriggerExpressions_SimpleTest()
+	{
 		// Open advanced editor for testing trigger expression results.
-		$description = CDBHelper::getValue('SELECT description FROM triggers WHERE triggerid='.self::TRIGGER_ID);
+		$description = CDBHelper::getValue('SELECT description FROM triggers WHERE triggerid=' . self::TRIGGER_ID);
 		$this->page->login()->open('zabbix.php?action=trigger.list&filter_set=1&context=template');
 		$form = CFilterElement::find()->one()->getForm();
 		$form->fill(['Name' => $description])->submit();
@@ -34,29 +36,35 @@ class testTriggerExpressions extends CWebTest {
 		$dialog = COverlayDialogElement::find()->all()->last()->waitUntilReady();
 
 		// Check table headers presence in tesing dialog.
-		$table_headers = ['Expression variable elements', 'Result type', 'Value',
-						'Expression', 'Result', 'Error'];
+		$table_headers = [
+			'Expression variable elements',
+			'Result type',
+			'Value',
+			'Expression',
+			'Result',
+			'Error'
+		];
 
 		foreach ($table_headers as $header) {
-			$this->assertTrue($dialog->query('xpath://table//th[text() ="'.$header.'"]')->one()->isPresent());
+			$this->assertTrue($dialog->query('xpath://table//th[text() ="' . $header . '"]')->one()->isPresent());
 		}
 
 		// Type value in expression testing form.
 		$dialog->query('xpath:.//input[@type="text"]')->waitUntilPresent()->one()->fill('20M');
 
-		// Verify zabbix server connection error message.
+		// Verify Advantal server connection error message.
 		$dialog->query('button:Test')->one()->click();
 
 		$message = $dialog->query('tag:output')->waitUntilPresent()->asMessage()->one();
 		$this->assertTrue($message->isBad());
 		$this->assertEquals('Cannot evaluate expression', $message->getTitle());
 
-		$message_details = "Connection to Zabbix server \"localhost:10051\" refused. Possible reasons:\n".
-				"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-				"2. Security environment (for example, SELinux) is blocking the connection;\n".
-				"3. Zabbix server daemon not running;\n".
-				"4. Firewall is blocking TCP connection.\n".
-				"Connection refused";
+		$message_details = "Connection to Advantal server \"localhost:10051\" refused. Possible reasons:\n" .
+			"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+			"2. Security environment (for example, SELinux) is blocking the connection;\n" .
+			"3. Advantal server daemon not running;\n" .
+			"4. Firewall is blocking TCP connection.\n" .
+			"Connection refused";
 
 		$this->assertTrue($message->hasLine($message_details));
 	}

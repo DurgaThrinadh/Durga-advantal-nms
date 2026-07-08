@@ -14,21 +14,23 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup module, widget
  */
-class testPageAdministrationGeneralModules extends CWebTest {
+class testPageAdministrationGeneralModules extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -56,30 +58,30 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		'Geomap' => 'Displays hosts as markers on a geographical map.',
 		'Graph' => 'Displays data of up to 50 items as line, points, staircase, or bar charts.',
 		'Graph (classic)' => 'Displays a single custom graph or a simple graph.',
-		'Graph prototype' => 'Displays a grid of graphs created by low-level discovery from either a graph prototype or '.
-				'an item prototype.',
+		'Graph prototype' => 'Displays a grid of graphs created by low-level discovery from either a graph prototype or ' .
+			'an item prototype.',
 		'Honeycomb' => 'Displays item values as a honeycomb.',
 		'Host availability' => 'Displays the host count by status (available/unavailable/unknown).',
 		'Host navigator' => 'Displays host hierarchy with ability to control other widgets based on selected host.',
-		'Item history' => 'Displays the latest data for the selected items with an option to add progress bar visualizations, '.
-				'customize report columns, and display images for binary data types.',
+		'Item history' => 'Displays the latest data for the selected items with an option to add progress bar visualizations, ' .
+			'customize report columns, and display images for binary data types.',
 		'Item navigator' => 'Displays item hierarchy with ability to control other widgets based on selected item.',
 		'Item value' => 'Displays the value of a single item prominently.',
-		'Map' => 'Displays either a single configured network map or one of the configured network maps in the map '.
-				'navigation tree.',
-		'Map navigation tree' => 'Allows to build a hierarchy of existing maps and display problem statistics for each '.
-				'included map and map group.',
+		'Map' => 'Displays either a single configured network map or one of the configured network maps in the map ' .
+			'navigation tree.',
+		'Map navigation tree' => 'Allows to build a hierarchy of existing maps and display problem statistics for each ' .
+			'included map and map group.',
 		'Pie chart' => 'Displays item values as a pie or doughnut chart.',
 		'Problem hosts' => 'Displays the problem count by host group and the highest problem severity within a group.',
 		'Problems' => 'Displays currently open problems with quick access links to the problem details.',
 		'Problems by severity' => 'Displays the problem count by severity.',
 		'SLA report' => 'Displays SLA reports.',
-		'System information' => 'Displays the current status and system statistics of the Zabbix server and its '.
-				'associated components.',
-		'Top hosts' => 'Displays top N hosts that have the highest or the lowest item value (for example, CPU load) '.
-				'with an option to add progress-bar visualizations and customize report columns.',
-		'Top triggers' => 'Displays top N triggers that have the most problems within the period of evaluation,'.
-				' sorted by the number of problems.',
+		'System information' => 'Displays the current status and system statistics of the Advantal server and its ' .
+			'associated components.',
+		'Top hosts' => 'Displays top N hosts that have the highest or the lowest item value (for example, CPU load) ' .
+			'with an option to add progress-bar visualizations and customize report columns.',
+		'Top triggers' => 'Displays top N triggers that have the most problems within the period of evaluation,' .
+			' sorted by the number of problems.',
 		'Trigger overview' => 'Displays trigger states for selected hosts.',
 		'URL' => 'Displays the content retrieved from the specified URL.',
 		'Web monitoring' => 'Displays the status summary of the active web monitoring scenarios.'
@@ -88,7 +90,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	/**
 	 * Creates dashboards with widgets and defines the corresponding dashboard IDs.
 	 */
-	public static function prepareDashboardData() {
+	public static function prepareDashboardData()
+	{
 		$response = CDataHelper::call('dashboard.create', [
 			[
 				'name' => 'Dashboard for widget module testing',
@@ -456,7 +459,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		self::$hostid = $host_responce['hostids'][self::HOSTNAME];
 	}
 
-	public function testPageAdministrationGeneralModules_Layout() {
+	public function testPageAdministrationGeneralModules_Layout()
+	{
 		$modules = [
 			[
 				'Name' => '1st Module name',
@@ -574,7 +578,7 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		$total_count = count($all_modules);
 
 		// Sort column contents ascending.
-		usort($all_modules, function($a, $b) {
+		usort($all_modules, function ($a, $b) {
 			return strcmp($a['Name'], $b['Name']);
 		});
 
@@ -582,16 +586,19 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		$this->assertTableData($all_modules);
 
 		$count = CDBHelper::getCount('SELECT moduleid FROM module');
-		$this->assertEquals('Displaying '.$total_count.' of '.$total_count.' found', $this->query('class:table-stats')
+		$this->assertEquals(
+			'Displaying ' . $total_count . ' of ' . $total_count . ' found',
+			$this->query('class:table-stats')
 				->one()->getText()
 		);
 
 		// Load modules again and check that no new modules were added.
 		$this->loadModules(false);
-		$this->assertEquals('Displaying '.$count.' of '.$count.' found', $this->query('class:table-stats')->one()->getText());
+		$this->assertEquals('Displaying ' . $count . ' of ' . $count . ' found', $this->query('class:table-stats')->one()->getText());
 	}
 
-	public function getModuleDetails() {
+	public function getModuleDetails()
+	{
 		return [
 			// Module 1.
 			[
@@ -705,7 +712,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @depends testPageAdministrationGeneralModules_Layout
 	 */
-	public function testPageAdministrationGeneralModules_Details($data) {
+	public function testPageAdministrationGeneralModules_Details($data)
+	{
 		// Open corresponding module from the modules table.
 		$this->page->login()->open('zabbix.php?action=module.list');
 		$this->query('link', $data['Name'])->waitUntilVisible()->one()->click();
@@ -719,7 +727,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		$dialog->close();
 	}
 
-	public function getModuleData() {
+	public function getModuleData()
+	{
 		return [
 			// Enable only 1st module - '1st Module' entry added under Monitoring.
 			[
@@ -791,15 +800,15 @@ class testPageAdministrationGeneralModules extends CWebTest {
 					],
 					[
 						'expected' => TEST_BAD,
-						'module_name' =>'4th Module',
+						'module_name' => '4th Module',
 						'menu_entries' => [
 							[
 								'name' => '4th Module',
 								'action' => 'forth.module'
 							]
 						],
-						'error_details' => 'Identical namespace (Modules\Example_A) is used by modules located at '.
-								'modules/module_number_1, modules/module_number_4.'
+						'error_details' => 'Identical namespace (Modules\Example_A) is used by modules located at ' .
+							'modules/module_number_1, modules/module_number_4.'
 					]
 				]
 			],
@@ -813,7 +822,7 @@ class testPageAdministrationGeneralModules extends CWebTest {
 							[
 								'name' => 'Your profile',
 								'action' => 'userprofile.edit',
-								'message' => 'User profile: Zabbix Administrator',
+								'message' => 'User profile: Advantal Administrator',
 								'check_disabled' => false
 							],
 							[
@@ -869,7 +878,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @depends testPageAdministrationGeneralModules_Layout
 	 */
-	public function testPageAdministrationGeneralModules_EnableDisable($data) {
+	public function testPageAdministrationGeneralModules_EnableDisable($data)
+	{
 		$this->page->login()->open('zabbix.php?action=module.list');
 
 		foreach (['list', 'form'] as $view) {
@@ -890,7 +900,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		}
 	}
 
-	public function getFilterData() {
+	public function getFilterData()
+	{
 		return [
 			// Exact name match.
 			[
@@ -999,7 +1010,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @depends testPageAdministrationGeneralModules_Layout
 	 */
-	public function testPageAdministrationGeneralModules_Filter($data) {
+	public function testPageAdministrationGeneralModules_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=module.list');
 
 		// Before checking the filter one of the modules needs to be enabled.
@@ -1021,13 +1033,14 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		// Reset the filter and check that all loaded modules are displayed.
 		$this->query('button:Reset')->one()->click();
 		$count = CDBHelper::getCount('SELECT moduleid FROM module');
-		$this->assertEquals('Displaying '.$count.' of '.$count.' found', $this->query('class:table-stats')->one()->getText());
+		$this->assertEquals('Displaying ' . $count . ' of ' . $count . ' found', $this->query('class:table-stats')->one()->getText());
 	}
 
 	/**
 	 * @depends testPageAdministrationGeneralModules_Layout
 	 */
-	public function testPageAdministrationGeneralModules_SimpleUpdate() {
+	public function testPageAdministrationGeneralModules_SimpleUpdate()
+	{
 		$sql = 'SELECT * FROM module ORDER BY moduleid';
 		$initial_hash = CDBHelper::getHash($sql);
 
@@ -1045,7 +1058,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	/**
 	 * @depends testPageAdministrationGeneralModules_Layout
 	 */
-	public function testPageAdministrationGeneralModules_Cancel() {
+	public function testPageAdministrationGeneralModules_Cancel()
+	{
 		$sql = 'SELECT * FROM module ORDER BY moduleid';
 		$initial_hash = CDBHelper::getHash($sql);
 
@@ -1063,7 +1077,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		$this->assertEquals($initial_hash, CDBHelper::getHash($sql));
 	}
 
-	public function getWidgetModuleData() {
+	public function getWidgetModuleData()
+	{
 		return [
 			// Custom widget with JS, css and pre-defined widget type name
 			[
@@ -1149,20 +1164,20 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @dataProvider getWidgetModuleData
 	 */
-	public function testPageAdministrationGeneralModules_ChangeWidgetModuleStatus($module) {
+	public function testPageAdministrationGeneralModules_ChangeWidgetModuleStatus($module)
+	{
 		$this->page->login()->open('zabbix.php?action=module.list');
 
 		// Determine the original status of the modules to be checked. Scenarios with mixed statuses are not considered.
 		$initial_status = $this->query('class:list-table')->asTable()->one()->findRow('Name', $module['module_name'])
-				->getColumn('Status')->getText();
+			->getColumn('Status')->getText();
 
 		if ($initial_status === 'Disabled') {
 			$this->enableModule($module, 'list');
 			$this->checkWidgetModuleStatus($module);
 			$this->disableModule($module, 'list');
 			$this->checkWidgetModuleStatus($module, 'disabled');
-		}
-		else {
+		} else {
 			$this->disableModule($module, 'list');
 			$this->checkWidgetModuleStatus($module, 'disabled');
 			$this->enableModule($module, 'list');
@@ -1170,7 +1185,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		}
 	}
 
-	public function getWidgetDimensions() {
+	public function getWidgetDimensions()
+	{
 		return [
 			// Widget with pre-defined dimensions.
 			[
@@ -1214,7 +1230,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @dataProvider getWidgetDimensions
 	 */
-	public function testPageAdministrationGeneralModules_CheckWidgetDimensions($data) {
+	public function testPageAdministrationGeneralModules_CheckWidgetDimensions($data)
+	{
 		$this->page->login();
 
 		if (array_key_exists('enable', $data)) {
@@ -1233,11 +1250,12 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @param array	$data	data provider.
 	 */
-	private function checkWidgetDimensions($data) {
+	private function checkWidgetDimensions($data)
+	{
 		// Open required dashboard page in edit mode.
 		$url = (array_key_exists('template', $data))
-			? 'zabbix.php?action=template.dashboard.edit&dashboardid='.self::$template_dashboardid
-			: 'zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid;
+			? 'zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$template_dashboardid
+			: 'zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid;
 		$this->page->open($url)->waitUntilReady();
 
 		$dashboard = CDashboardElement::find()->one()->waitUntilVisible();
@@ -1265,7 +1283,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	/**
 	 * @depends testPageAdministrationGeneralModules_ChangeWidgetModuleStatus
 	 */
-	public function testPageAdministrationGeneralModules_DisableAllModules() {
+	public function testPageAdministrationGeneralModules_DisableAllModules()
+	{
 		$this->page->login()->open('zabbix.php?action=module.list')->waitUntilReady();
 
 		// Disable all modules.
@@ -1277,23 +1296,24 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		$this->assertMessage(TEST_GOOD, 'Modules disabled');
 
 		// Open dashboard and check that all widgets are inaccessible.
-		$this->page->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+		$this->page->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$this->checkAllWidgetsDisabledOnPage();
 
 		// Open template dashboard and check that all widgets are inaccessible.
-		$this->page->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$template_dashboardid)->waitUntilReady();
+		$this->page->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$template_dashboardid)->waitUntilReady();
 		$this->checkAllWidgetsDisabledOnPage();
 
 		// Open template dashboard on host and check that all widgets are inaccessible.
-		$this->page->open('zabbix.php?action=host.dashboard.view&hostid='.self::$hostid.'&dashboardid='.self::$template_dashboardid)
-				->waitUntilReady();
+		$this->page->open('zabbix.php?action=host.dashboard.view&hostid=' . self::$hostid . '&dashboardid=' . self::$template_dashboardid)
+			->waitUntilReady();
 		$this->checkAllWidgetsDisabledOnPage();
 	}
 
 	/**
 	 * Check that all widgets that are displayed on opened dashboard page are inaccessible widgets.
 	 */
-	private function checkAllWidgetsDisabledOnPage() {
+	private function checkAllWidgetsDisabledOnPage()
+	{
 		$dashboard = CDashboardElement::find()->one()->waitUntilPresent();
 		$total_count = $dashboard->getWidgets()->count();
 		$inaccessible_count = $dashboard->query(self::INACCESSIBLE_XPATH)->waitUntilVisible()->all()->count();
@@ -1306,11 +1326,12 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 * @param array		$module		module related information from data provider.
 	 * @param string	$status		status of widget module before execution of this function.
 	 */
-	private function checkWidgetModuleStatus($module, $status = 'enabled') {
+	private function checkWidgetModuleStatus($module, $status = 'enabled')
+	{
 		// Open dashboard or host dashboard and check widget display in this view.
 		$url = array_key_exists('template', $module)
-			? 'zabbix.php?action=host.dashboard.view&hostid='.self::$hostid.'&dashboardid='.self::$template_dashboardid
-			: 'zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid;
+			? 'zabbix.php?action=host.dashboard.view&hostid=' . self::$hostid . '&dashboardid=' . self::$template_dashboardid
+			: 'zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid;
 		$this->page->open($url)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one()->waitUntilVisible();
 		$this->checkWidgetStatusOnDashboard($dashboard, $module, $status);
@@ -1322,10 +1343,9 @@ class testPageAdministrationGeneralModules extends CWebTest {
 
 		// Open dashboard in edit mode or open dashboard on template and check widget display again.
 		if (array_key_exists('template', $module)) {
-			$this->page->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$template_dashboardid)
-					->waitUntilReady();
-		}
-		else {
+			$this->page->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$template_dashboardid)
+				->waitUntilReady();
+		} else {
 			$dashboard->edit();
 		}
 
@@ -1358,7 +1378,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 * @param string				$status		status of widget module before execution of this function.
 	 * @param string				$mode		mode of the dashboard.
 	 */
-	private function checkWidgetStatusOnDashboard($dashboard, $module, $status, $mode = null) {
+	private function checkWidgetStatusOnDashboard($dashboard, $module, $status, $mode = null)
+	{
 		$dashboard->selectPage($module['page']);
 
 		// Switch to kiosk mode if required.
@@ -1370,7 +1391,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		if ($status === 'enabled') {
 			// Check that widget with required name is shown and that is doesn't have the inaccessible widget string in it.
 			$widget = $dashboard->getWidget($module['widget_name']);
-			$this->assertFalse($widget->query("xpath:.//div[text()=".CXPathHelper::escapeQuotes(self::INACCESSIBLE_TEXT).
+			$this->assertFalse(
+				$widget->query("xpath:.//div[text()=" . CXPathHelper::escapeQuotes(self::INACCESSIBLE_TEXT) .
 					"]")->one(false)->isValid()
 			);
 
@@ -1388,8 +1410,7 @@ class testPageAdministrationGeneralModules extends CWebTest {
 					$this->assertNotEquals(self::INACCESSIBLE_TEXT, $dependent_widget->getContent()->getText());
 				}
 			}
-		}
-		else {
+		} else {
 			// Check that there is only 1 inaccessible widget present on the opened dashboard page.
 			$this->assertEquals(1, $dashboard->query(self::INACCESSIBLE_XPATH)->waitUntilVisible()->all()->count());
 
@@ -1405,8 +1426,9 @@ class testPageAdministrationGeneralModules extends CWebTest {
 				foreach ($module['dependent_widgets'] as $widget_name) {
 					$dependent_widget = $dashboard->getWidget($widget_name);
 					$this->assertTrue($dependent_widget->isValid());
-					$this->assertEquals("Referred widget is unavailable\nPlease update configuration",
-							$dependent_widget->getContent()->getText()
+					$this->assertEquals(
+						"Referred widget is unavailable\nPlease update configuration",
+						$dependent_widget->getContent()->getText()
 					);
 				}
 			}
@@ -1415,14 +1437,14 @@ class testPageAdministrationGeneralModules extends CWebTest {
 			 * Check that edit widget button on disabled module widget is hidden and that it doesn't exist
 			 * if the dashboard is opened in Monitoring => Hosts view (where All hosts link is present) or in kiosk mode.
 			 */
-			$edit_button = $inaccessible_widget->query('xpath:.//button['.CXPathHelper::fromClass('js-widget-edit').']');
+			$edit_button = $inaccessible_widget->query('xpath:.//button[' . CXPathHelper::fromClass('js-widget-edit') . ']');
 			$this->assertFalse(($mode === 'kiosk' || $this->query('link:All hosts')->one(false)->isValid())
 					? $edit_button->one(false)->isValid()
 					: $edit_button->one()->isDisplayed()
 			);
 
 			// It should not be possible only to Delete the widget and only when the dashboard is in edit mode.
-			$button = $inaccessible_widget->query('xpath:.//button['.CXPathHelper::fromClass('js-widget-action').']')->one();
+			$button = $inaccessible_widget->query('xpath:.//button[' . CXPathHelper::fromClass('js-widget-action') . ']')->one();
 
 			if ($mode === 'edit') {
 				$popup_menu = $button->waitUntilPresent()->asPopupButton()->getMenu();
@@ -1432,8 +1454,7 @@ class testPageAdministrationGeneralModules extends CWebTest {
 				// Check that inaccessible widgets can only be deleted.
 				$this->assertEquals(['Delete'], array_values($menu_items->filter(CElementFilter::CLICKABLE)->asText()));
 				$popup_menu->close();
-			}
-			else {
+			} else {
 				$this->assertFalse($button->isVisible());
 			}
 		}
@@ -1444,7 +1465,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @param bool	$first_load		flag that determines whether modules are loaded for the first time.
 	 */
-	private function loadModules($first_load = true) {
+	private function loadModules($first_load = true)
+	{
 		// Load modules
 		$this->query('button:Scan directory')->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
@@ -1452,11 +1474,17 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		// Check message after loading modules.
 		if ($first_load) {
 			// Each loaded module name is checked separately due to difference in their sorting on Jenkins and locally.
-			$this->assertMessage(TEST_GOOD, 'Modules updated', ['Modules added:', '1st Module name',
-					'2nd Module name !@#$%^&*()_+', '4th Module', '5th Module', 'Clock2', 'Empty widget', 'шестой модуль'
+			$this->assertMessage(TEST_GOOD, 'Modules updated', [
+				'Modules added:',
+				'1st Module name',
+				'2nd Module name !@#$%^&*()_+',
+				'4th Module',
+				'5th Module',
+				'Clock2',
+				'Empty widget',
+				'шестой модуль'
 			]);
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, 'No new modules discovered');
 		}
 	}
@@ -1467,14 +1495,15 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @param array	$module		module related information from data provider.
 	 */
-	private function assertModuleEnabled($module) {
+	private function assertModuleEnabled($module)
+	{
 		$xpath = 'xpath://ul[@class="menu-main"]//a[text()="';
 		// If module removes a menu entry or top level menu entry, check that such entries are not present.
 		if (CTestArrayHelper::get($module, 'remove')) {
-			$this->assertEquals(0, $this->query($xpath.$module['menu_entry'].'"]')->count());
+			$this->assertEquals(0, $this->query($xpath . $module['menu_entry'] . '"]')->count());
 
 			if (array_key_exists('top_menu_entry', $module)) {
-				$this->assertEquals(0, $this->query($xpath.$module['top_menu_entry'].'"]')->count());
+				$this->assertEquals(0, $this->query($xpath . $module['top_menu_entry'] . '"]')->count());
 			}
 
 			return;
@@ -1491,16 +1520,15 @@ class testPageAdministrationGeneralModules extends CWebTest {
 
 		foreach ($module['menu_entries'] as $entry) {
 			sleep(1);
-			$this->query($xpath.$entry['name'].'"]')->waitUntilClickable()->one()->click();
+			$this->query($xpath . $entry['name'] . '"]')->waitUntilClickable()->one()->click();
 			$this->page->waitUntilReady();
-			$this->assertStringContainsString('zabbix.php?action='.$entry['action'], $this->page->getCurrentURL());
+			$this->assertStringContainsString('zabbix.php?action=' . $entry['action'], $this->page->getCurrentURL());
 
 			if (CTestArrayHelper::get($entry, 'form')) {
 				$this->query($entry['form'])->asForm()->one()->submit();
 
 				$this->assertMessage(TEST_GOOD, $entry['message']);
-			}
-			else {
+			} else {
 				$this->assertEquals($entry['message'], $this->query('tag:h1')->waitUntilVisible()->one()->getText());
 			}
 		}
@@ -1514,32 +1542,41 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 *
 	 * @param array	$module		module related information from data provider.
 	 */
-	private function assertModuleDisabled($module) {
+	private function assertModuleDisabled($module)
+	{
 		$xpath = 'xpath://ul[@class="menu-main"]//li/a[text()="';
 		// If module removes a menu entry or top level menu entry, check that entries are back after disabling the module.
 		if (array_key_exists('remove', $module)) {
-			$this->assertEquals(1, $this->query($xpath.$module['menu_entry'].'"]')->count());
+			$this->assertEquals(1, $this->query($xpath . $module['menu_entry'] . '"]')->count());
 
 			if (array_key_exists('top_menu_entry', $module)) {
-				$this->assertEquals(1, $this->query($xpath.$module['top_menu_entry'].'"]')->count());
+				$this->assertEquals(1, $this->query($xpath . $module['top_menu_entry'] . '"]')->count());
 			}
 
 			return;
 		}
 		// If module adds single or multiple menu entries, check that entries don't exist after disabling the module.
-		$top_menus = ['Dashboards', 'Monitoring', 'Services', 'Inventory', 'Reports', 'Data collection', 'Alerts',
-				'Users', 'Administration'
+		$top_menus = [
+			'Dashboards',
+			'Monitoring',
+			'Services',
+			'Inventory',
+			'Reports',
+			'Data collection',
+			'Alerts',
+			'Users',
+			'Administration'
 		];
 
 		foreach ($module['menu_entries'] as $entry) {
 			$check_entry = (array_key_exists('top_menu_entry', $module) && !in_array($module['top_menu_entry'], $top_menus))
 				? $module['top_menu_entry']
 				: $entry['name'];
-			$this->assertEquals(0, $this->query($xpath.$check_entry.'"]')->count());
+			$this->assertEquals(0, $this->query($xpath . $check_entry . '"]')->count());
 
 			// In case if module many entry leads to an existing view, don't check that menu entry URL isn't available.
 			if (CTestArrayHelper::get($entry, 'check_disabled', true)) {
-				$this->page->open('zabbix.php?action='.$entry['action'])->waitUntilReady();
+				$this->page->open('zabbix.php?action=' . $entry['action'])->waitUntilReady();
 				$message = CMessageElement::find()->one();
 				$this->assertStringContainsString('Page not found', $message->getText());
 				$this->page->open('zabbix.php?action=module.list');
@@ -1553,14 +1590,14 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 * @param array		$data	data array with module details
 	 * @param string	$view	view from which the module should be enabled - module list or module details form.
 	 */
-	private function enableModule($module, $view) {
+	private function enableModule($module, $view)
+	{
 		$expected = CTestArrayHelper::get($module, 'expected', TEST_GOOD);
 
 		// Change module status from Disabled to Enabled.
 		if ($view === 'form') {
 			$this->changeModuleStatusFromForm($module['module_name'], true, $expected);
-		}
-		else {
+		} else {
 			$this->changeModuleStatusFromPage($module['module_name'], 'Disabled');
 		}
 		// In case of negative test check error message and confirm that module wasn't applied.
@@ -1588,7 +1625,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 * @param array		$module	data array with module details
 	 * @param string	$view	view from which the module should be enabled - module list or module details form.
 	 */
-	private function disableModule($module, $view) {
+	private function disableModule($module, $view)
+	{
 		$expected = CTestArrayHelper::get($module, 'expected', TEST_GOOD);
 
 		// In case of negative test do nothing.
@@ -1600,8 +1638,7 @@ class testPageAdministrationGeneralModules extends CWebTest {
 		// Change module status from Enabled to Disabled.
 		if ($view === 'form') {
 			$this->changeModuleStatusFromForm($module['module_name'], false, $expected);
-		}
-		else {
+		} else {
 			$this->changeModuleStatusFromPage($module['module_name'], 'Enabled');
 		}
 		// Check message and confirm that changes, made by the module, were reversed.
@@ -1615,7 +1652,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 * @param string	$name				module name
 	 * @param string	$current_status		module current status that is going to be changed.
 	 */
-	private function changeModuleStatusFromPage($name, $current_status) {
+	private function changeModuleStatusFromPage($name, $current_status)
+	{
 		$table = $this->query('class:list-table')->asTable()->one();
 		$row = $table->findRow('Name', $name);
 		$row->query('link', $current_status)->one()->click();
@@ -1629,7 +1667,8 @@ class testPageAdministrationGeneralModules extends CWebTest {
 	 * @param bool		$enabled		boolean value to be set in "Enabled" checkbox in module details form.
 	 * @param constant	$expected		flag that determines whether the module update should succeed or fail.
 	 */
-	private function changeModuleStatusFromForm($name, $enabled, $expected) {
+	private function changeModuleStatusFromForm($name, $enabled, $expected)
+	{
 		$this->query('link', $name)->waitUntilVisible()->one()->click();
 		$dialog = COverlayDialogElement::find()->one()->waitUntilReady();
 

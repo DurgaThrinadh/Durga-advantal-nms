@@ -14,14 +14,13 @@
 **/
 
 
-require_once __DIR__.'/include/classes/core/APP.php';
+require_once __DIR__ . '/include/classes/core/APP.php';
 
 $page['file'] = 'setup.php';
 
 try {
 	APP::getInstance()->run(APP::EXEC_MODE_SETUP);
-}
-catch (Exception $e) {
+} catch (Exception $e) {
 	echo (new CView('general.warning', [
 		'header' => $e->getMessage(),
 		'messages' => [],
@@ -34,16 +33,16 @@ catch (Exception $e) {
 // VAR	TYPE	OPTIONAL	FLAGS	VALIDATION	EXCEPTION
 $fields = [
 	'default_lang' =>			[T_ZBX_STR, O_OPT, null,	null,				null],
-	'type' =>					[T_ZBX_STR, O_OPT, null,	IN('"'.ZBX_DB_MYSQL.'","'.ZBX_DB_POSTGRESQL.'","'.ZBX_DB_ORACLE.'"'), null],
+	'type' =>					[T_ZBX_STR, O_OPT, null,	IN('"' . ZBX_DB_MYSQL . '","' . ZBX_DB_POSTGRESQL . '","' . ZBX_DB_ORACLE . '"'), null],
 	'server' =>					[T_ZBX_STR, O_OPT, null,	null,				null],
 	'port' =>					[T_ZBX_INT, O_OPT, null,	BETWEEN(0, 65535),	null, _('Database port')],
-	'database' =>				[T_ZBX_STR, O_OPT, null,	NOT_EMPTY,			'(isset({type}) && {type} !== "'.ZBX_DB_ORACLE.'")', _('Database name')],
+	'database' =>				[T_ZBX_STR, O_OPT, null,	NOT_EMPTY,			'(isset({type}) && {type} !== "' . ZBX_DB_ORACLE . '")', _('Database name')],
 	'user' =>					[T_ZBX_STR, O_OPT, null,	null,				null],
 	'password' =>				[T_ZBX_STR, O_OPT, null,	null, 				null],
 	'schema' =>					[T_ZBX_STR, O_OPT, null,	null, 				null],
-	'tls_encryption' =>			[T_ZBX_INT, O_OPT, null,	IN([0,1]),			null],
-	'verify_certificate' =>		[T_ZBX_INT, O_OPT, null,	IN([0,1]),			null],
-	'verify_host' =>			[T_ZBX_INT, O_OPT, null,	IN([0,1]),			null],
+	'tls_encryption' =>			[T_ZBX_INT, O_OPT, null,	IN([0, 1]),			null],
+	'verify_certificate' =>		[T_ZBX_INT, O_OPT, null,	IN([0, 1]),			null],
+	'verify_host' =>			[T_ZBX_INT, O_OPT, null,	IN([0, 1]),			null],
 	'key_file' =>				[T_ZBX_STR, O_OPT, null,	null, 				null],
 	'cert_file' =>				[T_ZBX_STR, O_OPT, null,	null, 				null],
 	'ca_file' =>				[T_ZBX_STR, O_OPT, null,	null, 				null],
@@ -55,7 +54,7 @@ $fields = [
 	'vault_db_path' =>			[T_ZBX_STR, O_OPT, null,	null,				null],
 	'vault_query_string' =>		[T_ZBX_STR, O_OPT, null,	null,				null],
 	'vault_token' =>			[T_ZBX_STR, O_OPT, null,	null,				null],
-	'vault_certificates' =>		[T_ZBX_INT, O_OPT, null,	IN([0,1]),			null],
+	'vault_certificates' =>		[T_ZBX_INT, O_OPT, null,	IN([0, 1]),			null],
 	'vault_cert_file' =>		[T_ZBX_STR, O_OPT, null,	null,				null],
 	'vault_key_file' =>			[T_ZBX_STR, O_OPT, null,	null,				null],
 	'zbx_server_name' =>		[T_ZBX_STR, O_OPT, null,	null,				null],
@@ -66,8 +65,8 @@ $fields = [
 	'retry' =>					[T_ZBX_STR, O_OPT, P_SYS,	null,				null],
 	'cancel' =>					[T_ZBX_STR, O_OPT, P_SYS,	null,				null],
 	'finish' =>					[T_ZBX_STR, O_OPT, P_SYS,	null,				null],
-	'next' =>					[T_ZBX_STR, O_OPT, P_SYS|P_ONLY_ARRAY,	null,	null],
-	'back' =>					[T_ZBX_STR, O_OPT, P_SYS|P_ONLY_ARRAY,	null,	null]
+	'next' =>					[T_ZBX_STR, O_OPT, P_SYS | P_ONLY_ARRAY,	null,	null],
+	'back' =>					[T_ZBX_STR, O_OPT, P_SYS | P_ONLY_ARRAY,	null,	null]
 ];
 
 $check_fields_result = check_fields($fields, false);
@@ -76,8 +75,10 @@ if (hasRequest('cancel') || hasRequest('finish')) {
 	redirect('index.php');
 }
 
-if (CWebUser::$data && CWebUser::getType() < USER_TYPE_SUPER_ADMIN
-		&& CSessionHelper::get('step') != CSetupWizard::STAGE_INSTALL) {
+if (
+	CWebUser::$data && CWebUser::getType() < USER_TYPE_SUPER_ADMIN
+	&& CSessionHelper::get('step') != CSetupWizard::STAGE_INSTALL
+) {
 	access_deny(ACCESS_DENY_PAGE);
 }
 
@@ -88,8 +89,7 @@ $default_lang = ZBX_DEFAULT_LANG;
 
 if (CSessionHelper::has('default_lang')) {
 	$default_lang = CSessionHelper::get('default_lang');
-}
-elseif (CWebUser::$data) {
+} elseif (CWebUser::$data) {
 	$default_lang = CWebUser::$data['lang'];
 }
 
@@ -118,8 +118,7 @@ $default_timezone = ZBX_DEFAULT_TIMEZONE;
 
 if (CSessionHelper::has('default_timezone')) {
 	$default_timezone = CSessionHelper::get('default_timezone');
-}
-elseif (CWebUser::$data) {
+} elseif (CWebUser::$data) {
 	$default_timezone = CWebUser::$data['timezone'];
 }
 
@@ -136,8 +135,7 @@ $default_theme = ZBX_DEFAULT_THEME;
 
 if (CSessionHelper::has('default_theme')) {
 	$default_theme = CSessionHelper::get('default_theme');
-}
-elseif (CWebUser::$data) {
+} elseif (CWebUser::$data) {
 	$default_theme = getUserTheme(CWebUser::$data);
 }
 
@@ -161,18 +159,18 @@ $page_header = (new CHtmlPageHeader(_('Installation'), substr($default_lang, 0, 
 
 $page_header
 	->setTheme($default_theme)
-	->addCssFile('assets/styles/'.$page_header->getTheme().'.css')
+	->addCssFile('assets/styles/' . $page_header->getTheme() . '.css')
 	->addJsFile((new CUrl('js/browsers.js'))->getUrl())
 	->addJsFile((new CUrl('jsLoader.php'))
-		->setArgument('ver', ZABBIX_VERSION)
-		->setArgument('lang', $default_lang)
-		->getUrl()
+			->setArgument('ver', ZABBIX_VERSION)
+			->setArgument('lang', $default_lang)
+			->getUrl()
 	)
 	->addJsFile((new CUrl('jsLoader.php'))
-		->setArgument('ver', ZABBIX_VERSION)
-		->setArgument('lang', $default_lang)
-		->setArgument('files', ['setup.js'])
-		->getUrl()
+			->setArgument('ver', ZABBIX_VERSION)
+			->setArgument('lang', $default_lang)
+			->setArgument('files', ['setup.js'])
+			->getUrl()
 	)
 	->show();
 
@@ -185,7 +183,9 @@ $link = (new CLink('AGPLv3', 'https://www.zabbix.com/license'))
 	->addClass(ZBX_STYLE_LINK_ALT);
 $sub_footer = (new CDiv([_('Licensed under'), ' ', $link]))->addClass(ZBX_STYLE_SIGNIN_LINKS);
 
-(new CTag('body', true,
+(new CTag(
+	'body',
+	true,
 	(new CDiv([
 		(new CTag('main', true, [$setup_wizard, $sub_footer])),
 		makePageFooter()
@@ -193,15 +193,16 @@ $sub_footer = (new CDiv([_('Licensed under'), ' ', $link]))->addClass(ZBX_STYLE_
 ))->show();
 
 (new CScriptTag('
-	view.init('.json_encode([
-		'step' => $setup_wizard->getStep(),
-		'hashicorp_endpoint_default' => CVaultHashiCorp::API_ENDPOINT_DEFAULT,
-		'cyberark_endpoint_default' => CVaultCyberArk::API_ENDPOINT_DEFAULT
-	]).');
+	view.init(' . json_encode([
+	'step' => $setup_wizard->getStep(),
+	'hashicorp_endpoint_default' => CVaultHashiCorp::API_ENDPOINT_DEFAULT,
+	'cyberark_endpoint_default' => CVaultCyberArk::API_ENDPOINT_DEFAULT
+]) . ');
 '))
 	->setOnDocumentReady()
 	->show();
 ?>
+
 </html>
 
 <?php

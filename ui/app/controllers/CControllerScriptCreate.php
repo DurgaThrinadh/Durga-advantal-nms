@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,41 +16,44 @@
 **/
 
 
-class CControllerScriptCreate extends CController {
+class CControllerScriptCreate extends CController
+{
 
-	protected function init(): void {
+	protected function init(): void
+	{
 		$this->setPostContentType(self::POST_CONTENT_TYPE_JSON);
 	}
 
-	protected function checkInput(): bool {
+	protected function checkInput(): bool
+	{
 		$fields = [
 			'name' =>						'required|db scripts.name|not_empty',
-			'scope' =>						'db scripts.scope| in '.implode(',', [ZBX_SCRIPT_SCOPE_ACTION, ZBX_SCRIPT_SCOPE_HOST, ZBX_SCRIPT_SCOPE_EVENT]),
-			'type' =>						'required|db scripts.type|in '.implode(',', [ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT, ZBX_SCRIPT_TYPE_IPMI, ZBX_SCRIPT_TYPE_SSH, ZBX_SCRIPT_TYPE_TELNET, ZBX_SCRIPT_TYPE_WEBHOOK, ZBX_SCRIPT_TYPE_URL]),
-			'execute_on' =>					'db scripts.execute_on|in '.implode(',', [ZBX_SCRIPT_EXECUTE_ON_AGENT, ZBX_SCRIPT_EXECUTE_ON_SERVER, ZBX_SCRIPT_EXECUTE_ON_PROXY]),
+			'scope' =>						'db scripts.scope| in ' . implode(',', [ZBX_SCRIPT_SCOPE_ACTION, ZBX_SCRIPT_SCOPE_HOST, ZBX_SCRIPT_SCOPE_EVENT]),
+			'type' =>						'required|db scripts.type|in ' . implode(',', [ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT, ZBX_SCRIPT_TYPE_IPMI, ZBX_SCRIPT_TYPE_SSH, ZBX_SCRIPT_TYPE_TELNET, ZBX_SCRIPT_TYPE_WEBHOOK, ZBX_SCRIPT_TYPE_URL]),
+			'execute_on' =>					'db scripts.execute_on|in ' . implode(',', [ZBX_SCRIPT_EXECUTE_ON_AGENT, ZBX_SCRIPT_EXECUTE_ON_SERVER, ZBX_SCRIPT_EXECUTE_ON_PROXY]),
 			'menu_path' =>					'db scripts.menu_path',
-			'authtype' =>					'db scripts.authtype|in '.implode(',', [ITEM_AUTHTYPE_PASSWORD, ITEM_AUTHTYPE_PUBLICKEY]),
+			'authtype' =>					'db scripts.authtype|in ' . implode(',', [ITEM_AUTHTYPE_PASSWORD, ITEM_AUTHTYPE_PUBLICKEY]),
 			'username' =>					'db scripts.username',
 			'password' =>					'db scripts.password',
 			'publickey' =>					'db scripts.publickey',
 			'privatekey' =>					'db scripts.privatekey',
 			'passphrase' =>					'db scripts.password',
 			'port' =>						'db scripts.port',
-			'command' =>					'db scripts.command|flags '.P_CRLF,
-			'commandipmi' =>				'db scripts.command|flags '.P_CRLF,
+			'command' =>					'db scripts.command|flags ' . P_CRLF,
+			'commandipmi' =>				'db scripts.command|flags ' . P_CRLF,
 			'parameters' =>					'array',
-			'script' => 					'db scripts.command|flags '.P_CRLF,
-			'timeout' => 					'db scripts.timeout|time_unit '.implode(':', [1, SEC_PER_MIN]),
+			'script' => 					'db scripts.command|flags ' . P_CRLF,
+			'timeout' => 					'db scripts.timeout|time_unit ' . implode(':', [1, SEC_PER_MIN]),
 			'url' => 						'db scripts.url',
-			'new_window' => 				'db scripts.new_window|in '.ZBX_SCRIPT_URL_NEW_WINDOW_YES,
+			'new_window' => 				'db scripts.new_window|in ' . ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 			'description' =>				'db scripts.description',
-			'host_access' =>				'db scripts.host_access|in '.implode(',', [PERM_READ, PERM_READ_WRITE]),
+			'host_access' =>				'db scripts.host_access|in ' . implode(',', [PERM_READ, PERM_READ_WRITE]),
 			'groupid' =>					'db scripts.groupid',
 			'usrgrpid' =>					'db scripts.usrgrpid',
 			'hgstype' =>					'in 0,1',
-			'manualinput' =>				'db scripts.manualinput|in '.ZBX_SCRIPT_MANUALINPUT_ENABLED,
+			'manualinput' =>				'db scripts.manualinput|in ' . ZBX_SCRIPT_MANUALINPUT_ENABLED,
 			'manualinput_prompt' =>			'db scripts.manualinput_prompt',
-			'manualinput_validator_type' =>	'db scripts.manualinput_validator_type|in '.implode(',', [ZBX_SCRIPT_MANUALINPUT_TYPE_STRING, ZBX_SCRIPT_MANUALINPUT_TYPE_LIST]),
+			'manualinput_validator_type' =>	'db scripts.manualinput_validator_type|in ' . implode(',', [ZBX_SCRIPT_MANUALINPUT_TYPE_STRING, ZBX_SCRIPT_MANUALINPUT_TYPE_LIST]),
 			'manualinput_default_value' =>	'db scripts.manualinput_default_value|string',
 			'manualinput_validator' =>		'db scripts.manualinput_validator',
 			'dropdown_options' =>			'db scripts.manualinput_validator',
@@ -58,9 +63,11 @@ class CControllerScriptCreate extends CController {
 
 		$ret = $this->validateInput($fields);
 
-		if (!CSettingsHelper::isGlobalScriptsEnabled()
-				&& $this->getInput('execute_on', ZBX_SCRIPT_EXECUTE_ON_SERVER) == ZBX_SCRIPT_EXECUTE_ON_SERVER) {
-			error(_('Global script execution on Zabbix server is disabled by server configuration.'));
+		if (
+			!CSettingsHelper::isGlobalScriptsEnabled()
+			&& $this->getInput('execute_on', ZBX_SCRIPT_EXECUTE_ON_SERVER) == ZBX_SCRIPT_EXECUTE_ON_SERVER
+		) {
+			error(_('Global script execution on Advantal server is disabled by server configuration.'));
 
 			$ret = false;
 		}
@@ -79,11 +86,13 @@ class CControllerScriptCreate extends CController {
 		return $ret;
 	}
 
-	protected function checkPermissions(): bool {
+	protected function checkPermissions(): bool
+	{
 		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_SCRIPTS);
 	}
 
-	protected function doAction(): void {
+	protected function doAction(): void
+	{
 		$script = [];
 
 		$this->getInputs($script, ['name', 'description', 'groupid']);
@@ -99,8 +108,8 @@ class CControllerScriptCreate extends CController {
 
 			$script['manualinput'] =
 				$this->getInput('manualinput', ZBX_SCRIPT_MANUALINPUT_DISABLED) == ZBX_SCRIPT_MANUALINPUT_ENABLED
-					? ZBX_SCRIPT_MANUALINPUT_ENABLED
-					: ZBX_SCRIPT_MANUALINPUT_DISABLED;
+				? ZBX_SCRIPT_MANUALINPUT_ENABLED
+				: ZBX_SCRIPT_MANUALINPUT_DISABLED;
 
 			if ($script['manualinput'] == ZBX_SCRIPT_MANUALINPUT_ENABLED) {
 				$script['manualinput_prompt'] = $this->getInput('manualinput_prompt');
@@ -109,8 +118,7 @@ class CControllerScriptCreate extends CController {
 				if ($script['manualinput_validator_type'] == ZBX_SCRIPT_MANUALINPUT_TYPE_LIST) {
 					$user_input_values = array_map('trim', explode(',', $this->getInput('dropdown_options', [])));
 					$script['manualinput_validator'] = implode(',', $user_input_values);
-				}
-				else {
+				} else {
 					$script['manualinput_validator'] = $this->getInput('manualinput_validator', '');
 					$script['manualinput_default_value'] = trim($this->getInput('manualinput_default_value'));
 				}
@@ -135,8 +143,7 @@ class CControllerScriptCreate extends CController {
 
 				if ($script['authtype'] == ITEM_AUTHTYPE_PASSWORD) {
 					$script['password'] = $this->getInput('password', '');
-				}
-				else {
+				} else {
 					$script['publickey'] = $this->getInput('publickey', '');
 					$script['privatekey'] = $this->getInput('privatekey', '');
 					$script['password'] = $this->getInput('passphrase', '');
@@ -156,9 +163,12 @@ class CControllerScriptCreate extends CController {
 				$parameters = $this->getInput('parameters', []);
 
 				if (array_key_exists('name', $parameters) && array_key_exists('value', $parameters)) {
-					$script['parameters'] = array_map(function ($name, $value) {
+					$script['parameters'] = array_map(
+						function ($name, $value) {
 							return compact('name', 'value');
-						}, $parameters['name'], $parameters['value']
+						},
+						$parameters['name'],
+						$parameters['value']
 					);
 				}
 				break;
@@ -184,8 +194,7 @@ class CControllerScriptCreate extends CController {
 			if ($messages = get_and_clear_messages()) {
 				$output['success']['messages'] = array_column($messages, 'message');
 			}
-		}
-		else {
+		} else {
 			$output['error'] = [
 				'title' => _('Cannot add script'),
 				'messages' => array_column(get_and_clear_messages(), 'message')

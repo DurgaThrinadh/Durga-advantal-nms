@@ -15,11 +15,12 @@
 
 
 /**
- * A class for interacting with the Zabbix server.
+ * A class for interacting with the Advantal server.
  *
  * Class CZabbixServer
  */
-class CZabbixServer {
+class CZabbixServer
+{
 
 	/**
 	 * Return item queue overview.
@@ -58,14 +59,14 @@ class CZabbixServer {
 	const READ_BYTES_LIMIT = 8192;
 
 	/**
-	 * Zabbix server host name.
+	 * Advantal server host name.
 	 *
 	 * @var string|null
 	 */
 	protected $host;
 
 	/**
-	 * Zabbix server port number.
+	 * Advantal server port number.
 	 *
 	 * @var int|null
 	 */
@@ -93,7 +94,7 @@ class CZabbixServer {
 	protected $totalBytesLimit;
 
 	/**
-	 * Zabbix server socket resource.
+	 * Advantal server socket resource.
 	 *
 	 * @var resource
 	 */
@@ -127,7 +128,8 @@ class CZabbixServer {
 	 * @param int         $timeout
 	 * @param int         $totalBytesLimit
 	 */
-	public function __construct($host, $port, $connect_timeout, $timeout, $totalBytesLimit) {
+	public function __construct($host, $port, $connect_timeout, $timeout, $totalBytesLimit)
+	{
 		$this->host = $host;
 		$this->port = $port;
 		$this->connect_timeout = $connect_timeout;
@@ -146,8 +148,13 @@ class CZabbixServer {
 	 *
 	 * @return bool|array
 	 */
-	public function executeScript(string $scriptid, string $sid, ?string $hostid = null, ?string $eventid = null,
-			$manualinput = null) {
+	public function executeScript(
+		string $scriptid,
+		string $sid,
+		?string $hostid = null,
+		?string $eventid = null,
+		$manualinput = null
+	) {
 		$params = [
 			'request' => 'command',
 			'scriptid' => $scriptid,
@@ -182,7 +189,8 @@ class CZabbixServer {
 	 *
 	 * @return array|bool
 	 */
-	public function pushHistory(array $data, string $sid) {
+	public function pushHistory(array $data, string $sid)
+	{
 		return $this->request([
 			'request' => 'history.push',
 			'data' => $data,
@@ -202,7 +210,8 @@ class CZabbixServer {
 	 *
 	 * @return array|bool
 	 */
-	public function testItem(array $data, string $sid) {
+	public function testItem(array $data, string $sid)
+	{
 		return $this->request([
 			'request' => 'item.test',
 			'data' => $data,
@@ -224,7 +233,8 @@ class CZabbixServer {
 	 *
 	 * @return bool|array
 	 */
-	public function getQueue($type, $sid, $limit = 0) {
+	public function getQueue($type, $sid, $limit = 0)
+	{
 		$request = [
 			'request' => 'queue.get',
 			'sid' => $sid,
@@ -251,7 +261,8 @@ class CZabbixServer {
 	 *
 	 * @return bool|array
 	 */
-	public function testMediaType(array $data, $sid) {
+	public function testMediaType(array $data, $sid)
+	{
 		return $this->request([
 			'request' => 'alert.send',
 			'sid' => $sid,
@@ -279,7 +290,8 @@ class CZabbixServer {
 	 *
 	 * @return bool|array
 	 */
-	public function testReport(array $data, string $sid) {
+	public function testReport(array $data, string $sid)
+	{
 		return $this->request([
 			'request' => 'report.test',
 			'sid' => $sid,
@@ -294,7 +306,8 @@ class CZabbixServer {
 	 *
 	 * @return bool|array
 	 */
-	public function getStatus($sid) {
+	public function getStatus($sid)
+	{
 		$response = $this->request([
 			'request' => 'status.get',
 			'type' => 'full',
@@ -307,14 +320,14 @@ class CZabbixServer {
 
 		$api_input_rules = ['type' => API_OBJECT, 'fields' => [
 			'template stats' =>			['type' => API_OBJECTS, 'flags' => API_REQUIRED | API_NOT_EMPTY, 'fields' => [
-				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:'.ZBX_MAX_INT32]
+				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:' . ZBX_MAX_INT32]
 			]],
 			'host stats' =>				['type' => API_OBJECTS, 'flags' => API_REQUIRED | API_NOT_EMPTY, 'fields' => [
 				'attributes' =>				['type' => API_OBJECT, 'flags' => API_REQUIRED, 'fields' => [
 					'proxyid' =>				['type' => API_ID, 'flags' => API_REQUIRED],
 					'status' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => implode(',', [HOST_STATUS_MONITORED, HOST_STATUS_NOT_MONITORED])]
 				]],
-				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:'.ZBX_MAX_INT32]
+				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:' . ZBX_MAX_INT32]
 			]],
 			'item stats' =>				['type' => API_OBJECTS, 'flags' => API_REQUIRED | API_NOT_EMPTY, 'fields' => [
 				'attributes' =>				['type' => API_OBJECT, 'flags' => API_REQUIRED, 'fields' => [
@@ -322,20 +335,20 @@ class CZabbixServer {
 					'status' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => implode(',', [ITEM_STATUS_ACTIVE, ITEM_STATUS_DISABLED])],
 					'state' =>					['type' => API_INT32, 'in' => implode(',', [ITEM_STATE_NORMAL, ITEM_STATE_NOTSUPPORTED])]
 				]],
-				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:'.ZBX_MAX_INT32]
+				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:' . ZBX_MAX_INT32]
 			]],
 			'trigger stats' =>			['type' => API_OBJECTS, 'flags' => API_REQUIRED | API_NOT_EMPTY, 'fields' => [
 				'attributes' =>				['type' => API_OBJECT, 'flags' => API_REQUIRED, 'fields' => [
 					'status' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => implode(',', [TRIGGER_STATUS_ENABLED, TRIGGER_STATUS_DISABLED])],
 					'value' =>					['type' => API_INT32, 'in' => implode(',', [TRIGGER_VALUE_FALSE, TRIGGER_VALUE_TRUE])]
 				]],
-				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:'.ZBX_MAX_INT32]
+				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:' . ZBX_MAX_INT32]
 			]],
 			'user stats' =>				['type' => API_OBJECTS, 'flags' => API_REQUIRED | API_NOT_EMPTY, 'fields' => [
 				'attributes' =>				['type' => API_OBJECT, 'flags' => API_REQUIRED, 'fields' => [
 					'status' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => implode(',', [ZBX_SESSION_ACTIVE, ZBX_SESSION_PASSIVE])]
 				]],
-				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:'.ZBX_MAX_INT32]
+				'count' =>					['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0:' . ZBX_MAX_INT32]
 			]],
 			// only for super-admins 'required performance' is available
 			'required performance' =>	['type' => API_OBJECTS, 'flags' => API_NOT_EMPTY, 'fields' => [
@@ -357,13 +370,14 @@ class CZabbixServer {
 	}
 
 	/**
-	 * Returns true if the Zabbix server is running and false otherwise.
+	 * Returns true if the Advantal server is running and false otherwise.
 	 *
 	 * @param $sid
 	 *
 	 * @return bool
 	 */
-	public function isRunning($sid) {
+	public function isRunning($sid)
+	{
 		$active_node = API::getApiService('hanode')->get([
 			'output' => ['address', 'port', 'lastaccess'],
 			'filter' => ['status' => ZBX_NODE_STATUS_ACTIVE],
@@ -374,7 +388,8 @@ class CZabbixServer {
 
 		if ($active_node && $active_node[0]['address'] === $this->host && $active_node[0]['port'] == $this->port) {
 			if ((time() - $active_node[0]['lastaccess']) <
-					timeUnitToSeconds(CSettingsHelper::get(CSettingsHelper::HA_FAILOVER_DELAY))) {
+				timeUnitToSeconds(CSettingsHelper::get(CSettingsHelper::HA_FAILOVER_DELAY))
+			) {
 				return true;
 			}
 		}
@@ -402,7 +417,8 @@ class CZabbixServer {
 	 *
 	 * @return bool|array
 	 */
-	public function expressionsEvaluate(array $data, string $sid) {
+	public function expressionsEvaluate(array $data, string $sid)
+	{
 		$response = $this->request([
 			'request' => 'expressions.evaluate',
 			'sid' => $sid,
@@ -431,7 +447,8 @@ class CZabbixServer {
 	 *
 	 * @return string
 	 */
-	public function getError() {
+	public function getError()
+	{
 		return $this->error;
 	}
 
@@ -440,7 +457,8 @@ class CZabbixServer {
 	 *
 	 * @return int|null
 	 */
-	public function getTotalCount() {
+	public function getTotalCount()
+	{
 		return $this->total;
 	}
 
@@ -449,7 +467,8 @@ class CZabbixServer {
 	 *
 	 * @return array
 	 */
-	public function getDebug() {
+	public function getDebug()
+	{
 		return $this->debug;
 	}
 
@@ -460,7 +479,8 @@ class CZabbixServer {
 	 *
 	 * @return mixed    the output of the script if it has been executed successfully or false otherwise
 	 */
-	protected function request(array $params) {
+	protected function request(array $params)
+	{
 		// Reset object state.
 		$this->error = null;
 		$this->total = null;
@@ -476,8 +496,8 @@ class CZabbixServer {
 
 		// Send the command.
 		$json = json_encode($params);
-		if (fwrite($this->socket, ZBX_TCP_HEADER.pack('V', strlen($json))."\x00\x00\x00\x00".$json) === false) {
-			$this->error = _s('Cannot send command, check connection with Zabbix server "%1$s".', $this->host);
+		if (fwrite($this->socket, ZBX_TCP_HEADER . pack('V', strlen($json)) . "\x00\x00\x00\x00" . $json) === false) {
+			$this->error = _s('Cannot send command, check connection with Advantal server "%1$s".', $this->host);
 
 			fclose($this->socket);
 
@@ -495,11 +515,12 @@ class CZabbixServer {
 
 				if ($info['timed_out']) {
 					$this->error = _s(
-						'Response timeout of %1$s exceeded when connecting to Zabbix server "%2$s".',
-						secondsToPeriod($this->timeout), $this->host
+						'Response timeout of %1$s exceeded when connecting to Advantal server "%2$s".',
+						secondsToPeriod($this->timeout),
+						$this->host
 					);
 				} else {
-					$this->error = _s('Cannot read response from Zabbix server "%1$s".', $this->host);
+					$this->error = _s('Cannot read response from Advantal server "%1$s".', $this->host);
 				}
 
 				fclose($this->socket);
@@ -512,7 +533,7 @@ class CZabbixServer {
 
 			if ($expect == self::ZBX_TCP_EXPECT_HEADER) {
 				if (strncmp($response, ZBX_TCP_HEADER, min($response_len, ZBX_TCP_HEADER_LEN)) != 0) {
-					$this->error = _s('Incorrect response received from Zabbix server "%1$s".', $this->host);
+					$this->error = _s('Incorrect response received from Advantal server "%1$s".', $this->host);
 
 					fclose($this->socket);
 
@@ -536,8 +557,9 @@ class CZabbixServer {
 
 				if ($this->totalBytesLimit != 0 && $expected_len >= $this->totalBytesLimit) {
 					$this->error = _s(
-						'Size of the response received from Zabbix server "%1$s" exceeds the allowed size of %2$s bytes. This value can be increased in the ZBX_SOCKET_BYTES_LIMIT constant in include/defines.inc.php.',
-						$this->host, $this->totalBytesLimit
+						'Size of the response received from Advantal server "%1$s" exceeds the allowed size of %2$s bytes. This value can be increased in the ZBX_SOCKET_BYTES_LIMIT constant in include/defines.inc.php.',
+						$this->host,
+						$this->totalBytesLimit
 					);
 					fclose($this->socket);
 
@@ -553,14 +575,14 @@ class CZabbixServer {
 		fclose($this->socket);
 
 		if ($expected_len > $response_len || $response_len > $expected_len) {
-			$this->error = _s('Incorrect response received from Zabbix server "%1$s".', $this->host);
+			$this->error = _s('Incorrect response received from Advantal server "%1$s".', $this->host);
 			return false;
 		}
 
 		$response = json_decode(substr($response, ZBX_TCP_HEADER_LEN + ZBX_TCP_DATALEN_LEN), true);
 
 		if (!$response || !$this->normalizeResponse($response)) {
-			$this->error = _s('Incorrect response received from Zabbix server "%1$s".', $this->host);
+			$this->error = _s('Incorrect response received from Advantal server "%1$s".', $this->host);
 
 			return false;
 		}
@@ -584,38 +606,39 @@ class CZabbixServer {
 	}
 
 	/**
-	 * Opens a socket to the Zabbix server. Returns the socket resource if the connection has been established or
+	 * Opens a socket to the Advantal server. Returns the socket resource if the connection has been established or
 	 * false otherwise.
 	 *
 	 * @return bool|resource
 	 */
-	protected function connect() {
+	protected function connect()
+	{
 		if (!$this->socket) {
 			if ($this->host === null || $this->port === null) {
-				$this->error = _('Connection to Zabbix server failed. Incorrect configuration.');
+				$this->error = _('Connection to Advantal server failed. Incorrect configuration.');
 				return false;
 			}
 
 			if (!$socket = @fsockopen($this->host, $this->port, $errorCode, $errorMsg, $this->connect_timeout)) {
-				$host_port = $this->host.':'.$this->port;
+				$host_port = $this->host . ':' . $this->port;
 				switch ($errorMsg) {
 					case 'Connection refused':
-						$dErrorMsg = _s("Connection to Zabbix server \"%1\$s\" refused. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Security environment (for example, SELinux) is blocking the connection;\n3. Zabbix server daemon not running;\n4. Firewall is blocking TCP connection.\n", $host_port);
+						$dErrorMsg = _s("Connection to Advantal server \"%1\$s\" refused. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Security environment (for example, SELinux) is blocking the connection;\n3. Advantal server daemon not running;\n4. Firewall is blocking TCP connection.\n", $host_port);
 						break;
 
 					case 'No route to host':
-						$dErrorMsg = _s("Zabbix server \"%1\$s\" cannot be reached. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Incorrect network configuration.\n", $host_port);
+						$dErrorMsg = _s("Advantal server \"%1\$s\" cannot be reached. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Incorrect network configuration.\n", $host_port);
 						break;
 
 					case 'Connection timed out':
-						$dErrorMsg = _s("Connection to Zabbix server \"%1\$s\" timed out. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Firewall is blocking TCP connection.\n", $host_port);
+						$dErrorMsg = _s("Connection to Advantal server \"%1\$s\" timed out. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Firewall is blocking TCP connection.\n", $host_port);
 						break;
 
 					default:
-						$dErrorMsg = _s("Connection to Zabbix server \"%1\$s\" failed. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Incorrect DNS server configuration.\n", $host_port);
+						$dErrorMsg = _s("Connection to Advantal server \"%1\$s\" failed. Possible reasons:\n1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n2. Incorrect DNS server configuration.\n", $host_port);
 				}
 
-				$this->error = rtrim($dErrorMsg.$errorMsg);
+				$this->error = rtrim($dErrorMsg . $errorMsg);
 			}
 
 			$this->socket = $socket;
@@ -625,15 +648,16 @@ class CZabbixServer {
 	}
 
 	/**
-	 * Returns true if the response received from the Zabbix server is valid.
+	 * Returns true if the response received from the Advantal server is valid.
 	 *
 	 * @param array $response
 	 *
 	 * @return bool
 	 */
-	protected function normalizeResponse(array &$response) {
+	protected function normalizeResponse(array &$response)
+	{
 		return (array_key_exists('response', $response) && ($response['response'] == self::RESPONSE_SUCCESS
-				|| $response['response'] == self::RESPONSE_FAILED && array_key_exists('info', $response))
+			|| $response['response'] == self::RESPONSE_FAILED && array_key_exists('info', $response))
 		);
 	}
 }

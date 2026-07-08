@@ -13,7 +13,7 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
 
 /**
  * Test suite for autoregistration
@@ -23,7 +23,8 @@ require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
  * @backup ids,hosts,items,actions,operations,optag,host_tag
  * @backup auditlog,changelog,config,ha_node
  */
-class testAutoregistration extends CIntegrationTest {
+class testAutoregistration extends CIntegrationTest
+{
 	const HOST_METADATA1 = "autoreg 1";
 	const HOST_METADATA2 = "autoreg 2";
 	const AUTOREG_ACTION_NAME1 = 'Test autoregistration action 1';
@@ -34,27 +35,28 @@ class testAutoregistration extends CIntegrationTest {
 	public static $HOST_METADATA = self::HOST_METADATA1;
 
 	public static $items = [
-			[
-				'name' => self::ITEM_KEY,
-				'key_' => self::ITEM_KEY,
-				'type' => ITEM_TYPE_TRAPPER,
-				'value_type' => ITEM_VALUE_TYPE_UINT64
-			]
-		];
+		[
+			'name' => self::ITEM_KEY,
+			'key_' => self::ITEM_KEY,
+			'type' => ITEM_TYPE_TRAPPER,
+			'value_type' => ITEM_VALUE_TYPE_UINT64
+		]
+	];
 
 	public static $lldrules = [
-			[
-				'name' => self::LLD_KEY,
-				'key_' => self::LLD_KEY,
-				'type' => ITEM_TYPE_TRAPPER,
-				'lifetime_type' => 0,
-				'lifetime' => '1d',
-				'enabled_lifetime_type' => 0,
-				'enabled_lifetime' => '3h'
-			]
-		];
+		[
+			'name' => self::LLD_KEY,
+			'key_' => self::LLD_KEY,
+			'type' => ITEM_TYPE_TRAPPER,
+			'lifetime_type' => 0,
+			'lifetime' => '1d',
+			'enabled_lifetime_type' => 0,
+			'enabled_lifetime' => '3h'
+		]
+	];
 
-	private function waitForAutoreg($expectedTags) {
+	private function waitForAutoreg($expectedTags)
+	{
 		$max_attempts = 5;
 		$sleep_time = 2;
 
@@ -64,22 +66,33 @@ class testAutoregistration extends CIntegrationTest {
 					'selectTags' => ['tag', 'value']
 				]);
 
-				$this->assertArrayHasKey('result', $response,
-						'Failed to autoregister host before timeout');
-				$this->assertCount(1, $response['result'],
-						'Failed to autoregister host before timeout, response result: '. json_encode($response['result']));
-				$this->assertArrayHasKey('tags', $response['result'][0],
-						'Failed to autoregister host before timeout: response result: '. json_encode($response['result']));
+				$this->assertArrayHasKey(
+					'result',
+					$response,
+					'Failed to autoregister host before timeout'
+				);
+				$this->assertCount(
+					1,
+					$response['result'],
+					'Failed to autoregister host before timeout, response result: ' . json_encode($response['result'])
+				);
+				$this->assertArrayHasKey(
+					'tags',
+					$response['result'][0],
+					'Failed to autoregister host before timeout: response result: ' . json_encode($response['result'])
+				);
 
 				$autoregHost = $response['result'][0];
-				$this->assertArrayHasKey('hostid', $autoregHost,
-						'Failed to get host ID of the autoregistered host');
+				$this->assertArrayHasKey(
+					'hostid',
+					$autoregHost,
+					'Failed to get host ID of the autoregistered host'
+				);
 
 				$tags = $autoregHost['tags'];
 				$this->assertCount(count($expectedTags), $tags, 'Unexpected tags count was detected');
 
-				foreach ($expectedTags as $tag)
-				{
+				foreach ($expectedTags as $tag) {
 					$this->assertContains($tag, $tags);
 				}
 
@@ -100,11 +113,12 @@ class testAutoregistration extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function agentConfigurationProvider() {
+	public function agentConfigurationProvider()
+	{
 		return [
 			self::COMPONENT_AGENT => [
 				'Hostname' => self::COMPONENT_AGENT,
-				'ServerActive' => '127.0.0.1:'.self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort'),
+				'ServerActive' => '127.0.0.1:' . self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort'),
 				'HostMetadata' => self::$HOST_METADATA
 			]
 		];
@@ -113,7 +127,8 @@ class testAutoregistration extends CIntegrationTest {
 	/**
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		$response = $this->call('host.get', []);
 
 		$hostids = array();
@@ -136,10 +151,10 @@ class testAutoregistration extends CIntegrationTest {
 		$templategroupid = $response['result'][0]['groupid'];
 
 		$response = $this->call('template.create', [
-				'host' => 'test_template',
-				'groups' => [
-					'groupid' => $templategroupid
-				]
+			'host' => 'test_template',
+			'groups' => [
+				'groupid' => $templategroupid
+			]
 		]);
 		$this->assertCount(1, $response['result']['templateids']);
 		$templateid = $response['result']['templateids'][0];
@@ -174,117 +189,121 @@ class testAutoregistration extends CIntegrationTest {
 		$this->assertCount(count($lldrules), $response['result']['itemids']);
 
 		$response = $this->call('action.create', [
-		[
-			'name' => self::AUTOREG_ACTION_NAME1,
-			'eventsource' => EVENT_SOURCE_AUTOREGISTRATION,
-			'status' => ACTION_STATUS_ENABLED,
-			'filter' => [
-				'conditions' => [
+			[
+				'name' => self::AUTOREG_ACTION_NAME1,
+				'eventsource' => EVENT_SOURCE_AUTOREGISTRATION,
+				'status' => ACTION_STATUS_ENABLED,
+				'filter' => [
+					'conditions' => [
+						[
+							'conditiontype' => ZBX_CONDITION_TYPE_HOST_NAME,
+							'operator' => CONDITION_OPERATOR_LIKE,
+							'value' => self::COMPONENT_AGENT
+						],
+						[
+							'conditiontype' => ZBX_CONDITION_TYPE_HOST_METADATA,
+							'operator' => CONDITION_OPERATOR_LIKE,
+							'value' => self::HOST_METADATA1
+						]
+					],
+					'evaltype' => CONDITION_EVAL_TYPE_AND_OR
+				],
+				'operations' => [
+					/* OPERATION_TYPE_HOST_ADD is intentionally missing. It is expected to be run by */
+					/* Advantal server, because OPERATION_TYPE_HOST_TAGS_ADD is present.               */
 					[
-						'conditiontype' => ZBX_CONDITION_TYPE_HOST_NAME,
-						'operator' => CONDITION_OPERATOR_LIKE,
-						'value' => self::COMPONENT_AGENT
+						'operationtype' => OPERATION_TYPE_HOST_TAGS_ADD,
+						'optag' => [
+							[
+								'tag' => 'a1',
+								'value' => 'autoreg 1'
+							],
+							[
+								'tag' => 'tag1',
+								'value' => 'value 1'
+							]
+						]
 					],
 					[
-						'conditiontype' => ZBX_CONDITION_TYPE_HOST_METADATA,
-						'operator' => CONDITION_OPERATOR_LIKE,
-						'value' => self::HOST_METADATA1
+						'operationtype' => OPERATION_TYPE_HOST_TAGS_REMOVE,
+						'optag' => [
+							[
+								'tag' => 'a2',
+								'value' => 'autoreg 2'
+							],
+							[
+								'tag' => 'tag2',
+								'value' => 'value 2'
+							]
+						]
+					],
+					[
+						'operationtype' => OPERATION_TYPE_TEMPLATE_ADD,
+						'optemplate' => [
+							[
+								'templateid' => $templateid
+							]
+						]
 					]
-				],
-				'evaltype' => CONDITION_EVAL_TYPE_AND_OR
+				]
 			],
-			'operations' => [
-				/* OPERATION_TYPE_HOST_ADD is intentionally missing. It is expected to be run by */
-				/* Zabbix server, because OPERATION_TYPE_HOST_TAGS_ADD is present.               */
-				[
-					'operationtype' => OPERATION_TYPE_HOST_TAGS_ADD,
-					'optag' => [
+			[
+				'name' => self::AUTOREG_ACTION_NAME2,
+				'eventsource' => EVENT_SOURCE_AUTOREGISTRATION,
+				'status' => ACTION_STATUS_ENABLED,
+				'filter' => [
+					'conditions' => [
 						[
-							'tag' => 'a1',
-							'value' => 'autoreg 1'
+							'conditiontype' => ZBX_CONDITION_TYPE_HOST_NAME,
+							'operator' => CONDITION_OPERATOR_LIKE,
+							'value' => self::COMPONENT_AGENT
 						],
 						[
-							'tag' => 'tag1',
-							'value' => 'value 1'
+							'conditiontype' => ZBX_CONDITION_TYPE_HOST_METADATA,
+							'operator' => CONDITION_OPERATOR_LIKE,
+							'value' => self::HOST_METADATA2
 						]
-					]
+					],
+					'evaltype' => CONDITION_EVAL_TYPE_AND_OR
 				],
-				[
-					'operationtype' => OPERATION_TYPE_HOST_TAGS_REMOVE,
-					'optag' => [
-						[
-							'tag' => 'a2',
-							'value' => 'autoreg 2'
-						],
-						[
-							'tag' => 'tag2',
-							'value' => 'value 2'
+				'operations' => [
+					/* OPERATION_TYPE_HOST_ADD is intentionally missing. It is expected to be run by */
+					/* Advantal server, because OPERATION_TYPE_HOST_TAGS_ADD is present.               */
+					[
+						'operationtype' => OPERATION_TYPE_HOST_TAGS_ADD,
+						'optag' => [
+							[
+								'tag' => 'a2',
+								'value' => 'autoreg 2'
+							],
+							[
+								'tag' => 'tag2',
+								'value' => 'value 2'
+							]
 						]
-					]
-				],
-				[
-					'operationtype' => OPERATION_TYPE_TEMPLATE_ADD,
-					'optemplate' => [
-						[
-							'templateid' => $templateid
+					],
+					[
+						'operationtype' => OPERATION_TYPE_HOST_TAGS_REMOVE,
+						'optag' => [
+							[
+								'tag' => 'a1',
+								'value' => 'autoreg 1'
+							],
+							[
+								'tag' => 'tag1',
+								'value' => 'value 1'
+							]
 						]
 					]
 				]
 			]
-		],
-		[
-			'name' => self::AUTOREG_ACTION_NAME2,
-			'eventsource' => EVENT_SOURCE_AUTOREGISTRATION,
-			'status' => ACTION_STATUS_ENABLED,
-			'filter' => [
-				'conditions' => [
-					[
-						'conditiontype' => ZBX_CONDITION_TYPE_HOST_NAME,
-						'operator' => CONDITION_OPERATOR_LIKE,
-						'value' => self::COMPONENT_AGENT
-					],
-					[
-						'conditiontype' => ZBX_CONDITION_TYPE_HOST_METADATA,
-						'operator' => CONDITION_OPERATOR_LIKE,
-						'value' => self::HOST_METADATA2
-					]
-				],
-				'evaltype' => CONDITION_EVAL_TYPE_AND_OR
-			],
-			'operations' => [
-				/* OPERATION_TYPE_HOST_ADD is intentionally missing. It is expected to be run by */
-				/* Zabbix server, because OPERATION_TYPE_HOST_TAGS_ADD is present.               */
-				[
-					'operationtype' => OPERATION_TYPE_HOST_TAGS_ADD,
-					'optag' => [
-						[
-							'tag' => 'a2',
-							'value' => 'autoreg 2'
-						],
-						[
-							'tag' => 'tag2',
-							'value' => 'value 2'
-						]
-					]
-				],
-				[
-					'operationtype' => OPERATION_TYPE_HOST_TAGS_REMOVE,
-					'optag' => [
-						[
-							'tag' => 'a1',
-							'value' => 'autoreg 1'
-						],
-						[
-							'tag' => 'tag1',
-							'value' => 'value 1'
-						]
-					]
-				]
-			]
-		]]);
+		]);
 		$this->assertArrayHasKey('result', $response, 'Failed to create an autoregistration action');
-		$this->assertArrayHasKey('actionids', $response['result'],
-				'Failed to create an autoregistration action');
+		$this->assertArrayHasKey(
+			'actionids',
+			$response['result'],
+			'Failed to create an autoregistration action'
+		);
 		$actionids = $response['result']['actionids'];
 		$this->assertCount(2, $actionids, 'Failed to create an autoregistration action');
 	}
@@ -301,7 +320,7 @@ class testAutoregistration extends CIntegrationTest {
 		]);
 
 		$response = $this->call('item.get', [
-			'hostids' => [ $hostid ],
+			'hostids' => [$hostid],
 			'output' => [
 				'name',
 				'key_',
@@ -317,7 +336,7 @@ class testAutoregistration extends CIntegrationTest {
 		}
 
 		$response = $this->call('discoveryrule.get', [
-			'hostids' => [ $hostid ],
+			'hostids' => [$hostid],
 			'output' => [
 				'name',
 				'key_',

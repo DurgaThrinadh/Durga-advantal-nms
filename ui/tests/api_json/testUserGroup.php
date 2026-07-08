@@ -14,8 +14,8 @@
 **/
 
 
-require_once dirname(__FILE__).'/../include/CAPITest.php';
-require_once __DIR__.'/../include/helpers/CTestDataHelper.php';
+require_once dirname(__FILE__) . '/../include/CAPITest.php';
+require_once __DIR__ . '/../include/helpers/CTestDataHelper.php';
 
 /**
  * @onBefore  prepareTestData
@@ -23,7 +23,8 @@ require_once __DIR__.'/../include/helpers/CTestDataHelper.php';
  *
  * @backup usrgrp, userdirectory, mfa
  */
-class testUserGroup extends CAPITest {
+class testUserGroup extends CAPITest
+{
 
 	public static $data = [
 		'usrgrpid' => [],
@@ -34,7 +35,8 @@ class testUserGroup extends CAPITest {
 	/**
 	 * Create data to be used in tests.
 	 */
-	public function prepareTestData(): void {
+	public function prepareTestData(): void
+	{
 		$response = CDataHelper::call('userdirectory.create', [[
 			'name' => 'API LDAP #1',
 			'idp_type' => IDP_TYPE_LDAP,
@@ -135,11 +137,13 @@ class testUserGroup extends CAPITest {
 		]);
 	}
 
-	public static function cleanTestData(): void {
+	public static function cleanTestData(): void
+	{
 		CTestDataHelper::cleanUp();
 	}
 
-	public static function usergroup_create() {
+	public static function usergroup_create()
+	{
 		return [
 			[
 				'group' => [
@@ -163,9 +167,9 @@ class testUserGroup extends CAPITest {
 			],
 			[
 				'group' => [
-					'name' => 'Zabbix administrators'
+					'name' => 'Advantal Administrators'
 				],
-				'expected_error' => 'User group "Zabbix administrators" already exists.'
+				'expected_error' => 'User group "Advantal Administrators" already exists.'
 			],
 			[
 				'group' => [
@@ -173,10 +177,10 @@ class testUserGroup extends CAPITest {
 						'name' => 'One user group with existing name'
 					],
 					[
-						'name' => 'Zabbix administrators'
+						'name' => 'Advantal Administrators'
 					]
 				],
-				'expected_error' => 'User group "Zabbix administrators" already exists.'
+				'expected_error' => 'User group "Advantal Administrators" already exists.'
 			],
 			[
 				'group' => [
@@ -230,17 +234,19 @@ class testUserGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider usergroup_create
-	*/
-	public function testUserGroup_Create($group, $expected_error) {
+	 * @dataProvider usergroup_create
+	 */
+	public function testUserGroup_Create($group, $expected_error)
+	{
 		$result = $this->call('usergroup.create', $group, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result']['usrgrpids'] as $key => $usrgrpid) {
 				$dbRow = CDBHelper::getRow(
-					'SELECT name,gui_access,users_status,debug_mode'.
-					' FROM usrgrp'.
-					' WHERE usrgrpid='.$usrgrpid);
+					'SELECT name,gui_access,users_status,debug_mode' .
+						' FROM usrgrp' .
+						' WHERE usrgrpid=' . $usrgrpid
+				);
 				$this->assertEquals($dbRow['name'], $group[$key]['name']);
 				$this->assertEquals($dbRow['gui_access'], GROUP_GUI_ACCESS_SYSTEM);
 				$this->assertEquals($dbRow['users_status'], 0);
@@ -249,7 +255,8 @@ class testUserGroup extends CAPITest {
 		}
 	}
 
-	public static function usergroup_update() {
+	public static function usergroup_update()
+	{
 		return [
 			[
 				'group' => [[
@@ -305,9 +312,9 @@ class testUserGroup extends CAPITest {
 			[
 				'group' => [[
 					'usrgrpid' => '23',
-					'name' => 'Zabbix administrators'
+					'name' => 'Advantal Administrators'
 				]],
-				'expected_error' => 'User group "Zabbix administrators" already exists.'
+				'expected_error' => 'User group "Advantal Administrators" already exists.'
 			],
 			// Check Super Admin user in group.
 			[
@@ -394,7 +401,7 @@ class testUserGroup extends CAPITest {
 					[
 						'usrgrpid' => '14',
 						'name' => 'API user group updated with rights',
-						'templategroup_rights' =>[
+						'templategroup_rights' => [
 							[
 								'id' => '50013',
 								'permission' => '2'
@@ -407,9 +414,9 @@ class testUserGroup extends CAPITest {
 			[
 				'group' => [
 					[
-					'usrgrpid' => '23',
-					'name' => 'API update user group one',
-						'templategroup_rights' =>[
+						'usrgrpid' => '23',
+						'name' => 'API update user group one',
+						'templategroup_rights' => [
 							[
 								'id' => '50013',
 								'permission' => '2'
@@ -417,9 +424,9 @@ class testUserGroup extends CAPITest {
 						]
 					],
 					[
-					'usrgrpid' => '14',
-					'name' => 'API update user group two',
-						'hostgroup_rights' =>[
+						'usrgrpid' => '14',
+						'name' => 'API update user group two',
+						'hostgroup_rights' => [
 							[
 								'id' => '50012',
 								'permission' => '0'
@@ -433,65 +440,67 @@ class testUserGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider usergroup_update
-	*/
-	public function testUserGroup_Update($groups, $expected_error) {
+	 * @dataProvider usergroup_update
+	 */
+	public function testUserGroup_Update($groups, $expected_error)
+	{
 		CTestDataHelper::convertUserGroupReferences($groups);
 		$result = $this->call('usergroup.update', $groups, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result']['usrgrpids'] as $key => $usrgrpid) {
 				$db_usrgrp = CDBHelper::getRow(
-					'SELECT name,gui_access,users_status,debug_mode'.
-					' FROM usrgrp'.
-					' WHERE usrgrpid='.$usrgrpid
+					'SELECT name,gui_access,users_status,debug_mode' .
+						' FROM usrgrp' .
+						' WHERE usrgrpid=' . $usrgrpid
 				);
 				$this->assertSame($db_usrgrp['name'], $groups[$key]['name']);
 				$this->assertSame($db_usrgrp['gui_access'], (string) GROUP_GUI_ACCESS_SYSTEM);
 				$this->assertSame($db_usrgrp['users_status'], '0');
 				$this->assertSame($db_usrgrp['debug_mode'], '0');
 
-				if (array_key_exists('hostgroup_rights', $groups[$key])){
+				if (array_key_exists('hostgroup_rights', $groups[$key])) {
 					foreach ($groups[$key]['hostgroup_rights'] as $rights) {
 						$db_right = CDBHelper::getRow(
-							'SELECT r.id,r.permission'.
-							' FROM rights r,hstgrp hg'.
-							' WHERE r.id=hg.groupid'.
-								' AND r.groupid='.$usrgrpid.
-								' AND hg.type='.HOST_GROUP_TYPE_HOST_GROUP
+							'SELECT r.id,r.permission' .
+								' FROM rights r,hstgrp hg' .
+								' WHERE r.id=hg.groupid' .
+								' AND r.groupid=' . $usrgrpid .
+								' AND hg.type=' . HOST_GROUP_TYPE_HOST_GROUP
 						);
 						$this->assertSame($db_right['id'], $rights['id']);
 						$this->assertSame($db_right['permission'], $rights['permission']);
 					}
 				}
 
-				if (array_key_exists('templategroup_rights', $groups[$key])){
+				if (array_key_exists('templategroup_rights', $groups[$key])) {
 					foreach ($groups[$key]['templategroup_rights'] as $rights) {
 						$db_right = CDBHelper::getRow(
-							'SELECT r.id,r.permission'.
-							' FROM rights r,hstgrp hg'.
-							' WHERE r.id=hg.groupid'.
-								' AND r.groupid='.$usrgrpid.
-								' AND hg.type='.HOST_GROUP_TYPE_TEMPLATE_GROUP
+							'SELECT r.id,r.permission' .
+								' FROM rights r,hstgrp hg' .
+								' WHERE r.id=hg.groupid' .
+								' AND r.groupid=' . $usrgrpid .
+								' AND hg.type=' . HOST_GROUP_TYPE_TEMPLATE_GROUP
 						);
 						$this->assertSame($db_right['id'], $rights['id']);
 						$this->assertSame($db_right['permission'], $rights['permission']);
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			foreach ($groups as $group) {
-				if (array_key_exists('name', $group) && $group['name'] != 'Zabbix administrators'){
-					$this->assertEquals(0,
-						CDBHelper::getCount('SELECT * FROM usrgrp WHERE name='.zbx_dbstr($group['name']))
+				if (array_key_exists('name', $group) && $group['name'] != 'Advantal Administrators') {
+					$this->assertEquals(
+						0,
+						CDBHelper::getCount('SELECT * FROM usrgrp WHERE name=' . zbx_dbstr($group['name']))
 					);
 				}
 			}
 		}
 	}
 
-	public static function usergroup_properties() {
+	public static function usergroup_properties()
+	{
 		return [
 			// Check user group not required properties.
 			[
@@ -499,11 +508,15 @@ class testUserGroup extends CAPITest {
 					'name' => 'gui_access non existent value',
 					'gui_access' => 65535
 				],
-				'expected_error' => sprintf('Invalid parameter "/1/gui_access": value must be one of %s.',
+				'expected_error' => sprintf(
+					'Invalid parameter "/1/gui_access": value must be one of %s.',
 					implode(', ', [
-						GROUP_GUI_ACCESS_SYSTEM, GROUP_GUI_ACCESS_INTERNAL, GROUP_GUI_ACCESS_LDAP,
+						GROUP_GUI_ACCESS_SYSTEM,
+						GROUP_GUI_ACCESS_INTERNAL,
+						GROUP_GUI_ACCESS_LDAP,
 						GROUP_GUI_ACCESS_DISABLED
-				]))
+					])
+				)
 			],
 			[
 				'group' => [
@@ -698,21 +711,22 @@ class testUserGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider usergroup_properties
-	*/
-	public function testUserGroups_Properties($group, $expected_error) {
+	 * @dataProvider usergroup_properties
+	 */
+	public function testUserGroups_Properties($group, $expected_error)
+	{
 		$methods = ['usergroup.create', 'usergroup.update'];
 
 		foreach ($methods as $method) {
 			if ($method == 'usergroup.update') {
 				$group['usrgrpid'] = '13';
-				$group['name'] = 'Updated '.$group['name'];
+				$group['name'] = 'Updated ' . $group['name'];
 			}
 			$result = $this->call($method, $group, $expected_error);
 
 			if ($expected_error === null) {
 				$db_group = CDBHelper::getRow(
-					'SELECT * FROM usrgrp WHERE usrgrpid='.$result['result']['usrgrpids'][0]
+					'SELECT * FROM usrgrp WHERE usrgrpid=' . $result['result']['usrgrpids'][0]
 				);
 				$this->assertSame($group['name'], $db_group['name']);
 				$this->assertEquals($group['gui_access'], $db_group['gui_access']);
@@ -720,29 +734,29 @@ class testUserGroup extends CAPITest {
 				$this->assertEquals($group['debug_mode'], $db_group['debug_mode']);
 
 				$this->assertEquals(count($group['users']), CDBHelper::getCount(
-					'SELECT NULL'.
-					' FROM users_groups'.
-					' WHERE usrgrpid='.$result['result']['usrgrpids'][0]
+					'SELECT NULL' .
+						' FROM users_groups' .
+						' WHERE usrgrpid=' . $result['result']['usrgrpids'][0]
 				));
 
-				$db_right = CDBHelper::getRow('SELECT * FROM rights WHERE groupid='.$result['result']['usrgrpids'][0]);
+				$db_right = CDBHelper::getRow('SELECT * FROM rights WHERE groupid=' . $result['result']['usrgrpids'][0]);
 				$this->assertEquals($group['rights']['id'], $db_right['id']);
 				$this->assertEquals($group['rights']['permission'], $db_right['permission']);
-			}
-			else {
+			} else {
 				if (array_key_exists('name', $group) && array_key_exists('usrgrpid', $group)) {
 					$this->assertEquals(0, CDBHelper::getCount(
-						'SELECT NULL'.
-						' FROM usrgrp'.
-						' WHERE usrgrpid='.$group['usrgrpid'].
-							' AND name='.zbx_dbstr($group['name'])
+						'SELECT NULL' .
+							' FROM usrgrp' .
+							' WHERE usrgrpid=' . $group['usrgrpid'] .
+							' AND name=' . zbx_dbstr($group['name'])
 					));
 				}
 			}
 		}
 	}
 
-	public static function usergroup_delete() {
+	public static function usergroup_delete()
+	{
 		return [
 			// Check user group id for one group.
 			[
@@ -816,20 +830,22 @@ class testUserGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider usergroup_delete
-	*/
-	public function testUserGroup_Delete($groupids, $expected_error) {
+	 * @dataProvider usergroup_delete
+	 */
+	public function testUserGroup_Delete($groupids, $expected_error)
+	{
 		$groupids = CTestDataHelper::getConvertedValueReferences($groupids);
 		$result = $this->call('usergroup.delete', $groupids, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result']['usrgrpids'] as $usrgrpid) {
-				$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM usrgrp WHERE usrgrpid='.$usrgrpid));
+				$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM usrgrp WHERE usrgrpid=' . $usrgrpid));
 			}
 		}
 	}
 
-	public static function usergroup_users() {
+	public static function usergroup_users()
+	{
 		return [
 			[
 				'method' => 'usergroup.create',
@@ -877,14 +893,16 @@ class testUserGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider usergroup_users
-	*/
-	public function testUserGroup_UserPermissions($method, $user, $group, $expected_error) {
+	 * @dataProvider usergroup_users
+	 */
+	public function testUserGroup_UserPermissions($method, $user, $group, $expected_error)
+	{
 		$this->authorize($user['user'], $user['password']);
 		$this->call($method, $group, $expected_error);
 	}
 
-	public static function crateValidDataProvider() {
+	public static function crateValidDataProvider()
+	{
 		return [
 			'Create group with userdirectory ldap' => [
 				'group' => [
@@ -929,7 +947,8 @@ class testUserGroup extends CAPITest {
 		];
 	}
 
-	public static function crateInvalidDataProvider() {
+	public static function crateInvalidDataProvider()
+	{
 		return [
 			'Create group with userdirectory disabled' => [
 				'group' => [
@@ -955,10 +974,11 @@ class testUserGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider crateValidDataProvider
-	* @dataProvider crateInvalidDataProvider
-	*/
-	public function testCreateWithUserdirectory(array $groups, $expected_error) {
+	 * @dataProvider crateValidDataProvider
+	 * @dataProvider crateInvalidDataProvider
+	 */
+	public function testCreateWithUserdirectory(array $groups, $expected_error)
+	{
 		$response = $this->call('usergroup.create', self::resolveIds($groups), $expected_error);
 
 		if ($expected_error === null) {
@@ -967,7 +987,8 @@ class testUserGroup extends CAPITest {
 		}
 	}
 
-	public static function updateValidDataProvider() {
+	public static function updateValidDataProvider()
+	{
 		return [
 			'Update group to gui internal' => [
 				'group' => [
@@ -991,7 +1012,8 @@ class testUserGroup extends CAPITest {
 		];
 	}
 
-	public static function updateInvalidDataProvider() {
+	public static function updateInvalidDataProvider()
+	{
 		return [
 			'Update group with gui internal' => [
 				'group' => [
@@ -1020,11 +1042,13 @@ class testUserGroup extends CAPITest {
 	 * @dataProvider updateValidDataProvider
 	 * @dataProvider updateInvalidDataProvider
 	 */
-	public function testUpdateWithUserdirectory(array $groups, $expected_error) {
+	public function testUpdateWithUserdirectory(array $groups, $expected_error)
+	{
 		$this->call('usergroup.update', self::resolveIds($groups), $expected_error);
 	}
 
-	public static function crateValidMfaDataProvider(): array {
+	public static function crateValidMfaDataProvider(): array
+	{
 		return [
 			'Create group with a specific MFA method' => [
 				'group' => [
@@ -1049,7 +1073,8 @@ class testUserGroup extends CAPITest {
 		];
 	}
 
-	public static function crateInvalidMfaDataProvider(): array {
+	public static function crateInvalidMfaDataProvider(): array
+	{
 		return [
 			'Create group with invalid MFA method' => [
 				'group' => [
@@ -1068,7 +1093,8 @@ class testUserGroup extends CAPITest {
 	 * @dataProvider crateValidMfaDataProvider
 	 * @dataProvider crateInvalidMfaDataProvider
 	 */
-	public function testCreateWithMfaMethod(array $groups, $expected_error): void {
+	public function testCreateWithMfaMethod(array $groups, $expected_error): void
+	{
 		$response = $this->call('usergroup.create', self::resolveIds($groups), $expected_error);
 
 		if ($expected_error === null) {
@@ -1077,7 +1103,8 @@ class testUserGroup extends CAPITest {
 		}
 	}
 
-	public static function updateValidMfaDataProvider(): array {
+	public static function updateValidMfaDataProvider(): array
+	{
 		return [
 			'Update group to specific mfa method ' => [
 				'group' => [
@@ -1102,7 +1129,8 @@ class testUserGroup extends CAPITest {
 		];
 	}
 
-	public static function updateInvalidMfaDataProvider(): array {
+	public static function updateInvalidMfaDataProvider(): array
+	{
 		return [
 			'Update group with invalid mfaid' => [
 				'group' => [
@@ -1121,7 +1149,8 @@ class testUserGroup extends CAPITest {
 	 * @dataProvider updateValidMfaDataProvider
 	 * @dataProvider updateInvalidMfaDataProvider
 	 */
-	public function testUpdateWithMfaMethod(array $groups, $expected_error): void {
+	public function testUpdateWithMfaMethod(array $groups, $expected_error): void
+	{
 		$this->call('usergroup.update', self::resolveIds($groups), $expected_error);
 	}
 
@@ -1130,7 +1159,8 @@ class testUserGroup extends CAPITest {
 	 *
 	 * @param array $rows
 	 */
-	public static function resolveIds(array $rows): array {
+	public static function resolveIds(array $rows): array
+	{
 		$result = [];
 
 		foreach ($rows as $row) {

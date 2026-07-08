@@ -14,11 +14,11 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
-require_once __DIR__.'/../../../include/items.inc.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../../include/items.inc.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
-define('LONG_KEY', substr(STRING_6000, 0, 2038).'[{#MACRO}]');
+define('LONG_KEY', substr(STRING_6000, 0, 2038) . '[{#MACRO}]');
 
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverKeys;
@@ -30,7 +30,8 @@ use Facebook\WebDriver\WebDriverKeys;
  *
  * @backup triggers
  */
-class testFormTriggerPrototype extends CLegacyWebTest {
+class testFormTriggerPrototype extends CLegacyWebTest
+{
 	protected static $long_key_prototype_string;
 	protected static $long_key_ruleid;
 
@@ -39,7 +40,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			'class' => CMessageBehavior::class
 		];
@@ -52,7 +54,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	const DISCOVERY_RULEID = 133800;
 	const ITEM_KEY = 'item-prototype-reuse';
 
-	public function prepareTriggerPrototypeData() {
+	public function prepareTriggerPrototypeData()
+	{
 		// Host with a long name for long trigger expression tests.
 		$long_key_hostid = CDataHelper::call('host.create', [
 			'host' => STRING_128,
@@ -103,17 +106,18 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		CDataHelper::call('triggerprototype.create', [
 			[
 				'description' => 'Trigger prototype with long expression for simple update',
-				'expression' => 'last(/'.STRING_128.'/'.LONG_KEY.')=0'
+				'expression' => 'last(/' . STRING_128 . '/' . LONG_KEY . ')=0'
 			],
 			[
 				'description' => 'Trigger prototype with long expression for update',
-				'expression' => 'last(/'.STRING_128.'/'.LONG_KEY.')>0'
+				'expression' => 'last(/' . STRING_128 . '/' . LONG_KEY . ')>0'
 			]
 		]);
 	}
 
 	// Returns layout data
-	public static function layout() {
+	public static function layout()
+	{
 		return [
 			// #0.
 			[
@@ -271,7 +275,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	/**
 	 * @dataProvider layout
 	 */
-	public function testFormTriggerPrototype_CheckLayout($data) {
+	public function testFormTriggerPrototype_CheckLayout($data)
+	{
 
 		if (isset($data['template'])) {
 			$this->zbxTestLogin('zabbix.php?action=template.list');
@@ -286,8 +291,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 			$this->filterEntriesAndOpenDiscovery($data['host'], $form);
 			if (!isset($data['templatedHost'])) {
 				$discoveryRule = self::DISCOVERY_RULE;
-			}
-			else {
+			} else {
 				$discoveryRule = self::DISCOVERY_RULE_TEMPLATE;
 			}
 		}
@@ -301,8 +305,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 
 		if (isset($data['form'])) {
 			$this->zbxTestClickLinkTextWait($data['form']);
-		}
-		else {
+		} else {
 			$this->zbxTestContentControlButtonClickTextWait('Create trigger prototype');
 		}
 		$dialog = COverlayDialogElement::find()->waitUntilReady()->one();
@@ -327,10 +330,9 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		if (isset($data['templatedHost'])) {
 			$this->zbxTestTextPresent('Parent triggers');
 			if (isset($data['hostTemplate'])) {
-				$this->zbxTestAssertElementPresentXpath("//a[text()='".$data['hostTemplate']."']");
+				$this->zbxTestAssertElementPresentXpath("//a[text()='" . $data['hostTemplate'] . "']");
 			}
-		}
-		else {
+		} else {
 			$this->zbxTestTextNotPresent('Parent triggers');
 		}
 
@@ -354,8 +356,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 
 			$this->zbxTestAssertElementNotPresentXpath("//li[@id='expression_row']//button[contains(@onclick, 'add_expression')]");
 			$this->zbxTestAssertElementNotPresentId('insert_macro');
-		}
-		else {
+		} else {
 			$this->zbxTestTextPresent('Expression');
 			$this->zbxTestAssertVisibleId('expr_temp');
 			$this->zbxTestAssertAttribute("//textarea[@id='expr_temp']", 'rows', 7);
@@ -365,8 +366,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 
 			if (!isset($data['form'])) {
 				$this->zbxTestAssertVisibleXpath("//div[@id='expression-row']//button[@id='add_expression']");
-			}
-			else {
+			} else {
 				$this->zbxTestAssertElementNotPresentXpath("//div[@id='expression-row']//button[contains(@onclick, 'add_expression')]");
 			}
 
@@ -384,8 +384,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 
 			if (!isset($data['templatedHost'])) {
 				$this->zbxTestTextPresent(['Target', 'Expression', 'Action', 'Info', 'Close expression constructor']);
-			}
-			else {
+			} else {
 				$this->zbxTestTextPresent(['Expression', 'Info', 'Close expression constructor']);
 			}
 			$this->zbxTestTextPresent('Close expression constructor');
@@ -414,8 +413,9 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		$hint = $this->query('xpath:.//div[@class="overlay-dialogue wordbreak"]')->waitUntilPresent()->one();
 
 		// Assert text.
-		$this->assertEquals('Menu entry name is used as a label for the trigger URL in the event context menu.',
-				$hint->getText()
+		$this->assertEquals(
+			'Menu entry name is used as a label for the trigger URL in the event context menu.',
+			$hint->getText()
 		);
 
 		// Press Escape key to close hintbox.
@@ -469,22 +469,28 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		$dialog_footer = $dialog->getFooter();
 
 		if (isset($data['form']) && !isset($data['templatedHost'])) {
-			$this->assertEquals(4, $dialog_footer->query('button', ['Update', 'Clone', 'Delete', 'Cancel'])->all()
+			$this->assertEquals(
+				4,
+				$dialog_footer->query('button', ['Update', 'Clone', 'Delete', 'Cancel'])->all()
 					->filter(CElementFilter::CLICKABLE)->count()
 			);
-		}
-		elseif (isset($data['templatedHost'])) {
-			$this->assertEquals(3, $dialog_footer->query('button', ['Update', 'Clone', 'Cancel'])->all()
+		} elseif (isset($data['templatedHost'])) {
+			$this->assertEquals(
+				3,
+				$dialog_footer->query('button', ['Update', 'Clone', 'Cancel'])->all()
 					->filter(CElementFilter::CLICKABLE)->count()
 			);
-			$this->assertEquals(1, $dialog_footer->query('button:Delete')->all()
+			$this->assertEquals(
+				1,
+				$dialog_footer->query('button:Delete')->all()
 					->filter(CElementFilter::NOT_CLICKABLE)->count()
 			);
 			$this->assertTrue($this->zbxTestCheckboxSelected('recovery_mode_0'));
 			$this->zbxTestAssertElementPresentXpath("//input[@id='recovery_mode_0'][@readonly]");
-		}
-		else {
-			$this->assertEquals(2, $dialog_footer->query('button', ['Add', 'Cancel'])->all()
+		} else {
+			$this->assertEquals(
+				2,
+				$dialog_footer->query('button', ['Add', 'Cancel'])->all()
 					->filter(CElementFilter::CLICKABLE)->count()
 			);
 		}
@@ -495,20 +501,20 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		if (!isset($data['template'])) {
 			$this->zbxTestAssertElementText("//button[@id='add-dep-trigger']", 'Add');
 			$this->zbxTestAssertElementText("//button[@id='add-dep-trigger-prototype']", 'Add prototype');
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementText("//button[@id='add-dep-template-trigger']", 'Add');
 			$this->zbxTestAssertElementText("//button[@id='add-dep-trigger-prototype']", 'Add prototype');
 			$this->zbxTestAssertElementText("//button[@id='add-dep-host-trigger']", 'Add host trigger');
 		}
 
 		COverlayDialogElement::find()->one()->close();
-
 	}
 
 	// Returns update data
-	public static function update() {
-		return CDBHelper::getDataProvider('SELECT * FROM triggers t LEFT JOIN functions f ON f.triggerid=t.triggerid'.
+	public static function update()
+	{
+		return CDBHelper::getDataProvider(
+			'SELECT * FROM triggers t LEFT JOIN functions f ON f.triggerid=t.triggerid' .
 				' WHERE f.itemid=\'23804\' AND t.description LIKE \'testFormTriggerPrototype%\''
 		);
 	}
@@ -516,7 +522,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	/**
 	 * @dataProvider update
 	 */
-	public function testFormTriggerPrototype_SimpleUpdate($data) {
+	public function testFormTriggerPrototype_SimpleUpdate($data)
+	{
 		$description = $data['description'];
 
 		$sqlTriggers = "select * from triggers ORDER BY triggerid";
@@ -539,7 +546,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		$this->assertEquals($oldHashTriggers, CDBHelper::getHash($sqlTriggers));
 	}
 
-	public static function create() {
+	public static function create()
+	{
 		return [
 			// #0.
 			[
@@ -673,9 +681,9 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 					'description' => 'MyTrigger_generalCheck',
 					'expression' => 'last(/Simple form test host/item-prototype-reuse[{#KEY}],#1)<5',
 					'type' => true,
-					'comments' => 'Trigger status (expression) is recalculated every time Zabbix server receives new'.
-							' value, if this value is part of this expression. If time based functions are used in the'.
-							' expression, it is recalculated every 30 seconds by a zabbix timer process. ',
+					'comments' => 'Trigger status (expression) is recalculated every time Advantal server receives new' .
+						' value, if this value is part of this expression. If time based functions are used in the' .
+						' expression, it is recalculated every 30 seconds by a zabbix timer process. ',
 					'url_name' => 'Trigger context menu name for trigger URL.',
 					'url' => 'https://www.zabbix.com',
 					'severity' => 'High',
@@ -697,8 +705,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 				[
 					'expected' => TEST_GOOD,
 					'description' => 'xmlxpath function',
-					'expression' => 'xmlxpath(last(/Simple form test host/text_prototype[{#KEY}],#123:now),'.
-							' "/zabbix_export/version/text()","default")=0'
+					'expression' => 'xmlxpath(last(/Simple form test host/text_prototype[{#KEY}],#123:now),' .
+						' "/zabbix_export/version/text()","default")=0'
 				]
 			],
 			// #17.
@@ -770,8 +778,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 				[
 					'expected' => TEST_GOOD,
 					'description' => 'both jsonpath and xmlxpath functions',
-					'expression' => 'jsonpath(last(/Simple form test host/text_prototype[{#KEY}]),"$path")=0'.
-							' and xmlxpath(last(/Simple form test host/text_prototype[{#KEY}]),"/xpath/text()")=0'
+					'expression' => 'jsonpath(last(/Simple form test host/text_prototype[{#KEY}]),"$path")=0' .
+						' and xmlxpath(last(/Simple form test host/text_prototype[{#KEY}]),"/xpath/text()")=0'
 				]
 			],
 			// #25.
@@ -884,8 +892,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 					'constructor' => [
 						'errors' => [
 							'header' => 'Expression syntax error.',
-							'details' => 'Cannot build expression tree: incorrect expression starting from'.
-									' "last(/Simple form test host@/item-prototype-reuse,#1)<0".'
+							'details' => 'Cannot build expression tree: incorrect expression starting from' .
+								' "last(/Simple form test host@/item-prototype-reuse,#1)<0".'
 						]
 					]
 				]
@@ -899,8 +907,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 					'constructor' => [
 						'errors' => [
 							'header' => 'Expression syntax error.',
-							'details' => 'Cannot build expression tree: incorrect expression starting from'.
-									' "last(/Simple form test host/system .uptime,#1)<0".'
+							'details' => 'Cannot build expression tree: incorrect expression starting from' .
+								' "last(/Simple form test host/system .uptime,#1)<0".'
 						]
 					]
 				]
@@ -914,8 +922,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 					'constructor' => [
 						'errors' => [
 							'header' => 'Expression syntax error.',
-							'details' => 'Cannot build expression tree: incorrect expression starting from'.
-									' "lastA(/Simple form test host/item-prototype-reuse,#1)<0".'
+							'details' => 'Cannot build expression tree: incorrect expression starting from' .
+								' "lastA(/Simple form test host/item-prototype-reuse,#1)<0".'
 						]
 					]
 				]
@@ -968,7 +976,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	/**
 	 * @dataProvider create
 	 */
-	public function testFormTriggerPrototype_SimpleCreate($data) {
+	public function testFormTriggerPrototype_SimpleCreate($data)
+	{
 
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$form = $this->query('name:zbx_filter')->asForm()->waitUntilReady()->one();
@@ -987,7 +996,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		if (isset($data['expression'])) {
 			switch ($data['expression']) {
 				case 'default':
-					$expression = 'last(/'.self::HOST.'/'.self::ITEM_KEY.'[{#KEY}],#1)=0';
+					$expression = 'last(/' . self::HOST . '/' . self::ITEM_KEY . '[{#KEY}],#1)=0';
 					$this->zbxTestInputType('expression', $expression);
 					break;
 				default:
@@ -1047,8 +1056,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 			if (isset($constructor['errors']) && !array_key_exists('elementError', $constructor)) {
 				$this->assertMessage(TEST_BAD, $constructor['errors']['header'], $constructor['errors']['details']);
 				COverlayDialogElement::find()->one()->close();
-			}
-			else {
+			} else {
 				$button->waitUntilNotVisible();
 				$this->query('xpath://*[@id="expression-table"]/div[1]')->waitUntilVisible()->one();
 				$this->zbxTestAssertElementPresentXpath("//button[@name='test_expression']");
@@ -1070,17 +1078,17 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 
 				if (isset($constructor['elementError'])) {
 					$count = CTestArrayHelper::get($constructor, 'element_count', 1);
-					$this->assertEquals($count,
-							$this->query('xpath://button['.CXPathHelper::fromClass('zi-i-negative').']')->all()->count()
+					$this->assertEquals(
+						$count,
+						$this->query('xpath://button[' . CXPathHelper::fromClass('zi-i-negative') . ']')->all()->count()
 					);
 					$text = $this->query('xpath://tr[1]//button[@data-hintbox]')->one()
-							->getAttribute('data-hintbox-contents');
+						->getAttribute('data-hintbox-contents');
 					foreach ($constructor['errors'] as $error) {
 						$this->assertStringContainsString($error, $text);
 					}
-				}
-				else {
-					$this->zbxTestAssertElementNotPresentXpath('//button['.CXPathHelper::fromClass('zi-i-negative').']');
+				} else {
+					$this->zbxTestAssertElementNotPresentXpath('//button[' . CXPathHelper::fromClass('zi-i-negative') . ']');
 				}
 
 				COverlayDialogElement::find()->one()->close();
@@ -1125,20 +1133,20 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		}
 
 		if (isset($data['dbCheck'])) {
-			$result = DBselect("SELECT description FROM triggers where description = '".$description."' limit 1");
+			$result = DBselect("SELECT description FROM triggers where description = '" . $description . "' limit 1");
 			while ($row = DBfetch($result)) {
 				$this->assertEquals($row['description'], $description);
 			}
 		}
 
 		if (isset($data['remove'])) {
-			$result = DBselect("SELECT description, triggerid FROM triggers where description = '".$description."' limit 1");
+			$result = DBselect("SELECT description, triggerid FROM triggers where description = '" . $description . "' limit 1");
 			while ($row = DBfetch($result)) {
 				$triggerId = $row['triggerid'];
 			}
 			$this->zbxTestOpen(self::HOST_LIST_PAGE);
 			// TODO: temporarily commented out due webdriver issue, alert is not displayed while leaving page during test execution
-//			$this->zbxTestAcceptAlert();
+			//			$this->zbxTestAcceptAlert();
 			$form = $this->query('name:zbx_filter')->asForm()->waitUntilReady()->one();
 			$this->filterEntriesAndOpenDiscovery(self::HOST, $form);
 			$this->zbxTestClickLinkTextWait(self::DISCOVERY_RULE);
@@ -1147,18 +1155,19 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 			$this->query('button:Delete')->one()->click();
 			$this->zbxTestAcceptAlert();
 			$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Trigger prototype deleted');
-			$this->assertEquals(0, CDBHelper::getCount("SELECT triggerid FROM triggers where description = '".$description."'"));
+			$this->assertEquals(0, CDBHelper::getCount("SELECT triggerid FROM triggers where description = '" . $description . "'"));
 		}
 	}
 
-	public function getLongExpressionData() {
+	public function getLongExpressionData()
+	{
 		return [
 			// Create trigger prototype.
 			[
 				[
 					'form_data' => [
 						'Name' => 'Created trigger prototype',
-						'Expression' => 'last(/'.STRING_128.'/'.STRING_2048.')=0 and last(/'.STRING_128.'/'.LONG_KEY.')=0'
+						'Expression' => 'last(/' . STRING_128 . '/' . STRING_2048 . ')=0 and last(/' . STRING_128 . '/' . LONG_KEY . ')=0'
 					],
 					'expected_db_expression' => '/^\{\d+\}=0 and \{\d+\}=0$/'
 				]
@@ -1178,7 +1187,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 					'link_name' => 'Trigger prototype with long expression for update',
 					'form_data' => [
 						'Name' => 'Updated trigger',
-						'Expression' => 'last(/'.STRING_128.'/'.STRING_2048.')>0 and last(/'.STRING_128.'/'.LONG_KEY.')>0'
+						'Expression' => 'last(/' . STRING_128 . '/' . STRING_2048 . ')>0 and last(/' . STRING_128 . '/' . LONG_KEY . ')>0'
 					],
 					'expected_db_expression' => '/^\{\d+\}>0 and \{\d+\}>0$/'
 				]
@@ -1193,13 +1202,14 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	 *
 	 * @dataProvider getLongExpressionData
 	 */
-	public function testFormTriggerPrototype_LongExpression($data) {
-		$this->page->login()->open('zabbix.php?action=trigger.prototype.list&context=host&parent_discoveryid='.self::$long_key_ruleid);
+	public function testFormTriggerPrototype_LongExpression($data)
+	{
+		$this->page->login()->open('zabbix.php?action=trigger.prototype.list&context=host&parent_discoveryid=' . self::$long_key_ruleid);
 		$this->page->waitUntilReady();
 
 		// Open the correct form.
 		$open_form_button = (CTestArrayHelper::get($data, 'update'))
-			? 'link:'.$data['link_name']
+			? 'link:' . $data['link_name']
 			: 'button:Create trigger prototype';
 		$this->page->query($open_form_button)->one()->click();
 
@@ -1215,7 +1225,7 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 		$triggerid = $this->page->query('link', $link)->one()->getAttribute('data-triggerid');
 
 		// Get the newly saved trigger's expression, as it is saved in the DB.
-		$db_expression = CDBHelper::getValue('SELECT expression FROM triggers WHERE triggerid = '.$triggerid);
+		$db_expression = CDBHelper::getValue('SELECT expression FROM triggers WHERE triggerid = ' . $triggerid);
 		// Assert by regex that the expression is saved in DB similar to this: "{100253}=0 and {100253}=0".
 		$this->assertEquals(1, preg_match($data['expected_db_expression'], $db_expression));
 	}
@@ -1225,7 +1235,8 @@ class testFormTriggerPrototype extends CLegacyWebTest {
 	 *
 	 * @param string $name name of a host or template where triggers are opened
 	 */
-	private function filterEntriesAndOpenDiscovery($name, $form) {
+	private function filterEntriesAndOpenDiscovery($name, $form)
+	{
 		$table = $this->query('xpath://table[@class="list-table"]')->asTable()->one();
 		$this->query('button:Reset')->one()->click();
 		$form->fill(['Name' => $name]);

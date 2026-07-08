@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testMassUpdateItems.php';
+require_once __DIR__ . '/../common/testMassUpdateItems.php';
 
 /**
  * Test the mass update of item prototypes.
@@ -24,12 +24,14 @@ require_once __DIR__.'/../common/testMassUpdateItems.php';
  * TODO: remove ignoreBrowserErrors after DEV-4233
  * @ignoreBrowserErrors
  */
-class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
+class testPageMassUpdateItemPrototypes extends testMassUpdateItems
+{
 
 	/**
 	 * Add items for mass updating.
 	 */
-	public function prepareItemPrototypesData() {
+	public function prepareItemPrototypesData()
+	{
 		CDataHelper::call('itemprototype.create', [
 			[
 				'hostid' => self::HOSTID,
@@ -185,7 +187,7 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 				'type' => 15,
 				'value_type' => 0,
 				'delay' => '50s',
-				'params' => 'avg("Zabbix Server:zabbix[wcache,values]",600)',
+				'params' => 'avg("Advantal server:zabbix[wcache,values]",600)',
 				'tags' => [
 					[
 						'tag' => 'Item_tag_name',
@@ -201,7 +203,7 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 				'type' => 15,
 				'value_type' => 0,
 				'delay' => '30s',
-				'params' => 'sum("Zabbix Server:zabbix[wcache,values]",900)',
+				'params' => 'sum("Advantal server:zabbix[wcache,values]",900)',
 				'tags' => [
 					[
 						'tag' => 'Item_tag_name_1',
@@ -241,7 +243,8 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 	/**
 	 * Data for mass updating of item prototypes.
 	 */
-	public function getItemPrototypesChangeData() {
+	public function getItemPrototypesChangeData()
+	{
 		return [
 			[
 				[
@@ -293,14 +296,16 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 	 * @dataProvider getCommonChangeData
 	 * @dataProvider getItemPrototypesChangeData
 	 */
-	public function testPageMassUpdateItemPrototypes_ChangeItems($data) {
+	public function testPageMassUpdateItemPrototypes_ChangeItems($data)
+	{
 		$this->executeItemsMassUpdate($data, true);
 	}
 
 	/**
 	 * Add items with preprocessing for mass updating.
 	 */
-	public function prepareItemPrototypeTagsPreprocessingData() {
+	public function prepareItemPrototypeTagsPreprocessingData()
+	{
 		CDataHelper::call('itemprototype.create', [
 			[
 				'hostid' => self::HOSTID,
@@ -480,7 +485,8 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 	/**
 	 * @onBeforeOnce prepareItemPrototypeTagsPreprocessingData
 	 */
-	public function testPageMassUpdateItemPrototypes_Cancel() {
+	public function testPageMassUpdateItemPrototypes_Cancel()
+	{
 		$this->executeMassUpdateCancel(true);
 	}
 
@@ -489,7 +495,8 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 	 *
 	 * @depends testPageMassUpdateItemPrototypes_Cancel
 	 */
-	public function testPageMassUpdateItemPrototypes_ChangeTags($data) {
+	public function testPageMassUpdateItemPrototypes_ChangeTags($data)
+	{
 		$this->executeItemsTagsMassUpdate($data, true);
 	}
 
@@ -498,7 +505,8 @@ class testPageMassUpdateItemPrototypes extends testMassUpdateItems {
 	 *
 	 * @depends testPageMassUpdateItemPrototypes_Cancel
 	 */
-	public function testPageMassUpdateItemPrototypes_ChangePreprocessing($data) {
+	public function testPageMassUpdateItemPrototypes_ChangePreprocessing($data)
+	{
 		$this->executeItemsPreprocessingMassUpdate($data, true);
 	}
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,9 +16,11 @@
 **/
 
 
-class C52ImportConverterTest extends CImportConverterTest {
+class C52ImportConverterTest extends CImportConverterTest
+{
 
-	public function importConvertProviderData(): array {
+	public function importConvertProviderData(): array
+	{
 		$calculated = ['type' => CXmlConstantName::CALCULATED, 'key' => ''];
 
 		return [
@@ -31,7 +35,7 @@ class C52ImportConverterTest extends CImportConverterTest {
 							'template' => 'Template',
 							'items' => [
 								$calculated + ['params' => '100*last("vfs.fs.size[/,free]")/last("vfs.fs.size[/,total]")'],
-								$calculated + ['params' => 'avg("Zabbix Server:zabbix[wcache,values]",600)'],
+								$calculated + ['params' => 'avg("Advantal server:zabbix[wcache,values]",600)'],
 								$calculated + ['params' => 'last("net.if.in[eth0,bytes]")+last("net.if.out[eth0,bytes]")'],
 								$calculated + ['params' => '100*last("net.if.in[eth0,bytes]")/(last("net.if.in[eth0,bytes]")+last("net.if.out[eth0,bytes]"))'],
 								$calculated + ['params' => 'last("grpsum[\\"video\\",\\"net.if.out[eth0,bytes]\\",\\"last\\"]") / last("grpsum[\\"video\\",\\"nginx_stat.sh[active]\\",\\"last\\"]")'],
@@ -40,8 +44,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 								$calculated + ['params' => 'last(php-fpm.listen_queue)/(last(php-fpm.listen_queue_len)+last(php-fpm.listen_queue_len)=0)*100'],
 								$calculated + ['params' => 'last("vm.memory.used[hrStorageUsed.{#SNMPINDEX}]")/last("vm.memory.total[hrStorageSize.{#SNMPINDEX}]")*100'],
 								$calculated + ['params' => 'last("system.swap.size[,total]") - last("system.swap.size[,total]") / 100 * last("perf_counter_en[\\"\\Paging file(_Total)\\% Usage\\"]")'],
-								$calculated + ['params' => 'avg("zbxnext_6451:'."\n\r\n".'agent_numeric[wcache,values]",600)'],
-								$calculated + ['params' => 'abschange("trap1") + avg(trap1,1h,1d) + band(trap1,,12)=4 + count(trap1,10m) + count(trap1,10m,"error",eq) + count(trap1,10m,12) + count(trap1, 10m,12,gt) + count(trap1, #10,12,gt) + count(trap1, 10m,12,gt,1d) + count(trap1,10m,6/7,band) + count(trap1, 10m,,,1d) + count(trap1,10m,"56",eq) + count("Zabbix server:trap3",10m,error,eq) + date("trap1") + dayofmonth(trap1) + dayofweek(trap1) + delta(trap1,30s) + diff(trap1) + forecast(trap1,#10,,1h) + forecast(trap1,1h,,30m) + forecast(trap1,1h,1d,12h) + forecast(trap1,1h,,10m,exponential) + forecast(trap1,1h,,2h,polynomial3,max) + fuzzytime(trap1,40) + count(trap2,10m,56,eq)'],
+								$calculated + ['params' => 'avg("zbxnext_6451:' . "\n\r\n" . 'agent_numeric[wcache,values]",600)'],
+								$calculated + ['params' => 'abschange("trap1") + avg(trap1,1h,1d) + band(trap1,,12)=4 + count(trap1,10m) + count(trap1,10m,"error",eq) + count(trap1,10m,12) + count(trap1, 10m,12,gt) + count(trap1, #10,12,gt) + count(trap1, 10m,12,gt,1d) + count(trap1,10m,6/7,band) + count(trap1, 10m,,,1d) + count(trap1,10m,"56",eq) + count("Advantal server:trap3",10m,error,eq) + date("trap1") + dayofmonth(trap1) + dayofweek(trap1) + delta(trap1,30s) + diff(trap1) + forecast(trap1,#10,,1h) + forecast(trap1,1h,,30m) + forecast(trap1,1h,1d,12h) + forecast(trap1,1h,,10m,exponential) + forecast(trap1,1h,,2h,polynomial3,max) + fuzzytime(trap1,40) + count(trap2,10m,56,eq)'],
 								$calculated + ['params' => 'band(trap1,,12)']
 							]
 						]
@@ -54,43 +58,43 @@ class C52ImportConverterTest extends CImportConverterTest {
 							'uuid' => generateUuidV4('Template'),
 							'items' => [
 								$calculated + [
-									'params' => '100*last(/'.'/vfs.fs.size[/,free])/last(/'.'/vfs.fs.size[/,total])',
+									'params' => '100*last(/' . '/vfs.fs.size[/,free])/last(/' . '/vfs.fs.size[/,total])',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'avg(/Zabbix Server/zabbix[wcache,values],600s)',
+									'params' => 'avg(/Advantal server/zabbix[wcache,values],600s)',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/net.if.in[eth0,bytes])+last(/'.'/net.if.out[eth0,bytes])',
+									'params' => 'last(/' . '/net.if.in[eth0,bytes])+last(/' . '/net.if.out[eth0,bytes])',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => '100*last(/'.'/net.if.in[eth0,bytes])/(last(/'.'/net.if.in[eth0,bytes])+last(/'.'/net.if.out[eth0,bytes]))',
+									'params' => '100*last(/' . '/net.if.in[eth0,bytes])/(last(/' . '/net.if.in[eth0,bytes])+last(/' . '/net.if.out[eth0,bytes]))',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/grpsum["video","net.if.out[eth0,bytes]","last"]) / last(/'.'/grpsum["video","nginx_stat.sh[active]","last"])',
+									'params' => 'last(/' . '/grpsum["video","net.if.out[eth0,bytes]","last"]) / last(/' . '/grpsum["video","nginx_stat.sh[active]","last"])',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/es.node.indices.flush.total_time_in_millis[{#ES.NODE}]) / ( last(/'.'/es.node.indices.flush.total[{#ES.NODE}]) + (last(/'.'/es.node.indices.flush.total[{#ES.NODE}]) = 0) )',
+									'params' => 'last(/' . '/es.node.indices.flush.total_time_in_millis[{#ES.NODE}]) / ( last(/' . '/es.node.indices.flush.total[{#ES.NODE}]) + (last(/' . '/es.node.indices.flush.total[{#ES.NODE}]) = 0) )',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/haproxy.frontend.scur[{#PXNAME}:{#SVNAME}]) / last(/'.'/haproxy.frontend.slim[{#PXNAME}:{#SVNAME}]) * 100',
+									'params' => 'last(/' . '/haproxy.frontend.scur[{#PXNAME}:{#SVNAME}]) / last(/' . '/haproxy.frontend.slim[{#PXNAME}:{#SVNAME}]) * 100',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/php-fpm.listen_queue)/(last(/'.'/php-fpm.listen_queue_len)+last(/'.'/php-fpm.listen_queue_len)=0)*100',
+									'params' => 'last(/' . '/php-fpm.listen_queue)/(last(/' . '/php-fpm.listen_queue_len)+last(/' . '/php-fpm.listen_queue_len)=0)*100',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/vm.memory.used[hrStorageUsed.{#SNMPINDEX}])/last(/'.'/vm.memory.total[hrStorageSize.{#SNMPINDEX}])*100',
+									'params' => 'last(/' . '/vm.memory.used[hrStorageUsed.{#SNMPINDEX}])/last(/' . '/vm.memory.total[hrStorageSize.{#SNMPINDEX}])*100',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'last(/'.'/system.swap.size[,total]) - last(/'.'/system.swap.size[,total]) / 100 * last(/'.'/perf_counter_en["\\Paging file(_Total)\% Usage"])',
+									'params' => 'last(/' . '/system.swap.size[,total]) - last(/' . '/system.swap.size[,total]) / 100 * last(/' . '/perf_counter_en["\\Paging file(_Total)\% Usage"])',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
@@ -98,11 +102,11 @@ class C52ImportConverterTest extends CImportConverterTest {
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'abs(change(/'.'/trap1)) + avg(/'.'/trap1,1h:now-1d) + bitand(last(/'.'/trap1),12)=4 + count(/'.'/trap1,10m) + count(/'.'/trap1,10m,"eq","error") + count(/'.'/trap1,10m,,"12") + count(/'.'/trap1,10m,"gt","12") + count(/'.'/trap1,#10,"gt","12") + count(/'.'/trap1,10m:now-1d,"gt","12") + count(/'.'/trap1,10m,"bitand","6/7") + count(/'.'/trap1,10m:now-1d) + count(/'.'/trap1,10m,"eq","56") + count(/Zabbix server/trap3,10m,"eq","error") + date() + dayofmonth() + dayofweek() + (max(/'.'/trap1,30s)-min(/'.'/trap1,30s)) + (last(/'.'/trap1,#1)<>last(/'.'/trap1,#2)) + forecast(/'.'/trap1,#10,1h) + forecast(/'.'/trap1,1h,30m) + forecast(/'.'/trap1,1h:now-1d,12h) + forecast(/'.'/trap1,1h,10m,"exponential") + forecast(/'.'/trap1,1h,2h,"polynomial3","max") + fuzzytime(/'.'/trap1,40s) + count(/'.'/trap2,10m,"eq","56")',
+									'params' => 'abs(change(/' . '/trap1)) + avg(/' . '/trap1,1h:now-1d) + bitand(last(/' . '/trap1),12)=4 + count(/' . '/trap1,10m) + count(/' . '/trap1,10m,"eq","error") + count(/' . '/trap1,10m,,"12") + count(/' . '/trap1,10m,"gt","12") + count(/' . '/trap1,#10,"gt","12") + count(/' . '/trap1,10m:now-1d,"gt","12") + count(/' . '/trap1,10m,"bitand","6/7") + count(/' . '/trap1,10m:now-1d) + count(/' . '/trap1,10m,"eq","56") + count(/Advantal server/trap3,10m,"eq","error") + date() + dayofmonth() + dayofweek() + (max(/' . '/trap1,30s)-min(/' . '/trap1,30s)) + (last(/' . '/trap1,#1)<>last(/' . '/trap1,#2)) + forecast(/' . '/trap1,#10,1h) + forecast(/' . '/trap1,1h,30m) + forecast(/' . '/trap1,1h:now-1d,12h) + forecast(/' . '/trap1,1h,10m,"exponential") + forecast(/' . '/trap1,1h,2h,"polynomial3","max") + fuzzytime(/' . '/trap1,40s) + count(/' . '/trap2,10m,"eq","56")',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								],
 								$calculated + [
-									'params' => 'bitand(last(/'.'/trap1),12)',
+									'params' => 'bitand(last(/' . '/trap1),12)',
 									'uuid' => '4b6197500eda44dda4f76faadd01614c'
 								]
 							]
@@ -315,7 +319,7 @@ class C52ImportConverterTest extends CImportConverterTest {
 									'elementtype' => '0',
 									'elements' => [
 										[
-											'host' => 'Zabbix server'
+											'host' => 'Advantal server'
 										]
 									],
 									'application' => 'MySQL'
@@ -325,8 +329,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 									'elements' => [
 										[
 											'description' => 'trigger',
-											'expression' => '{Zabbix server:proc.num.last()} = 0',
-											'recovery_expression' => '{Zabbix server:proc.num.last()} <> 0'
+											'expression' => '{Advantal server:proc.num.last()} = 0',
+											'recovery_expression' => '{Advantal server:proc.num.last()} <> 0'
 										]
 									],
 									'application' => ''
@@ -338,8 +342,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 										[
 											'trigger' => [
 												'description' => 'trigger',
-												'expression' => '{Zabbix server:proc.num.last()} = 0',
-												'recovery_expression' => '{Zabbix server:proc.num.last()} <> 0'
+												'expression' => '{Advantal server:proc.num.last()} = 0',
+												'recovery_expression' => '{Advantal server:proc.num.last()} <> 0'
 											]
 										]
 									]
@@ -357,7 +361,7 @@ class C52ImportConverterTest extends CImportConverterTest {
 									'elementtype' => '0',
 									'elements' => [
 										[
-											'host' => 'Zabbix server'
+											'host' => 'Advantal server'
 										]
 									],
 									'evaltype' => '0',
@@ -374,8 +378,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 									'elements' => [
 										[
 											'description' => 'trigger',
-											'expression' => 'last(/Zabbix server/proc.num) = 0',
-											'recovery_expression' => 'last(/Zabbix server/proc.num) <> 0'
+											'expression' => 'last(/Advantal server/proc.num) = 0',
+											'recovery_expression' => 'last(/Advantal server/proc.num) <> 0'
 										]
 									],
 									'evaltype' => '0'
@@ -387,8 +391,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 										[
 											'trigger' => [
 												'description' => 'trigger',
-												'expression' => 'last(/Zabbix server/proc.num) = 0',
-												'recovery_expression' => 'last(/Zabbix server/proc.num) <> 0'
+												'expression' => 'last(/Advantal server/proc.num) = 0',
+												'recovery_expression' => 'last(/Advantal server/proc.num) <> 0'
 											]
 										]
 									]
@@ -421,11 +425,13 @@ class C52ImportConverterTest extends CImportConverterTest {
 	 * @param array $data
 	 * @param array $expected
 	 */
-	public function testConvert(array $data, array $expected): void {
+	public function testConvert(array $data, array $expected): void
+	{
 		$this->assertConvert($this->createExpectedResult($expected), $this->createSource($data));
 	}
 
-	protected function createSource(array $data = []): array {
+	protected function createSource(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '5.2',
@@ -434,7 +440,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function createExpectedResult(array $data = []): array {
+	protected function createExpectedResult(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '5.4',
@@ -450,7 +457,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 	 *
 	 * @see C52ImportConverter::prepareTemplateName()
 	 */
-	protected function getTemplateNameUuidData(): array {
+	protected function getTemplateNameUuidData(): array
+	{
 		$data = [];
 		$expected = [];
 		$seeds = [
@@ -511,7 +519,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getGroupsUuidData(): array {
+	protected function getGroupsUuidData(): array
+	{
 		/**
 		 * Use "host group name".
 		 * Group uuid should be generated for all groups in import, even for groups not used by templates.
@@ -544,7 +553,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getTemplateItemsUuidData(): array {
+	protected function getTemplateItemsUuidData(): array
+	{
 		// Use "template name/item key".
 		return [
 			[
@@ -584,7 +594,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getTriggerUuidData(): array {
+	protected function getTriggerUuidData(): array
+	{
 		// Use "trigger name/expanded expression/expanded recovery expression".
 		return [
 			[
@@ -640,7 +651,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getGraphUuidData(): array {
+	protected function getGraphUuidData(): array
+	{
 		// Use "graph name" and "template name" of each used item.
 		return [
 			[
@@ -677,7 +689,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getTemplateDashboardUuidData(): array {
+	protected function getTemplateDashboardUuidData(): array
+	{
 		// Use "template name/dashboard name".
 		return [
 			[
@@ -717,7 +730,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getHttptestUuidData(): array {
+	protected function getHttptestUuidData(): array
+	{
 		// Use "template name/web scenario name".
 		return [
 			[
@@ -754,10 +768,11 @@ class C52ImportConverterTest extends CImportConverterTest {
 					]
 				]
 			]
-			];
+		];
 	}
 
-	protected function getValuemapsUuidData(): array {
+	protected function getValuemapsUuidData(): array
+	{
 		// Use "template name/value map name".
 		return [
 			[
@@ -813,7 +828,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getDiscoveryRuleNameUuidData(): array {
+	protected function getDiscoveryRuleNameUuidData(): array
+	{
 		// Use "template name/discovery rule key".
 		return [
 			[
@@ -853,7 +869,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getItemPrototypeUuidData(): array {
+	protected function getItemPrototypeUuidData(): array
+	{
 		// Use "template name/discovery rule key/item prototype key".
 		return [
 			[
@@ -905,7 +922,8 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function getTriggerPrototypeUuidData(): array {
+	protected function getTriggerPrototypeUuidData(): array
+	{
 		// Use "discovery rule key/trigger prototype name/expanded expression/expanded recovery expression".
 		return [
 			[
@@ -962,10 +980,11 @@ class C52ImportConverterTest extends CImportConverterTest {
 					]
 				]
 			]
-			];
+		];
 	}
 
-	protected function getGraphPrototypeUuidData(): array {
+	protected function getGraphPrototypeUuidData(): array
+	{
 		// Use "template name/discovery rule key/graph prototype name".
 		return [
 			[
@@ -1024,10 +1043,11 @@ class C52ImportConverterTest extends CImportConverterTest {
 					]
 				]
 			]
-			];
+		];
 	}
 
-	protected function getHostPrototypeUuidData(): array {
+	protected function getHostPrototypeUuidData(): array
+	{
 		// Use "template name/discovery rule key/host prototype name".
 		return [
 			[
@@ -1086,10 +1106,11 @@ class C52ImportConverterTest extends CImportConverterTest {
 					]
 				]
 			]
-			];
+		];
 	}
 
-	protected function getHostUuidData(): array {
+	protected function getHostUuidData(): array
+	{
 		// UUID should not be generated for host items
 		return [
 			[
@@ -1177,12 +1198,14 @@ class C52ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function assertConvert(array $expected, array $source): void {
+	protected function assertConvert(array $expected, array $source): void
+	{
 		$result = $this->createConverter()->convert($source);
 		$this->assertEquals($expected, $result);
 	}
 
-	protected function createConverter(): C52ImportConverter {
+	protected function createConverter(): C52ImportConverter
+	{
 		return new C52ImportConverter();
 	}
 }

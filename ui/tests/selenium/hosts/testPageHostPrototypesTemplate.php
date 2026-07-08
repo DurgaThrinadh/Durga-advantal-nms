@@ -14,14 +14,15 @@
 **/
 
 
-require_once __DIR__.'/../common/testPagePrototypes.php';
+require_once __DIR__ . '/../common/testPagePrototypes.php';
 
 /**
  * @backup hosts
  *
  * @onBefore prepareHostPrototypeTemplateData
  */
-class testPageHostPrototypesTemplate extends testPagePrototypes {
+class testPageHostPrototypesTemplate extends testPagePrototypes
+{
 
 	public $source = 'host';
 	public $tag = '3a Host prototype monitored discovered {#H}';
@@ -30,7 +31,8 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 	protected static $prototype_hostids;
 	protected static $host_druleid;
 
-	public function prepareHostPrototypeTemplateData() {
+	public function prepareHostPrototypeTemplateData()
+	{
 		$response = CDataHelper::createTemplates([
 			[
 				'host' => 'Template for host prototype',
@@ -60,7 +62,7 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 				'ruleid' => self::$host_druleid,
 				'groupLinks' => [
 					[
-						'groupid' => 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'tags' => [
@@ -79,7 +81,7 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 				'ruleid' => self::$host_druleid,
 				'groupLinks' => [
 					[
-						'groupid' => 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'status' => HOST_STATUS_NOT_MONITORED
@@ -89,7 +91,7 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 				'ruleid' => self::$host_druleid,
 				'groupLinks' => [
 					[
-						'groupid' => 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'status' => HOST_STATUS_NOT_MONITORED,
@@ -100,7 +102,7 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 				'ruleid' => self::$host_druleid,
 				'groupLinks' => [
 					[
-						'groupid' => 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'discover' => HOST_NO_DISCOVER,
@@ -113,8 +115,9 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 		self::$entity_count = count(self::$prototype_hostids);
 	}
 
-	public function testPageHostPrototypesTemplate_Layout() {
-		$this->page->login()->open($this->link.self::$host_druleid)->waitUntilReady();
+	public function testPageHostPrototypesTemplate_Layout()
+	{
+		$this->page->login()->open($this->link . self::$host_druleid)->waitUntilReady();
 		$this->checkLayout(true);
 	}
 
@@ -123,9 +126,10 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 	 *
 	 * @dataProvider getHostPrototypesSortingData
 	 */
-	public function testPageHostPrototypesTemplate_Sorting($data) {
-		$this->page->login()->open('host_prototypes.php?context=template&sort='.$data['sort'].'&sortorder=ASC&parent_discoveryid='.
-				self::$host_druleid)->waitUntilReady();
+	public function testPageHostPrototypesTemplate_Sorting($data)
+	{
+		$this->page->login()->open('host_prototypes.php?context=template&sort=' . $data['sort'] . '&sortorder=ASC&parent_discoveryid=' .
+			self::$host_druleid)->waitUntilReady();
 		$this->executeSorting($data);
 	}
 
@@ -134,8 +138,9 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 	 *
 	 * @dataProvider getHostPrototypesButtonLinkData
 	 */
-	public function testPageHostPrototypesTemplate_ButtonLink($data) {
-		$this->page->login()->open($this->link.self::$host_druleid)->waitUntilReady();
+	public function testPageHostPrototypesTemplate_ButtonLink($data)
+	{
+		$this->page->login()->open($this->link . self::$host_druleid)->waitUntilReady();
 		$this->checkTableAction($data);
 	}
 
@@ -144,8 +149,9 @@ class testPageHostPrototypesTemplate extends testPagePrototypes {
 	 *
 	 * @dataProvider getHostPrototypesDeleteData
 	 */
-	public function testPageHostPrototypesTemplate_Delete($data) {
-		$this->page->login()->open($this->link.self::$host_druleid)->waitUntilReady();
+	public function testPageHostPrototypesTemplate_Delete($data)
+	{
+		$this->page->login()->open($this->link . self::$host_druleid)->waitUntilReady();
 
 		$ids = [];
 		foreach ($data['name'] as $name) {

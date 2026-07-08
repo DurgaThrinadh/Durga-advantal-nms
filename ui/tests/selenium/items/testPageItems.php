@@ -14,28 +14,31 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
 
 /**
  * @backup items
  *
  * @onBefore prepareItemData
  */
-class testPageItems extends CLegacyWebTest {
+class testPageItems extends CLegacyWebTest
+{
 
 	/**
 	 * Attach TableBehavior and MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CTableBehavior::class,
 			CMessageBehavior::class
 		];
 	}
 
-	public static function prepareItemData() {
+	public static function prepareItemData()
+	{
 		$hostid = CDBHelper::getValue("SELECT hostid FROM hosts WHERE host='Host for trigger tags filtering'");
 		CDataHelper::call('item.create', [
 			[
@@ -48,20 +51,22 @@ class testPageItems extends CLegacyWebTest {
 		]);
 	}
 
-	public static function data() {
+	public static function data()
+	{
 		return CDBHelper::getDataProvider(
-						'SELECT hostid,status'.
-						' FROM hosts'.
-						' WHERE host LIKE \'%-layout-test%\''
+			'SELECT hostid,status' .
+				' FROM hosts' .
+				' WHERE host LIKE \'%-layout-test%\''
 		);
 	}
 
 	/**
 	 * @dataProvider data
 	 */
-	public function testPageItems_CheckLayout($data) {
+	public function testPageItems_CheckLayout($data)
+	{
 		if ($data['status'] == HOST_STATUS_MONITORED || $data['status'] == HOST_STATUS_NOT_MONITORED) {
-			$this->zbxTestLogin('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids[0]='.$data['hostid']);
+			$this->zbxTestLogin('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids[0]=' . $data['hostid']);
 			$this->zbxTestTextPresent('All hosts');
 			$this->zbxTestTextPresent(
 				[
@@ -78,9 +83,8 @@ class testPageItems extends CLegacyWebTest {
 			);
 			$this->zbxTestAssertElementPresentXpath("//button[text()='Execute now'][@disabled]");
 			$this->zbxTestTextPresent('Clear history and trends');
-		}
-		elseif ($data['status'] == HOST_STATUS_TEMPLATE) {
-			$this->zbxTestLogin('zabbix.php?action=item.list&context=template&filter_set=1&filter_hostids[0]='.$data['hostid']);
+		} elseif ($data['status'] == HOST_STATUS_TEMPLATE) {
+			$this->zbxTestLogin('zabbix.php?action=item.list&context=template&filter_set=1&filter_hostids[0]=' . $data['hostid']);
 			$this->zbxTestTextPresent('All templates');
 			$this->zbxTestTextPresent(
 				[
@@ -106,9 +110,10 @@ class testPageItems extends CLegacyWebTest {
 	/**
 	 * @dataProvider data
 	 */
-	public function testPageItems_CheckNowAll($data) {
+	public function testPageItems_CheckNowAll($data)
+	{
 		$context = ($data['status'] == HOST_STATUS_TEMPLATE) ? 'template' : 'host';
-		$this->zbxTestLogin('zabbix.php?action=item.list&context='.$context.'&filter_set=1&filter_hostids[0]='.$data['hostid']);
+		$this->zbxTestLogin('zabbix.php?action=item.list&context=' . $context . '&filter_set=1&filter_hostids[0]=' . $data['hostid']);
 		$this->zbxTestCheckHeader('Items');
 
 		$this->zbxTestClick('all_items');
@@ -116,14 +121,14 @@ class testPageItems extends CLegacyWebTest {
 		if ($data['status'] == HOST_STATUS_TEMPLATE) {
 			$this->assertFalse($this->query('button:Execute now')->exists());
 			$this->assertFalse($this->query('button:Clear history and trends')->exists());
-		}
-		else {
+		} else {
 			$this->zbxTestClickButtonText('Execute now');
 			$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Request sent successfully');
 		}
 	}
 
-	public static function getHostAndGroupData() {
+	public static function getHostAndGroupData()
+	{
 		return [
 			// One host group without host.
 			[
@@ -142,7 +147,7 @@ class testPageItems extends CLegacyWebTest {
 			[
 				[
 					'filter_options' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Key' => 'trap'
 					],
 					'result' => [
@@ -166,7 +171,7 @@ class testPageItems extends CLegacyWebTest {
 						'Hosts' => [
 							[
 								'values' => ['Host for trigger tags filtering'],
-								'context' => 'Zabbix servers'
+								'context' => 'Advantal servers'
 							],
 							[
 								'values' => ['Host for triggers filtering'],
@@ -185,11 +190,11 @@ class testPageItems extends CLegacyWebTest {
 			[
 				[
 					'filter_options' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Hosts' => [
 							[
 								'values' => ['Host for trigger tags filtering'],
-								'context' => 'Zabbix servers'
+								'context' => 'Advantal servers'
 							],
 							[
 								'values' => ['Host for triggers filtering'],
@@ -223,7 +228,8 @@ class testPageItems extends CLegacyWebTest {
 	/**
 	 * @dataProvider getHostAndGroupData
 	 */
-	public function testPageItems_FilterHostAndGroupsFilter($data) {
+	public function testPageItems_FilterHostAndGroupsFilter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids[0]=99062');
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 
@@ -262,9 +268,11 @@ class testPageItems extends CLegacyWebTest {
 	/**
 	 * @dataProvider data
 	 */
-	public function testPageItems_Delete($data) {
+	public function testPageItems_Delete($data)
+	{
 		$context = ($data['status'] == HOST_STATUS_TEMPLATE) ? 'template' : 'host';
-		$this->page->login()->open('zabbix.php?action=item.list&context='.$context.'&filter_set=1&filter_hostids[0]='.
+		$this->page->login()->open(
+			'zabbix.php?action=item.list&context=' . $context . '&filter_set=1&filter_hostids[0]=' .
 				$data['hostid']
 		)->waitUntilReady();
 

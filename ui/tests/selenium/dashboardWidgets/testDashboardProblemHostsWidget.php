@@ -23,7 +23,8 @@ require_once dirname(__FILE__) . '/../../include/CWebTest.php';
  *
  * @onBefore prepareData
  */
-class testDashboardProblemHostsWidget extends testWidgets {
+class testDashboardProblemHostsWidget extends testWidgets
+{
 
 	const DELETE_WIDGET = 'Delete Problem hosts';
 	const MAP_WIDGET = 'Map widget for broadcasting';
@@ -34,7 +35,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 	/**
 	 * Attach MessageBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -45,7 +47,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		];
 	}
 
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		// Create default problem hosts widgets and broadcaster map widget.
 		CDataHelper::call('dashboard.create', [
 			[
@@ -65,7 +68,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 									['type' => ZBX_WIDGET_FIELD_TYPE_INT32, 'name' => 'tags.0.operator', 'value' => 1],
 									['type' => ZBX_WIDGET_FIELD_TYPE_STR, 'name' => 'tags.0.value', 'value' => 'default value'],
 									['type' => ZBX_WIDGET_FIELD_TYPE_STR, 'name' => 'tags.0.tag', 'value' => 'default tag'],
-									['type' => ZBX_WIDGET_FIELD_TYPE_STR,'name' => 'reference','value' => 'AAAAA']
+									['type' => ZBX_WIDGET_FIELD_TYPE_STR, 'name' => 'reference', 'value' => 'AAAAA']
 								]
 							],
 							[
@@ -99,8 +102,9 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		self::$dashboardid = CDataHelper::getIds('name')['Dashboard for Problem hosts widget test'];
 	}
 
-	public function testDashboardProblemHostsWidget_Layout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+	public function testDashboardProblemHostsWidget_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$dialog = $dashboard->edit()->addWidget();
 		$form = $dialog->asForm();
@@ -135,10 +139,22 @@ class testDashboardProblemHostsWidget extends testWidgets {
 
 		// Check dropdown options.
 		$options = [
-			'Refresh interval' => ['Default (1 minute)', 'No refresh', '10 seconds', '30 seconds', '1 minute',
-				'2 minutes', '10 minutes', '15 minutes'
+			'Refresh interval' => [
+				'Default (1 minute)',
+				'No refresh',
+				'10 seconds',
+				'30 seconds',
+				'1 minute',
+				'2 minutes',
+				'10 minutes',
+				'15 minutes'
 			],
-			'id:tags_0_operator' => ['Exists', 'Equals', 'Contains', 'Does not exist', 'Does not equal',
+			'id:tags_0_operator' => [
+				'Exists',
+				'Equals',
+				'Contains',
+				'Does not exist',
+				'Does not equal',
 				'Does not contain'
 			]
 		];
@@ -190,12 +206,16 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		}
 
 		// Check 'Problem tags' table buttons.
-		$this->assertEquals(2, $form->query('id:tags_table_tags')->one()->query('button', ['Add', 'Remove'])->all()
+		$this->assertEquals(
+			2,
+			$form->query('id:tags_table_tags')->one()->query('button', ['Add', 'Remove'])->all()
 				->filter((CElementFilter::CLICKABLE))->count()
 		);
 
 		// Check if footer buttons present and clickable.
-		$this->assertEquals(['Add', 'Cancel'], $dialog->getFooter()->query('button')->all()
+		$this->assertEquals(
+			['Add', 'Cancel'],
+			$dialog->getFooter()->query('button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 
@@ -215,8 +235,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 					$dialog = COverlayDialogElement::find()->waitUntilReady()->all()->last();
 					$this->assertEquals($title, $dialog->getTitle());
 					$dialog->close();
-				}
-				else {
+				} else {
 					$form->getField($field)->checkValue($title);
 				}
 			}
@@ -224,7 +243,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public static function getWidgetData() {
+	public static function getWidgetData()
+	{
 		return [
 			// #0
 			[
@@ -290,8 +310,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 					'fields' => [
 						'Name' => 'Host group and exclude host group specified',
 						'Refresh interval' => '10 seconds',
-						'Host groups' => ['Zabbix servers'],
-						'Exclude host groups' => ['Zabbix servers']
+						'Host groups' => ['Advantal servers'],
+						'Exclude host groups' => ['Advantal servers']
 					]
 				]
 			],
@@ -365,8 +385,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 					'fields' => [
 						'Name' => 'Multiple values for Host, Host groups, Exclude host groups',
 						'Refresh interval' => '10 seconds',
-						'Host groups' => ['Zabbix servers', 'Empty group'],
-						'Exclude host groups' => ['Zabbix servers', 'Inheritance test'],
+						'Host groups' => ['Advantal servers', 'Empty group'],
+						'Exclude host groups' => ['Advantal servers', 'Inheritance test'],
 						'Hosts' => ['ЗАББИКС Сервер', 'Simple form test host']
 					]
 				]
@@ -460,7 +480,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		];
 	}
 
-	public static function getCreateDefaultData() {
+	public static function getCreateDefaultData()
+	{
 		return [
 			// #14 Submitting empty form with default values.
 			[
@@ -475,14 +496,16 @@ class testDashboardProblemHostsWidget extends testWidgets {
 	 * @dataProvider getWidgetData
 	 * @dataProvider getCreateDefaultData
 	 */
-	public function testDashboardProblemHostsWidget_Create($data) {
+	public function testDashboardProblemHostsWidget_Create($data)
+	{
 		$this->checkWidgetForm($data);
 	}
 
 	/**
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardProblemHostsWidget_Update($data) {
+	public function testDashboardProblemHostsWidget_Update($data)
+	{
 		$this->checkWidgetForm($data, true);
 	}
 
@@ -492,8 +515,9 @@ class testDashboardProblemHostsWidget extends testWidgets {
 	 * @param array      $data      data provider
 	 * @param boolean    $update    true if update scenario, false if create
 	 */
-	protected function checkWidgetForm($data, $update = false) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+	protected function checkWidgetForm($data, $update = false)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -510,8 +534,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 			COverlayDialogElement::find()->waitUntilReady();
 
 			$unfilled_fields = $form->getValues();
-		}
-		else {
+		} else {
 			$header = (array_key_exists('Name', $data['fields'])) ? $data['fields']['Name'] : 'Problem hosts';
 			$form = $dashboard->edit()->addWidget()->asForm();
 			COverlayDialogElement::find()->waitUntilReady();
@@ -577,8 +600,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 				$chevron_fields = [
 					$data['chevron']['field'] => [$data['chevron']['selection']]
 				];
-			}
-			else {
+			} else {
 				$chevron_fields = [
 					$data['chevron']['field'] => ['Dashboard']
 				];
@@ -599,11 +621,13 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		$dashboard->waitUntilReady();
 	}
 
-	public function testDashboardProblemHostsWidget_SimpleUpdate() {
+	public function testDashboardProblemHostsWidget_SimpleUpdate()
+	{
 		$this->checkNoChanges();
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			// Cancel creating widget with saving the dashboard.
 			[
@@ -643,7 +667,8 @@ class testDashboardProblemHostsWidget extends testWidgets {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testDashboardProblemHostsWidget_Cancel($data){
+	public function testDashboardProblemHostsWidget_Cancel($data)
+	{
 		$this->checkNoChanges(CTestArrayHelper::get($data, 'cancel_form'), $data['create_widget'], $data['save_dashboard']);
 	}
 
@@ -654,9 +679,10 @@ class testDashboardProblemHostsWidget extends testWidgets {
 	 * @param boolean $create			true if create scenario, false if update
 	 * @param boolean $save_dashboard	true if dashboard will be saved, false if not
 	 */
-	protected function checkNoChanges($cancel = false, $create = false, $save_dashboard = true) {
+	protected function checkNoChanges($cancel = false, $create = false, $save_dashboard = true)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -668,8 +694,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 
 		if ($create) {
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Problem hosts')]);
-		}
-		else {
+		} else {
 			$values = $form->getFields()->filter(CElementFilter::VISIBLE)->asValues();
 		}
 
@@ -696,8 +721,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 
 		if ($cancel) {
 			$dialog->close();
-		}
-		else {
+		} else {
 			$form->submit();
 			COverlayDialogElement::ensureNotPresent();
 			$this->assertTrue($dashboard->getWidget(!$save_dashboard ? 'No save' : self::$default_widget)->isPresent());
@@ -706,8 +730,7 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		if ($save_dashboard) {
 			$dashboard->save();
 			$this->assertMessage(TEST_GOOD, 'Dashboard updated');
-		}
-		else {
+		} else {
 			$dashboard->cancelEditing();
 		}
 		$this->assertEquals($old_widget_count, $dashboard->getWidgets()->count());
@@ -723,8 +746,9 @@ class testDashboardProblemHostsWidget extends testWidgets {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 	}
 
-	public function testDashboardProblemHostsWidget_Delete() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardProblemHostsWidget_Delete()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$this->assertTrue($dashboard->edit()->getWidget(self::DELETE_WIDGET)->isEditable());
 		$dashboard->deleteWidget(self::DELETE_WIDGET);
@@ -734,8 +758,9 @@ class testDashboardProblemHostsWidget extends testWidgets {
 
 		// Check that widget is not present on dashboard and in DB.
 		$this->assertFalse($dashboard->getWidget(self::DELETE_WIDGET, false)->isValid());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM widget_field wf LEFT JOIN widget w'.
-				' ON w.widgetid=wf.widgetid WHERE w.name='.zbx_dbstr(self::DELETE_WIDGET)
+		$this->assertEquals(0, CDBHelper::getCount(
+			'SELECT * FROM widget_field wf LEFT JOIN widget w' .
+				' ON w.widgetid=wf.widgetid WHERE w.name=' . zbx_dbstr(self::DELETE_WIDGET)
 		));
 	}
 }

@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup maintenances
@@ -25,14 +25,16 @@ require_once __DIR__.'/../behaviors/CTableBehavior.php';
  *
  * @dataSource HostTemplateGroups
  */
-class testPageMaintenance extends CWebTest {
+class testPageMaintenance extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -51,7 +53,8 @@ class testPageMaintenance extends CWebTest {
 	const MAINTENANCE_UPDATE = 'Maintenance for update (data collection)';
 	const ZABBIX_SERVERS_GROUPID = 4;
 
-	public function prepareMaintenanceData() {
+	public function prepareMaintenanceData()
+	{
 		CDataHelper::call('maintenance.create', [
 			[
 				'name' => self::APPROACHING_MAINTENANCE,
@@ -228,7 +231,8 @@ class testPageMaintenance extends CWebTest {
 		]);
 	}
 
-	public function getMaintenanceData() {
+	public function getMaintenanceData()
+	{
 		return [
 			[
 				[
@@ -270,7 +274,7 @@ class testPageMaintenance extends CWebTest {
 						'Active since' => '2020-01-01 02:00',
 						'Active till' => '2020-01-02 02:00',
 						'State' => 'Expired',
-						'Description'=> ''
+						'Description' => ''
 					],
 					[
 						'Name' => 'Maintenance для фильтра - ʍąɨɲţ€ɲąɲc€🙂',
@@ -296,14 +300,17 @@ class testPageMaintenance extends CWebTest {
 	/**
 	 * @dataProvider getMaintenanceData
 	 */
-	public function testPageMaintenance_Layout($data) {
+	public function testPageMaintenance_Layout($data)
+	{
 		$maintenances = CDBHelper::getCount(self::MAINTENANCE_SQL);
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->page->assertTitle('Configuration of maintenance periods');
 		$this->page->assertHeader('Maintenance periods');
 
 		// Check buttons.
-		$this->assertEquals(4, $this->query('button', ['Create maintenance period', 'Apply', 'Reset', 'Select'])
+		$this->assertEquals(
+			4,
+			$this->query('button', ['Create maintenance period', 'Apply', 'Reset', 'Select'])
 				->all()->filter(CElementFilter::CLICKABLE)->count()
 		);
 		$this->assertFalse($this->query('button', 'Delete')->one()->isEnabled());
@@ -326,11 +333,15 @@ class testPageMaintenance extends CWebTest {
 		}
 
 		$this->assertEquals(['Host groups', 'Name', 'State'], $form->getLabels()->asText());
-		$this->assertEquals('type here to search', $form->getField('id:filter_groups__ms')
+		$this->assertEquals(
+			'type here to search',
+			$form->getField('id:filter_groups__ms')
 				->getAttribute('placeholder')
 		);
 		$this->assertEquals(255, $form->getField('Name')->getAttribute('maxlength'));
-		$this->assertEquals(['Any', 'Active', 'Approaching', 'Expired'], $form->getField('State')->getLabels()
+		$this->assertEquals(
+			['Any', 'Active', 'Approaching', 'Expired'],
+			$form->getField('State')->getLabels()
 				->asText()
 		);
 		$form->checkValue(['Host groups' => '', 'Name' => '', 'State' => 'Any']);
@@ -338,8 +349,9 @@ class testPageMaintenance extends CWebTest {
 		// Check table headers and sortable headers.
 		$table = $this->getTable();
 		$this->assertEquals(['Name', 'Type', 'Active since', 'Active till'], $table->getSortableHeaders()->asText());
-		$this->assertEquals(['', 'Name', 'Type', 'Active since', 'Active till', 'State', 'Description'],
-				$table->getHeadersText()
+		$this->assertEquals(
+			['', 'Name', 'Type', 'Active since', 'Active till', 'State', 'Description'],
+			$table->getHeadersText()
 		);
 
 		// Check the selected amount.
@@ -357,7 +369,8 @@ class testPageMaintenance extends CWebTest {
 		$this->assertSelectedCount(0);
 	}
 
-	public function getFilterData() {
+	public function getFilterData()
+	{
 		return [
 			// #0 View results for one host group.
 			[
@@ -374,7 +387,7 @@ class testPageMaintenance extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => ['Discovered hosts', 'Zabbix servers']
+						'Host groups' => ['Discovered hosts', 'Advantal servers']
 					],
 					'expected' => [
 						self::ACTIVE_MAINTENANCE,
@@ -488,7 +501,7 @@ class testPageMaintenance extends CWebTest {
 					'filter' => [
 						'Name' => 'Host',
 						'State' => 'Expired',
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'expected' => [
 						self::MULTIPLE_GROUPS_MAINTENANCE,
@@ -502,7 +515,8 @@ class testPageMaintenance extends CWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageMaintenance_Filter($data) {
+	public function testPageMaintenance_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list&sort=name&sortorder=ASC');
 		$form = CFilterElement::find()->one()->getForm();
 
@@ -515,13 +529,14 @@ class testPageMaintenance extends CWebTest {
 		$this->assertTableDataColumn(CTestArrayHelper::get($data, 'expected', []));
 
 		// Check the displaying amount.
-		$this-> assertTableStats(count(CTestArrayHelper::get($data, 'expected', [])));
+		$this->assertTableStats(count(CTestArrayHelper::get($data, 'expected', [])));
 
 		// Reset filter to not influence further tests.
 		$this->query('button:Reset')->one()->click();
 	}
 
-	public function testPageMaintenance_Sort() {
+	public function testPageMaintenance_Sort()
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list&sortorder=DESC');
 		$table = $this->getTable();
 
@@ -541,15 +556,18 @@ class testPageMaintenance extends CWebTest {
 		}
 	}
 
-	public function testPageMaintenance_CancelDelete() {
+	public function testPageMaintenance_CancelDelete()
+	{
 		$this->cancelDelete([self::ACTIVE_MAINTENANCE]);
 	}
 
-	public function testPageMaintenance_CancelMassDelete() {
+	public function testPageMaintenance_CancelMassDelete()
+	{
 		$this->cancelDelete();
 	}
 
-	public function getDeleteData() {
+	public function getDeleteData()
+	{
 		return [
 			// Delete 1 maintenance.
 			[
@@ -577,7 +595,8 @@ class testPageMaintenance extends CWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testPageMaintenance_Delete($data) {
+	public function testPageMaintenance_Delete($data)
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list');
 		// Maintenance count that will be selected before delete action.
 		$count_names = count(CTestArrayHelper::get($data, 'name', []));
@@ -585,19 +604,20 @@ class testPageMaintenance extends CWebTest {
 		$this->query('button:Delete')->one()->waitUntilClickable()->click();
 		$this->page->acceptAlert();
 		$this->page->waitUntilReady();
-		$this->assertMessage(TEST_GOOD, 'Maintenance period'.(($count_names === 1) ? '' : 's').' deleted');
+		$this->assertMessage(TEST_GOOD, 'Maintenance period' . (($count_names === 1) ? '' : 's') . ' deleted');
 		$this->assertSelectedCount(0);
 
 		$all = CDBHelper::getCount(self::MAINTENANCE_SQL);
 		$db_check = $count_names > 0
-				? CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name IN ('.CDBHelper::escape($data['name']).')')
-				: $all;
+			? CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name IN (' . CDBHelper::escape($data['name']) . ')')
+			: $all;
 		$this->assertEquals(0, $db_check);
 
 		$this->assertTableStats($all);
 	}
 
-	protected function cancelDelete($maintenances = []) {
+	protected function cancelDelete($maintenances = [])
+	{
 		$old_hash = CDBHelper::getHash(self::MAINTENANCE_SQL);
 		// Maintenance count that will be selected before delete action.
 		$maintenance_count = ($maintenances === []) ? CDBHelper::getCount(self::MAINTENANCE_SQL) : count($maintenances);
@@ -605,8 +625,9 @@ class testPageMaintenance extends CWebTest {
 		$this->page->login()->open('zabbix.php?action=maintenance.list');
 		$this->selectTableRows($maintenances);
 		$this->query('button:Delete')->one()->waitUntilClickable()->click();
-		$this->assertEquals('Delete selected maintenance period'.(($maintenance_count > 1) ? 's?' : '?'),
-				$this->page->getAlertText()
+		$this->assertEquals(
+			'Delete selected maintenance period' . (($maintenance_count > 1) ? 's?' : '?'),
+			$this->page->getAlertText()
 		);
 		$this->page->dismissAlert();
 		$this->page->waitUntilReady();

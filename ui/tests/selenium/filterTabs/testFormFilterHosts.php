@@ -13,19 +13,21 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../common/testFormFilter.php';
+require_once __DIR__ . '/../common/testFormFilter.php';
 
 /**
  * @dataSource MonitoringOverview
  *
  * @backup profiles
  */
-class testFormFilterHosts extends testFormFilter {
+class testFormFilterHosts extends testFormFilter
+{
 
 	public $url = 'zabbix.php?action=host.view';
 	public $table_selector = 'class:list-table';
 
-	public static function getCheckCreatedFilterData() {
+	public static function getCheckCreatedFilterData()
+	{
 		return [
 			[
 				[
@@ -143,17 +145,19 @@ class testFormFilterHosts extends testFormFilter {
 	 *
 	 * @dataProvider getCheckCreatedFilterData
 	 */
-	public function testFormFilterHosts_CheckCreatedFilter($data) {
+	public function testFormFilterHosts_CheckCreatedFilter($data)
+	{
 		$this->createFilter($data, 'filter-create', 'zabbix');
 		$this->checkFilters($data, $this->table_selector);
 	}
 
-	public static function getCheckRememberedFilterData() {
+	public static function getCheckRememberedFilterData()
+	{
 		return [
 			[
 				[
 					'Name' => 'Test name',
-					'Host groups' => ['Zabbix servers'],
+					'Host groups' => ['Advantal servers'],
 					'IP' => '192.168.10.1',
 					'DNS' => 'test.name',
 					'Port' => '10055',
@@ -178,28 +182,32 @@ class testFormFilterHosts extends testFormFilter {
 	 *
 	 * @dataProvider getCheckRememberedFilterData
 	 */
-	public function testFormFilterHosts_CheckRememberedFilter($data) {
+	public function testFormFilterHosts_CheckRememberedFilter($data)
+	{
 		$this->checkRememberedFilters($data);
 	}
 
 	/**
 	 * Delete created filter.
 	 */
-	public function testFormFilterHosts_Delete() {
+	public function testFormFilterHosts_Delete()
+	{
 		$this->deleteFilter('filter-delete', 'zabbix');
 	}
 
 	/**
 	 * Updating filter form.
 	 */
-	public function testFormFilterHosts_UpdateForm() {
+	public function testFormFilterHosts_UpdateForm()
+	{
 		$this->updateFilterForm('filter-update', 'zabbix', $this->table_selector);
 	}
 
 	/**
 	 * Updating saved filter properties.
 	 */
-	public function testFormFilterHosts_UpdateProperties() {
+	public function testFormFilterHosts_UpdateProperties()
+	{
 		$this->updateFilterProperties('filter-update', 'zabbix');
 	}
 }

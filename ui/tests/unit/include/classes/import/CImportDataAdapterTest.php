@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,7 +18,8 @@
 
 use PHPUnit\Framework\TestCase;
 
-class CImportDataAdapterTest extends TestCase {
+class CImportDataAdapterTest extends TestCase
+{
 
 	/**
 	 * Cached XMl sources
@@ -28,13 +31,15 @@ class CImportDataAdapterTest extends TestCase {
 	/**
 	 * @beforeClass prepareData
 	 */
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		global $DB;
 
 		$DB['TYPE'] = ZBX_DB_ORACLE;
 	}
 
-	public function testEmptyXml() {
+	public function testEmptyXml()
+	{
 		$adapter = $this->getAdapter($this->getEmptyXml());
 
 		$this->assertEquals([], $adapter->getHostGroups());
@@ -50,7 +55,8 @@ class CImportDataAdapterTest extends TestCase {
 		$this->assertEquals([], $adapter->getMediaTypes());
 	}
 
-	public function testGetGroups() {
+	public function testGetGroups()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -59,7 +65,7 @@ class CImportDataAdapterTest extends TestCase {
 				'uuid' => 'dc579cd7a1a34222933f24f52a68bcd8'
 			],
 			[
-				'name' => 'Zabbix servers',
+				'name' => 'Advantal servers',
 				'uuid' => '6f6799aa69e844b4b3918f779f2abf08'
 			]
 		], $adapter->getHostGroups());
@@ -72,7 +78,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getTemplateGroups());
 	}
 
-	public function testGetHosts() {
+	public function testGetHosts()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -189,10 +196,10 @@ class CImportDataAdapterTest extends TestCase {
 				'proxy' => [],
 				'proxy_group' => [],
 				'groups' => [
-						[
-							'name' => 'Linux servers'
-						]
-					],
+					[
+						'name' => 'Linux servers'
+					]
+				],
 				'templates' => [
 					[
 						'name' => 'Template App FTP Service'
@@ -284,7 +291,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getHosts());
 	}
 
-	public function testGetTemplates() {
+	public function testGetTemplates()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -345,7 +353,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getTemplates());
 	}
 
-	public function testGetItems() {
+	public function testGetItems()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -484,7 +493,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getItems());
 	}
 
-	public function testGetTriggers() {
+	public function testGetTriggers()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -497,7 +507,7 @@ class CImportDataAdapterTest extends TestCase {
 				'status' => '0',
 				'priority' => '0',
 				'type' => '0',
-				'dependencies' =>[
+				'dependencies' => [
 					[
 						'name' => 'trigger2',
 						'expression' => 'last(/export-host/item)<>0',
@@ -543,7 +553,7 @@ class CImportDataAdapterTest extends TestCase {
 				'status' => '0',
 				'priority' => '0',
 				'type' => '0',
-				'dependencies' =>[
+				'dependencies' => [
 					[
 						'name' => 'trigger2',
 						'expression' => 'last(/export-template/item)<>0',
@@ -583,7 +593,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getTriggers());
 	}
 
-	public function testGetGraphs() {
+	public function testGetGraphs()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -656,7 +667,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getGraphs());
 	}
 
-	public function testGetDiscoveryRules() {
+	public function testGetDiscoveryRules()
+	{
 		$adapter = $this->getAdapter($this->getHostAndTemplateXml());
 
 		$this->assertEquals([
@@ -865,7 +877,7 @@ class CImportDataAdapterTest extends TestCase {
 							'group_links' => [
 								[
 									'group' => [
-										'name' => 'Zabbix servers'
+										'name' => 'Advantal servers'
 									]
 								]
 							],
@@ -1099,7 +1111,7 @@ class CImportDataAdapterTest extends TestCase {
 							'group_links' => [
 								[
 									'group' => [
-										'name' => 'Zabbix servers'
+										'name' => 'Advantal servers'
 									]
 								]
 							],
@@ -1128,7 +1140,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getDiscoveryRules());
 	}
 
-	public function testGetImages() {
+	public function testGetImages()
+	{
 		$adapter = $this->getAdapter($this->getMapXml());
 
 		$this->assertEquals([
@@ -1140,7 +1153,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getImages());
 	}
 
-	public function testGetMaps() {
+	public function testGetMaps()
+	{
 		$adapter = $this->getAdapter($this->getMapXml());
 
 		$this->assertEquals([
@@ -1346,7 +1360,7 @@ class CImportDataAdapterTest extends TestCase {
 						'urls' => [],
 						'elements' => [
 							[
-								'name' => 'Zabbix servers'
+								'name' => 'Advantal servers'
 							]
 						]
 					]
@@ -1402,7 +1416,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getMaps());
 	}
 
-	public function testGetMediaTypes() {
+	public function testGetMediaTypes()
+	{
 		$adapter = $this->getAdapter($this->getMediaTypeXml());
 
 		$defaults = DB::getDefaults('media_type') + ['message_templates' => []];
@@ -1477,7 +1492,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getMediaTypes());
 	}
 
-	public function testConversion() {
+	public function testConversion()
+	{
 		$adapter = $this->getAdapter($this->get18Xml());
 
 		$this->assertEquals([
@@ -1858,7 +1874,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getGraphs());
 	}
 
-	public function testUnsupportedVersion() {
+	public function testUnsupportedVersion()
+	{
 		$xml = '<?xml version="1.0" encoding="UTF-8"?>
 			<zabbix_export>
 				<version>0.1</version>
@@ -1871,7 +1888,8 @@ class CImportDataAdapterTest extends TestCase {
 		$this->getAdapter($xml);
 	}
 
-	public function test10SchemaTransformationToLatest() {
+	public function test10SchemaTransformationToLatest()
+	{
 		$adapter = $this->getAdapter($this->get10Xml());
 
 		$this->assertEquals([
@@ -2003,7 +2021,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getItems());
 	}
 
-	public function testConstantConverter() {
+	public function testConstantConverter()
+	{
 		$schema = ['type' => XML_ARRAY, 'rules' => [
 			'constants' => ['type' => XML_INDEXED_ARRAY, 'prefix' => 'constant', 'rules' => [
 				'constant' => ['type' => XML_ARRAY, 'rules' => [
@@ -2039,11 +2058,13 @@ class CImportDataAdapterTest extends TestCase {
 		], $source);
 	}
 
-	public function constantConverterExRules(array $data) {
+	public function constantConverterExRules(array $data)
+	{
 		return ['type' => XML_STRING, 'in' => [0 => 'ZERO', 1 => 'FIRST', 2 => 'SECOND']];
 	}
 
-	public function testConstantConverterValueError() {
+	public function testConstantConverterValueError()
+	{
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('Invalid tag "first": unexpected constant value "1".');
 
@@ -2066,7 +2087,8 @@ class CImportDataAdapterTest extends TestCase {
 		$source = (new CConstantImportConverter($schema))->convert($source);
 	}
 
-	public function testDefaultValueConverter() {
+	public function testDefaultValueConverter()
+	{
 		$schema = ['type' => XML_ARRAY, 'rules' => [
 			'default_values' => ['type' => XML_INDEXED_ARRAY, 'prefix' => 'values', 'rules' => [
 				'values' => ['type' => XML_ARRAY, 'rules' => [
@@ -2111,7 +2133,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $source);
 	}
 
-	public function testArrayKeysConverter() {
+	public function testArrayKeysConverter()
+	{
 		$schema = ['type' => XML_ARRAY, 'rules' => [
 			'tests' => ['type' => XML_INDEXED_ARRAY, 'prefix' => 'test', 'rules' => [
 				'test' => ['type' => XML_ARRAY, 'rules' => [
@@ -2198,7 +2221,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $source);
 	}
 
-	public function testTemplateSnmpConverter() {
+	public function testTemplateSnmpConverter()
+	{
 		$adapter = $this->getAdapter($this->getSNMPTemplateXml());
 
 		$this->assertEquals([
@@ -2490,7 +2514,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getDiscoveryRules());
 	}
 
-	public function testHostSnmpConverter() {
+	public function testHostSnmpConverter()
+	{
 		$adapter = $this->getAdapter($this->getSNMPHostXml());
 
 		$this->assertEquals([
@@ -2955,7 +2980,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getDiscoveryRules());
 	}
 
-	public function testTemplateVendorFields() {
+	public function testTemplateVendorFields()
+	{
 		$adapter = $this->getAdapter($this->getFile('vendor_fields.xml'));
 
 		$this->assertEquals([
@@ -2979,7 +3005,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getTemplates());
 	}
 
-	public function testHostMonitoredBy(): void {
+	public function testHostMonitoredBy(): void
+	{
 		$adapter = $this->getAdapter($this->getFile('hosts_monitored_by.xml'));
 
 		$this->assertEquals([
@@ -3065,7 +3092,8 @@ class CImportDataAdapterTest extends TestCase {
 		], $adapter->getHosts());
 	}
 
-	protected function getAdapter($source) {
+	protected function getAdapter($source)
+	{
 		$reader = CImportReaderFactory::getReader(CImportReaderFactory::XML);
 		$source = $reader->read($source);
 
@@ -3104,11 +3132,13 @@ class CImportDataAdapterTest extends TestCase {
 		return $adapter;
 	}
 
-	protected function get18Xml() {
+	protected function get18Xml()
+	{
 		return $this->getFile('host18.xml');
 	}
 
-	protected function getEmptyXml() {
+	protected function getEmptyXml()
+	{
 		return '<?xml version="1.0" encoding="UTF-8"?>
 			<zabbix_export>
 				<version>2.0</version>
@@ -3116,36 +3146,43 @@ class CImportDataAdapterTest extends TestCase {
 			</zabbix_export>';
 	}
 
-	protected function getHostAndTemplateXml() {
+	protected function getHostAndTemplateXml()
+	{
 		return $this->getFile('hostAndTemplate.xml');
 	}
 
-	protected function getMapXml() {
+	protected function getMapXml()
+	{
 		return $this->getFile('map.xml');
 	}
 
-	protected function getMediaTypeXml() {
+	protected function getMediaTypeXml()
+	{
 		return $this->getFile('mediatype.xml');
 	}
 
-	protected function get10Xml() {
+	protected function get10Xml()
+	{
 		return $this->getFile('schema_1.0.xml');
 	}
 
 	/**
 	 * Get XML with Template SNMP items.
 	 */
-	protected function getSNMPTemplateXml() {
+	protected function getSNMPTemplateXml()
+	{
 		return $this->getFile('SNMP_items_templates.xml');
 	}
 
-	protected function getSNMPHostXml() {
+	protected function getSNMPHostXml()
+	{
 		return $this->getFile('SNMP_items_hosts.xml');
 	}
 
-	protected function getFile($name) {
+	protected function getFile($name)
+	{
 		if (!isset($this->sources[$name])) {
-			$this->sources[$name] = file_get_contents(__DIR__.'/xml/'.$name);
+			$this->sources[$name] = file_get_contents(__DIR__ . '/xml/' . $name);
 		}
 
 		return $this->sources[$name];

@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
 
 /**
  * @dataSource Maps
@@ -24,7 +24,8 @@ require_once __DIR__.'/../../include/CLegacyWebTest.php';
  * @onBefore prepareMapForMacrofunctions
  */
 
-class testFormMapConstructor extends CLegacyWebTest {
+class testFormMapConstructor extends CLegacyWebTest
+{
 
 	protected static $macro_map_id;
 	const MAP_NAME = 'Map for form testing';
@@ -33,12 +34,13 @@ class testFormMapConstructor extends CLegacyWebTest {
 	const ITEM_KEY = 'trapmacrofunctions';
 	const ITEM_NAME = 'Item for testing macro functions with expression macros';
 
-	public function prepareMapForMacrofunctions() {
+	public function prepareMapForMacrofunctions()
+	{
 
 		$host = CDataHelper::createHosts([
 			[
 				'host' => self::HOST_MACRO_FUNCTIONS,
-				'groups' => ['groupid' => 4], // Zabbix servers.
+				'groups' => ['groupid' => 4], // Advantal servers.
 				'items' => [
 					[
 						'name' => self::ITEM_NAME,
@@ -50,7 +52,7 @@ class testFormMapConstructor extends CLegacyWebTest {
 			]
 		]);
 
-		$item_id = CDBHelper::getValue('SELECT itemid FROM items WHERE name='.zbx_dbstr(self::ITEM_NAME));
+		$item_id = CDBHelper::getValue('SELECT itemid FROM items WHERE name=' . zbx_dbstr(self::ITEM_NAME));
 
 		// Add value to item history table, to use expression macros.
 		CDataHelper::addItemData($item_id, 123.33);
@@ -58,12 +60,12 @@ class testFormMapConstructor extends CLegacyWebTest {
 		$triggers = CDataHelper::call('trigger.create', [
 			[
 				'description' => 'Trigger testing macro functions',
-				'expression' => 'last(/'.self::HOST_MACRO_FUNCTIONS.'/'.self::ITEM_KEY.')=0',
+				'expression' => 'last(/' . self::HOST_MACRO_FUNCTIONS . '/' . self::ITEM_KEY . ')=0',
 				'priority' => TRIGGER_SEVERITY_AVERAGE
 			],
 			[
 				'description' => 'Trigger for testing incorrectly used macro functions',
-				'expression' => 'last(/'.self::HOST_MACRO_FUNCTIONS.'/'.self::ITEM_KEY.')=0',
+				'expression' => 'last(/' . self::HOST_MACRO_FUNCTIONS . '/' . self::ITEM_KEY . ')=0',
 				'priority' => TRIGGER_SEVERITY_AVERAGE
 			]
 		]);
@@ -88,8 +90,8 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_HOST,
 						'iconid_off' => 182,
-						'label' => '{{HOST.HOST}.lowercase()}, {{HOST.HOST}.uppercase()}, '.
-								'{{HOST.HOST}.regrepl("([^a-z])", 0)}, {{HOST.HOST}.regsub(1, test)}',
+						'label' => '{{HOST.HOST}.lowercase()}, {{HOST.HOST}.uppercase()}, ' .
+							'{{HOST.HOST}.regrepl("([^a-z])", 0)}, {{HOST.HOST}.regsub(1, test)}',
 						'x' => 351,
 						'y' => 201,
 						'elements' => [['hostid' => $host['hostids'][self::HOST_MACRO_FUNCTIONS]]]
@@ -97,8 +99,8 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_HOST,
 						'iconid_off' => 182,
-						'label' => '{{HOST.HOST}.tr(0-9abcA-L,*)}, {{HOST.HOST}.urlencode()}, {{HOST.HOST}.urldecode()}, '.
-								'{{HOST.HOST}.iregsub(1, test)}',
+						'label' => '{{HOST.HOST}.tr(0-9abcA-L,*)}, {{HOST.HOST}.urlencode()}, {{HOST.HOST}.urldecode()}, ' .
+							'{{HOST.HOST}.iregsub(1, test)}',
 						'x' => 351,
 						'y' => 301,
 						'elements' => [['hostid' => $host['hostids'][self::HOST_MACRO_FUNCTIONS]]]
@@ -107,9 +109,9 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_TRIGGER,
 						'iconid_off' => 152,
-						'label' => '{{?last(//'.self::ITEM_KEY.')}.btoa()}, {{?last(//'.self::ITEM_KEY.')}.fmtnum(0)}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.htmldecode()}, {{?last(//'.self::ITEM_KEY.')}.htmlencode()}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.iregsub(2, test)}, {{?last(//'.self::ITEM_KEY.')}.lowercase()}',
+						'label' => '{{?last(//' . self::ITEM_KEY . ')}.btoa()}, {{?last(//' . self::ITEM_KEY . ')}.fmtnum(0)}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.htmldecode()}, {{?last(//' . self::ITEM_KEY . ')}.htmlencode()}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.iregsub(2, test)}, {{?last(//' . self::ITEM_KEY . ')}.lowercase()}',
 						'x' => 351,
 						'y' => 401,
 						'elements' => [['triggerid' => $triggers['triggerids'][0]]]
@@ -117,11 +119,11 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_TRIGGER,
 						'iconid_off' => 152,
-						'label' => '{{?last(//'.self::ITEM_KEY.')}.uppercase()}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.regrepl([0-9], A)}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.regsub(2, test)}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.tr(0-9,a-z)}, {{?last(//'.self::ITEM_KEY.')}.urldecode()}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.urlencode()}',
+						'label' => '{{?last(//' . self::ITEM_KEY . ')}.uppercase()}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.regrepl([0-9], A)}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.regsub(2, test)}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.tr(0-9,a-z)}, {{?last(//' . self::ITEM_KEY . ')}.urldecode()}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.urlencode()}',
 						'x' => 351,
 						'y' => 501,
 						'elements' => [['triggerid' => $triggers['triggerids'][0]]]
@@ -130,9 +132,9 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_TRIGGER,
 						'iconid_off' => 152,
-						'label' => '{{?last(//'.self::ITEM_KEY.')}.btoa(\)}, {{HOST.HOST}.htmldecode(/)}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.fmtnum()}, {{HOST.HOST}.htmlencode(test)}, '.
-								'{{HOST.HOST}.fmttime()}, {{HOST.HOST}.iregsub(a-z)}',
+						'label' => '{{?last(//' . self::ITEM_KEY . ')}.btoa(\)}, {{HOST.HOST}.htmldecode(/)}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.fmtnum()}, {{HOST.HOST}.htmlencode(test)}, ' .
+							'{{HOST.HOST}.fmttime()}, {{HOST.HOST}.iregsub(a-z)}',
 						'x' => 351,
 						'y' => 601,
 						'elements' => [['triggerid' => $triggers['triggerids'][1]]]
@@ -140,10 +142,10 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_TRIGGER,
 						'iconid_off' => 152,
-						'label' => '{{?last(//'.self::ITEM_KEY.')}.regsub()}, {{HOST.HOST}.lowercase(///)}, '.
-								'{{HOST.HOST}.uppercase(//\\)}, {{HOST.HOST}.regrepl(1, 2, 3)}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.tr()}, {{HOST.HOST}.urldecode(1, 2)}, '.
-								'{{?last(//'.self::ITEM_KEY.')}.urlencode(\)}',
+						'label' => '{{?last(//' . self::ITEM_KEY . ')}.regsub()}, {{HOST.HOST}.lowercase(///)}, ' .
+							'{{HOST.HOST}.uppercase(//\\)}, {{HOST.HOST}.regrepl(1, 2, 3)}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.tr()}, {{HOST.HOST}.urldecode(1, 2)}, ' .
+							'{{?last(//' . self::ITEM_KEY . ')}.urlencode(\)}',
 						'x' => 351,
 						'y' => 701,
 						'elements' => [['triggerid' => $triggers['triggerids'][1]]]
@@ -152,8 +154,8 @@ class testFormMapConstructor extends CLegacyWebTest {
 					[
 						'elementtype' => SYSMAP_ELEMENT_TYPE_TRIGGER,
 						'iconid_off' => 152,
-						'label' => '{{?last(//'.self::ITEM_KEY.')}.regsub(0, test)}, {{HOST.HOST}.regsub(0, test)}, '.
-								'{{HOST.HOST}.iregsub(0, test)}, {{?last(//'.self::ITEM_KEY.')}.iregsub(0, test)}',
+						'label' => '{{?last(//' . self::ITEM_KEY . ')}.regsub(0, test)}, {{HOST.HOST}.regsub(0, test)}, ' .
+							'{{HOST.HOST}.iregsub(0, test)}, {{?last(//' . self::ITEM_KEY . ')}.iregsub(0, test)}',
 						'x' => 351,
 						'y' => 801,
 						'elements' => [['triggerid' => $triggers['triggerids'][1]]]
@@ -162,14 +164,15 @@ class testFormMapConstructor extends CLegacyWebTest {
 			]
 		]);
 
-		self::$macro_map_id = CDBHelper::getValue('SELECT sysmapid FROM sysmaps WHERE name='.zbx_dbstr(self::MAP_MACRO_FUNCTIONS));
+		self::$macro_map_id = CDBHelper::getValue('SELECT sysmapid FROM sysmaps WHERE name=' . zbx_dbstr(self::MAP_MACRO_FUNCTIONS));
 	}
 
 	/**
 	 * Possible combinations of grid settings
 	 * @return array
 	 */
-	public function possibleGridOptions() {
+	public function possibleGridOptions()
+	{
 		return [
 			// Array value description: grid dimensions, show grid, auto align.
 			['20x20', SYSMAP_GRID_SHOW_ON, SYSMAP_GRID_ALIGN_ON],
@@ -198,7 +201,8 @@ class testFormMapConstructor extends CLegacyWebTest {
 		];
 	}
 
-	public static function getSimpleUpdateData() {
+	public static function getSimpleUpdateData()
+	{
 		return [
 			[['name' => 'Local network']],
 			[['name' => 'Map for form testing']],
@@ -214,11 +218,12 @@ class testFormMapConstructor extends CLegacyWebTest {
 	 *
 	 * @browsers chrome
 	 */
-	public function testFormMapConstructor_SimpleUpdateConstructor($map) {
-		$sql_maps_elements = 'SELECT * FROM sysmaps sm INNER JOIN sysmaps_elements se ON'.
-				' se.sysmapid = sm.sysmapid ORDER BY se.selementid';
-		$sql_links_triggers = 'SELECT * FROM sysmaps_links sl INNER JOIN sysmaps_link_triggers slt ON'.
-				' slt.linkid = sl.linkid ORDER BY slt.linktriggerid';
+	public function testFormMapConstructor_SimpleUpdateConstructor($map)
+	{
+		$sql_maps_elements = 'SELECT * FROM sysmaps sm INNER JOIN sysmaps_elements se ON' .
+			' se.sysmapid = sm.sysmapid ORDER BY se.selementid';
+		$sql_links_triggers = 'SELECT * FROM sysmaps_links sl INNER JOIN sysmaps_link_triggers slt ON' .
+			' slt.linkid = sl.linkid ORDER BY slt.linktriggerid';
 		$hash_maps_elements = CDBHelper::getHash($sql_maps_elements);
 		$hash_links_triggers = CDBHelper::getHash($sql_links_triggers);
 
@@ -227,17 +232,17 @@ class testFormMapConstructor extends CLegacyWebTest {
 		$this->page->waitUntilReady();
 
 		$element = $this->query('xpath://div[@id="flickerfreescreen_mapimg"]/div/*[name()="svg"]')
-				->waitUntilPresent()->one();
+			->waitUntilPresent()->one();
 
 		$exclude = [
 			'query'	=> 'class:map-timestamp',
 			'color'	=> '#ffffff'
 		];
-		$this->assertScreenshotExcept($element, $exclude, 'view_'.$map['name']);
+		$this->assertScreenshotExcept($element, $exclude, 'view_' . $map['name']);
 
 		$this->query('button:Edit map')->one()->click();
 		$this->page->waitUntilReady();
-		$this->assertScreenshot($this->query('id:map-area')->waitUntilPresent()->one(), 'edit_'.$map['name']);
+		$this->assertScreenshot($this->query('id:map-area')->waitUntilPresent()->one(), 'edit_' . $map['name']);
 		$this->query('button:Update')->one()->click();
 
 		$this->page->waitUntilAlertIsPresent();
@@ -262,11 +267,12 @@ class testFormMapConstructor extends CLegacyWebTest {
 	 *
 	 * @dataProvider possibleGridOptions
 	 */
-	public function testFormMapConstructor_UpdateGridOptions($gridSize, $showGrid, $autoAlign) {
+	public function testFormMapConstructor_UpdateGridOptions($gridSize, $showGrid, $autoAlign)
+	{
 		$map_name = self::MAP_NAME;
 
 		// getting map options from DB as they are at the beginning of the test
-		$db_map = CDBHelper::getRow('SELECT * FROM sysmaps WHERE name='.zbx_dbstr($map_name));
+		$db_map = CDBHelper::getRow('SELECT * FROM sysmaps WHERE name=' . zbx_dbstr($map_name));
 		$this->assertTrue(isset($db_map['sysmapid']));
 
 		$this->zbxTestLogin('sysmaps.php');
@@ -281,8 +287,7 @@ class testFormMapConstructor extends CLegacyWebTest {
 		if ($db_map['grid_show'] == SYSMAP_GRID_SHOW_ON) {
 			$this->zbxTestTextPresent('Shown');
 			$this->zbxTestTextNotPresent('Hidden');
-		}
-		else {
+		} else {
 			$this->zbxTestTextPresent('Hidden');
 			$this->zbxTestTextNotPresent('Shown');
 		}
@@ -290,8 +295,7 @@ class testFormMapConstructor extends CLegacyWebTest {
 		// auto align should be on by default
 		if ($db_map['grid_align'] == SYSMAP_GRID_ALIGN_ON) {
 			$this->zbxTestAssertElementText("//button[@id='gridautoalign']", 'On');
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementText("//button[@id='gridautoalign']", 'Off');
 		}
 
@@ -309,13 +313,13 @@ class testFormMapConstructor extends CLegacyWebTest {
 
 		$this->zbxTestClickAndAcceptAlert('sysmap_update');
 
-		$db_map = CDBHelper::getRow('SELECT * FROM sysmaps WHERE name='.zbx_dbstr($map_name));
+		$db_map = CDBHelper::getRow('SELECT * FROM sysmaps WHERE name=' . zbx_dbstr($map_name));
 		$this->assertTrue(isset($db_map['sysmapid']));
 
 		$this->assertTrue(
 			$db_map['grid_size'] == substr($gridSize, 0, strpos($gridSize, 'x'))
-			&& $db_map['grid_show'] == $showGrid
-			&& $db_map['grid_align'] == $autoAlign
+				&& $db_map['grid_show'] == $showGrid
+				&& $db_map['grid_align'] == $autoAlign
 		);
 
 		$this->zbxTestClickLinkTextWait($map_name);
@@ -327,16 +331,14 @@ class testFormMapConstructor extends CLegacyWebTest {
 		if ($showGrid) {
 			$this->zbxTestTextPresent('Shown');
 			$this->zbxTestTextNotPresent('Hidden');
-		}
-		else {
+		} else {
 			$this->zbxTestTextPresent('Hidden');
 			$this->zbxTestTextNotPresent('Shown');
 		}
 
 		if ($autoAlign) {
 			$this->zbxTestAssertElementText("//button[@id='gridautoalign']", 'On');
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementText("//button[@id='gridautoalign']", 'Off');
 		}
 	}
@@ -344,22 +346,23 @@ class testFormMapConstructor extends CLegacyWebTest {
 	/**
 	 * Check that macro functions are resolved for map element labels.
 	 */
-	public function testFormMapConstructor_MacroFunctions() {
-		$this->page->login()->open('sysmap.php?sysmapid='.self::$macro_map_id)->waitUntilReady();
+	public function testFormMapConstructor_MacroFunctions()
+	{
+		$this->page->login()->open('sysmap.php?sysmapid=' . self::$macro_map_id)->waitUntilReady();
 
 		$objects = [
 			[
-				'label' => 'VGVzdGluZyBtYWNybyBmdW5jdGlvbnMgMTIzNDU=, Testing macro functions 12345, '.
+				'label' => 'VGVzdGluZyBtYWNybyBmdW5jdGlvbnMgMTIzNDU=, Testing macro functions 12345, ' .
 					'Testing macro functions 12345',
 				'id' => 2
 			],
 			[
-				'label' => 'testing macro functions 12345, TESTING MACRO FUNCTIONS 12345, '.
+				'label' => 'testing macro functions 12345, TESTING MACRO FUNCTIONS 12345, ' .
 					'0esting0macro0functions000000, test',
 				'id' => 4
 			],
 			[
-				'label' => 'Testing m**ro fun*tions *****, Testing%20macro%20functions%2012345, '.
+				'label' => 'Testing m**ro fun*tions *****, Testing%20macro%20functions%2012345, ' .
 					'Testing macro functions 12345, test',
 				'id' => 6
 			],
@@ -386,8 +389,11 @@ class testFormMapConstructor extends CLegacyWebTest {
 		];
 
 		foreach ($objects as $object) {
-			$this->assertEquals($object['label'], $this->query('xpath://*[@id="map-area"]/*[1]/*[2]/*[7]/*['.$object['id'].']')
-					->waitUntilVisible()->one()->getText(), 'Object expected label does not match, id='.$object['id']
+			$this->assertEquals(
+				$object['label'],
+				$this->query('xpath://*[@id="map-area"]/*[1]/*[2]/*[7]/*[' . $object['id'] . ']')
+					->waitUntilVisible()->one()->getText(),
+				'Object expected label does not match, id=' . $object['id']
 			);
 		}
 	}
@@ -395,19 +401,22 @@ class testFormMapConstructor extends CLegacyWebTest {
 	/**
 	 * Check the screenshot of the trigger container in trigger map element.
 	 */
-	public function testFormMapConstructor_MapElementScreenshot() {
+	public function testFormMapConstructor_MapElementScreenshot()
+	{
 		// Open map in edit mode.
-		$this->page->login()->open('sysmap.php?sysmapid='.CDataHelper::get('Maps.form_test_mapid'))->waitUntilReady();
+		$this->page->login()->open('sysmap.php?sysmapid=' . CDataHelper::get('Maps.form_test_mapid'))->waitUntilReady();
 
 		// Click on map element 'Trigger for map' (in prepareMapData this trigger has icon id = 146).
 		$this->query('xpath://div[contains(@class, "sysmap_iconid_146")]')->waitUntilVisible()->one()->click();
 
 		$form = $this->query('id:map-window')->asForm()->one()->waitUntilVisible();
-		$form->getField('New triggers')->selectMultiple([
+		$form->getField('New triggers')->selectMultiple(
+			[
 				'First test trigger with tag priority',
 				'Fourth test trigger with tag priority',
 				'Linux: Lack of available memory'
-			], 'ЗАББИКС Сервер'
+			],
+			'ЗАББИКС Сервер'
 		);
 		$form->query('button:Add')->one()->click();
 

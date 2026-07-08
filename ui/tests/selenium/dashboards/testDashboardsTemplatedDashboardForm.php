@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 use Facebook\WebDriver\Exception\UnexpectedAlertOpenException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
@@ -28,10 +28,11 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
  *
  * @onBefore prepareTemplateDashboardsData
  */
-class testDashboardsTemplatedDashboardForm extends CWebTest {
+class testDashboardsTemplatedDashboardForm extends CWebTest
+{
 
-	const WIDGET_SQL = 'SELECT * FROM widget w INNER JOIN dashboard_page dp ON dp.dashboard_pageid=w.dashboard_pageid'.
-			' INNER JOIN dashboard d ON d.dashboardid=dp.dashboardid ORDER BY w.widgetid';
+	const WIDGET_SQL = 'SELECT * FROM widget w INNER JOIN dashboard_page dp ON dp.dashboard_pageid=w.dashboard_pageid' .
+		' INNER JOIN dashboard d ON d.dashboardid=dp.dashboardid ORDER BY w.widgetid';
 	const TEMPLATE = 'Template for dashboard testing';
 	const TEMPLATE_ITEM = 'Templates widget item';
 	protected static $update_templateid; // ID of the "Template for dashboard testing" for template dashboards tests.
@@ -47,7 +48,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			'class' => CMessageBehavior::class
 		];
@@ -56,10 +58,11 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	/**
 	 * Function creates host, template, template dashboards and defines the corresponding dashboard IDs.
 	 */
-	public static function prepareTemplateDashboardsData() {
+	public static function prepareTemplateDashboardsData()
+	{
 		$hosts = CDataHelper::call('host.create', [
 			'host' => 'Empty host for template',
-			'groups' => [['groupid' => 4]] //Zabbix servers.
+			'groups' => [['groupid' => 4]] //Advantal servers.
 		]);
 		self::$hostid_for_template = $hosts['hostids'][0];
 
@@ -99,7 +102,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		CDataHelper::call('trigger.create', [
 			[
 				'description' => 'Templated trigger',
-				'expression' => 'last(/'.self::TEMPLATE.'/templ_key[1])=0'
+				'expression' => 'last(/' . self::TEMPLATE . '/templ_key[1])=0'
 			]
 		]);
 
@@ -647,14 +650,15 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			]
 		];
 		foreach ($insert_favorite as $data) {
-			DBexecute('INSERT INTO profiles ('.implode(', ', array_keys($data)).') VALUES ('.implode(', ', $data).')');
+			DBexecute('INSERT INTO profiles (' . implode(', ', array_keys($data)) . ') VALUES (' . implode(', ', $data) . ')');
 		}
 	}
 
 	/**
 	 * Link the created template with dashboards to "Empty host" host.
 	 */
-	public static function prepareHostLinkageToTemplateData() {
+	public static function prepareHostLinkageToTemplateData()
+	{
 		CDataHelper::call('host.update', [
 			'hostid' => self::$hostid_for_template,
 			'templates' => [
@@ -665,8 +669,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		]);
 	}
 
-	public function testDashboardsTemplatedDashboardForm_Layout() {
-		$this->page->login()->open('zabbix.php?action=template.dashboard.list&templateid='.self::$update_templateid);
+	public function testDashboardsTemplatedDashboardForm_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=template.dashboard.list&templateid=' . self::$update_templateid);
 		$this->query('button:Create dashboard')->one()->click();
 		$this->checkDialogue('Dashboard properties');
 		// TODO: added updateViewport due to unstable test on Jenkins, scroll appears for 0.5 seconds
@@ -699,8 +704,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 					try {
 						$controls->query($selector)->waitUntilClickable()->one()->click();
 						COverlayDialogElement::find()->one();
-					}
-					catch (NoSuchElementException $e) {
+					} catch (NoSuchElementException $e) {
 						$controls->query($selector)->waitUntilClickable()->one()->click();
 					}
 					$this->checkDialogue('Dashboard properties');
@@ -726,7 +730,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 
 		// Check breadcrumbs.
 		foreach (['Hierarchy', 'Content menu'] as $aria_label) {
-			$this->assertTrue($this->query('xpath://ul[@aria-label='.zbx_dbstr($aria_label).']')->one()->isClickable());
+			$this->assertTrue($this->query('xpath://ul[@aria-label=' . zbx_dbstr($aria_label) . ']')->one()->isClickable());
 		}
 
 		// Check the page title and its corresponding actions.
@@ -753,7 +757,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 * In case if fields that are a part of a complex field are checked as individual fields, then field_locator should be
 	 * used instead of the Field and fieldid combination (like when checking disable fields).
 	 */
-	public static function getWidgetDefaultLayoutData() {
+	public static function getWidgetDefaultLayoutData()
+	{
 		return [
 			// #0 Action log widget.
 			[
@@ -1249,11 +1254,11 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 					'hints' => [
 						[
 							'label' => 'Description',
-							'text' => "Supported macros:\n".
-									"{HOST.*}\n".
-									"{ITEM.*}\n".
-									"{INVENTORY.*}\n".
-									"User macros"
+							'text' => "Supported macros:\n" .
+								"{HOST.*}\n" .
+								"{ITEM.*}\n" .
+								"{INVENTORY.*}\n" .
+								"User macros"
 						],
 						[
 							'label' => 'Position',
@@ -1279,13 +1284,13 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 					'hints' => [
 						[
 							'label' => 'Initial view',
-							'text' => "Comma separated center coordinates and zoom level to display when the widget ".
-									"is initially loaded.\n".
-									"Supported formats:\n".
-									"<lat>,<lng>,<zoom>\n".
-									"<lat>,<lng>\n\n".
-									"The maximum zoom level is \"0\".\n".
-									"Initial view is ignored if the default view is set."
+							'text' => "Comma separated center coordinates and zoom level to display when the widget " .
+								"is initially loaded.\n" .
+								"Supported formats:\n" .
+								"<lat>,<lng>,<zoom>\n" .
+								"<lat>,<lng>\n\n" .
+								"The maximum zoom level is \"0\".\n" .
+								"Initial view is ignored if the default view is set."
 						]
 					]
 				]
@@ -1392,7 +1397,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 								'Zabbix agent (passive checks)' => false,
 								'SNMP' => false,
 								'JMX' => false,
-								'IPMI' => false]
+								'IPMI' => false
+							]
 						],
 						[
 							'field' => 'Layout',
@@ -1675,11 +1681,11 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 					'hints' => [
 						[
 							'label' => 'Description',
-							'text' => "Supported macros:\n".
-									"{HOST.*}\n".
-									"{ITEM.*}\n".
-									"{INVENTORY.*}\n".
-									"User macros"
+							'text' => "Supported macros:\n" .
+								"{HOST.*}\n" .
+								"{ITEM.*}\n" .
+								"{INVENTORY.*}\n" .
+								"User macros"
 						],
 						[
 							'label' => 'Position',
@@ -2024,7 +2030,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 							'type' => 'composite_input',
 							'attributes' => [
 								'maxlength' => 255,
-								'placeholder' =>'YYYY-MM-DD'
+								'placeholder' => 'YYYY-MM-DD'
 							]
 						],
 						[
@@ -2032,7 +2038,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 							'type' => 'composite_input',
 							'attributes' => [
 								'maxlength' => 255,
-								'placeholder' =>'YYYY-MM-DD'
+								'placeholder' => 'YYYY-MM-DD'
 							]
 						]
 					]
@@ -2203,8 +2209,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @dataProvider getWidgetDefaultLayoutData
 	 */
-	public function testDashboardsTemplatedDashboardForm_WidgetDefaultLayout($data) {
-		$this->page->login()->open('zabbix.php?action=template.dashboard.list&templateid='.self::$update_templateid);
+	public function testDashboardsTemplatedDashboardForm_WidgetDefaultLayout($data)
+	{
+		$this->page->login()->open('zabbix.php?action=template.dashboard.list&templateid=' . self::$update_templateid);
 		$this->query('button:Create dashboard')->one()->click();
 		COverlayDialogElement::find()->one()->waitUntilReady()->close();
 
@@ -2215,8 +2222,17 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		$widget_form->fill(['Type' => $data['type']]);
 
 		// Add Name and refresh interval fields to reference data before checking configuration.
-		$refresh_intervals = array_merge([$data['refresh_interval']], ['No refresh', '10 seconds', '30 seconds',
-				'1 minute', '2 minutes', '10 minutes', '15 minutes']
+		$refresh_intervals = array_merge(
+			[$data['refresh_interval']],
+			[
+				'No refresh',
+				'10 seconds',
+				'30 seconds',
+				'1 minute',
+				'2 minutes',
+				'10 minutes',
+				'15 minutes'
+			]
 		);
 		$common_fields = [
 			[
@@ -2245,12 +2261,11 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 					if ($no_access_fields === 'hidden') {
 						$locator = (array_key_exists('field_locator', $no_access_field))
 							? $no_access_field['field_locator']
-							: 'xpath:.//label[text()='.CXPathHelper::escapeQuotes($no_access_field['field']).
-									']/following-sibling::div[1]';
+							: 'xpath:.//label[text()=' . CXPathHelper::escapeQuotes($no_access_field['field']) .
+							']/following-sibling::div[1]';
 
 						$this->assertFalse($widget_form->query($locator)->one(false)->isDisplayed());
-					}
-					else {
+					} else {
 						$field_locator = (array_key_exists('disabled_locator', $no_access_field))
 							? $no_access_field['disabled_locator']
 							: (array_key_exists('field', $no_access_field)
@@ -2261,22 +2276,22 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 				}
 				// Reference values are filled in to defined form fields to access the hidden/disabled fields.
 				$widget_form->invalidate();
-				$widget_form->fill($data['fill_for_'.$no_access_fields]);
+				$widget_form->fill($data['fill_for_' . $no_access_fields]);
 
 				// In some cases it is required to click on link or button for hidden/disabled element to become available.
-				if (array_key_exists('click_'.$no_access_fields, $data)) {
-					foreach ($data['click_'.$no_access_fields] as $link) {
+				if (array_key_exists('click_' . $no_access_fields, $data)) {
+					foreach ($data['click_' . $no_access_fields] as $link) {
 						$this->query($link)->one()->click();
 					}
 				}
 
 				// In case if no access fields need to be filled to expand the form, they are checked before being filled.
-				if (array_key_exists('second_fill_'.$no_access_fields, $data)) {
+				if (array_key_exists('second_fill_' . $no_access_fields, $data)) {
 					// Check default configuration of field before changing its value.
-					$this->checkFormFields($data['second_fill_'.$no_access_fields]['check_fields'], $widget_form);
+					$this->checkFormFields($data['second_fill_' . $no_access_fields]['check_fields'], $widget_form);
 
 					// Exclude the checked field from further checks and fill data.
-					foreach ($data['second_fill_'.$no_access_fields]['check_fields'] as $checked_field) {
+					foreach ($data['second_fill_' . $no_access_fields]['check_fields'] as $checked_field) {
 						foreach ($data[$no_access_fields] as $i => $all_fields) {
 							if ($checked_field['field'] === $all_fields['field']) {
 								unset($data[$no_access_fields][$i]);
@@ -2284,7 +2299,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						}
 					}
 
-					$widget_form->fill($data['second_fill_'.$no_access_fields]['change_fields']);
+					$widget_form->fill($data['second_fill_' . $no_access_fields]['change_fields']);
 				}
 
 				$widget_dialog->waitUntilReady();
@@ -2297,7 +2312,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			foreach ($data['hints'] as $hint) {
 				// Open hint and check text.
 				$class = (CTestArrayHelper::get($hint, 'type', 'help') === 'warning') ? 'zi-i-warning' : 'zi-help-filled-small';
-				$button = $widget_form->query('xpath:.//label[text()='.CXPathHelper::escapeQuotes($hint['label']).']/button')->one();
+				$button = $widget_form->query('xpath:.//label[text()=' . CXPathHelper::escapeQuotes($hint['label']) . ']/button')->one();
 				$this->assertStringContainsString($class, $button->getAttribute('class'));
 				$button->click();
 				$hint_dialog = $this->query('xpath://div[@data-hintboxid]')->waitUntilPresent()->one();
@@ -2322,7 +2337,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 * @param	array			$fields			reference array of fields and their parameters
 	 * @param	CFormElement	$widget_form	form, in which the field should be checked
 	 */
-	protected function checkFormFields($fields, $widget_form) {
+	protected function checkFormFields($fields, $widget_form)
+	{
 		// Check form fields and their attributes based on field type.
 		foreach ($fields as $field_details) {
 			// Field locator is used for stand-alone fields that cannot be located via label.
@@ -2345,20 +2361,18 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						 * Locate the field from the perspective of its label. It's either the following div or one of
 						 * the div elements right after the label with the specified id.
 						 */
-						$label_xpath = 'xpath:.//label[text()='.CXPathHelper::escapeQuotes($sub_field_details['field']).']';
+						$label_xpath = 'xpath:.//label[text()=' . CXPathHelper::escapeQuotes($sub_field_details['field']) . ']';
 						$field_locator = array_key_exists('fieldid', $sub_field_details)
-							? $label_xpath.'/following-sibling::div/*[@id='.CXPathHelper::escapeQuotes($sub_field_details['fieldid'])."]"
-							: $label_xpath.'/following-sibling::div[1]';
-					}
-					else {
+							? $label_xpath . '/following-sibling::div/*[@id=' . CXPathHelper::escapeQuotes($sub_field_details['fieldid']) . "]"
+							: $label_xpath . '/following-sibling::div[1]';
+					} else {
 						$field_locator = $sub_field_details['field_locator'];
 					}
 
 					$sub_field = $field->query($field_locator)->one();
 					$this->checkFieldParameters($sub_field_details, null, $sub_field);
 				}
-			}
-			else {
+			} else {
 				$this->checkFieldParameters($field_details, $widget_form, $field);
 			}
 		}
@@ -2371,7 +2385,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 * @param CFormElement	$widget_form		form that the field under attention is located in
 	 * @param CElement		$field				element that represents the field to be checked
 	 */
-	protected function checkFieldParameters($field_details, $widget_form, $field) {
+	protected function checkFieldParameters($field_details, $widget_form, $field)
+	{
 		$default_value = CTestArrayHelper::get($field_details, 'value', '');
 
 		switch (CTestArrayHelper::get($field_details, 'type', 'input')) {
@@ -2385,7 +2400,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 				}
 				// Some input elements have a symbol placed right after them, like the "%" sign after Size field.
 				if (array_key_exists('symbol_after', $field_details)) {
-					$this->assertEquals($field_details['symbol_after'], CElementQuery::getDriver()
+					$this->assertEquals(
+						$field_details['symbol_after'],
+						CElementQuery::getDriver()
 							->executeScript('return arguments[0].nextSibling.textContent;', [$field])
 					);
 				}
@@ -2425,8 +2442,10 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 				$checkbox_list = $field->asCheckboxList();
 
 				foreach ($field_details['checkboxes'] as $label => $value) {
-					$this->assertEquals($value, $checkbox_list->query('xpath:.//label[text()='.
-							CXPathHelper::escapeQuotes($label).']/../input')->one()->asCheckbox()->isChecked()
+					$this->assertEquals(
+						$value,
+						$checkbox_list->query('xpath:.//label[text()=' .
+							CXPathHelper::escapeQuotes($label) . ']/../input')->one()->asCheckbox()->isChecked()
 					);
 				}
 				break;
@@ -2441,7 +2460,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 					}
 				}
 
-				$this->assertTrue($field->query('id:date_period_'.lcfirst($field_details['field']).'_calendar')->one()
+				$this->assertTrue(
+					$field->query('id:date_period_' . lcfirst($field_details['field']) . '_calendar')->one()
 						->isClickable()
 				);
 				break;
@@ -2454,7 +2474,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			case 'table':
 				$table = $field->asTable();
 				$this->assertEquals($field_details['headers'], $table->getHeadersText());
-				$this->assertEquals($field_details['buttons'], $table->query('tag:button')->all()
+				$this->assertEquals(
+					$field_details['buttons'],
+					$table->query('tag:button')->all()
 						->filter(CElementFilter::CLICKABLE)->asText()
 				);
 				break;
@@ -2479,7 +2501,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 				$operator = $table->query('id:tags_0_operator')->one()->asDropdown();
 				$this->assertEquals($field_details['default_operator'], $operator->getValue());
 				$this->assertEquals($field_details['operators'], $operator->getOptions()->asText());
-				$this->assertEquals(['Remove', 'Add'], $table->query('class:btn-link')->all()
+				$this->assertEquals(
+					['Remove', 'Add'],
+					$table->query('class:btn-link')->all()
 						->filter(CElementFilter::CLICKABLE)->asText()
 				);
 				break;
@@ -2500,7 +2524,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		}
 	}
 
-	public static function getDashboardPropertiesData() {
+	public static function getDashboardPropertiesData()
+	{
 		return [
 			[
 				[
@@ -2573,8 +2598,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @dataProvider getDashboardPropertiesData
 	 */
-	public function testDashboardsTemplatedDashboardForm_DashboardPropertiesCreate($data) {
-		$this->page->login()->open('zabbix.php?action=template.dashboard.list&templateid='.self::$update_templateid);
+	public function testDashboardsTemplatedDashboardForm_DashboardPropertiesCreate($data)
+	{
+		$this->page->login()->open('zabbix.php?action=template.dashboard.list&templateid=' . self::$update_templateid);
 		$this->query('button:Create dashboard')->one()->click();
 		$form = COverlayDialogElement::find()->asForm()->one()->waitUntilVisible();
 
@@ -2592,8 +2618,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @dataProvider getDashboardPropertiesData
 	 */
-	public function testDashboardsTemplatedDashboardForm_DashboardPropertiesUpdate($data) {
-		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$dashboardid_with_widgets);
+	public function testDashboardsTemplatedDashboardForm_DashboardPropertiesUpdate($data)
+	{
+		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$dashboardid_with_widgets);
 		$this->query('id:dashboard-config')->one()->waitUntilClickable()->click();
 		$form = COverlayDialogElement::find()->asForm()->one()->waitUntilVisible();
 
@@ -2607,10 +2634,11 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	/**
 	 * Function that checks that no changes occur after saving a template dashboard without changes.
 	 */
-	public function testDashboardsTemplatedDashboardForm_SimpleUpdate() {
+	public function testDashboardsTemplatedDashboardForm_SimpleUpdate()
+	{
 		$old_hash = CDBHelper::getHash(self::WIDGET_SQL);
 
-		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$dashboardid_with_widgets);
+		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$dashboardid_with_widgets);
 		$this->query('button:Save changes')->one()->waitUntilClickable()->click();
 
 		$this->assertMessage(TEST_GOOD, 'Dashboard updated');
@@ -2620,7 +2648,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	/**
 	 * Function that checks that no changes occur after cancelling a template dashboard update.
 	 */
-	public function testDashboardsTemplatedDashboardForm_Cancel() {
+	public function testDashboardsTemplatedDashboardForm_Cancel()
+	{
 		$old_hash = CDBHelper::getHash(self::WIDGET_SQL);
 		$fields = [
 			'Name' => 'Cancel dashboard update',
@@ -2628,7 +2657,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			'Start slideshow automatically' => false
 		];
 
-		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$dashboardid_with_widgets);
+		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$dashboardid_with_widgets);
 		$this->query('id:dashboard-config')->one()->waitUntilClickable()->click();
 		$form = COverlayDialogElement::find()->asForm()->one()->waitUntilVisible();
 		$form->fill($fields);
@@ -2639,7 +2668,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::WIDGET_SQL));
 	}
 
-	public static function getWidgetData() {
+	public static function getWidgetData()
+	{
 		return [
 			// #0 Action log widget with Show lines = 0.
 			[
@@ -2682,7 +2712,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Name' => 'Action log with all fields specified',
 						'Refresh interval' => '10 minutes',
 						'Recipients' => ['Admin', 'guest'],
-						'Actions' => 'Report problems to Zabbix administrators',
+						'Actions' => 'Report problems to Advantal Administrators',
 						'Media types' => ['Email', 'SMS'],
 						'Status' => ['In progress', 'Sent/Executed', 'Failed'],
 						'Search string' => 'Action log',
@@ -2690,7 +2720,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Show lines' => 100
 					],
 					'swap_expected' => [
-						'Recipients' => ['Admin (Zabbix Administrator)', 'guest']
+						'Recipients' => ['Admin (Advantal Administrator)', 'guest']
 					]
 				]
 			],
@@ -2754,7 +2784,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Item' => self::TEMPLATE_ITEM
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					]
 				]
 			],
@@ -2827,7 +2857,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Max' => 'def'
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => [
 						'Invalid parameter "Min": a number is expected.',
@@ -2851,7 +2881,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'id:scale_size' => 'abc'
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM,
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM,
 						'id:desc_size' => 0,
 						'id:value_size' => 0,
 						'id:value_arc_size' => 0,
@@ -2900,7 +2930,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => [
 						'Invalid parameter "Description: Size": value must be one of 1-100.',
@@ -2936,7 +2966,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => [
 						'Invalid parameter "Description: Size": value must be one of 1-100.',
@@ -2965,7 +2995,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => 'Invalid parameter "Thresholds/1/threshold": a number is expected.'
 				]
@@ -2987,7 +3017,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => 'Invalid parameter "Thresholds": value must be no less than "0".'
 				]
@@ -3009,7 +3039,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => 'Invalid parameter "Thresholds": value must be no greater than "100".'
 				]
@@ -3027,7 +3057,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'id:scale_decimal_places' => 11
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => [
 						'Invalid parameter "Decimal places": value must be one of 0-10.',
@@ -3044,7 +3074,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Item' => self::TEMPLATE_ITEM
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					]
 				]
 			],
@@ -3094,7 +3124,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					]
 				]
 			],
@@ -3107,8 +3137,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Name' => 'Geomap with non-numeric Initial view',
 						'Initial view' => 'abc'
 					],
-					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma'.
-							' separated latitude and longitude) are expected.'
+					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma' .
+						' separated latitude and longitude) are expected.'
 				]
 			],
 			// #26 Geomap with a single coordinate in Initial view.
@@ -3120,8 +3150,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Name' => 'Geomap with one coordinate in Initial view',
 						'Initial view' => '40.68543,'
 					],
-					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma'.
-							' separated latitude and longitude) are expected.'
+					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma' .
+						' separated latitude and longitude) are expected.'
 				]
 			],
 			// #27 Geomap with out of range latitude in Initial view.
@@ -3133,8 +3163,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Name' => 'Geomap with out of range latitude in Initial view',
 						'Initial view' => '90.000001,-74'
 					],
-					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma'.
-							' separated latitude and longitude) are expected.'
+					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma' .
+						' separated latitude and longitude) are expected.'
 				]
 			],
 			// #28 Geomap with out of range longitude in Initial view.
@@ -3146,8 +3176,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Name' => 'Geomap with out of range longitude in Initial view',
 						'Initial view' => '46,180.0001'
 					],
-					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma'.
-							' separated latitude and longitude) are expected.'
+					'error_message' => 'Invalid parameter "Initial view": geographical coordinates (values of comma' .
+						' separated latitude and longitude) are expected.'
 				]
 			],
 			// #29 Geomap with minimal set of parameters.
@@ -3207,7 +3237,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Show legend' => true
 					],
 					'swap_expected' => [
-						'Graph' => self::TEMPLATE.': '.'Templated graph'
+						'Graph' => self::TEMPLATE . ': ' . 'Templated graph'
 					]
 				]
 			],
@@ -3222,7 +3252,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Show legend' => false
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					]
 				]
 			],
@@ -3254,7 +3284,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Rows' => ''
 					],
 					'swap_expected' => [
-						'Graph prototype' => self::TEMPLATE.': '.'Template graph prototype {#KEY}'
+						'Graph prototype' => self::TEMPLATE . ': ' . 'Template graph prototype {#KEY}'
 					],
 					'error_message' => [
 						'Invalid parameter "Columns": value must be one of 1-72.',
@@ -3288,7 +3318,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Rows' => 65
 					],
 					'swap_expected' => [
-						'Graph prototype' => self::TEMPLATE.': '.'Template graph prototype {#KEY}'
+						'Graph prototype' => self::TEMPLATE . ': ' . 'Template graph prototype {#KEY}'
 					],
 					'error_message' => [
 						'Invalid parameter "Columns": value must be one of 1-72.',
@@ -3309,7 +3339,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Rows' => '-5'
 					],
 					'swap_expected' => [
-						'Graph prototype' => self::TEMPLATE.': '.'Template graph prototype {#KEY}'
+						'Graph prototype' => self::TEMPLATE . ': ' . 'Template graph prototype {#KEY}'
 					],
 					'error_message' => [
 						'Invalid parameter "Columns": value must be one of 1-72.',
@@ -3330,7 +3360,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Rows' => 2
 					],
 					'swap_expected' => [
-						'Graph prototype' => self::TEMPLATE.': '.'Template graph prototype {#KEY}'
+						'Graph prototype' => self::TEMPLATE . ': ' . 'Template graph prototype {#KEY}'
 					]
 				]
 			],
@@ -3347,7 +3377,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Rows' => 1
 					],
 					'swap_expected' => [
-						'Item prototype' => self::TEMPLATE.': '.'Template item prototype {#KEY}'
+						'Item prototype' => self::TEMPLATE . ': ' . 'Template item prototype {#KEY}'
 					]
 				]
 			],
@@ -3437,7 +3467,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM,
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM,
 						'id:desc_size' => 0,
 						'id:time_size' => 0,
 						'id:decimal_size' => 0,
@@ -3477,7 +3507,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'id:time_period_to' => 'now-3550'
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => [
 						'Invalid parameter "Size": value must be one of 1-100.',
@@ -3511,7 +3541,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'id:time_period_to' => 'now-1y'
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					],
 					'error_message' => [
 						'Invalid parameter "Size": value must be one of 1-100.',
@@ -3534,7 +3564,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						'Item' => self::TEMPLATE_ITEM
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					]
 				]
 			],
@@ -3589,7 +3619,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 						]
 					],
 					'swap_expected' => [
-						'Item' => self::TEMPLATE.': '.self::TEMPLATE_ITEM
+						'Item' => self::TEMPLATE . ': ' . self::TEMPLATE_ITEM
 					]
 				]
 			],
@@ -4268,14 +4298,14 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardsTemplatedDashboardForm_CreateWidget($data) {
+	public function testDashboardsTemplatedDashboardForm_CreateWidget($data)
+	{
 		try {
-			$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$empty_dashboardid);
-		}
-		catch (UnexpectedAlertOpenException $e) {
+			$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$empty_dashboardid);
+		} catch (UnexpectedAlertOpenException $e) {
 			// Sometimes previous test leaves dashboard edit page open.
 			$this->page->acceptAlert();
-			$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$empty_dashboardid);
+			$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$empty_dashboardid);
 		}
 
 		if (CTestArrayHelper::get($data, 'page')) {
@@ -4302,8 +4332,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardsTemplatedDashboardForm_UpdateWidget($data) {
-		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid='.self::$dashboardid_for_update);
+	public function testDashboardsTemplatedDashboardForm_UpdateWidget($data)
+	{
+		$this->page->login()->open('zabbix.php?action=template.dashboard.edit&dashboardid=' . self::$dashboardid_for_update);
 		CDashboardElement::find()->one()->getWidget(self::$previous_widget_name)->edit();
 
 		// Update widget configuration and save filled in data for further validation.
@@ -4326,7 +4357,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @return array
 	 */
-	protected function fillWidgetConfigurationFrom($data, $update = false) {
+	protected function fillWidgetConfigurationFrom($data, $update = false)
+	{
 		$dialog = COverlayDialogElement::find()->waitUntilReady(30)->one();
 		$form = $dialog->asForm();
 		$form->fill($data['fields']);
@@ -4363,8 +4395,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			foreach ($data['actions'] as $type => $action_element) {
 				if ($type === 'click') {
 					$form->query($action_element)->one()->click();
-				}
-				else {
+				} else {
 					foreach ($action_element as $field => $value) {
 						$form->getField($field)->fill($value);
 					}
@@ -4399,8 +4430,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @onBefore prepareHostLinkageToTemplateData
 	 */
-	public function testDashboardsTemplatedDashboardForm_ViewDashboardOnHost() {
-		$this->page->login()->open('zabbix.php?action=host.dashboard.view&hostid='.self::$hostid_for_template);
+	public function testDashboardsTemplatedDashboardForm_ViewDashboardOnHost()
+	{
+		$this->page->login()->open('zabbix.php?action=host.dashboard.view&hostid=' . self::$hostid_for_template);
 		$this->query('xpath://span[text()="Dashboard with all widgets"]')->one()->waitUntilVisible()->click();
 		$this->page->waitUntilReady();
 
@@ -4417,8 +4449,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		CDashboardElement::find()->one()->waitUntilReady();
 
 		// Remove zabbix version due to unstable screenshot which depends on column width with different version length.
-		CElementQuery::getDriver()->executeScript("arguments[0].textContent = '';",
-				[$this->query('xpath://th[text()="Zabbix frontend version"]/following-sibling::td[1]',)->one()]
+		CElementQuery::getDriver()->executeScript(
+			"arguments[0].textContent = '';",
+			[$this->query('xpath://th[text()="Advantal frontend version"]/following-sibling::td[1]',)->one()]
 		);
 
 		$skip_selectors = [
@@ -4442,7 +4475,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 *
 	 * @param string	$title	The title of the overlay dialog.
 	 */
-	protected function checkDialogue($title) {
+	protected function checkDialogue($title)
+	{
 		if ($title === 'Dashboard properties') {
 			$parameters = [
 				'Name' => 'New dashboard',
@@ -4451,8 +4485,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			];
 			$buttons = ['Apply', 'Cancel'];
 			$display_periods = ['10 seconds', '30 seconds', '1 minute', '2 minutes', '10 minutes', '30 minutes', '1 hour'];
-		}
-		else {
+		} else {
 			$parameters = [
 				'Show header' => true
 			];
@@ -4463,7 +4496,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 		$form = $dialog->asForm();
 		$this->assertEquals($title, $dialog->getTitle());
 
-		$this->assertEquals(2, $dialog->getFooter()->query('button', $buttons)->all()
+		$this->assertEquals(
+			2,
+			$dialog->getFooter()->query('button', $buttons)->all()
 				->filter(new CElementFilter(CElementFilter::CLICKABLE))->count()
 		);
 
@@ -4473,13 +4508,38 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 
 		if ($title === 'Dashboard properties') {
 			$this->assertEquals($display_periods, $form->getField('Default page display period')->getOptions()->asText());
-		}
-		else {
-			$all_types = ['Action log', 'Clock', 'Discovery status', 'Favorite graphs', 'Favorite maps', 'Gauge', 'Geomap',
-				'Graph', 'Graph (classic)', 'Graph prototype', 'Honeycomb', 'Host availability', 'Host navigator', 'Item history',
-				'Item navigator', 'Item value', 'Map', 'Map navigation tree', 'Pie chart', 'Problem hosts',
-				'Problems', 'Problems by severity', 'SLA report', 'System information', 'Top hosts', 'Top triggers',
-				'Trigger overview', 'URL', 'Web monitoring', 'Data overview'
+		} else {
+			$all_types = [
+				'Action log',
+				'Clock',
+				'Discovery status',
+				'Favorite graphs',
+				'Favorite maps',
+				'Gauge',
+				'Geomap',
+				'Graph',
+				'Graph (classic)',
+				'Graph prototype',
+				'Honeycomb',
+				'Host availability',
+				'Host navigator',
+				'Item history',
+				'Item navigator',
+				'Item value',
+				'Map',
+				'Map navigation tree',
+				'Pie chart',
+				'Problem hosts',
+				'Problems',
+				'Problems by severity',
+				'SLA report',
+				'System information',
+				'Top hosts',
+				'Top triggers',
+				'Trigger overview',
+				'URL',
+				'Web monitoring',
+				'Data overview'
 			];
 			$this->assertEquals($all_types, $form->getField('Type')->getOptions()->asText());
 		}
@@ -4492,7 +4552,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 * @param array		$items	An array of items and their states in a popup menu.
 	 * @param string	$title	The title of the popup menu.
 	 */
-	protected function checkPopup($items, $title = false) {
+	protected function checkPopup($items, $title = false)
+	{
 		$popup = CPopupMenuElement::find()->one()->waitUntilVisible();
 
 		foreach ($items as $item => $enabled) {
@@ -4507,7 +4568,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	/**
 	 * Function that closes an overlay dialog and alert on a template dashboard before proceeding to the next test.
 	 */
-	protected function closeDialogue() {
+	protected function closeDialogue()
+	{
 		$overlay = COverlayDialogElement::find()->one(false);
 		if ($overlay->isValid()) {
 			$overlay->close();
@@ -4527,15 +4589,15 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 	 * @param string	$status			Expected successful action that was made to the dashboard after saving it.
 	 * @param string	$check			Action that should be checked.
 	 */
-	protected function checkSettings($data, $filled_data, $status = 'created', $check = 'dashboard action') {
+	protected function checkSettings($data, $filled_data, $status = 'created', $check = 'dashboard action')
+	{
 		$reference_data = ($check === 'dashboard action') ? $data['dashboard_properties'] : $data['fields'];
 
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			if (CTestArrayHelper::get($data, 'check_save')) {
 				COverlayDialogElement::ensureNotPresent();
 				$this->query('button:Save changes')->one()->click();
-			}
-			else {
+			} else {
 				if (array_key_exists('trim', $data)) {
 					$filled_data[$data['trim']] = trim($filled_data[$data['trim']]);
 					$reference_data[$data['trim']] = trim($data['fields'][$data['trim']]);
@@ -4552,8 +4614,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 
 			$this->assertMessage(TEST_BAD, null, $data['error_message']);
 			$this->closeDialogue();
-		}
-		else {
+		} else {
 			COverlayDialogElement::ensureNotPresent();
 			// Wait for widgets to be present as dashboard is slow when there are many widgets on it.
 			if ($check !== 'dashboard action') {
@@ -4566,7 +4627,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			$this->query('button:Save changes')->one()->click();
 
 			$this->page->waitUntilReady();
-			$this->assertMessage(TEST_GOOD, 'Dashboard '.$status);
+			$this->assertMessage(TEST_GOOD, 'Dashboard ' . $status);
 
 			// In case of successful widget update rewrite the widget name to be updated for the next scenario.
 			if ($check === 'widget update') {
@@ -4581,8 +4642,8 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			}
 
 			$dashboard_name = ($check === 'dashboard action')
-					? $reference_data['Name']
-					: (($check === 'widget create') ? 'Dashboard for widget creation' : 'Dashboard for widget update');
+				? $reference_data['Name']
+				: (($check === 'widget create') ? 'Dashboard for widget creation' : 'Dashboard for widget update');
 			$this->query('link', $dashboard_name)->one()->waitUntilClickable()->click();
 			$this->page->waitUntilReady();
 
@@ -4592,8 +4653,7 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 
 			if ($check !== 'dashboard action') {
 				$reopened_form = CDashboardElement::find()->waitUntilReady()->one()->getWidget($name)->edit();
-			}
-			else {
+			} else {
 				$this->query('id:dashboard-config')->one()->click();
 				$reopened_form = COverlayDialogElement::find()->asForm()->one()->waitUntilVisible();
 			}
@@ -4603,7 +4663,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 				$this->assertTrue($reopened_form->query('xpath:.//button[@title="Collapse"]')->one()->isVisible());
 			}
 
-			$this->assertEquals($created_values, $reopened_form->getFields()->filter(new CElementFilter(CElementFilter::VISIBLE))
+			$this->assertEquals(
+				$created_values,
+				$reopened_form->getFields()->filter(new CElementFilter(CElementFilter::VISIBLE))
 					->asValues()
 			);
 			$reopened_form->checkValue($reference_data);
@@ -4611,8 +4673,9 @@ class testDashboardsTemplatedDashboardForm extends CWebTest {
 			// Check saved column and item name.
 			if (array_key_exists('Column', $data)) {
 				$row = $reopened_form->query('id:list_columns')->asTable()->one()->getRow(0);
-				$this->assertEquals(CTestArrayHelper::get($data['Column'], 'Name', $data['Column']['Item']['values']),
-						$row->getColumn('Name')->getText()
+				$this->assertEquals(
+					CTestArrayHelper::get($data['Column'], 'Name', $data['Column']['Item']['values']),
+					$row->getColumn('Name')->getText()
 				);
 				$this->assertEquals(self::TEMPLATE_ITEM, $row->getColumn('Data')->getText());
 			}

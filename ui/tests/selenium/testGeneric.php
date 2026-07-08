@@ -14,23 +14,26 @@
 **/
 
 
-require_once __DIR__.'/../include/CWebTest.php';
+require_once __DIR__ . '/../include/CWebTest.php';
 
 /**
  * @backup !profiles
  */
-class testGeneric extends CWebTest {
+class testGeneric extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
-	public static function getPagesData() {
+	public static function getPagesData()
+	{
 		return [
 			// Search.
 			[
@@ -701,7 +704,7 @@ class testGeneric extends CWebTest {
 				[
 					'url' => 'zabbix.php?action=userprofile.edit',
 					'title' => 'User profile',
-					'header' => 'User profile: Zabbix Administrator'
+					'header' => 'User profile: Advantal Administrator'
 				]
 			],
 			[
@@ -717,7 +720,8 @@ class testGeneric extends CWebTest {
 	/**
 	 * @dataProvider getPagesData
 	 */
-	public function testGeneric_Pages($data) {
+	public function testGeneric_Pages($data)
+	{
 		$this->page->login()->open($data['url'])->waitUntilReady();
 		$this->page->assertTitle($data['title']);
 		$this->page->assertHeader($data['header']);
@@ -726,8 +730,7 @@ class testGeneric extends CWebTest {
 			// Error message is expected for 'Queue' pages as case is checked without running server.
 
 			$this->assertMessage(TEST_BAD, 'Cannot display item queue.');
-		}
-		else {
+		} else {
 			$this->assertFalse($this->query('class:msg-bad')->one(false)->isValid(), 'Unexpected error on page.');
 		}
 

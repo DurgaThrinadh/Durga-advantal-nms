@@ -14,16 +14,17 @@
 **/
 
 
-require_once dirname(__FILE__).'/../include/CAPITest.php';
-require_once dirname(__FILE__).'/../../include/triggers.inc.php';
-require_once dirname(__FILE__).'/../../include/translateDefines.inc.php';
+require_once dirname(__FILE__) . '/../include/CAPITest.php';
+require_once dirname(__FILE__) . '/../../include/triggers.inc.php';
+require_once dirname(__FILE__) . '/../../include/translateDefines.inc.php';
 
 /**
  * @backup ids,hgset,ugset
  * @onBefore prepareScriptsData
  * @onAfter clearData
  */
-class testScripts extends CAPITest {
+class testScripts extends CAPITest
+{
 
 	private static $data = [
 		'groupids' => [],
@@ -46,7 +47,8 @@ class testScripts extends CAPITest {
 	 * Prepare data for tests. Create host groups, hosts, items, triggers, events, user groups, roles, users,
 	 * global macros, scripts and actions.
 	 */
-	public function prepareScriptsData(): void {
+	public function prepareScriptsData(): void
+	{
 		// Create host groups.
 		$hostgroups_data = [
 			'rw' => [
@@ -77,8 +79,7 @@ class testScripts extends CAPITest {
 		// Try to create host groups. In case of failure, print the exception message.
 		try {
 			$hostgroups = CDataHelper::call('hostgroup.create', array_values($hostgroups_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			$this->assertTrue(false, $e->getMessage());
 		}
 
@@ -296,8 +297,7 @@ class testScripts extends CAPITest {
 		// Try to create hosts. In case of failure, print the exception message and revert changes.
 		try {
 			$hosts = CDataHelper::call('host.create', array_values($hosts_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('hostgroup.delete', self::$data['groupids']);
 
 			$this->assertTrue(false, $e->getMessage());
@@ -399,8 +399,7 @@ class testScripts extends CAPITest {
 		// Try to create items. In case of failure, print the exception message and revert changes.
 		try {
 			$items = CDataHelper::call('item.create', array_values($items_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('host.delete', self::$data['hostids']);
 			CDataHelper::call('hostgroup.delete', self::$data['groupids']);
 
@@ -433,7 +432,7 @@ class testScripts extends CAPITest {
 			// Trigger belongs to multiple hosts.
 			'plain_rw_r_dual_d' => [
 				'description' => 'API test trigger - plain, dual, read-write & read, disaster',
-				'expression' => 'last(/api_test_host_plain_rw/api_test_item_plain_rw)<>0'.
+				'expression' => 'last(/api_test_host_plain_rw/api_test_item_plain_rw)<>0' .
 					' and last(/api_test_host_plain_r/api_test_item_plain_r)<>0',
 				'priority' => TRIGGER_SEVERITY_DISASTER
 			],
@@ -446,7 +445,7 @@ class testScripts extends CAPITest {
 			// Both hosts have same macro name.
 			'macros_rw_r_dual_1_2_h' => [
 				'description' => 'API test trigger - macros, dual, read-write & read, (1 & 2), high',
-				'expression' => 'last(/api_test_host_macros_rw_1/api_test_item_macros_rw_1)<>0'.
+				'expression' => 'last(/api_test_host_macros_rw_1/api_test_item_macros_rw_1)<>0' .
 					' and last(/api_test_host_macros_r_2/api_test_item_macros_r_2)<>0',
 				'priority' => TRIGGER_SEVERITY_HIGH
 			],
@@ -454,7 +453,7 @@ class testScripts extends CAPITest {
 			// Both hosts have different macro names.
 			'macros_rw_dual_1_3_h' => [
 				'description' => 'API test trigger - macros, dual, read-write, (1 & 3), high',
-				'expression' => 'last(/api_test_host_macros_rw_1/api_test_item_macros_rw_1)<>0'.
+				'expression' => 'last(/api_test_host_macros_rw_1/api_test_item_macros_rw_1)<>0' .
 					' and last(/api_test_host_macros_rw_3/api_test_item_macros_rw_3)<>0',
 				'priority' => TRIGGER_SEVERITY_HIGH
 			],
@@ -462,7 +461,7 @@ class testScripts extends CAPITest {
 			// Hosts contain interfaces.
 			'interface_rw_dual_a' => [
 				'description' => 'API test trigger - interface, dual, average',
-				'expression' => 'last(/api_test_host_interface_rw_1/api_test_item_interface_rw_1)<>0'.
+				'expression' => 'last(/api_test_host_interface_rw_1/api_test_item_interface_rw_1)<>0' .
 					' and last(/api_test_host_interface_rw_2/api_test_item_interface_rw_2)<>0',
 				'priority' => TRIGGER_SEVERITY_AVERAGE
 			],
@@ -470,7 +469,7 @@ class testScripts extends CAPITest {
 			// Hosts contain inventory.
 			'inventory_rw_dual_a' => [
 				'description' => 'API test trigger - inventory, dual, average',
-				'expression' => 'last(/api_test_host_inventory_rw_1/api_test_item_inventory_rw_1)<>0'.
+				'expression' => 'last(/api_test_host_inventory_rw_1/api_test_item_inventory_rw_1)<>0' .
 					' and last(/api_test_host_inventory_rw_2/api_test_item_inventory_rw_2)<>0',
 				'priority' => TRIGGER_SEVERITY_AVERAGE
 			],
@@ -491,8 +490,7 @@ class testScripts extends CAPITest {
 		// Try to create triggers. In case of failure, print the exception message and revert changes.
 		try {
 			$triggers = CDataHelper::call('trigger.create', array_values($triggers_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('host.delete', self::$data['hostids']);
 			DB::delete('housekeeper', ['field' => 'itemid', 'value' => array_values(self::$data['itemids'])]);
 			CDataHelper::call('hostgroup.delete', self::$data['groupids']);
@@ -506,25 +504,24 @@ class testScripts extends CAPITest {
 		try {
 			// Generate events for all triggers. History is not used. Problems table is also not required.
 			$nextid = CDBHelper::getAll(
-				'SELECT i.nextid'.
-				' FROM ids i'.
-				' WHERE i.table_name='.zbx_dbstr('events').
-					' AND i.field_name='.zbx_dbstr('eventid').
-				' FOR UPDATE'
+				'SELECT i.nextid' .
+					' FROM ids i' .
+					' WHERE i.table_name=' . zbx_dbstr('events') .
+					' AND i.field_name=' . zbx_dbstr('eventid') .
+					' FOR UPDATE'
 			);
 
 			if ($nextid) {
 				$nextid = bcadd($nextid[0]['nextid'], 1, 0);
-			}
-			else {
+			} else {
 				DB::refreshIds('events', 0);
 
 				$nextid = CDBHelper::getAll(
-					'SELECT i.nextid'.
-					' FROM ids i'.
-					' WHERE i.table_name='.zbx_dbstr('events').
-						' AND i.field_name='.zbx_dbstr('eventid').
-					' FOR UPDATE'
+					'SELECT i.nextid' .
+						' FROM ids i' .
+						' WHERE i.table_name=' . zbx_dbstr('events') .
+						' AND i.field_name=' . zbx_dbstr('eventid') .
+						' FOR UPDATE'
 				);
 
 				$nextid = bcadd($nextid[0]['nextid'], 1, 0);
@@ -550,8 +547,7 @@ class testScripts extends CAPITest {
 			}
 
 			$eventids = DB::insertBatch('events', $events_data);
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('host.delete', self::$data['hostids']);
 			DB::delete('housekeeper', ['field' => 'triggerid', 'value' => array_values(self::$data['triggerids'])]);
 			DB::delete('housekeeper', ['field' => 'itemid', 'value' => array_values(self::$data['itemids'])]);
@@ -575,8 +571,7 @@ class testScripts extends CAPITest {
 		// Try to create symptom events. In case of failure, print the exception message and revert changes.
 		try {
 			DB::insertBatch('event_symptom', $event_symptom_data, false);
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('host.delete', self::$data['hostids']);
 			DB::delete('events', ['eventid' => array_values(self::$data['eventids'])]);
 			DB::delete('housekeeper', ['field' => 'triggerid', 'value' => array_values(self::$data['triggerids'])]);
@@ -600,8 +595,7 @@ class testScripts extends CAPITest {
 		 */
 		try {
 			$usermacros = CDataHelper::call('usermacro.createglobal', array_values($usermacros_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('host.delete', self::$data['hostids']);
 			DB::delete('event_symptom', ['eventid' => array_values(self::$data['eventids'])]);
 			DB::delete('events', ['eventid' => array_values(self::$data['eventids'])]);
@@ -690,8 +684,7 @@ class testScripts extends CAPITest {
 		// Try to create user groups. In case of failure, print the exception message and revert changes.
 		try {
 			$usergroups = CDataHelper::call('usergroup.create', array_values($usergroups_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('usermacro.deleteglobal', [self::$data['usermacroid']]);
 			CDataHelper::call('host.delete', self::$data['hostids']);
 			DB::delete('event_symptom', ['eventid' => array_values(self::$data['eventids'])]);
@@ -720,8 +713,7 @@ class testScripts extends CAPITest {
 		// Try to create user roles. In case of failure, print the exception message and revert changes.
 		try {
 			$roles = CDataHelper::call('role.create', array_values($roles_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('usergroup.delete', self::$data['usrgrpids']);
 			CDataHelper::call('usermacro.deleteglobal', [self::$data['usermacroid']]);
 			CDataHelper::call('host.delete', self::$data['hostids']);
@@ -767,8 +759,7 @@ class testScripts extends CAPITest {
 		// Try to create users. In case of failure, print the exception message and revert changes.
 		try {
 			$users = CDataHelper::call('user.create', array_values($users_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('usergroup.delete', self::$data['usrgrpids']);
 			CDataHelper::call('role.delete', self::$data['roleids']);
 			CDataHelper::call('usermacro.deleteglobal', [self::$data['usermacroid']]);
@@ -1149,8 +1140,8 @@ class testScripts extends CAPITest {
 				'type' => ZBX_SCRIPT_TYPE_URL,
 				'scope' => ZBX_SCRIPT_SCOPE_HOST,
 				'url' => 'http://zabbix/ui/zabbix.php?action=host.edit&hostid={HOST.ID}',
-				'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER}, {$GLOBAL_MACRO},'.
-					' {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN}, {HOST.DNS}, {HOST.PORT},'.
+				'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER}, {$GLOBAL_MACRO},' .
+					' {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN}, {HOST.DNS}, {HOST.PORT},' .
 					' {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME}, {EVENT.NSEVERITY}, {EVENT.SEVERITY}'
 			],
 			'get_hosts_ipmi' => [
@@ -1158,8 +1149,8 @@ class testScripts extends CAPITest {
 				'type' => ZBX_SCRIPT_TYPE_IPMI,
 				'scope' => ZBX_SCRIPT_SCOPE_HOST,
 				'command' => 'reboot server',
-				'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME}, {USER.USERNAME},'.
-					' {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE}, {INVENTORY.CONTACT}, {INVENTORY.OS1},'.
+				'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME}, {USER.USERNAME},' .
+					' {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE}, {INVENTORY.CONTACT}, {INVENTORY.OS1},' .
 					' {INVENTORY.OS2}, {HOSTGROUP.ID}',
 				'usrgrpid' => self::$data['usrgrpids']['admin']
 			],
@@ -1168,7 +1159,7 @@ class testScripts extends CAPITest {
 				'type' => ZBX_SCRIPT_TYPE_WEBHOOK,
 				'scope' => ZBX_SCRIPT_SCOPE_HOST,
 				'command' => 'reboot server',
-				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},'.
+				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},' .
 					' {HOST.IP}, {HOST.DNS}, {HOST.PORT}',
 				'usrgrpid' => self::$data['usrgrpids']['user']
 			],
@@ -1179,7 +1170,7 @@ class testScripts extends CAPITest {
 				'command' => 'reboot server',
 				'username' => 'user',
 				'host_access' => PERM_READ_WRITE,
-				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},'.
+				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},' .
 					' {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE}'
 			],
 			'get_hosts_script' => [
@@ -1213,8 +1204,8 @@ class testScripts extends CAPITest {
 				'type' => ZBX_SCRIPT_TYPE_URL,
 				'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 				'url' => 'http://zabbix/ui/zabbix.php?action=host.edit&hostid={HOST.ID}',
-				'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER}, {$GLOBAL_MACRO},'.
-					' {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN}, {HOST.DNS}, {HOST.PORT},'.
+				'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER}, {$GLOBAL_MACRO},' .
+					' {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN}, {HOST.DNS}, {HOST.PORT},' .
 					' {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME}, {EVENT.NSEVERITY}, {EVENT.SEVERITY}'
 			],
 			'get_events_ipmi' => [
@@ -1222,8 +1213,8 @@ class testScripts extends CAPITest {
 				'type' => ZBX_SCRIPT_TYPE_IPMI,
 				'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 				'command' => 'reboot server',
-				'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME}, {USER.USERNAME},'.
-					' {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE}, {INVENTORY.CONTACT}, {INVENTORY.OS1},'.
+				'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME}, {USER.USERNAME},' .
+					' {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE}, {INVENTORY.CONTACT}, {INVENTORY.OS1},' .
 					' {INVENTORY.OS2}, {EVENT.STATUS}, {EVENT.VALUE}, {HOSTGROUP.ID}',
 				'usrgrpid' => self::$data['usrgrpids']['admin']
 			],
@@ -1232,7 +1223,7 @@ class testScripts extends CAPITest {
 				'type' => ZBX_SCRIPT_TYPE_WEBHOOK,
 				'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 				'command' => 'reboot server',
-				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},'.
+				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},' .
 					' {HOST.IP}, {HOST.DNS}, {HOST.PORT}',
 				'usrgrpid' => self::$data['usrgrpids']['user']
 			],
@@ -1243,15 +1234,15 @@ class testScripts extends CAPITest {
 				'command' => 'reboot server',
 				'host_access' => PERM_READ_WRITE,
 				'username' => 'user',
-				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},'.
+				'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME}, {HOST.CONN},' .
 					' {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE}'
 			],
-			'get_events_url_cause'=> [
+			'get_events_url_cause' => [
 				'name' => 'API test script.getScriptsByEvents - URL cause',
 				'type' => ZBX_SCRIPT_TYPE_URL,
 				'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 				'url' => 'http://zabbix/ui/tr_events.php?eventid={EVENT.ID}',
-				'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME}, {EVENT.CAUSE.NSEVERITY},'.
+				'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME}, {EVENT.CAUSE.NSEVERITY},' .
 					' {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS}, {EVENT.CAUSE.VALUE}'
 			],
 			'get_events_script' => [
@@ -1305,8 +1296,7 @@ class testScripts extends CAPITest {
 		// Try to create scripts. In case of failure, print the exception message and revert changes.
 		try {
 			$scripts = CDataHelper::call('script.create', array_values($scripts_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('user.delete', self::$data['userids']);
 			CDataHelper::call('usergroup.delete', self::$data['usrgrpids']);
 			CDataHelper::call('role.delete', self::$data['roleids']);
@@ -1372,8 +1362,7 @@ class testScripts extends CAPITest {
 		// Try to create actions. In case of failure, print the exception message and revert changes.
 		try {
 			$actions = CDataHelper::call('action.create', array_values($actions_data));
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			CDataHelper::call('script.delete', self::$data['scriptids']);
 			CDataHelper::call('user.delete', self::$data['userids']);
 			CDataHelper::call('usergroup.delete', self::$data['usrgrpids']);
@@ -1397,7 +1386,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptCreateInvalid(): array {
+	public static function getScriptCreateInvalid(): array
+	{
 		return [
 			'Test script.create missing fields' => [
 				'script' => [],
@@ -1836,7 +1826,7 @@ class testScripts extends CAPITest {
 					'type' => ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 					'scope' => ZBX_SCRIPT_SCOPE_HOST,
 					'command' => 'reboot server',
-					'menu_path' => 'folder1/folder2/'.'/folder4'
+					'menu_path' => 'folder1/folder2/' . '/folder4'
 				],
 				'expected_error' => 'Invalid parameter "/1/menu_path": directory cannot be empty.'
 			],
@@ -1846,7 +1836,7 @@ class testScripts extends CAPITest {
 					'type' => ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 					'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 					'command' => 'reboot server',
-					'menu_path' => 'folder1/folder2/'.'/folder4'
+					'menu_path' => 'folder1/folder2/' . '/folder4'
 				],
 				'expected_error' => 'Invalid parameter "/1/menu_path": directory cannot be empty.'
 			],
@@ -1856,7 +1846,7 @@ class testScripts extends CAPITest {
 					'type' => ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 					'scope' => ZBX_SCRIPT_SCOPE_ACTION,
 					'command' => 'reboot server',
-					'menu_path' => 'folder1/folder2/'.'/folder4'
+					'menu_path' => 'folder1/folder2/' . '/folder4'
 				],
 				'expected_error' => 'Invalid parameter "/1/menu_path": value must be empty.'
 			],
@@ -3060,7 +3050,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptCreateValid(): array {
+	public static function getScriptCreateValid(): array
+	{
 		return [
 			'Test script.create successful UTF-8 name' => [
 				'script' => [
@@ -3200,7 +3191,7 @@ class testScripts extends CAPITest {
 						'scope' => ZBX_SCRIPT_SCOPE_HOST,
 						'command' => 'reboot server',
 						'description' =>
-							'SSH host script for regular admins and all host groups with read-write permissions',
+						'SSH host script for regular admins and all host groups with read-write permissions',
 						'usrgrpid' => 'admin',
 						'groupid' => 0,
 						'host_access' => PERM_READ_WRITE,
@@ -3224,7 +3215,7 @@ class testScripts extends CAPITest {
 						'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 						'command' => 'reboot server',
 						'description' =>
-							'Telnet event script for regular users and host groups with read-write permissions',
+						'Telnet event script for regular users and host groups with read-write permissions',
 						'usrgrpid' => 'user',
 						'groupid' => 'rw',
 						'host_access' => PERM_READ_WRITE,
@@ -3245,7 +3236,7 @@ class testScripts extends CAPITest {
 						'scope' => ZBX_SCRIPT_SCOPE_EVENT,
 						'command' => 'reboot server',
 						'description' =>
-							'Webhook event script with for regular users and host groups with read-write permissions',
+						'Webhook event script with for regular users and host groups with read-write permissions',
 						'usrgrpid' => 'user',
 						'groupid' => 'rw',
 						'host_access' => PERM_READ_WRITE,
@@ -3291,7 +3282,7 @@ class testScripts extends CAPITest {
 						'url' => 'http://localhost/',
 						'new_window' => ZBX_SCRIPT_URL_NEW_WINDOW_NO,
 						'description' =>
-							'URL type event script for regular admins and host groups with read-write permissions',
+						'URL type event script for regular admins and host groups with read-write permissions',
 						'usrgrpid' => 'admin',
 						'groupid' => 'rw',
 						'host_access' => PERM_READ_WRITE,
@@ -3387,7 +3378,8 @@ class testScripts extends CAPITest {
 	 * @dataProvider getScriptCreateInvalid
 	 * @dataProvider getScriptCreateValid
 	 */
-	public function testScript_Create($scripts, $expected_error): void {
+	public function testScript_Create($scripts, $expected_error): void
+	{
 		// Accept single and multiple scripts just like API method. Work with multi-dimensional array in result.
 		if (!array_key_exists(0, $scripts)) {
 			$scripts = zbx_toArray($scripts);
@@ -3433,24 +3425,22 @@ class testScripts extends CAPITest {
 					$this->assertEmpty($db_script['manualinput_prompt']);
 					$this->assertEmpty($db_script['manualinput_validator']);
 					$this->assertEmpty($db_script['manualinput_default_value']);
-					$this->assertEquals(DB::getDefault('scripts', 'manualinput_validator_type'),
+					$this->assertEquals(
+						DB::getDefault('scripts', 'manualinput_validator_type'),
 						$db_script['manualinput_validator_type']
 					);
-				}
-				else {
+				} else {
 					// Check menu path.
 					if (array_key_exists('menu_path', $scripts[$num])) {
 						$this->assertSame($scripts[$num]['menu_path'], $db_script['menu_path']);
-					}
-					else {
+					} else {
 						$this->assertEmpty($db_script['menu_path']);
 					}
 
 					// Check user group.
 					if (array_key_exists('usrgrpid', $scripts[$num])) {
 						$this->assertEquals($scripts[$num]['usrgrpid'], $db_script['usrgrpid']);
-					}
-					else {
+					} else {
 						// Despite the default in DB is NULL, getting value from DB gets us 0 as string.
 						$this->assertEquals(0, $db_script['usrgrpid']);
 					}
@@ -3458,24 +3448,21 @@ class testScripts extends CAPITest {
 					// Check host access.
 					if (array_key_exists('host_access', $scripts[$num])) {
 						$this->assertEquals($scripts[$num]['host_access'], $db_script['host_access']);
-					}
-					else {
+					} else {
 						$this->assertEquals(DB::getDefault('scripts', 'host_access'), $db_script['host_access']);
 					}
 
 					// Check confirmation.
 					if (array_key_exists('confirmation', $scripts[$num])) {
 						$this->assertSame($scripts[$num]['confirmation'], $db_script['confirmation']);
-					}
-					else {
+					} else {
 						$this->assertEmpty($db_script['confirmation']);
 					}
 
 					// Check manualinput fields.
 					if (array_key_exists('manualinput', $scripts[$num])) {
 						$this->assertEquals($scripts[$num]['manualinput'], $db_script['manualinput']);
-					}
-					else {
+					} else {
 						$this->assertEquals(DB::getDefault('scripts', 'manualinput'), $db_script['manualinput']);
 					}
 
@@ -3483,44 +3470,44 @@ class testScripts extends CAPITest {
 						$this->assertEmpty($db_script['manualinput_prompt']);
 						$this->assertEmpty($db_script['manualinput_validator']);
 						$this->assertEmpty($db_script['manualinput_default_value']);
-						$this->assertEquals(DB::getDefault('scripts', 'manualinput_validator_type'),
+						$this->assertEquals(
+							DB::getDefault('scripts', 'manualinput_validator_type'),
 							$db_script['manualinput_validator_type']
 						);
-					}
-					else {
+					} else {
 						if (array_key_exists('manualinput_validator_type', $scripts[$num])) {
-							$this->assertEquals($scripts[$num]['manualinput_validator_type'],
+							$this->assertEquals(
+								$scripts[$num]['manualinput_validator_type'],
 								$db_script['manualinput_validator_type']
 							);
-						}
-						else {
-							$this->assertEquals(DB::getDefault('scripts', 'manualinput_validator_type'),
+						} else {
+							$this->assertEquals(
+								DB::getDefault('scripts', 'manualinput_validator_type'),
 								$db_script['manualinput_validator_type']
 							);
 						}
 
 						if (array_key_exists('manualinput_prompt', $scripts[$num])) {
 							$this->assertSame($scripts[$num]['manualinput_prompt'], $db_script['manualinput_prompt']);
-						}
-						else {
+						} else {
 							$this->assertEmpty($db_script['manualinput_prompt']);
 						}
 
 						if (array_key_exists('manualinput_validator', $scripts[$num])) {
-							$this->assertSame($scripts[$num]['manualinput_validator'],
+							$this->assertSame(
+								$scripts[$num]['manualinput_validator'],
 								$db_script['manualinput_validator']
 							);
-						}
-						else {
+						} else {
 							$this->assertEmpty($db_script['manualinput_validator']);
 						}
 
 						if (array_key_exists('manualinput_default_value', $scripts[$num])) {
-							$this->assertSame($scripts[$num]['manualinput_default_value'],
+							$this->assertSame(
+								$scripts[$num]['manualinput_default_value'],
 								$db_script['manualinput_default_value']
 							);
-						}
-						else {
+						} else {
 							$this->assertEmpty($db_script['manualinput_default_value']);
 						}
 					}
@@ -3529,16 +3516,14 @@ class testScripts extends CAPITest {
 				// Optional common fields for all script types.
 				if (array_key_exists('groupid', $scripts[$num])) {
 					$this->assertEquals($scripts[$num]['groupid'], $db_script['groupid']);
-				}
-				else {
+				} else {
 					// Despite the default in DB is NULL, getting value from DB gets us 0 as string.
 					$this->assertEquals(0, $db_script['groupid']);
 				}
 
 				if (array_key_exists('description', $scripts[$num])) {
 					$this->assertSame($scripts[$num]['description'], $db_script['description']);
-				}
-				else {
+				} else {
 					$this->assertEmpty($db_script['description']);
 				}
 
@@ -3548,8 +3533,7 @@ class testScripts extends CAPITest {
 							// Check execute on.
 							if (array_key_exists('execute_on', $scripts[$num])) {
 								$this->assertEquals($scripts[$num]['execute_on'], $db_script['execute_on']);
-							}
-							else {
+							} else {
 								$this->assertEquals(DB::getDefault('scripts', 'execute_on'), $db_script['execute_on']);
 							}
 
@@ -3592,8 +3576,7 @@ class testScripts extends CAPITest {
 							// Check port.
 							if (array_key_exists('port', $scripts[$num])) {
 								$this->assertEquals($scripts[$num]['port'], $db_script['port']);
-							}
-							else {
+							} else {
 								$this->assertEmpty($db_script['port']);
 							}
 
@@ -3606,13 +3589,11 @@ class testScripts extends CAPITest {
 									$this->assertNotEmpty($db_script['privatekey']);
 									$this->assertSame($scripts[$num]['publickey'], $db_script['publickey']);
 									$this->assertSame($scripts[$num]['privatekey'], $db_script['privatekey']);
-								}
-								else {
+								} else {
 									$this->assertEmpty($db_script['publickey']);
 									$this->assertEmpty($db_script['privatekey']);
 								}
-							}
-							else {
+							} else {
 								$this->assertEquals(DB::getDefault('scripts', 'authtype'), $db_script['authtype']);
 								$this->assertEmpty($db_script['publickey']);
 								$this->assertEmpty($db_script['privatekey']);
@@ -3621,8 +3602,7 @@ class testScripts extends CAPITest {
 							// Check password.
 							if (array_key_exists('password', $scripts[$num])) {
 								$this->assertSame($scripts[$num]['password'], $db_script['password']);
-							}
-							else {
+							} else {
 								$this->assertEmpty($db_script['password']);
 							}
 
@@ -3644,16 +3624,14 @@ class testScripts extends CAPITest {
 							// Check password.
 							if (array_key_exists('password', $scripts[$num])) {
 								$this->assertSame($scripts[$num]['password'], $db_script['password']);
-							}
-							else {
+							} else {
 								$this->assertEmpty($db_script['password']);
 							}
 
 							// Check port.
 							if (array_key_exists('port', $scripts[$num])) {
 								$this->assertEquals($scripts[$num]['port'], $db_script['port']);
-							}
-							else {
+							} else {
 								$this->assertEmpty($db_script['port']);
 							}
 
@@ -3674,8 +3652,7 @@ class testScripts extends CAPITest {
 							// Check timeout.
 							if (array_key_exists('timeout', $scripts[$num])) {
 								$this->assertSame($scripts[$num]['timeout'], $db_script['timeout']);
-							}
-							else {
+							} else {
 								$this->assertSame(DB::getDefault('scripts', 'timeout'), $db_script['timeout']);
 							}
 
@@ -3684,16 +3661,15 @@ class testScripts extends CAPITest {
 								if ($scripts[$num]['parameters']) {
 									// Check newly added parameters.
 									$this->assertNotEmpty($db_script['parameters']);
-									$this->assertEqualsCanonicalizing($scripts[$num]['parameters'],
+									$this->assertEqualsCanonicalizing(
+										$scripts[$num]['parameters'],
 										$db_script['parameters']
 									);
-								}
-								else {
+								} else {
 									// Check that parameters are removed.
 									$this->assertEmpty($db_script['parameters']);
 								}
-							}
-							else {
+							} else {
 								// Check that parameters not even added.
 								$this->assertEmpty($db_script['parameters']);
 							}
@@ -3719,8 +3695,7 @@ class testScripts extends CAPITest {
 							// Check "new_window".
 							if (array_key_exists('new_window', $scripts[$num])) {
 								$this->assertEquals($scripts[$num]['new_window'], $db_script['new_window']);
-							}
-							else {
+							} else {
 								$this->assertSame(DB::getDefault('scripts', 'new_window'), $db_script['new_window']);
 							}
 
@@ -3739,8 +3714,7 @@ class testScripts extends CAPITest {
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			$this->assertSame($old_hash_scripts, CDBHelper::getHash($sql_scripts));
 		}
 	}
@@ -3750,7 +3724,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptGetInheritance(): array {
+	public static function getScriptGetInheritance(): array
+	{
 		return [
 			// This is a top group, nothing to inherit from.
 			'Test script.get top level group' => [
@@ -3945,7 +3920,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @dataProvider getScriptGetInheritance
 	 */
-	public function testScripts_GetInheritance($request, $expected_result): void {
+	public function testScripts_GetInheritance($request, $expected_result): void
+	{
 		if (array_key_exists('login', $request)) {
 			$this->authorize($request['login']['user'], $request['login']['password']);
 			unset($request['login']);
@@ -3971,15 +3947,15 @@ class testScripts extends CAPITest {
 
 		if (array_key_exists('has.scriptid:hostid', $expected_result)) {
 			foreach ($expected_result['has.scriptid:hostid'] as $scriptid => $hostids) {
-				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID '.$scriptid);
+				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID ' . $scriptid);
 				$ids = array_column($result['result'][$scriptid]['hosts'], 'hostid');
-				$this->assertEmpty(array_diff($hostids, $ids), 'Expected ids: '.implode(',', $hostids));
+				$this->assertEmpty(array_diff($hostids, $ids), 'Expected ids: ' . implode(',', $hostids));
 			}
 		}
 
 		if (array_key_exists('!has.scriptid:hostid', $expected_result)) {
 			foreach ($expected_result['!has.scriptid:hostid'] as $scriptid => $hostids) {
-				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID '.$scriptid);
+				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID ' . $scriptid);
 				$ids = array_column($result['result'][$scriptid]['hosts'], 'hostid');
 				$this->assertEquals($hostids, array_diff($hostids, $ids));
 			}
@@ -3987,15 +3963,15 @@ class testScripts extends CAPITest {
 
 		if (array_key_exists('has.scriptid:groupid', $expected_result)) {
 			foreach ($expected_result['has.scriptid:groupid'] as $scriptid => $groupids) {
-				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID '.$scriptid);
+				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID ' . $scriptid);
 				$ids = array_column($result['result'][$scriptid]['hostgroups'], 'groupid');
-				$this->assertEmpty(array_diff($groupids, $ids), 'Expected ids: '.implode(',', $groupids));
+				$this->assertEmpty(array_diff($groupids, $ids), 'Expected ids: ' . implode(',', $groupids));
 			}
 		}
 
 		if (array_key_exists('!has.scriptid:groupid', $expected_result)) {
 			foreach ($expected_result['!has.scriptid:groupid'] as $scriptid => $groupids) {
-				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID '.$scriptid);
+				$this->assertTrue(array_key_exists($scriptid, $result['result']), 'expected script ID ' . $scriptid);
 				$ids = array_column($result['result'][$scriptid]['hostgroups'], 'groupid');
 				$this->assertEquals($groupids, array_diff($groupids, $ids));
 			}
@@ -4028,7 +4004,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptGetInvalid(): array {
+	public static function getScriptGetInvalid(): array
+	{
 		return [
 			// Check expected params.
 			'Test script.get unexpected field' => [
@@ -4491,7 +4468,7 @@ class testScripts extends CAPITest {
 				],
 				'expected_results' => [],
 				'expected_error' =>
-					'Invalid parameter "/sortorder": value must be one of "ASC", "DESC".'
+				'Invalid parameter "/sortorder": value must be one of "ASC", "DESC".'
 			],
 			'Test script.get invalid parameter "limit" (bool)' => [
 				'request' => [
@@ -4522,7 +4499,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptGetValid(): array {
+	public static function getScriptGetValid(): array
+	{
 		return [
 			// Check validity if "scriptids" without getting any results.
 			'Test script.get empty "scriptids" parameter' => [
@@ -4574,7 +4552,7 @@ class testScripts extends CAPITest {
 			// Filter webhooks.
 			'Test script.get filter webhooks' => [
 				'request' => [
-					'output' => [ 'scriptid', 'name', 'command', 'parameters'],
+					'output' => ['scriptid', 'name', 'command', 'parameters'],
 					'scriptids' => ['get_ipmi_defaults', 'get_webhook_filter'],
 					'filter' => ['type' => ZBX_SCRIPT_TYPE_WEBHOOK]
 				],
@@ -4857,7 +4835,8 @@ class testScripts extends CAPITest {
 	 * @dataProvider getScriptGetInvalid
 	 * @dataProvider getScriptGetValid
 	 */
-	public function testScripts_Get($request, $expected_results, $expected_error): void {
+	public function testScripts_Get($request, $expected_results, $expected_error): void
+	{
 		// Replace ID placeholders with real IDs.
 		$request = self::resolveIds($request);
 
@@ -4892,7 +4871,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptUpdateInvalid(): array {
+	public static function getScriptUpdateInvalid(): array
+	{
 		return [
 			// Check script ID.
 			'Test script.update empty request' => [
@@ -5164,14 +5144,14 @@ class testScripts extends CAPITest {
 			'Test script.update unexpected "menu_path" field' => [
 				'script' => [
 					'scriptid' => 'update_ipmi_action',
-					'menu_path' => 'folder1/folder2/'.'/folder4'
+					'menu_path' => 'folder1/folder2/' . '/folder4'
 				],
 				'expected_error' => 'Invalid parameter "/1/menu_path": value must be empty.'
 			],
 			'Test script.update invalid "menu_path" field' => [
 				'script' => [
 					'scriptid' => 'update_ipmi_host',
-					'menu_path' => 'folder1/folder2/'.'/folder4'
+					'menu_path' => 'folder1/folder2/' . '/folder4'
 				],
 				'expected_error' => 'Invalid parameter "/1/menu_path": directory cannot be empty.'
 			],
@@ -6065,7 +6045,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptUpdateValid(): array {
+	public static function getScriptUpdateValid(): array
+	{
 		return [
 			'Test script.update successful custom script update without changes' => [
 				'script' => [
@@ -7013,7 +6994,7 @@ class testScripts extends CAPITest {
 						'scriptid' => 'update_manualinput_params',
 						'type' => ZBX_SCRIPT_TYPE_WEBHOOK,
 						'manualinput_validator_type' => ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
-						'manualinput_validator' => 'Zabbix server,Host 1,Host 2'
+						'manualinput_validator' => 'Advantal server,Host 1,Host 2'
 					]
 				],
 				'expected_error' => null
@@ -7128,7 +7109,8 @@ class testScripts extends CAPITest {
 	 * @dataProvider getScriptUpdateInvalid
 	 * @dataProvider getScriptUpdateValid
 	 */
-	public function testScript_Update($scripts, $expected_error): void {
+	public function testScript_Update($scripts, $expected_error): void
+	{
 		// Accept single and multiple scripts just like API method. Work with multi-dimensional array in result.
 		if (!array_key_exists(0, $scripts)) {
 			$scripts = zbx_toArray($scripts);
@@ -7162,8 +7144,7 @@ class testScripts extends CAPITest {
 
 				if (array_key_exists('name', $script)) {
 					$this->assertSame($script['name'], $script_upd['name']);
-				}
-				else {
+				} else {
 					$this->assertSame($db_script['name'], $script_upd['name']);
 				}
 
@@ -7179,9 +7160,9 @@ class testScripts extends CAPITest {
 								// Check execute on.
 								if (array_key_exists('execute_on', $script)) {
 									$this->assertEquals($script['execute_on'], $script_upd['execute_on']);
-								}
-								else {
-									$this->assertEquals(DB::getDefault('scripts', 'execute_on'),
+								} else {
+									$this->assertEquals(
+										DB::getDefault('scripts', 'execute_on'),
 										$script_upd['execute_on']
 									);
 								}
@@ -7189,8 +7170,7 @@ class testScripts extends CAPITest {
 								// If previous type was not URL, the command could be updated or not.
 								if (array_key_exists('command', $script)) {
 									$this->assertEquals($script['command'], $script_upd['command']);
-								}
-								else {
+								} else {
 									$this->assertEquals($db_script['command'], $script_upd['command']);
 								}
 
@@ -7211,8 +7191,7 @@ class testScripts extends CAPITest {
 								// If previous type was not URL, the command could be updated or not.
 								if (array_key_exists('command', $script)) {
 									$this->assertEquals($script['command'], $script_upd['command']);
-								}
-								else {
+								} else {
 									$this->assertEquals($db_script['command'], $script_upd['command']);
 								}
 
@@ -7234,8 +7213,7 @@ class testScripts extends CAPITest {
 								// If previous type was not URL, the command could be updated or not.
 								if (array_key_exists('command', $script)) {
 									$this->assertEquals($script['command'], $script_upd['command']);
-								}
-								else {
+								} else {
 									$this->assertEquals($db_script['command'], $script_upd['command']);
 								}
 
@@ -7243,16 +7221,14 @@ class testScripts extends CAPITest {
 								$this->assertNotEmpty($script_upd['username']);
 								if (array_key_exists('username', $script)) {
 									$this->assertSame($script['username'], $script_upd['username']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['username'], $script_upd['username']);
 								}
 
 								// Check port.
 								if (array_key_exists('port', $script)) {
 									$this->assertEquals($script['port'], $script_upd['port']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['port'], $script_upd['port']);
 								}
 
@@ -7268,26 +7244,22 @@ class testScripts extends CAPITest {
 										// Check public key.
 										if (array_key_exists('publickey', $script)) {
 											$this->assertSame($script['publickey'], $script_upd['publickey']);
-										}
-										else {
+										} else {
 											$this->assertSame($db_script['publickey'], $script_upd['publickey']);
 										}
 
 										// Check private key.
 										if (array_key_exists('privatekey', $script)) {
 											$this->assertSame($script['privatekey'], $script_upd['privatekey']);
-										}
-										else {
+										} else {
 											$this->assertSame($db_script['privatekey'], $script_upd['privatekey']);
 										}
-									}
-									else {
+									} else {
 										// Check password type.
 										$this->assertEmpty($db_script['publickey']);
 										$this->assertEmpty($db_script['privatekey']);
 									}
-								}
-								else {
+								} else {
 									$this->assertEquals($db_script['authtype'], $script_upd['authtype']);
 
 									if ($db_script['authtype'] == ITEM_AUTHTYPE_PUBLICKEY) {
@@ -7295,8 +7267,7 @@ class testScripts extends CAPITest {
 										$this->assertNotEmpty($script_upd['privatekey']);
 										$this->assertSame($db_script['publickey'], $script_upd['publickey']);
 										$this->assertSame($db_script['privatekey'], $script_upd['privatekey']);
-									}
-									else {
+									} else {
 										$this->assertEmpty($db_script['publickey']);
 										$this->assertEmpty($db_script['privatekey']);
 									}
@@ -7305,8 +7276,7 @@ class testScripts extends CAPITest {
 								// Check password.
 								if (array_key_exists('password', $script)) {
 									$this->assertSame($script['password'], $script_upd['password']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['password'], $script_upd['password']);
 								}
 
@@ -7322,8 +7292,7 @@ class testScripts extends CAPITest {
 								// If previous type was not URL, the command could be updated or not.
 								if (array_key_exists('command', $script)) {
 									$this->assertEquals($script['command'], $script_upd['command']);
-								}
-								else {
+								} else {
 									$this->assertEquals($db_script['command'], $script_upd['command']);
 								}
 
@@ -7331,24 +7300,21 @@ class testScripts extends CAPITest {
 								$this->assertNotEmpty($script_upd['username']);
 								if (array_key_exists('username', $script)) {
 									$this->assertSame($script['username'], $script_upd['username']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['username'], $script_upd['username']);
 								}
 
 								// Check password.
 								if (array_key_exists('password', $script)) {
 									$this->assertSame($script['password'], $script_upd['password']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['password'], $script_upd['password']);
 								}
 
 								// Check port.
 								if (array_key_exists('port', $script)) {
 									$this->assertEquals($script['port'], $script_upd['port']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['port'], $script_upd['port']);
 								}
 
@@ -7367,8 +7333,7 @@ class testScripts extends CAPITest {
 								// Check timeout.
 								if (array_key_exists('timeout', $script)) {
 									$this->assertSame($script['timeout'], $script_upd['timeout']);
-								}
-								else {
+								} else {
 									$this->assertSame($db_script['timeout'], $script_upd['timeout']);
 								}
 
@@ -7376,15 +7341,14 @@ class testScripts extends CAPITest {
 								if (array_key_exists('parameters', $script)) {
 									if ($script['parameters']) {
 										$this->assertNotEmpty($script_upd['parameters']);
-										$this->assertEqualsCanonicalizing($script['parameters'],
+										$this->assertEqualsCanonicalizing(
+											$script['parameters'],
 											$script_upd['parameters']
 										);
-									}
-									else {
+									} else {
 										$this->assertEmpty($script_upd['parameters']);
 									}
-								}
-								else {
+								} else {
 									$this->assertEmpty($script_upd['parameters']);
 								}
 
@@ -7408,9 +7372,9 @@ class testScripts extends CAPITest {
 								// Check "new_window" field.
 								if (array_key_exists('new_window', $script)) {
 									$this->assertEquals($script['new_window'], $script_upd['new_window']);
-								}
-								else {
-									$this->assertSame(DB::getDefault('scripts', 'new_window'),
+								} else {
+									$this->assertSame(
+										DB::getDefault('scripts', 'new_window'),
 										$script_upd['new_window']
 									);
 								}
@@ -7429,8 +7393,7 @@ class testScripts extends CAPITest {
 								break;
 						}
 					}
-				}
-				else {
+				} else {
 					// Type has not changed.
 					$this->assertEquals($db_script['type'], $script_upd['type']);
 
@@ -7442,16 +7405,14 @@ class testScripts extends CAPITest {
 
 							if (array_key_exists('command', $script)) {
 								$this->assertEquals($script['command'], $script_upd['command']);
-							}
-							else {
+							} else {
 								$this->assertEquals($db_script['command'], $script_upd['command']);
 							}
 
 							// Check execute on.
 							if (array_key_exists('execute_on', $script)) {
 								$this->assertEquals($script['execute_on'], $script_upd['execute_on']);
-							}
-							else {
+							} else {
 								$this->assertEquals(DB::getDefault('scripts', 'execute_on'), $script_upd['execute_on']);
 							}
 							break;
@@ -7462,8 +7423,7 @@ class testScripts extends CAPITest {
 
 							if (array_key_exists('command', $script)) {
 								$this->assertEquals($script['command'], $script_upd['command']);
-							}
-							else {
+							} else {
 								$this->assertEquals($db_script['command'], $script_upd['command']);
 							}
 							break;
@@ -7474,8 +7434,7 @@ class testScripts extends CAPITest {
 
 							if (array_key_exists('command', $script)) {
 								$this->assertEquals($script['command'], $script_upd['command']);
-							}
-							else {
+							} else {
 								$this->assertEquals($db_script['command'], $script_upd['command']);
 							}
 
@@ -7483,16 +7442,14 @@ class testScripts extends CAPITest {
 							$this->assertNotEmpty($script_upd['username']);
 							if (array_key_exists('username', $script)) {
 								$this->assertSame($script['username'], $script_upd['username']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['username'], $script_upd['username']);
 							}
 
 							// Check port.
 							if (array_key_exists('port', $script)) {
 								$this->assertEquals($script['port'], $script_upd['port']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['port'], $script_upd['port']);
 							}
 
@@ -7508,27 +7465,23 @@ class testScripts extends CAPITest {
 										$this->assertSame($script['publickey'], $script_upd['publickey']);
 										$this->assertSame($script['privatekey'], $script_upd['privatekey']);
 									}
-								}
-								else {
+								} else {
 									// Same "authtype" field.
 									if ($db_script['authtype'] == ITEM_AUTHTYPE_PUBLICKEY) {
 										if (array_key_exists('publickey', $script)) {
 											$this->assertSame($script['publickey'], $script_upd['publickey']);
-										}
-										else {
+										} else {
 											$this->assertSame($db_script['publickey'], $script_upd['publickey']);
 										}
 
 										if (array_key_exists('privatekey', $script)) {
 											$this->assertSame($script['privatekey'], $script_upd['privatekey']);
-										}
-										else {
+										} else {
 											$this->assertSame($db_script['privatekey'], $script_upd['privatekey']);
 										}
 									}
 								}
-							}
-							else {
+							} else {
 								// FIeld "authtype" was not given, os it is unchanged.
 								$this->assertEquals($db_script['authtype'], $script_upd['authtype']);
 
@@ -7538,19 +7491,16 @@ class testScripts extends CAPITest {
 
 									if (array_key_exists('publickey', $script)) {
 										$this->assertSame($script['publickey'], $script_upd['publickey']);
-									}
-									else {
+									} else {
 										$this->assertSame($db_script['publickey'], $script_upd['publickey']);
 									}
 
 									if (array_key_exists('privatekey', $script)) {
 										$this->assertSame($script['privatekey'], $script_upd['privatekey']);
-									}
-									else {
+									} else {
 										$this->assertSame($db_script['privatekey'], $script_upd['privatekey']);
 									}
-								}
-								else {
+								} else {
 									// Remains password type.
 									$this->assertEmpty($db_script['publickey']);
 									$this->assertEmpty($db_script['privatekey']);
@@ -7560,8 +7510,7 @@ class testScripts extends CAPITest {
 							// Check password.
 							if (array_key_exists('password', $script)) {
 								$this->assertSame($script['password'], $script_upd['password']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['password'], $script_upd['password']);
 							}
 							break;
@@ -7572,8 +7521,7 @@ class testScripts extends CAPITest {
 
 							if (array_key_exists('command', $script)) {
 								$this->assertEquals($script['command'], $script_upd['command']);
-							}
-							else {
+							} else {
 								$this->assertEquals($db_script['command'], $script_upd['command']);
 							}
 
@@ -7581,24 +7529,21 @@ class testScripts extends CAPITest {
 							$this->assertNotEmpty($script_upd['username']);
 							if (array_key_exists('username', $script)) {
 								$this->assertSame($script['username'], $script_upd['username']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['username'], $script_upd['username']);
 							}
 
 							// Check password.
 							if (array_key_exists('password', $script)) {
 								$this->assertSame($script['password'], $script_upd['password']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['password'], $script_upd['password']);
 							}
 
 							// Check port.
 							if (array_key_exists('port', $script)) {
 								$this->assertEquals($script['port'], $script_upd['port']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['port'], $script_upd['port']);
 							}
 							break;
@@ -7609,16 +7554,14 @@ class testScripts extends CAPITest {
 
 							if (array_key_exists('command', $script)) {
 								$this->assertEquals($script['command'], $script_upd['command']);
-							}
-							else {
+							} else {
 								$this->assertEquals($db_script['command'], $script_upd['command']);
 							}
 
 							// Check timeout.
 							if (array_key_exists('timeout', $script)) {
 								$this->assertSame($script['timeout'], $script_upd['timeout']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['timeout'], $script_upd['timeout']);
 							}
 
@@ -7628,13 +7571,11 @@ class testScripts extends CAPITest {
 									// Check newly added parameters.
 									$this->assertNotEmpty($script_upd['parameters']);
 									$this->assertEqualsCanonicalizing($script['parameters'], $script_upd['parameters']);
-								}
-								else {
+								} else {
 									// Check that parameters are removed.
 									$this->assertEmpty($script_upd['parameters']);
 								}
-							}
-							else {
+							} else {
 								// Check that parameters remain the same. Order is not important.
 								$this->assertEqualsCanonicalizing($db_script['parameters'], $script_upd['parameters']);
 							}
@@ -7646,16 +7587,14 @@ class testScripts extends CAPITest {
 
 							if (array_key_exists('url', $script)) {
 								$this->assertEquals($script['url'], $script_upd['url']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['url'], $script_upd['url']);
 							}
 
 							// Check "new_window" field.
 							if (array_key_exists('new_window', $script)) {
 								$this->assertEquals($script['new_window'], $script_upd['new_window']);
-							}
-							else {
+							} else {
 								$this->assertSame($db_script['new_window'], $script_upd['new_window']);
 							}
 							break;
@@ -7665,8 +7604,7 @@ class testScripts extends CAPITest {
 				// Check scope.
 				if (array_key_exists('scope', $script)) {
 					$this->assertEquals($script['scope'], $script_upd['scope']);
-				}
-				else {
+				} else {
 					$this->assertEquals($db_script['scope'], $script_upd['scope']);
 				}
 
@@ -7678,49 +7616,50 @@ class testScripts extends CAPITest {
 					$this->assertEmpty($script_upd['confirmation']);
 					$this->assertEquals(DB::getDefault('scripts', 'manualinput'), $script_upd['manualinput']);
 					$this->assertEmpty($script_upd['manualinput_prompt']);
-					$this->assertEquals(DB::getDefault('scripts', 'manualinput_validator_type'),
+					$this->assertEquals(
+						DB::getDefault('scripts', 'manualinput_validator_type'),
 						$script_upd['manualinput_validator_type']
 					);
 					$this->assertEmpty($script_upd['manualinput_validator']);
 					$this->assertEmpty($script_upd['manualinput_default_value']);
-				}
-				else {
+				} else {
 					// Check "manualinput" fields.
 					if (array_key_exists('manualinput', $script)) {
 						$this->assertEquals($script['manualinput'], $script_upd['manualinput']);
-					}
-					else {
+					} else {
 						$this->assertSame($db_script['manualinput'], $script_upd['manualinput']);
 					}
 
 					if ($script_upd['manualinput'] == ZBX_SCRIPT_MANUALINPUT_ENABLED) {
 						if (array_key_exists('manualinput_prompt', $script)) {
 							$this->assertSame($script['manualinput_prompt'], $script_upd['manualinput_prompt']);
-						}
-						else {
+						} else {
 							$this->assertSame($db_script['manualinput_prompt'], $script_upd['manualinput_prompt']);
 						}
 
 						if (array_key_exists('manualinput_validator', $script)) {
 							$this->assertSame($script['manualinput_validator'], $script_upd['manualinput_validator']);
-						}
-						else {
-							$this->assertSame($db_script['manualinput_validator'],
+						} else {
+							$this->assertSame(
+								$db_script['manualinput_validator'],
 								$script_upd['manualinput_validator']
 							);
 						}
-					}
-					else {
-						$this->assertEquals(DB::getDefault('scripts', 'manualinput_prompt'),
+					} else {
+						$this->assertEquals(
+							DB::getDefault('scripts', 'manualinput_prompt'),
 							$script_upd['manualinput_prompt']
 						);
-						$this->assertEquals(DB::getDefault('scripts', 'manualinput_validator'),
+						$this->assertEquals(
+							DB::getDefault('scripts', 'manualinput_validator'),
 							$script_upd['manualinput_validator']
 						);
-						$this->assertEquals(DB::getDefault('scripts', 'manualinput_validator_type'),
+						$this->assertEquals(
+							DB::getDefault('scripts', 'manualinput_validator_type'),
 							$script_upd['manualinput_validator_type']
 						);
-						$this->assertEquals(DB::getDefault('scripts', 'manualinput_default_value'),
+						$this->assertEquals(
+							DB::getDefault('scripts', 'manualinput_default_value'),
 							$script_upd['manualinput_default_value']
 						);
 					}
@@ -7728,32 +7667,28 @@ class testScripts extends CAPITest {
 					// Check "menu_path" field.
 					if (array_key_exists('menu_path', $script)) {
 						$this->assertSame($script_upd['menu_path'], $script['menu_path']);
-					}
-					else {
+					} else {
 						$this->assertSame($db_script['menu_path'], $script_upd['menu_path']);
 					}
 
 					// Check user group.
 					if (array_key_exists('usrgrpid', $script)) {
 						$this->assertEquals($script['usrgrpid'], $script_upd['usrgrpid']);
-					}
-					else {
+					} else {
 						$this->assertSame($db_script['usrgrpid'], $script_upd['usrgrpid']);
 					}
 
 					// Check "host_access" field.
 					if (array_key_exists('host_access', $script)) {
 						$this->assertEquals($script['host_access'], $script_upd['host_access']);
-					}
-					else {
+					} else {
 						$this->assertEquals($db_script['host_access'], $script_upd['host_access']);
 					}
 
 					// Check confirmation.
 					if (array_key_exists('confirmation', $script)) {
 						$this->assertSame($script['confirmation'], $script_upd['confirmation']);
-					}
-					else {
+					} else {
 						$this->assertSame($db_script['confirmation'], $script_upd['confirmation']);
 					}
 				}
@@ -7761,24 +7696,21 @@ class testScripts extends CAPITest {
 				// Check host group.
 				if (array_key_exists('groupid', $script)) {
 					$this->assertEquals($script_upd['groupid'], $script['groupid']);
-				}
-				else {
+				} else {
 					$this->assertSame($db_script['groupid'], $script_upd['groupid']);
 				}
 
 				// Check description.
 				if (array_key_exists('description', $script)) {
 					$this->assertSame($script_upd['description'], $script['description']);
-				}
-				else {
+				} else {
 					$this->assertSame($db_script['description'], $script_upd['description']);
 				}
 			}
 
 			// Restore script original data after each test.
 			$this->restoreScripts($db_scripts);
-		}
-		else {
+		} else {
 			// Call method and make sure it really returns the error.
 			$this->call('script.update', $scripts, $expected_error);
 
@@ -7792,7 +7724,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptDeleteInvalid(): array {
+	public static function getScriptDeleteInvalid(): array
+	{
 		return [
 			// Check script IDs.
 			'Test script.delete with empty ID' => [
@@ -7821,7 +7754,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptDeleteValid(): array {
+	public static function getScriptDeleteValid(): array
+	{
 		return [
 			// Successfully delete scripts.
 			'Test script.delete' => [
@@ -7845,11 +7779,14 @@ class testScripts extends CAPITest {
 	 * @dataProvider getScriptDeleteInvalid
 	 * @dataProvider getScriptDeleteValid
 	 */
-	public function testScript_Delete($scriptids, $expected_error): void {
+	public function testScript_Delete($scriptids, $expected_error): void
+	{
 		// Replace ID placeholders with real IDs.
 		foreach ($scriptids as &$scriptid) {
-			if ($scriptid != '0' && $scriptid !== '' && $scriptid !== null && $scriptid != 999999
-					&& !is_array($scriptid)) {
+			if (
+				$scriptid != '0' && $scriptid !== '' && $scriptid !== null && $scriptid != 999999
+				&& !is_array($scriptid)
+			) {
 				$scriptid = self::$data['scriptids'][$scriptid];
 			}
 		}
@@ -7867,11 +7804,11 @@ class testScripts extends CAPITest {
 		if ($expected_error === null) {
 			$this->assertNotSame($old_hash_scripts, CDBHelper::getHash($sql_scripts));
 			$this->assertEquals(0, CDBHelper::getCount(
-				'SELECT s.scriptid FROM scripts s WHERE '.dbConditionId('s.scriptid', $scriptids)
+				'SELECT s.scriptid FROM scripts s WHERE ' . dbConditionId('s.scriptid', $scriptids)
 			));
 
 			$this->assertEquals(0, CDBHelper::getCount(
-				'SELECT sp.scriptid FROM script_param sp WHERE '.dbConditionId('sp.scriptid', $scriptids)
+				'SELECT sp.scriptid FROM script_param sp WHERE ' . dbConditionId('sp.scriptid', $scriptids)
 			));
 
 			// script.delete checks if given "scriptid" exists, so they need to be removed from self::$data['scriptids']
@@ -7881,8 +7818,7 @@ class testScripts extends CAPITest {
 					unset(self::$data['scriptids'][$key]);
 				}
 			}
-		}
-		else {
+		} else {
 			$this->assertSame($old_hash_scripts, CDBHelper::getHash($sql_scripts));
 			$this->assertSame($old_hash_script_param, CDBHelper::getHash($sql_script_param));
 		}
@@ -7893,7 +7829,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptExecuteInvalid(): array {
+	public static function getScriptExecuteInvalid(): array
+	{
 		return [
 			// Check unexpected parameters.
 			'Test script.execute unexpected parameter "value"' => [
@@ -7998,7 +7935,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @dataProvider getScriptExecuteInvalid
 	 */
-	public function testScripts_Execute($script, $expected_error): void {
+	public function testScripts_Execute($script, $expected_error): void
+	{
 		// Replace ID placeholders with real IDs.
 		$script = self::resolveIds($script);
 
@@ -8010,7 +7948,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptPermissions(): array {
+	public static function getScriptPermissions(): array
+	{
 		return [
 			// User has permissions to host, but not to script (script can execute only specific user group).
 			'Test script.execute script permissions' => [
@@ -8104,7 +8043,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @dataProvider getScriptPermissions
 	 */
-	public function testScripts_Permissions($method, $login, $script, $expected_error): void {
+	public function testScripts_Permissions($method, $login, $script, $expected_error): void
+	{
 		// Replace ID placeholders with real IDs.
 		$script = self::resolveIds($script);
 
@@ -8117,7 +8057,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptsByHostsInvalid(): array {
+	public static function getScriptsByHostsInvalid(): array
+	{
 		return [
 			'Test script.getScriptsByHosts invalid "hostid" field (array)' => [
 				'request' => [
@@ -8203,7 +8144,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptsByHostsValid(): array {
+	public static function getScriptsByHostsValid(): array
+	{
 		return [
 			'Test script.getScriptsByHosts with superadmin' => [
 				'request' => [
@@ -8220,32 +8162,77 @@ class testScripts extends CAPITest {
 				'expected_result' => [
 					'has.hostid:scriptid' => [
 						// Superadmin has all scripts available.
-						'plain_r' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'plain_r' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'plain_d' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'plain_d' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'macros_rw_1' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'macros_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'macros_r_2' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'macros_r_2' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'macros_rw_3' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'macros_rw_3' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'interface_rw_1' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook',
-							'get_hosts_ssh', 'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'interface_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'interface_rw_2' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook',
-							'get_hosts_ssh', 'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'interface_rw_2' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'inventory_rw_1' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook',
-							'get_hosts_ssh', 'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'inventory_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
-						'inventory_rw_2' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_webhook',
-							'get_hosts_ssh', 'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'inventory_rw_2' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						]
 					],
 					'scripts' => [
@@ -8257,9 +8244,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},'.
-								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},' .
+								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},' .
 								' {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8288,8 +8275,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'admin',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},'.
-								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},'.
+							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},' .
+								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},' .
 								' {INVENTORY.CONTACT}, {INVENTORY.OS1}, {INVENTORY.OS2}, {HOSTGROUP.ID}',
 							'type' => (string) ZBX_SCRIPT_TYPE_IPMI,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8319,7 +8306,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'user',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
 								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_WEBHOOK,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8348,8 +8335,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},' .
 								' {INVENTORY.OS}, {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8378,7 +8365,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8447,7 +8434,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8478,7 +8465,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8509,7 +8496,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8540,7 +8527,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8571,7 +8558,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8602,7 +8589,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8633,7 +8620,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8664,7 +8651,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8695,7 +8682,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -8730,35 +8717,70 @@ class testScripts extends CAPITest {
 						// Regular admin does not have all scripts available.
 						'plain_r' => ['get_hosts_url', 'get_hosts_ipmi'],
 						'plain_d' => [],
-						'macros_rw_1' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'macros_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
 						'macros_r_2' => ['get_hosts_url', 'get_hosts_ipmi'],
-						'macros_rw_3' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'macros_rw_3' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'interface_rw_1' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'interface_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'interface_rw_2' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'interface_rw_2' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'inventory_rw_1' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'inventory_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'inventory_rw_2' => ['get_hosts_url', 'get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'inventory_rw_2' => [
+							'get_hosts_url',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						]
 					],
 					'!has.hostid:scriptid' => [
-						'plain_r' => ['get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'plain_r' => [
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'plain_d' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ipmi', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'plain_d' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
 						'macros_rw_1' => ['get_hosts_webhook'],
-						'macros_r_2' => ['get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'macros_r_2' => [
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
 						'macros_rw_3' => ['get_hosts_webhook'],
@@ -8776,9 +8798,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME},'.
-								' {HOST.CONN}, {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME},' .
+								' {HOST.CONN}, {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID},' .
 								' {EVENT.NAME}, {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8807,8 +8829,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'admin',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},'.
-								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},'.
+							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},' .
+								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},' .
 								' {INVENTORY.CONTACT}, {INVENTORY.OS1}, {INVENTORY.OS2}, {HOSTGROUP.ID}',
 							'type' => (string) ZBX_SCRIPT_TYPE_IPMI,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8837,8 +8859,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},' .
 								' {INVENTORY.OS}, {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -8867,7 +8889,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9188,33 +9210,65 @@ class testScripts extends CAPITest {
 						// Regular user does not have all scripts available.
 						'plain_r' => ['get_hosts_url', 'get_hosts_webhook'],
 						'plain_d' => [],
-						'macros_rw_1' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'macros_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
 						'macros_r_2' => ['get_hosts_url', 'get_hosts_webhook'],
-						'macros_rw_3' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'macros_rw_3' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'interface_rw_1' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'interface_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'interface_rw_2' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'interface_rw_2' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'inventory_rw_1' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'inventory_rw_1' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
-						'inventory_rw_2' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ssh', 'get_hosts_script',
+						'inventory_rw_2' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						]
 					],
 					'!has.hostid:scriptid' => [
 						'plain_r' => ['get_hosts_ipmi', 'get_hosts_ssh'],
-						'plain_d' => ['get_hosts_url', 'get_hosts_webhook', 'get_hosts_ipmi', 'get_hosts_ssh',
-							'get_hosts_script', 'get_hosts_url_with_manualinput'
+						'plain_d' => [
+							'get_hosts_url',
+							'get_hosts_webhook',
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
+							'get_hosts_url_with_manualinput'
 						],
 						'macros_rw_1' => ['get_hosts_ipmi'],
-						'macros_r_2' => ['get_hosts_ipmi', 'get_hosts_ssh', 'get_hosts_script',
+						'macros_r_2' => [
+							'get_hosts_ipmi',
+							'get_hosts_ssh',
+							'get_hosts_script',
 							'get_hosts_url_with_manualinput'
 						],
 						'macros_rw_3' => ['get_hosts_ipmi'],
@@ -9232,9 +9286,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME},'.
-								' {HOST.CONN}, {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME},' .
+								' {HOST.CONN}, {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID},' .
 								' {EVENT.NAME}, {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9263,7 +9317,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'user',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
 								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_WEBHOOK,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9292,8 +9346,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},' .
 								' {INVENTORY.OS}, {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9322,7 +9376,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9645,7 +9699,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9686,7 +9740,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -9724,7 +9778,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9765,7 +9819,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -9803,8 +9857,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS},' .
 								' {INVENTORY.OS}, {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9845,7 +9899,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -9888,7 +9942,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9917,9 +9971,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME},'.
-								' {HOST.CONN}, {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME},' .
+								' {HOST.CONN}, {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID},' .
 								' {EVENT.NAME}, {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -9960,7 +10014,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -9991,7 +10045,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => '{EVENT.NAME}',
 							'{EVENT.NSEVERITY}' => '{EVENT.NSEVERITY}',
 							'{EVENT.SEVERITY}' => '{EVENT.SEVERITY}',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10018,7 +10072,8 @@ class testScripts extends CAPITest {
 	 * @dataProvider getScriptsByHostsInvalid
 	 * @dataProvider getScriptsByHostsValid
 	 */
-	public function testScripts_GetScriptsByHosts($request, $expected_result, $expected_error): void {
+	public function testScripts_GetScriptsByHosts($request, $expected_result, $expected_error): void
+	{
 		if (array_key_exists('login', $request)) {
 			$this->authorize($request['login']['user'], $request['login']['password']);
 		}
@@ -10047,15 +10102,15 @@ class testScripts extends CAPITest {
 		if ($expected_error === null) {
 			if (array_key_exists('has.hostid:scriptid', $expected_result)) {
 				foreach ($expected_result['has.hostid:scriptid'] as $hostid => $scriptids) {
-					$this->assertTrue(array_key_exists($hostid, $result['result']), 'Expected host ID: '.$hostid);
+					$this->assertTrue(array_key_exists($hostid, $result['result']), 'Expected host ID: ' . $hostid);
 					$ids = array_column($result['result'][$hostid], 'scriptid');
-					$this->assertEmpty(array_diff($scriptids, $ids), 'Expected ids: '.implode(',', $scriptids));
+					$this->assertEmpty(array_diff($scriptids, $ids), 'Expected ids: ' . implode(',', $scriptids));
 				}
 			}
 
 			if (array_key_exists('!has.hostid:scriptid', $expected_result)) {
 				foreach ($expected_result['!has.hostid:scriptid'] as $hostid => $scriptids) {
-					$this->assertTrue(array_key_exists($hostid, $result['result']), 'Expected host ID: '.$hostid);
+					$this->assertTrue(array_key_exists($hostid, $result['result']), 'Expected host ID: ' . $hostid);
 					$ids = array_column($result['result'][$hostid], 'scriptid');
 					$this->assertEquals($scriptids, array_diff($scriptids, $ids));
 				}
@@ -10066,7 +10121,8 @@ class testScripts extends CAPITest {
 					foreach ($expected_result['scripts'] as $expected_script) {
 						if (bccomp($result_script['scriptid'], $expected_script['scriptid']) == 0) {
 							foreach (['url', 'confirmation', 'manualinput_prompt'] as $field) {
-								$expected_script[$field] = strtr($expected_script[$field],
+								$expected_script[$field] = strtr(
+									$expected_script[$field],
 									$expected_result['host_macros'][$hostid]
 								);
 							}
@@ -10084,7 +10140,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptsByEventsInvalid(): array {
+	public static function getScriptsByEventsInvalid(): array
+	{
 		return [
 			'Test script.getScriptsByEvents invalid "eventid" field (array)' => [
 				'request' => [
@@ -10180,7 +10237,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getScriptsByEventsValid(): array {
+	public static function getScriptsByEventsValid(): array
+	{
 		return [
 			'Test script.getScriptsByEvents with superadmin' => [
 				'request' => [
@@ -10199,48 +10257,103 @@ class testScripts extends CAPITest {
 				'expected_result' => [
 					'has.eventid:scriptid' => [
 						// Superadmin has all scripts available.
-						'plain_rw_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'plain_rw_single_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'plain_r_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'plain_r_single_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'plain_d_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'plain_d_single_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'plain_rw_r_dual_d' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'plain_rw_r_dual_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'macros_rw_single_1_h' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_rw_single_1_h' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'macros_rw_r_dual_1_2_h' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_rw_r_dual_1_2_h' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'macros_rw_dual_1_3_h' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_rw_dual_1_3_h' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'interface_rw_dual_a' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'interface_rw_dual_a' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'inventory_rw_dual_a' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'inventory_rw_dual_a' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'macros_d_cause' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_d_cause' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'macros_rw_symptom' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_rw_symptom' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						]
 					],
@@ -10253,9 +10366,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},'.
-								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},' .
+								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},' .
 								' {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10284,9 +10397,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'admin',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},'.
-								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},'.
-								' {INVENTORY.CONTACT}, {INVENTORY.OS1}, {INVENTORY.OS2}, {EVENT.STATUS},'.
+							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},' .
+								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},' .
+								' {INVENTORY.CONTACT}, {INVENTORY.OS1}, {INVENTORY.OS2}, {EVENT.STATUS},' .
 								' {EVENT.VALUE}, {HOSTGROUP.ID}',
 							'type' => (string) ZBX_SCRIPT_TYPE_IPMI,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10315,7 +10428,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'user',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
 								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_WEBHOOK,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10344,8 +10457,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS},' .
 								' {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10374,8 +10487,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME},'.
-								' {EVENT.CAUSE.NSEVERITY}, {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS},'.
+							'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME},' .
+								' {EVENT.CAUSE.NSEVERITY}, {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS},' .
 								' {EVENT.CAUSE.VALUE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10404,7 +10517,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10421,7 +10534,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -10474,7 +10587,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, read-write, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10513,7 +10626,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, read, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10552,7 +10665,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, deny, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10591,7 +10704,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, dual, read-write & read, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10630,7 +10743,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - macros, single, read-write, high',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_HIGH,
 							'{EVENT.SEVERITY}' => 'High',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10669,7 +10782,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - macros, dual, read-write & read, (1 & 2), high',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_HIGH,
 							'{EVENT.SEVERITY}' => 'High',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10708,7 +10821,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - macros, dual, read-write, (1 & 3), high',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_HIGH,
 							'{EVENT.SEVERITY}' => 'High',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10747,7 +10860,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - interface, dual, average',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_AVERAGE,
 							'{EVENT.SEVERITY}' => 'Average',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10786,7 +10899,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - inventory, dual, average',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_AVERAGE,
 							'{EVENT.SEVERITY}' => 'Average',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10825,7 +10938,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - macros, cause, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10864,7 +10977,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - macros, symptom, high',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_HIGH,
 							'{EVENT.SEVERITY}' => 'High',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -10907,41 +11020,89 @@ class testScripts extends CAPITest {
 				'expected_result' => [
 					'has.eventid:scriptid' => [
 						// Regular admin does not have all scripts available.
-						'plain_rw_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'plain_rw_single_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
 						'plain_d_single_d' => [],
 						'plain_r_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_url_cause'],
-						'plain_rw_r_dual_d' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'plain_rw_r_dual_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'macros_rw_single_1_h' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_single_1_h' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'macros_rw_r_dual_1_2_h' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_r_dual_1_2_h' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'macros_rw_dual_1_3_h' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_dual_1_3_h' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'interface_rw_dual_a' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'interface_rw_dual_a' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'inventory_rw_dual_a' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'inventory_rw_dual_a' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
 						'macros_d_cause' => [],
-						'macros_rw_symptom' => ['get_events_url', 'get_events_ipmi', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_symptom' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						]
 					],
 					'!has.eventid:scriptid' => [
 						'plain_rw_single_d' => ['get_events_webhook'],
-						'plain_d_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'plain_d_single_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'plain_r_single_d' => ['get_events_webhook', 'get_events_ssh', 'get_events_script',
+						'plain_r_single_d' => [
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
 						'plain_rw_r_dual_d' => ['get_events_webhook'],
@@ -10950,8 +11111,13 @@ class testScripts extends CAPITest {
 						'macros_rw_dual_1_3_h' => ['get_events_webhook'],
 						'interface_rw_dual_a' => ['get_events_webhook'],
 						'inventory_rw_dual_a' => ['get_events_webhook'],
-						'macros_d_cause' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_d_cause' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
 						'macros_rw_symptom' => ['get_events_webhook']
@@ -10965,9 +11131,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},'.
-								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},' .
+								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},' .
 								' {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -10996,9 +11162,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'admin',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},'.
-								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},'.
-								' {INVENTORY.CONTACT}, {INVENTORY.OS1}, {INVENTORY.OS2}, {EVENT.STATUS},'.
+							'confirmation' => 'Confirmation macros: {USER.FULLNAME}, {USER.NAME}, {USER.SURNAME},' .
+								' {USER.USERNAME}, {INVENTORY.ALIAS}, {INVENTORY.OS}, {INVENTORY.TYPE},' .
+								' {INVENTORY.CONTACT}, {INVENTORY.OS1}, {INVENTORY.OS2}, {EVENT.STATUS},' .
 								' {EVENT.VALUE}, {HOSTGROUP.ID}',
 							'type' => (string) ZBX_SCRIPT_TYPE_IPMI,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11027,8 +11193,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS},' .
 								' {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11057,8 +11223,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME},'.
-								' {EVENT.CAUSE.NSEVERITY}, {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS},'.
+							'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME},' .
+								' {EVENT.CAUSE.NSEVERITY}, {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS},' .
 								' {EVENT.CAUSE.VALUE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11087,7 +11253,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11104,7 +11270,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -11513,50 +11679,104 @@ class testScripts extends CAPITest {
 				'expected_result' => [
 					'has.eventid:scriptid' => [
 						// Regular user does not have all scripts available.
-						'plain_rw_single_d' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'plain_rw_single_d' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
 						'plain_d_single_d' => [],
 						'plain_r_single_d' => ['get_events_url', 'get_events_webhook', 'get_events_url_cause'],
-						'plain_rw_r_dual_d' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'plain_rw_r_dual_d' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'macros_rw_single_1_h' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_single_1_h' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'macros_rw_r_dual_1_2_h' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_r_dual_1_2_h' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'macros_rw_dual_1_3_h' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_dual_1_3_h' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'interface_rw_dual_a' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'interface_rw_dual_a' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
-						'inventory_rw_dual_a' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'inventory_rw_dual_a' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						],
 						'macros_d_cause' => [],
-						'macros_rw_symptom' => ['get_events_url', 'get_events_webhook', 'get_events_ssh',
-							'get_events_url_cause', 'get_events_script', 'get_events_url_with_manualinput'
+						'macros_rw_symptom' => [
+							'get_events_url',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
+							'get_events_url_with_manualinput'
 						]
 					],
 					'!has.eventid:scriptid' => [
 						'plain_rw_single_d' => ['get_events_ipmi'],
-						'plain_d_single_d' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'plain_d_single_d' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
-						'plain_r_single_d' => ['get_events_ipmi', 'get_events_ssh', 'get_events_script',
-							'get_events_url_with_manualinput'],
+						'plain_r_single_d' => [
+							'get_events_ipmi',
+							'get_events_ssh',
+							'get_events_script',
+							'get_events_url_with_manualinput'
+						],
 						'plain_rw_r_dual_d' => ['get_events_ipmi'],
 						'macros_rw_single_1_h' => ['get_events_ipmi'],
 						'macros_rw_r_dual_1_2_h' => ['get_events_ipmi'],
 						'macros_rw_dual_1_3_h' => ['get_events_ipmi'],
 						'interface_rw_dual_a' => ['get_events_ipmi'],
 						'inventory_rw_dual_a' => ['get_events_ipmi'],
-						'macros_d_cause' => ['get_events_url', 'get_events_ipmi', 'get_events_webhook',
-							'get_events_ssh', 'get_events_url_cause', 'get_events_script',
+						'macros_d_cause' => [
+							'get_events_url',
+							'get_events_ipmi',
+							'get_events_webhook',
+							'get_events_ssh',
+							'get_events_url_cause',
+							'get_events_script',
 							'get_events_url_with_manualinput'
 						],
 						'macros_rw_symptom' => ['get_events_ipmi']
@@ -11570,9 +11790,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},'.
-								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},' .
+								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},' .
 								' {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11601,7 +11821,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => 'user',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
 								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_WEBHOOK,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11630,8 +11850,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},'.
-								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS},'.
+							'confirmation' => 'Confirmation macros: {$GLOBAL_MACRO}, {HOST.HOST}, {USER.FULLNAME},' .
+								' {HOST.CONN}, {HOST.IP}, {HOST.DNS}, {HOST.PORT}, {INVENTORY.ALIAS}, {INVENTORY.OS},' .
 								' {INVENTORY.TYPE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_SSH,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11660,8 +11880,8 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME},'.
-								' {EVENT.CAUSE.NSEVERITY}, {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS},'.
+							'confirmation' => 'Confirmation macros: {EVENT.CAUSE.ID}, {EVENT.CAUSE.NAME},' .
+								' {EVENT.CAUSE.NSEVERITY}, {EVENT.CAUSE.SEVERITY}, {EVENT.CAUSE.STATUS},' .
 								' {EVENT.CAUSE.VALUE}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11690,7 +11910,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -11707,7 +11927,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -12119,7 +12339,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -12136,7 +12356,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -12161,7 +12381,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, read-write, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -12211,7 +12431,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -12228,7 +12448,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -12253,7 +12473,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, read-write, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -12338,7 +12558,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -12355,7 +12575,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -12380,7 +12600,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, read-write, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -12432,7 +12652,7 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, '.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$DOESNOTEXIST}, {HOST.HOST}, ' .
 								'{MANUALINPUT}',
 							'type' => (string) ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -12449,7 +12669,7 @@ class testScripts extends CAPITest {
 							'new_window' => (string) ZBX_SCRIPT_URL_NEW_WINDOW_YES,
 							'manualinput' => (string) ZBX_SCRIPT_MANUALINPUT_ENABLED,
 							'manualinput_prompt' => 'Prompt text with {$DOESNOTEXIST}, {HOST.HOST} and {MANUALINPUT} '
-								.'macros',
+								. 'macros',
 							'manualinput_validator' => '1,2,3,4,5',
 							'manualinput_validator_type' => (string) ZBX_SCRIPT_MANUALINPUT_TYPE_LIST,
 							'manualinput_default_value' => ''
@@ -12462,9 +12682,9 @@ class testScripts extends CAPITest {
 							'usrgrpid' => '0',
 							'groupid' => '0',
 							'description' => '',
-							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},'.
-								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},'.
-								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},'.
+							'confirmation' => 'Confirmation macros: {$HOST_MACRO}, {$HOST_MACRO_OTHER},' .
+								' {$GLOBAL_MACRO}, {$DOESNOTEXIST}, {HOST.ID}, {HOST.HOST}, {HOST.NAME}, {HOST.CONN},' .
+								' {HOST.DNS}, {HOST.PORT}, {HOST.NAME1}, {HOST.NAME2}, {EVENT.ID}, {EVENT.NAME},' .
 								' {EVENT.NSEVERITY}, {EVENT.SEVERITY}',
 							'type' => (string) ZBX_SCRIPT_TYPE_URL,
 							'execute_on' => (string) ZBX_SCRIPT_EXECUTE_ON_PROXY,
@@ -12505,7 +12725,7 @@ class testScripts extends CAPITest {
 							'{EVENT.NAME}' => 'API test trigger - plain, single, read-write, disaster',
 							'{EVENT.NSEVERITY}' => (string) TRIGGER_SEVERITY_DISASTER,
 							'{EVENT.SEVERITY}' => 'Disaster',
-							'{USER.FULLNAME}' => 'Zabbix Administrator (Admin)',
+							'{USER.FULLNAME}' => 'Advantal Administrator (Admin)',
 							'{USER.NAME}' => 'Zabbix',
 							'{USER.SURNAME}' => 'Administrator',
 							'{USER.USERNAME}' => 'Admin',
@@ -12579,7 +12799,8 @@ class testScripts extends CAPITest {
 	 * @dataProvider getScriptsByEventsInvalid
 	 * @dataProvider getScriptsByEventsValid
 	 */
-	public function testScripts_GetScriptsByEvents($request, $expected_result, $expected_error): void {
+	public function testScripts_GetScriptsByEvents($request, $expected_result, $expected_error): void
+	{
 		if (array_key_exists('login', $request)) {
 			$this->authorize($request['login']['user'], $request['login']['password']);
 		}
@@ -12608,15 +12829,15 @@ class testScripts extends CAPITest {
 		if ($expected_error === null) {
 			if (array_key_exists('has.eventid:scriptid', $expected_result)) {
 				foreach ($expected_result['has.eventid:scriptid'] as $eventid => $scriptids) {
-					$this->assertTrue(array_key_exists($eventid, $result['result']), 'Expected event ID: '.$eventid);
+					$this->assertTrue(array_key_exists($eventid, $result['result']), 'Expected event ID: ' . $eventid);
 					$ids = array_column($result['result'][$eventid], 'scriptid');
-					$this->assertEmpty(array_diff($scriptids, $ids), 'Expected IDs: '.implode(',', $scriptids));
+					$this->assertEmpty(array_diff($scriptids, $ids), 'Expected IDs: ' . implode(',', $scriptids));
 				}
 			}
 
 			if (array_key_exists('!has.eventid:scriptid', $expected_result)) {
 				foreach ($expected_result['!has.eventid:scriptid'] as $eventid => $scriptids) {
-					$this->assertTrue(array_key_exists($eventid, $result['result']), 'Expected event ID: '.$eventid);
+					$this->assertTrue(array_key_exists($eventid, $result['result']), 'Expected event ID: ' . $eventid);
 					$ids = array_column($result['result'][$eventid], 'scriptid');
 					$this->assertEquals($scriptids, array_diff($scriptids, $ids));
 				}
@@ -12627,7 +12848,8 @@ class testScripts extends CAPITest {
 					foreach ($expected_result['scripts'] as $expected_script) {
 						if (bccomp($result_script['scriptid'], $expected_script['scriptid']) == 0) {
 							foreach (['url', 'confirmation', 'manualinput_prompt'] as $field) {
-								$expected_script[$field] = strtr($expected_script[$field],
+								$expected_script[$field] = strtr(
+									$expected_script[$field],
 									$expected_result['event_macros'][$eventid]
 								);
 							}
@@ -12647,12 +12869,37 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private function getScripts(array $scriptids): array {
+	private function getScripts(array $scriptids): array
+	{
 		$response = $this->call('script.get', [
-			'output' => ['scriptid', 'name', 'command', 'host_access', 'usrgrpid', 'groupid', 'description',
-				'confirmation', 'type', 'execute_on', 'timeout', 'scope', 'port', 'authtype', 'username', 'password',
-				'publickey', 'privatekey', 'menu_path', 'url', 'new_window', 'parameters', 'manualinput',
-				'manualinput_prompt', 'manualinput_validator', 'manualinput_validator_type', 'manualinput_default_value'
+			'output' => [
+				'scriptid',
+				'name',
+				'command',
+				'host_access',
+				'usrgrpid',
+				'groupid',
+				'description',
+				'confirmation',
+				'type',
+				'execute_on',
+				'timeout',
+				'scope',
+				'port',
+				'authtype',
+				'username',
+				'password',
+				'publickey',
+				'privatekey',
+				'menu_path',
+				'url',
+				'new_window',
+				'parameters',
+				'manualinput',
+				'manualinput_prompt',
+				'manualinput_validator',
+				'manualinput_validator_type',
+				'manualinput_default_value'
 			],
 			'scriptids' => $scriptids,
 			'preservekeys' => true,
@@ -12667,25 +12914,47 @@ class testScripts extends CAPITest {
 	 *
 	 * @param array $scripts
 	 */
-	private function restoreScripts(array $scripts): void {
+	private function restoreScripts(array $scripts): void
+	{
 		foreach ($scripts as &$script) {
 			switch ($script['type']) {
 				case ZBX_SCRIPT_TYPE_CUSTOM_SCRIPT:
-					unset($script['timeout'], $script['port'], $script['authtype'], $script['username'],
-						$script['password'], $script['publickey'], $script['privatekey'], $script['parameters'],
-						$script['url'], $script['new_window']
+					unset(
+						$script['timeout'],
+						$script['port'],
+						$script['authtype'],
+						$script['username'],
+						$script['password'],
+						$script['publickey'],
+						$script['privatekey'],
+						$script['parameters'],
+						$script['url'],
+						$script['new_window']
 					);
 					break;
 
 				case ZBX_SCRIPT_TYPE_IPMI:
-					unset($script['execute_on'], $script['timeout'], $script['port'], $script['authtype'],
-						$script['username'], $script['password'], $script['publickey'], $script['privatekey'],
-						$script['parameters'], $script['url'], $script['new_window']
+					unset(
+						$script['execute_on'],
+						$script['timeout'],
+						$script['port'],
+						$script['authtype'],
+						$script['username'],
+						$script['password'],
+						$script['publickey'],
+						$script['privatekey'],
+						$script['parameters'],
+						$script['url'],
+						$script['new_window']
 					);
 					break;
 
 				case ZBX_SCRIPT_TYPE_SSH:
-					unset($script['execute_on'], $script['timeout'], $script['parameters'], $script['url'],
+					unset(
+						$script['execute_on'],
+						$script['timeout'],
+						$script['parameters'],
+						$script['url'],
 						$script['new_window']
 					);
 
@@ -12695,40 +12964,71 @@ class testScripts extends CAPITest {
 					break;
 
 				case ZBX_SCRIPT_TYPE_TELNET:
-					unset($script['execute_on'], $script['timeout'], $script['authtype'], $script['publickey'],
-						$script['privatekey'], $script['parameters'], $script['url'], $script['new_window']
+					unset(
+						$script['execute_on'],
+						$script['timeout'],
+						$script['authtype'],
+						$script['publickey'],
+						$script['privatekey'],
+						$script['parameters'],
+						$script['url'],
+						$script['new_window']
 					);
 					break;
 
 				case ZBX_SCRIPT_TYPE_WEBHOOK:
-					unset($script['execute_on'], $script['authtype'], $script['port'], $script['publickey'],
-						$script['username'], $script['password'], $script['privatekey'], $script['url'],
+					unset(
+						$script['execute_on'],
+						$script['authtype'],
+						$script['port'],
+						$script['publickey'],
+						$script['username'],
+						$script['password'],
+						$script['privatekey'],
+						$script['url'],
 						$script['new_window']
 					);
 					break;
 
 				case ZBX_SCRIPT_TYPE_URL:
-					unset($script['execute_on'], $script['timeout'], $script['port'], $script['authtype'],
-						$script['username'], $script['password'], $script['publickey'], $script['privatekey'],
-						$script['parameters'], $script['command']
+					unset(
+						$script['execute_on'],
+						$script['timeout'],
+						$script['port'],
+						$script['authtype'],
+						$script['username'],
+						$script['password'],
+						$script['publickey'],
+						$script['privatekey'],
+						$script['parameters'],
+						$script['command']
 					);
 					break;
 			}
 
 			if ($script['scope'] == ZBX_SCRIPT_SCOPE_ACTION) {
-				unset($script['menu_path'], $script['usrgrpid'], $script['host_access'], $script['confirmation'],
-					$script['manualinput'], $script['manualinput_prompt'], $script['manualinput_validator_type'],
-					$script['manualinput_validator'], $script['manualinput_default_value']
+				unset(
+					$script['menu_path'],
+					$script['usrgrpid'],
+					$script['host_access'],
+					$script['confirmation'],
+					$script['manualinput'],
+					$script['manualinput_prompt'],
+					$script['manualinput_validator_type'],
+					$script['manualinput_validator'],
+					$script['manualinput_default_value']
 				);
 			}
 
 			if ($script['scope'] == ZBX_SCRIPT_SCOPE_HOST || $script['scope'] == ZBX_SCRIPT_SCOPE_EVENT) {
 				if ($script['manualinput'] != ZBX_SCRIPT_MANUALINPUT_ENABLED) {
-					unset($script['manualinput_prompt'], $script['manualinput_validator_type'],
-						$script['manualinput_validator'], $script['manualinput_default_value']
+					unset(
+						$script['manualinput_prompt'],
+						$script['manualinput_validator_type'],
+						$script['manualinput_validator'],
+						$script['manualinput_default_value']
 					);
-				}
-				elseif ($script['manualinput_validator_type'] != ZBX_SCRIPT_MANUALINPUT_TYPE_STRING) {
+				} elseif ($script['manualinput_validator_type'] != ZBX_SCRIPT_MANUALINPUT_TYPE_STRING) {
 					unset($script['manualinput_default_value']);
 				}
 			}
@@ -12741,7 +13041,8 @@ class testScripts extends CAPITest {
 	/**
 	 * Delete all created data after test.
 	 */
-	public static function clearData(): void {
+	public static function clearData(): void
+	{
 		// Delete actions.
 		CDataHelper::call('action.delete', self::$data['actionids']);
 
@@ -12787,7 +13088,8 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private static function resolveIds(array $request): array {
+	private static function resolveIds(array $request): array
+	{
 		/**
 		 * For script.get, script.update, script.execute, script.getScriptsByHosts, script.getScriptsByEvents methods.
 		 * Same fields are checked in "filter" as well.
@@ -12796,18 +13098,19 @@ class testScripts extends CAPITest {
 
 		foreach (['scriptid', 'hostid', 'eventid', 'usrgrpid', 'groupid'] as $field) {
 			// Do not compare != 0 (it will not work) or !== 0 or !== '0' (avoid type check here).
-			if (is_array($request_) && array_key_exists($field, $request_) && $request_[$field] !== ''
-					&& $request_[$field] != '0' && $request_[$field] != 999999 && $request_[$field] !== null
-					&& !is_array($request_[$field])
-					&& array_key_exists($request_[$field], self::$data[$field.'s'])) {
-				$request_[$field] = self::$data[$field.'s'][$request_[$field]];
+			if (
+				is_array($request_) && array_key_exists($field, $request_) && $request_[$field] !== ''
+				&& $request_[$field] != '0' && $request_[$field] != 999999 && $request_[$field] !== null
+				&& !is_array($request_[$field])
+				&& array_key_exists($request_[$field], self::$data[$field . 's'])
+			) {
+				$request_[$field] = self::$data[$field . 's'][$request_[$field]];
 			}
 		}
 
 		if (array_key_exists('filter', $request)) {
 			$request['filter'] = $request_;
-		}
-		else {
+		} else {
 			$request = $request_;
 		}
 
@@ -12822,11 +13125,12 @@ class testScripts extends CAPITest {
 						}
 					}
 					unset($id);
-				}
-				else {
+				} else {
 					// Do not compare != 0 (it will not work) or !== 0 or !== '0' (avoid type check here).
-					if ($request[$field] != '0' && $request[$field] !== '' && $request[$field] !== null
-							&& !is_array($request_[$field])) {
+					if (
+						$request[$field] != '0' && $request[$field] !== '' && $request[$field] !== null
+						&& !is_array($request_[$field])
+					) {
 						$request[$field] = self::$data[$field][$request[$field]];
 					}
 				}
@@ -12843,16 +13147,19 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private static function resolveMacros(array $request): array {
+	private static function resolveMacros(array $request): array
+	{
 		// For script.getScriptsByHosts and script.getScriptsByEvents methods.
 		foreach (['host_macros' => 'hostids', 'event_macros' => 'eventids'] as $field => $ids) {
 			if (array_key_exists($field, $request)) {
 				foreach ($request[$field] as $key => $macros) {
 					// Currently only two ID types are supported.
 					foreach ($macros as $macro => &$id) {
-						if (preg_match('/^\{(HOST|EVENT)\.(CAUSE\.)?ID[1-9]?\}$/', $macro, $match) && $id !== ''
-								&& $id !== '*UNKNOWN*' && $id !== $macro) {
-							$id = self::$data[strtolower($match[1]).'ids'][$id];
+						if (
+							preg_match('/^\{(HOST|EVENT)\.(CAUSE\.)?ID[1-9]?\}$/', $macro, $match) && $id !== ''
+							&& $id !== '*UNKNOWN*' && $id !== $macro
+						) {
+							$id = self::$data[strtolower($match[1]) . 'ids'][$id];
 						}
 					}
 					unset($id);
@@ -12873,28 +13180,28 @@ class testScripts extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private static function resolveComplexIds(array $request): array {
+	private static function resolveComplexIds(array $request): array
+	{
 		foreach ($request as $key => &$result) {
 			if (preg_match('/^(!?[a-z]+)\.([a-z]+)\:?([a-z]+)?/', $key, $match)) {
 				if (count($match) == 3) {
 					foreach ($result as &$id) {
-						$id = self::$data[$match[2].'s'][$id];
+						$id = self::$data[$match[2] . 's'][$id];
 					}
 					unset($id);
-				}
-				elseif (count($match) == 4) {
+				} elseif (count($match) == 4) {
 					$new_result = [];
 
 					foreach ($result as $id1 => &$ids2) {
-						$new_result[self::$data[$match[2].'s'][$id1]] = [];
+						$new_result[self::$data[$match[2] . 's'][$id1]] = [];
 
 						if ($ids2) {
 							foreach ($ids2 as &$id2) {
-								$id2 = self::$data[$match[3].'s'][$id2];
+								$id2 = self::$data[$match[3] . 's'][$id2];
 							}
 							unset($id2);
 
-							$new_result[self::$data[$match[2].'s'][$id1]] = $ids2;
+							$new_result[self::$data[$match[2] . 's'][$id1]] = $ids2;
 						}
 					}
 					unset($ids2);

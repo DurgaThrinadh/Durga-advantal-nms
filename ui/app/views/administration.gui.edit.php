@@ -61,8 +61,7 @@ if (!function_exists('bindtextdomain')) {
 	$language_error = makeErrorIcon('Translations are unavailable because the PHP gettext module is missing.');
 
 	$lang_select->setReadonly();
-}
-elseif (!$all_locales_available) {
+} elseif (!$all_locales_available) {
 	$language_error = makeWarningIcon(
 		_('You are not able to choose some of the languages, because locales for them are not installed on the web server.')
 	);
@@ -70,14 +69,16 @@ elseif (!$all_locales_available) {
 
 $gui_tab = (new CFormList())
 	->addRow(new CLabel(_('Default language'), $lang_select->getFocusableElementId()), [$lang_select, $language_error])
-	->addRow(new CLabel(_('Default time zone'), 'label-default-timezone'),
+	->addRow(
+		new CLabel(_('Default time zone'), 'label-default-timezone'),
 		(new CSelect('default_timezone'))
 			->addOptions(CSelect::createOptionsFromArray($data['timezones']))
 			->setValue($data['default_timezone'])
 			->setFocusableElementId('label-default-timezone')
 			->setId('default_timezone')
 	)
-	->addRow(new CLabel(_('Default theme'), 'label-default-theme'),
+	->addRow(
+		new CLabel(_('Default theme'), 'label-default-theme'),
 		(new CSelect('default_theme'))
 			->setFocusableElementId('label-default-theme')
 			->setValue($data['default_theme'])
@@ -102,7 +103,8 @@ $gui_tab = (new CFormList())
 			->setAriaRequired()
 			->setWidth(ZBX_TEXTAREA_NUMERIC_STANDARD_WIDTH)
 	)
-	->addRow(_('Show warning if Zabbix server is down'),
+	->addRow(
+		_('Show warning if Advantal server is down'),
 		(new CCheckBox('server_check_interval', SERVER_CHECK_INTERVAL))
 			->setUncheckedValue('0')
 			->setChecked($data['server_check_interval'] == SERVER_CHECK_INTERVAL)
@@ -112,7 +114,8 @@ $gui_tab = (new CFormList())
 			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH)
 			->setAriaRequired()
 	)
-	->addRow(_('Show technical errors'),
+	->addRow(
+		_('Show technical errors'),
 		(new CCheckBox('show_technical_errors'))
 			->setUncheckedValue('0')
 			->setChecked($data['show_technical_errors'] == 1)
@@ -148,8 +151,8 @@ $form = (new CForm())
 	->setId('gui-form')
 	->setAttribute('aria-labelledby', CHtmlPage::PAGE_TITLE_ID)
 	->setAction((new CUrl('zabbix.php'))
-		->setArgument('action', 'gui.update')
-		->getUrl()
+			->setArgument('action', 'gui.update')
+			->getUrl()
 	)
 	->addItem($gui_view);
 

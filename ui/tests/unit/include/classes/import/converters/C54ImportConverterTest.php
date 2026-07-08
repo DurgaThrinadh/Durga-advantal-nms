@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,19 +16,21 @@
 **/
 
 
-class C54ImportConverterTest extends CImportConverterTest {
+class C54ImportConverterTest extends CImportConverterTest
+{
 
-	public function importConverterDataProvider(): array {
-		$simple_macros_source = '{Zabbix server:system.hostname.last()}'.
-			'{Zabbix server:system.hostname.last(0)}{{HOST.HOST}:system.hostname.min(1s)}'.
-			'{{HOST.HOST1}:system.hostname.max(1m)}{{HOST.HOST2}:system.hostname.avg(1h)}'.
-			'{{HOSTNAME}:system.hostname.min(1d)}{{HOSTNAME1}:system.hostname.max(24h)}'.
+	public function importConverterDataProvider(): array
+	{
+		$simple_macros_source = '{Advantal server:system.hostname.last()}' .
+			'{Advantal server:system.hostname.last(0)}{{HOST.HOST}:system.hostname.min(1s)}' .
+			'{{HOST.HOST1}:system.hostname.max(1m)}{{HOST.HOST2}:system.hostname.avg(1h)}' .
+			'{{HOSTNAME}:system.hostname.min(1d)}{{HOSTNAME1}:system.hostname.max(24h)}' .
 			'{{HOSTNAME1}:system.hostname.max(24h,)}{{HOSTNAME2}:system.hostname.avg(3600)}';
-		$simple_macros_expected = '{?last(/Zabbix server/system.hostname)}'.
-			'{?last(/Zabbix server/system.hostname)}{?min(/'.'/system.hostname,1s)}'.
-			'{?max(/'.'/system.hostname,1m)}{?avg(/{HOST.HOST2}/system.hostname,1h)}'.
-			'{?min(/'.'/system.hostname,1d)}{?max(/'.'/system.hostname,24h)}'.
-			'{?max(/'.'/system.hostname,24h)}{?avg(/{HOST.HOST2}/system.hostname,3600s)}';
+		$simple_macros_expected = '{?last(/Advantal server/system.hostname)}' .
+			'{?last(/Advantal server/system.hostname)}{?min(/' . '/system.hostname,1s)}' .
+			'{?max(/' . '/system.hostname,1m)}{?avg(/{HOST.HOST2}/system.hostname,1h)}' .
+			'{?min(/' . '/system.hostname,1d)}{?max(/' . '/system.hostname,24h)}' .
+			'{?max(/' . '/system.hostname,24h)}{?avg(/{HOST.HOST2}/system.hostname,3600s)}';
 
 		return [
 			[
@@ -37,9 +41,9 @@ class C54ImportConverterTest extends CImportConverterTest {
 				[
 					'hosts' => [
 						[
-							'host' => 'Zabbix server',
+							'host' => 'Advantal server',
 							'groups' => [
-								['name' => 'Zabbix servers']
+								['name' => 'Advantal servers']
 							],
 							'discovery_rules' => [
 								[
@@ -97,9 +101,9 @@ class C54ImportConverterTest extends CImportConverterTest {
 				[
 					'hosts' => [
 						[
-							'host' => 'Zabbix server',
+							'host' => 'Advantal server',
 							'groups' => [
-								['name' => 'Zabbix servers']
+								['name' => 'Advantal servers']
 							],
 							'discovery_rules' => [
 								[
@@ -159,9 +163,9 @@ class C54ImportConverterTest extends CImportConverterTest {
 				[
 					'hosts' => [
 						[
-							'host' => 'Zabbix server',
+							'host' => 'Advantal server',
 							'groups' => [
-								['name' => 'Zabbix servers']
+								['name' => 'Advantal servers']
 							],
 							'items' => [
 								[
@@ -199,9 +203,9 @@ class C54ImportConverterTest extends CImportConverterTest {
 				[
 					'hosts' => [
 						[
-							'host' => 'Zabbix server',
+							'host' => 'Advantal server',
 							'groups' => [
-								['name' => 'Zabbix servers']
+								['name' => 'Advantal servers']
 							],
 							'items' => [
 								[
@@ -242,46 +246,47 @@ class C54ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	public function importConverterDataProviderCalcItemFormula(): array {
+	public function importConverterDataProviderCalcItemFormula(): array
+	{
 		$formulas = [
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],0s))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 0m))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 0h ))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 0d ))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"],  0w ))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],0s))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 0m))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 0h ))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 0d ))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"],  0w ))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], 15s))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], 15s))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], 15s))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"], 15s))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], {$MACRO}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], {$MACRO}))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], {$MACRO}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"], {$MACRO}))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], "{$MACRO: context}"))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 1h ))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], "{$MACRO: context}"))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 1h ))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], "{$MACRO: context}"))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 1h ))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"], "{$MACRO: context}"))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 1h ))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],{#LLD}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],{#LLD}))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],{#LLD}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"],{#LLD}))',
 				'prototype' => true
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],  {#LLD}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],  {#LLD}))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],  {#LLD}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"],  {#LLD}))',
 				'prototype' => true
 			]
 		];
@@ -361,11 +366,13 @@ class C54ImportConverterTest extends CImportConverterTest {
 	 * @param array $data
 	 * @param array $expected
 	 */
-	public function testConvert(array $data, array $expected): void {
+	public function testConvert(array $data, array $expected): void
+	{
 		$this->assertConvert($this->createExpectedResult($expected), $this->createSource($data));
 	}
 
-	protected function createSource(array $data = []): array {
+	protected function createSource(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '5.4',
@@ -374,7 +381,8 @@ class C54ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function createExpectedResult(array $data = []): array {
+	protected function createExpectedResult(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '6.0',
@@ -383,12 +391,14 @@ class C54ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function assertConvert(array $expected, array $source): void {
+	protected function assertConvert(array $expected, array $source): void
+	{
 		$result = $this->createConverter()->convert($source);
 		$this->assertEquals($expected, $result);
 	}
 
-	protected function createConverter(): C54ImportConverter {
+	protected function createConverter(): C54ImportConverter
+	{
 		return new C54ImportConverter();
 	}
 }

@@ -7,7 +7,7 @@
             <name>Linux servers</name>
         </group>
         <group>
-            <name>Zabbix servers</name>
+            <name>Advantal servers</name>
         </group>
         <group>
             <name>Templates</name>
@@ -537,7 +537,7 @@
                             <group_links>
                                 <group_link>
                                     <group>
-                                        <name>Zabbix servers</name>
+                                        <name>Advantal servers</name>
                                     </group>
                                 </group_link>
                             </group_links>
@@ -1078,7 +1078,7 @@
                             <group_links>
                                 <group_link>
                                     <group>
-                                        <name>Zabbix servers</name>
+                                        <name>Advantal servers</name>
                                     </group>
                                 </group_link>
                             </group_links>

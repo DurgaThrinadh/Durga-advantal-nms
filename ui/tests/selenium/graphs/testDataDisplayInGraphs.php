@@ -21,7 +21,8 @@ require_once __DIR__ . '/../../include/CWebTest.php';
  *
  * @onBefore prepareGraphData
  */
-class testDataDisplayInGraphs extends CWebTest {
+class testDataDisplayInGraphs extends CWebTest
+{
 
 	protected static $hostid;
 	protected static $itemids;
@@ -42,7 +43,8 @@ class testDataDisplayInGraphs extends CWebTest {
 		]
 	];
 
-	public static function prepareGraphData() {
+	public static function prepareGraphData()
+	{
 		$host_responce = CDataHelper::createHosts([
 			[
 				'host' => 'Host for data display on graphs',
@@ -57,7 +59,7 @@ class testDataDisplayInGraphs extends CWebTest {
 					]
 				],
 				'groups' => [
-					'groupid' => 4 // Host group "Zabbix servers".
+					'groupid' => 4 // Host group "Advantal servers".
 				],
 				'status' => HOST_STATUS_MONITORED,
 				'items' => [
@@ -371,24 +373,24 @@ class testDataDisplayInGraphs extends CWebTest {
 			[
 				'itemid' => self::$itemids['Item for trends data display 1'],
 				'timestamps' => [
-					$timestamp.' - 5 days + 18 hours',
-					$timestamp.' - 4 days',
-					$timestamp.' - 4 days + 6 hours',
-					$timestamp.' - 4 days + 12 hours',
-					$timestamp.' - 4 days + 18 hours',
-					$timestamp.' - 3 days',
-					$timestamp.' - 3 days + 3 hours',
-					$timestamp.' - 3 days + 6 hours',
-					$timestamp.' - 3 days + 9 hours',
-					$timestamp.' - 3 days + 12 hours',
-					$timestamp.' - 3 days + 21 hours',
-					$timestamp.' - 2 days',
-					$timestamp.' - 2 days + 21 hours',
-					$timestamp.' - 1 day',
-					$timestamp.' - 1 day + 3 hours',
-					$timestamp.' - 1 day + 6 hours',
-					$timestamp.' - 1 day + 12 hours',
-					$timestamp.' - 1 day + 15 hours'
+					$timestamp . ' - 5 days + 18 hours',
+					$timestamp . ' - 4 days',
+					$timestamp . ' - 4 days + 6 hours',
+					$timestamp . ' - 4 days + 12 hours',
+					$timestamp . ' - 4 days + 18 hours',
+					$timestamp . ' - 3 days',
+					$timestamp . ' - 3 days + 3 hours',
+					$timestamp . ' - 3 days + 6 hours',
+					$timestamp . ' - 3 days + 9 hours',
+					$timestamp . ' - 3 days + 12 hours',
+					$timestamp . ' - 3 days + 21 hours',
+					$timestamp . ' - 2 days',
+					$timestamp . ' - 2 days + 21 hours',
+					$timestamp . ' - 1 day',
+					$timestamp . ' - 1 day + 3 hours',
+					$timestamp . ' - 1 day + 6 hours',
+					$timestamp . ' - 1 day + 12 hours',
+					$timestamp . ' - 1 day + 15 hours'
 				],
 				'values' => [
 					[
@@ -506,18 +508,18 @@ class testDataDisplayInGraphs extends CWebTest {
 				'itemid' => self::$itemids['Item for history data display 1'],
 				'timestamps' => [
 					$timestamp,
-					$timestamp.' + 1 minute',
-					$timestamp.' + 2 minute',
-					$timestamp.' + 3 minute',
-					$timestamp.' + 6 minute',
-					$timestamp.' + 7 minute',
-					$timestamp.' + 8 minute',
-					$timestamp.' + 13 minute',
-					$timestamp.' + 14 minute',
-					$timestamp.' + 15 minute',
-					$timestamp.' + 16 minute',
-					$timestamp.' + 17 minute',
-					$timestamp.' + 18 minute'
+					$timestamp . ' + 1 minute',
+					$timestamp . ' + 2 minute',
+					$timestamp . ' + 3 minute',
+					$timestamp . ' + 6 minute',
+					$timestamp . ' + 7 minute',
+					$timestamp . ' + 8 minute',
+					$timestamp . ' + 13 minute',
+					$timestamp . ' + 14 minute',
+					$timestamp . ' + 15 minute',
+					$timestamp . ' + 16 minute',
+					$timestamp . ' + 17 minute',
+					$timestamp . ' + 18 minute'
 				],
 				'values' => [10.5, 8.33, 12.69, 4.025, 3.1, 7, 6.66, -1.5, 0.31, 6.47, 2.11, 8.98, 10.01]
 			],
@@ -525,19 +527,19 @@ class testDataDisplayInGraphs extends CWebTest {
 			[
 				'itemid' => self::$itemids['Item for trends data display 2'],
 				'timestamps' => [
-					$timestamp.' - 5 days + 18 hours',
-					$timestamp.' - 4 days',
-					$timestamp.' - 4 days + 6 hours',
-					$timestamp.' - 4 days + 12 hours',
-					$timestamp.' - 4 days + 18 hours',
-					$timestamp.' - 3 days',
-					$timestamp.' - 3 days + 6 hours',
-					$timestamp.' - 2 days + 6 hours',
-					$timestamp.' - 2 days + 12 hours',
-					$timestamp.' - 2 days + 18 hours',
-					$timestamp.' - 1 day + 6 hours',
-					$timestamp.' - 1 day + 12 hours',
-					$timestamp.' - 1 day + 18 hours'
+					$timestamp . ' - 5 days + 18 hours',
+					$timestamp . ' - 4 days',
+					$timestamp . ' - 4 days + 6 hours',
+					$timestamp . ' - 4 days + 12 hours',
+					$timestamp . ' - 4 days + 18 hours',
+					$timestamp . ' - 3 days',
+					$timestamp . ' - 3 days + 6 hours',
+					$timestamp . ' - 2 days + 6 hours',
+					$timestamp . ' - 2 days + 12 hours',
+					$timestamp . ' - 2 days + 18 hours',
+					$timestamp . ' - 1 day + 6 hours',
+					$timestamp . ' - 1 day + 12 hours',
+					$timestamp . ' - 1 day + 18 hours'
 				],
 				'values' => [
 					[
@@ -625,18 +627,18 @@ class testDataDisplayInGraphs extends CWebTest {
 				'itemid' => self::$itemids['Item for history data display 2'],
 				'timestamps' => [
 					$timestamp,
-					$timestamp.' + 1 minute',
-					$timestamp.' + 2 minute',
-					$timestamp.' + 3 minute',
-					$timestamp.' + 4 minute',
-					$timestamp.' + 5 minute',
-					$timestamp.' + 6 minute',
-					$timestamp.' + 11 minute',
-					$timestamp.' + 12 minute',
-					$timestamp.' + 13 minute',
-					$timestamp.' + 16 minute',
-					$timestamp.' + 17 minute',
-					$timestamp.' + 18 minute'
+					$timestamp . ' + 1 minute',
+					$timestamp . ' + 2 minute',
+					$timestamp . ' + 3 minute',
+					$timestamp . ' + 4 minute',
+					$timestamp . ' + 5 minute',
+					$timestamp . ' + 6 minute',
+					$timestamp . ' + 11 minute',
+					$timestamp . ' + 12 minute',
+					$timestamp . ' + 13 minute',
+					$timestamp . ' + 16 minute',
+					$timestamp . ' + 17 minute',
+					$timestamp . ' + 18 minute'
 				],
 				'values' => [4.31, -0.5, 7.53, 2.37, 5.55, 7.77, 9.11, 10.34, 2.23, 5.98, -3.21, 2.45, 5.1]
 			]
@@ -4328,7 +4330,8 @@ class testDataDisplayInGraphs extends CWebTest {
 		self::$dashboardid = $dashboard_responce['dashboardids'][0];
 	}
 
-	public function getMonitoringGraphData() {
+	public function getMonitoringGraphData()
+	{
 		return [
 			[
 				[
@@ -4336,11 +4339,11 @@ class testDataDisplayInGraphs extends CWebTest {
 				]
 			],
 			// TODO: uncomment after fix DEV-4332
-//			[
-//				[
-//					'type' => 'trends'
-//				]
-//			],
+			//			[
+			//				[
+			//					'type' => 'trends'
+			//				]
+			//			],
 			[
 				[
 					'type' => 'pie'
@@ -4353,12 +4356,12 @@ class testDataDisplayInGraphs extends CWebTest {
 				]
 			],
 			// TODO: uncomment after fix DEV-4332
-//			[
-//				[
-//					'type' => 'trends',
-//					'kiosk_mode' => true
-//				]
-//			],
+			//			[
+			//				[
+			//					'type' => 'trends',
+			//					'kiosk_mode' => true
+			//				]
+			//			],
 			[
 				[
 					'type' => 'pie',
@@ -4371,9 +4374,10 @@ class testDataDisplayInGraphs extends CWebTest {
 	/**
 	 * @dataProvider getMonitoringGraphData
 	 */
-	public function testDataDisplayInGraphs_MonitoringHosts($data) {
-		$this->page->login()->open('zabbix.php?action=charts.view&filter_set=1&filter_hostids%5B0%5D='.self::$hostid)
-				->waitUntilReady();
+	public function testDataDisplayInGraphs_MonitoringHosts($data)
+	{
+		$this->page->login()->open('zabbix.php?action=charts.view&filter_set=1&filter_hostids%5B0%5D=' . self::$hostid)
+			->waitUntilReady();
 
 		// Open the time selector tab if it's not opened yet.
 		$timeselector_tab = $this->query('id:tab_1')->one();
@@ -4393,8 +4397,8 @@ class testDataDisplayInGraphs extends CWebTest {
 		$filter_form->fill(['Name' => $data['type']]);
 
 		$screenshot_string = (CTestArrayHelper::get($data, 'kiosk_mode'))
-			? 'monitoring_hosts_'.$data['type'].'_kiosk_'
-			: 'monitoring_hosts_'.$data['type'].'_';
+			? 'monitoring_hosts_' . $data['type'] . '_kiosk_'
+			: 'monitoring_hosts_' . $data['type'] . '_';
 
 		// Check screenshots of graphs for each option in 'Show' field.
 		$show_data = $data['type'] === 'trends'
@@ -4427,7 +4431,7 @@ class testDataDisplayInGraphs extends CWebTest {
 			// Wait for all graphs to load and check the screenshots of all graphs of the desired type.
 			foreach ($charts_table->query('class:center')->waitUntilCount($count)->all() as $graph) {
 				$image = $graph->query('tag:img')->one();
-				$callback = function() use ($image) {
+				$callback = function () use ($image) {
 					return CElementQuery::getDriver()->executeScript('return arguments[0].complete;', [$image]);
 				};
 				CElementQuery::wait()->until($callback, 'Failed to wait for image to be loaded');
@@ -4436,7 +4440,7 @@ class testDataDisplayInGraphs extends CWebTest {
 
 			// TODO: sometimes test is unstable due to different image size.
 			sleep(2);
-			$this->assertScreenshot($charts_table, $screenshot_string.$show);
+			$this->assertScreenshot($charts_table, $screenshot_string . $show);
 
 			// Switch back to normal view to avoid impacting following scenarios.
 			if (CTestArrayHelper::get($data, 'kiosk_mode')) {
@@ -4446,7 +4450,8 @@ class testDataDisplayInGraphs extends CWebTest {
 		}
 	}
 
-	public function getLatestDataGraphData() {
+	public function getLatestDataGraphData()
+	{
 		return [
 			[
 				[
@@ -4466,9 +4471,10 @@ class testDataDisplayInGraphs extends CWebTest {
 	/**
 	 * @dataProvider getLatestDataGraphData
 	 */
-	public function testDataDisplayInGraphs_LatestData($data) {
-		$this->page->login()->open('history.php?action=showgraph&itemids%5B%5D='.self::$itemids[$data['item']])
-				->waitUntilReady();
+	public function testDataDisplayInGraphs_LatestData($data)
+	{
+		$this->page->login()->open('history.php?action=showgraph&itemids%5B%5D=' . self::$itemids[$data['item']])
+			->waitUntilReady();
 
 		// In Latest data the image loads longer, so need to wait for image source to change before checking the screenshot.
 		$image = $this->query('id:historyGraph')->one();
@@ -4479,13 +4485,14 @@ class testDataDisplayInGraphs extends CWebTest {
 
 		// Wait for the image source to change and check graph screenshot.
 		$image->waitUntilAttributesNotPresent(['src' => $old_source]);
-		$screenshot_id = 'latest_data_'.$data['type'];
+		$screenshot_id = 'latest_data_' . $data['type'];
 		$this->assertScreenshot($this->query('class:center')->one(), $screenshot_id);
 
 		$this->checkKioskMode('class:center', $screenshot_id);
 	}
 
-	public function getDashboardWidgetData() {
+	public function getDashboardWidgetData()
+	{
 		return [
 			[
 				[
@@ -4547,8 +4554,9 @@ class testDataDisplayInGraphs extends CWebTest {
 	/**
 	 * @dataProvider getDashboardWidgetData
 	 */
-	public function testDataDisplayInGraphs_DashboardWidgets($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+	public function testDataDisplayInGraphs_DashboardWidgets($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 
 		// It's required to set time selector only for pages with classic graph widgets, SVG graphs have period set in config.
 		if (CTestArrayHelper::get($data, 'type')) {
@@ -4563,7 +4571,7 @@ class testDataDisplayInGraphs extends CWebTest {
 			$dashboard->waitUntilReady();
 		}
 
-		$screenshot_id = 'dashboard_'.$data['page'].'_page_'.CTestArrayHelper::get($data, 'type', 'svg');
+		$screenshot_id = 'dashboard_' . $data['page'] . '_page_' . CTestArrayHelper::get($data, 'type', 'svg');
 		$this->assertScreenshot($dashboard, $screenshot_id);
 
 		$this->checkKioskMode('class:dashboard-grid', $screenshot_id);
@@ -4575,7 +4583,8 @@ class testDataDisplayInGraphs extends CWebTest {
 	 * @param string	$object_locator		locator of element with graphs
 	 * @param string	$id					ID of the screenshot
 	 */
-	protected function checkKioskMode($object_locator, $id) {
+	protected function checkKioskMode($object_locator, $id)
+	{
 		if ($object_locator === 'class:center') {
 			$image = $this->query($object_locator)->one()->query('tag:img')->one();
 			$old_source = $image->getAttribute('src');
@@ -4590,17 +4599,16 @@ class testDataDisplayInGraphs extends CWebTest {
 		if ($object_locator === 'class:center') {
 			$image->waitUntilAttributesNotPresent(['src' => $old_source]);
 
-			$callback = function() use ($image) {
+			$callback = function () use ($image) {
 				return CElementQuery::getDriver()->executeScript('return arguments[0].complete;', [$image]);
 			};
 
 			CElementQuery::wait()->until($callback, 'Failed to wait for image to be loaded');
-		}
-		else {
+		} else {
 			$object->asDashboard()->waitUntilReady();
 		}
 
-		$this->assertScreenshotExcept($object, $this->query('class:header-kioskmode-controls')->one(), $id.'_kiosk');
+		$this->assertScreenshotExcept($object, $this->query('class:header-kioskmode-controls')->one(), $id . '_kiosk');
 
 		$this->query('xpath://button[@title="Normal view"]')->one()->click();
 		$this->page->waitUntilReady();
@@ -4611,11 +4619,12 @@ class testDataDisplayInGraphs extends CWebTest {
 	 *
 	 * @param array	$timestamps		timestamps that represent the start and the end of the desired period
 	 */
-	protected function setTimeSelector($timestamps) {
+	protected function setTimeSelector($timestamps)
+	{
 		$timeselector_block = $this->query('class:time-input')->one();
 
 		foreach (['from', 'to'] as $fieldid) {
-			$timeselector_block->query('id:'.$fieldid)->waitUntilVisible()->one()->fill($timestamps[$fieldid]);
+			$timeselector_block->query('id:' . $fieldid)->waitUntilVisible()->one()->fill($timestamps[$fieldid]);
 		}
 		$timeselector_block->query('id:apply')->one()->click();
 	}

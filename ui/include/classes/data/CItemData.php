@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -17,7 +19,8 @@
 /**
  * Class containing information about Items.
  */
-final class CItemData {
+final class CItemData
+{
 
 	private const KEYS_BY_TYPE = [
 		ITEM_TYPE_ZABBIX => [
@@ -420,7 +423,8 @@ final class CItemData {
 	 *
 	 * @return array
 	 */
-	public static function getKeysByItemType(): array {
+	public static function getKeysByItemType(): array
+	{
 		$keys_by_type = self::KEYS_BY_TYPE;
 		$keys_by_type_shortened = [];
 
@@ -452,7 +456,8 @@ final class CItemData {
 	 *
 	 * @return array
 	 */
-	public static function getByType(int $type): array {
+	public static function getByType(int $type): array
+	{
 		$items = array_intersect_key(self::get(), array_flip(self::KEYS_BY_TYPE[$type]));
 
 		foreach ($items as &$item) {
@@ -469,7 +474,8 @@ final class CItemData {
 	 *
 	 * @return array
 	 */
-	public static function getValueTypeByKey(): array {
+	public static function getValueTypeByKey(): array
+	{
 		$type_suggestions = [];
 		$keys = self::get();
 
@@ -483,8 +489,7 @@ final class CItemData {
 
 			if (!array_key_exists($key, $type_suggestions)) {
 				$type_suggestions[$key] = $value_type;
-			}
-			elseif ($type_suggestions[$key] != $value_type) {
+			} elseif ($type_suggestions[$key] != $value_type) {
 				// In case of Key name repeats with different types (f.e. zabbix[..]), reset to 'unknown'.
 				$type_suggestions[$key] = null;
 			}
@@ -498,7 +503,8 @@ final class CItemData {
 	 *
 	 * @return array
 	 */
-	public static function filterSwitchingConfiguration(): array {
+	public static function filterSwitchingConfiguration(): array
+	{
 		$all_item_types = -1;
 
 		return [
@@ -601,7 +607,8 @@ final class CItemData {
 	 *
 	 * @return array
 	 */
-	public static function fieldSwitchingConfiguration(array $data): array {
+	public static function fieldSwitchingConfiguration(array $data): array
+	{
 		return [
 			// Ids to toggle when the field 'type' is changed.
 			'for_type' => [
@@ -632,9 +639,11 @@ final class CItemData {
 					'password',
 					'js-item-sql-query-label',
 					'js-item-sql-query-field',
-					['id' => 'key', 'defaultValue' => $data['is_discovery_rule']
-						? ZBX_DEFAULT_KEY_DB_MONITOR_DISCOVERY
-						: ZBX_DEFAULT_KEY_DB_MONITOR
+					[
+						'id' => 'key',
+						'defaultValue' => $data['is_discovery_rule']
+							? ZBX_DEFAULT_KEY_DB_MONITOR_DISCOVERY
+							: ZBX_DEFAULT_KEY_DB_MONITOR
 					],
 					['id' => 'value_type', 'defaultValue' => '']
 				],
@@ -1013,7 +1022,8 @@ final class CItemData {
 		];
 	}
 
-	private static function get(): array {
+	private static function get(): array
+	{
 		return [
 			'agent.hostmetadata' => [
 				'description' => _('Agent host metadata. Returns string'),
@@ -1082,7 +1092,8 @@ final class CItemData {
 				'documentation_link' => [
 					ITEM_TYPE_ZABBIX_ACTIVE => 'config/items/itemtypes/zabbix_agent/win_keys#eventlog'
 				]
-			],'eventlog.count[name,<regexp>,<severity>,<source>,<eventid>,<maxproclines>,<mode>]' => [
+			],
+			'eventlog.count[name,<regexp>,<severity>,<source>,<eventid>,<maxproclines>,<mode>]' => [
 				'description' => _('Event log monitoring. Returns count of entries'),
 				'value_type' => ITEM_VALUE_TYPE_UINT64,
 				'documentation_link' => [
@@ -2744,7 +2755,7 @@ final class CItemData {
 				]
 			],
 			'zabbix.stats[<ip>,<port>,queue,<from>,<to>]' => [
-				'description' => _('Number of items in the queue which are delayed in Zabbix server or proxy by "from" till "to" seconds, inclusive.'),
+				'description' => _('Number of items in the queue which are delayed in Advantal server or proxy by "from" till "to" seconds, inclusive.'),
 				'value_type' => ITEM_VALUE_TYPE_UINT64,
 				'documentation_link' => [
 					ITEM_TYPE_ZABBIX => 'config/items/itemtypes/zabbix_agent#zabbix.stats.two',
@@ -2752,7 +2763,7 @@ final class CItemData {
 				]
 			],
 			'zabbix.stats[<ip>,<port>]' => [
-				'description' => _('Returns a JSON object containing Zabbix server or proxy internal metrics.'),
+				'description' => _('Returns a JSON object containing Advantal server or proxy internal metrics.'),
 				'value_type' => ITEM_VALUE_TYPE_TEXT,
 				'documentation_link' => [
 					ITEM_TYPE_ZABBIX => 'config/items/itemtypes/zabbix_agent#zabbix.stats',
@@ -2760,7 +2771,7 @@ final class CItemData {
 				]
 			],
 			'zabbix[boottime]' => [
-				'description' => _('Startup time of Zabbix server, Unix timestamp.'),
+				'description' => _('Startup time of Advantal server, Unix timestamp.'),
 				'value_type' => ITEM_VALUE_TYPE_UINT64,
 				'documentation_link' => [
 					ITEM_TYPE_INTERNAL => 'config/items/itemtypes/internal#boottime'
@@ -2942,21 +2953,21 @@ final class CItemData {
 				]
 			],
 			'zabbix[requiredperformance]' => [
-				'description' => _('Required performance of the Zabbix server, in new values per second expected.'),
+				'description' => _('Required performance of the Advantal server, in new values per second expected.'),
 				'value_type' => ITEM_VALUE_TYPE_FLOAT,
 				'documentation_link' => [
 					ITEM_TYPE_INTERNAL => 'config/items/itemtypes/internal#required.performance'
 				]
 			],
 			'zabbix[stats,<ip>,<port>,queue,<from>,<to>]' => [
-				'description' => _('Number of items in the queue which are delayed in Zabbix server or proxy by "from" till "to" seconds, inclusive.'),
+				'description' => _('Number of items in the queue which are delayed in Advantal server or proxy by "from" till "to" seconds, inclusive.'),
 				'value_type' => ITEM_VALUE_TYPE_UINT64,
 				'documentation_link' => [
 					ITEM_TYPE_INTERNAL => 'config/items/itemtypes/internal#stats.queue'
 				]
 			],
 			'zabbix[stats,<ip>,<port>]' => [
-				'description' => _('Returns a JSON object containing Zabbix server or proxy internal metrics.'),
+				'description' => _('Returns a JSON object containing Advantal server or proxy internal metrics.'),
 				'value_type' => ITEM_VALUE_TYPE_TEXT,
 				'documentation_link' => [
 					ITEM_TYPE_INTERNAL => 'config/items/itemtypes/internal#stats'
@@ -2977,7 +2988,7 @@ final class CItemData {
 				]
 			],
 			'zabbix[uptime]' => [
-				'description' => _('Uptime of Zabbix server process in seconds.'),
+				'description' => _('Uptime of Advantal server process in seconds.'),
 				'value_type' => ITEM_VALUE_TYPE_UINT64,
 				'documentation_link' => [
 					ITEM_TYPE_INTERNAL => 'config/items/itemtypes/internal#uptime'
@@ -2998,7 +3009,7 @@ final class CItemData {
 				]
 			],
 			'zabbix[version]' => [
-				'description' => _('Version of Zabbix server or proxy'),
+				'description' => _('Version of Advantal server or proxy'),
 				'value_type' => null,
 				'documentation_link' => [
 					ITEM_TYPE_INTERNAL => 'config/items/itemtypes/internal#version'

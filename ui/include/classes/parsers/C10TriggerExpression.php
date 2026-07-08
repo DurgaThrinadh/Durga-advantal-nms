@@ -17,7 +17,8 @@
 /**
  * Trigger expressions parser.
  */
-class C10TriggerExpression {
+class C10TriggerExpression
+{
 	// For parsing of trigger expression.
 	const STATE_AFTER_OPEN_BRACE = 1;
 	const STATE_AFTER_BINARY_OPERATOR = 2;
@@ -61,7 +62,7 @@ class C10TriggerExpression {
 	public $error_pos;
 
 	/**
-	 * An array of trigger functions like {Zabbix server:agent.ping.last(0)}
+	 * An array of trigger functions like {Advantal server:agent.ping.last(0)}
 	 * The array isn't unique. Same functions can repeat.
 	 *
 	 * @deprecated  use result tokens instead
@@ -204,7 +205,8 @@ class C10TriggerExpression {
 	 * @param bool  $options['calculated']
 	 * @param bool  $options['host_macro']
 	 */
-	public function __construct(array $options = []) {
+	public function __construct(array $options = [])
+	{
 		$this->options = $options + $this->options;
 
 		$this->binaryOperatorParser = new CSetParser(['<', '>', '<=', '>=', '+', '-', '/', '*', '=', '<>']);
@@ -213,8 +215,7 @@ class C10TriggerExpression {
 		$this->macro_parser = new CMacroParser(['macros' => ['{TRIGGER.VALUE}']]);
 		if ($this->options['collapsed_expression']) {
 			$this->functionid_parser = new CFunctionIdParser();
-		}
-		else {
+		} else {
 			$this->function_macro_parser = new C10FunctionMacroParser(['host_macro' => $this->options['host_macro']]);
 		}
 		$this->function_parser = new C10FunctionParser();
@@ -234,15 +235,15 @@ class C10TriggerExpression {
 	 *
 	 * Examples:
 	 *   expression:
-	 *     {Zabbix server:agent.ping.last(0)}=1 and {TRIGGER.VALUE}={$TRIGGER.VALUE}
+	 *     {Advantal server:agent.ping.last(0)}=1 and {TRIGGER.VALUE}={$TRIGGER.VALUE}
 	 *   results:
 	 *     $this->isValid : true
 	 *     $this->error : ''
 	 *     $this->expressions : array(
 	 *       0 => array(
-	 *         'expression' => '{Zabbix server:agent.ping.last(0)}',
+	 *         'expression' => '{Advantal server:agent.ping.last(0)}',
 	 *         'pos' => 0,
-	 *         'host' => 'Zabbix server',
+	 *         'host' => 'Advantal server',
 	 *         'item' => 'agent.ping',
 	 *         'function' => 'last(0)',
 	 *         'functionName' => 'last',
@@ -255,7 +256,8 @@ class C10TriggerExpression {
 	 *
 	 * @return C10TriggerExprParserResult|bool   returns a result object if a match has been found or false otherwise
 	 */
-	public function parse($expression) {
+	public function parse($expression)
+	{
 		// initializing local variables
 		$this->result = new C10TriggerExprParserResult();
 		$this->isValid = true;
@@ -290,28 +292,34 @@ class C10TriggerExpression {
 					switch ($char) {
 						case '-':
 							$state = self::STATE_AFTER_MINUS_OPERATOR;
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
+								$char,
+								$this->pos,
+								1
 							);
 							break;
 
 						case '(':
 							$state = self::STATE_AFTER_OPEN_BRACE;
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$level++;
 							break;
 
 						default:
-							if ($this->parseUsing($this->notOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->notOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_NOT_OPERATOR;
-							}
-							elseif ($this->parseConstant()) {
+							} elseif ($this->parseConstant()) {
 								$state = self::STATE_AFTER_CONSTANT;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -321,15 +329,21 @@ class C10TriggerExpression {
 					switch ($char) {
 						case '-':
 							$state = self::STATE_AFTER_MINUS_OPERATOR;
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
+								$char,
+								$this->pos,
+								1
 							);
 							break;
 
 						case '(':
 							$state = self::STATE_AFTER_OPEN_BRACE;
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$level++;
 							break;
@@ -344,11 +358,12 @@ class C10TriggerExpression {
 								break 3;
 							}
 
-							if ($this->parseUsing($this->notOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->notOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_NOT_OPERATOR;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -360,15 +375,21 @@ class C10TriggerExpression {
 							if (!$afterSpace) {
 								break 3;
 							}
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
+								$char,
+								$this->pos,
+								1
 							);
 							$state = self::STATE_AFTER_MINUS_OPERATOR;
 							break;
 
 						case '(':
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$state = self::STATE_AFTER_OPEN_BRACE;
 							$level++;
@@ -379,14 +400,14 @@ class C10TriggerExpression {
 								break 3;
 							}
 
-							if ($this->parseUsing($this->notOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->notOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_NOT_OPERATOR;
-							}
-							elseif ($this->parseConstant()) {
+							} elseif ($this->parseConstant()) {
 								$state = self::STATE_AFTER_CONSTANT;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -398,25 +419,31 @@ class C10TriggerExpression {
 							if ($level == 0) {
 								break 3;
 							}
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_CLOSE_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_CLOSE_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$level--;
 							break;
 
 						default:
-							if ($this->parseUsing($this->binaryOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->binaryOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_BINARY_OPERATOR;
 								break;
 							}
 
-							if ($this->parseUsing($this->logicalOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->logicalOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_LOGICAL_OPERATOR;
 								break;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -428,16 +455,21 @@ class C10TriggerExpression {
 							if ($level == 0) {
 								break 3;
 							}
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_CLOSE_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_CLOSE_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$level--;
 							$state = self::STATE_AFTER_CLOSE_BRACE;
 							break;
 
 						default:
-							if ($this->parseUsing($this->binaryOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->binaryOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_BINARY_OPERATOR;
 								break;
 							}
@@ -446,11 +478,12 @@ class C10TriggerExpression {
 								break 3;
 							}
 
-							if ($this->parseUsing($this->logicalOperatorParser,
-									C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR)) {
+							if ($this->parseUsing(
+								$this->logicalOperatorParser,
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR
+							)) {
 								$state = self::STATE_AFTER_LOGICAL_OPERATOR;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -462,15 +495,21 @@ class C10TriggerExpression {
 							if (!$afterSpace) {
 								break 3;
 							}
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPERATOR,
+								$char,
+								$this->pos,
+								1
 							);
 							$state = self::STATE_AFTER_MINUS_OPERATOR;
 							break;
 
 						case '(':
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$state = self::STATE_AFTER_OPEN_BRACE;
 							$level++;
@@ -483,8 +522,7 @@ class C10TriggerExpression {
 
 							if ($this->parseConstant()) {
 								$state = self::STATE_AFTER_CONSTANT;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -493,8 +531,11 @@ class C10TriggerExpression {
 				case self::STATE_AFTER_MINUS_OPERATOR:
 					switch ($char) {
 						case '(':
-							$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
-								$char, $this->pos, 1
+							$this->result->addToken(
+								C10TriggerExprParserResult::TOKEN_TYPE_OPEN_BRACE,
+								$char,
+								$this->pos,
+								1
 							);
 							$state = self::STATE_AFTER_OPEN_BRACE;
 							$level++;
@@ -503,8 +544,7 @@ class C10TriggerExpression {
 						default:
 							if ($this->parseConstant()) {
 								$state = self::STATE_AFTER_CONSTANT;
-							}
-							else {
+							} else {
 								break 3;
 							}
 					}
@@ -534,7 +574,7 @@ class C10TriggerExpression {
 			$exp_part = substr($this->expression, ($this->pos == 0) ? 0 : $this->pos - 1);
 			$this->error = $this->options['calculated']
 				? _s('incorrect calculated item formula starting from "%1$s"', $exp_part)
-				: _('Incorrect trigger expression.').' '._s('Check expression part starting from "%1$s".', $exp_part);
+				: _('Incorrect trigger expression.') . ' ' . _s('Check expression part starting from "%1$s".', $exp_part);
 			$this->error_type = $error;
 			$this->error_pos = $this->pos;
 			$this->isValid = false;
@@ -555,7 +595,8 @@ class C10TriggerExpression {
 	 *
 	 * @return array
 	 */
-	public function getHosts() {
+	public function getHosts()
+	{
 		if (!$this->isValid) {
 			return [];
 		}
@@ -572,7 +613,8 @@ class C10TriggerExpression {
 	 *
 	 * @return bool
 	 */
-	protected function parseUsing(CParser $parser, $tokenType) {
+	protected function parseUsing(CParser $parser, $tokenType)
+	{
 		if ($parser->parse($this->expression, $this->pos) == CParser::PARSE_FAIL) {
 			return false;
 		}
@@ -597,9 +639,12 @@ class C10TriggerExpression {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private function parseConstant() {
-		if ($this->parseNumber() || $this->parseString()
-				|| $this->parseUsing($this->user_macro_parser, C10TriggerExprParserResult::TOKEN_TYPE_USER_MACRO)) {
+	private function parseConstant()
+	{
+		if (
+			$this->parseNumber() || $this->parseString()
+			|| $this->parseUsing($this->user_macro_parser, C10TriggerExprParserResult::TOKEN_TYPE_USER_MACRO)
+		) {
 			return true;
 		}
 
@@ -607,17 +652,22 @@ class C10TriggerExpression {
 			if ($this->parseFunction()) {
 				return true;
 			}
-		}
-		elseif ($this->parseFunctionMacro()
-				|| $this->parseUsing($this->macro_parser, C10TriggerExprParserResult::TOKEN_TYPE_MACRO)) {
+		} elseif (
+			$this->parseFunctionMacro()
+			|| $this->parseUsing($this->macro_parser, C10TriggerExprParserResult::TOKEN_TYPE_MACRO)
+		) {
 			return true;
 		}
 
 		// LLD macro support for trigger prototypes.
 		if ($this->options['lldmacros']) {
-			if ($this->parseUsing($this->lld_macro_parser, C10TriggerExprParserResult::TOKEN_TYPE_LLD_MACRO)
-					|| $this->parseUsing($this->lld_macro_function_parser,
-							C10TriggerExprParserResult::TOKEN_TYPE_LLD_MACRO)) {
+			if (
+				$this->parseUsing($this->lld_macro_parser, C10TriggerExprParserResult::TOKEN_TYPE_LLD_MACRO)
+				|| $this->parseUsing(
+					$this->lld_macro_function_parser,
+					C10TriggerExprParserResult::TOKEN_TYPE_LLD_MACRO
+				)
+			) {
 				return true;
 			}
 		}
@@ -631,7 +681,8 @@ class C10TriggerExpression {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private function parseFunctionOnly() {
+	private function parseFunctionOnly()
+	{
 		$pos = $this->pos;
 
 		if ($this->expression[$pos] !== '{') {
@@ -658,8 +709,11 @@ class C10TriggerExpression {
 
 		$expression = substr($this->expression, $this->pos, $pos + 1 - $this->pos);
 
-		$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_FUNCTION_MACRO,
-			$expression, $this->pos, $this->function_parser->getLength() + 2,
+		$this->result->addToken(
+			C10TriggerExprParserResult::TOKEN_TYPE_FUNCTION_MACRO,
+			$expression,
+			$this->pos,
+			$this->function_parser->getLength() + 2,
 			[
 				'host' => '',
 				'item' => '',
@@ -692,11 +746,11 @@ class C10TriggerExpression {
 	 *
 	 * @return bool returns true if parsed successfully, false otherwise
 	 */
-	private function parseFunctionMacro() {
+	private function parseFunctionMacro()
+	{
 		if ($this->options['collapsed_expression']) {
 			return $this->parseUsing($this->functionid_parser, C10TriggerExprParserResult::TOKEN_TYPE_FUNCTIONID_MACRO);
-		}
-		else {
+		} else {
 			return $this->parseSimpleMacro();
 		}
 	}
@@ -707,7 +761,8 @@ class C10TriggerExpression {
 	 *
 	 * @return bool returns true if parsed successfully, false otherwise
 	 */
-	private function parseSimpleMacro() {
+	private function parseSimpleMacro()
+	{
 		$startPos = $this->pos;
 
 		if ($this->function_macro_parser->parse($this->expression, $this->pos) == CParser::PARSE_FAIL) {
@@ -726,8 +781,11 @@ class C10TriggerExpression {
 			$function_param_list[] = $this->function_parser->getParam($n);
 		}
 
-		$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_FUNCTION_MACRO,
-			$this->function_macro_parser->getMatch(), $startPos, $this->function_macro_parser->getLength(),
+		$this->result->addToken(
+			C10TriggerExprParserResult::TOKEN_TYPE_FUNCTION_MACRO,
+			$this->function_macro_parser->getMatch(),
+			$startPos,
+			$this->function_macro_parser->getLength(),
 			[
 				'host' => $this->function_macro_parser->getHost(),
 				'item' => $this->function_macro_parser->getItem(),
@@ -758,7 +816,8 @@ class C10TriggerExpression {
 	 *
 	 * @return bool  Returns true if parsed successfully, false otherwise.
 	 */
-	private function parseFunction() {
+	private function parseFunction()
+	{
 		$startPos = $this->pos;
 
 		if ($this->function_parser->parse($this->expression, $this->pos) == CParser::PARSE_FAIL) {
@@ -773,8 +832,11 @@ class C10TriggerExpression {
 			$function_param_list[] = $this->function_parser->getParam($n);
 		}
 
-		$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_FUNCTION,
-			$this->function_parser->getMatch(), $startPos, $this->function_parser->getLength(),
+		$this->result->addToken(
+			C10TriggerExprParserResult::TOKEN_TYPE_FUNCTION,
+			$this->function_parser->getMatch(),
+			$startPos,
+			$this->function_parser->getLength(),
 			[
 				'functionName' => $this->function_parser->getFunction(),
 				'functionParamsRaw' => $this->function_parser->getParamsRaw(),
@@ -799,7 +861,8 @@ class C10TriggerExpression {
 	 *
 	 * @return bool returns true if parsed successfully, false otherwise
 	 */
-	private function parseNumber() {
+	private function parseNumber()
+	{
 		if ($this->number_parser->parse($this->expression, $this->pos) == CParser::PARSE_FAIL) {
 			return false;
 		}
@@ -832,14 +895,19 @@ class C10TriggerExpression {
 	 *
 	 * @return bool returns true if parsed successfully, false otherwise
 	 */
-	private function parseString() {
+	private function parseString()
+	{
 		if (!preg_match('/^"([^"\\\\]|\\\\["\\\\])*"/', substr($this->expression, $this->pos), $matches)) {
 			return false;
 		}
 
 		$len = strlen($matches[0]);
 
-		$this->result->addToken(C10TriggerExprParserResult::TOKEN_TYPE_STRING, $matches[0], $this->pos, $len,
+		$this->result->addToken(
+			C10TriggerExprParserResult::TOKEN_TYPE_STRING,
+			$matches[0],
+			$this->pos,
+			$len,
 			['string' => self::unquoteString($matches[0])]
 		);
 
@@ -855,7 +923,8 @@ class C10TriggerExpression {
 	 *
 	 * @return string
 	 */
-	public static function unquoteString(string $value): string {
+	public static function unquoteString(string $value): string
+	{
 		return strtr(substr($value, 1, -1), ['\\"' => '"', '\\\\' => '\\']);
 	}
 
@@ -868,7 +937,8 @@ class C10TriggerExpression {
 	 *
 	 * @return string
 	 */
-	public static function quoteString(string $value, bool $allow_macros = true, bool $force = false): string {
+	public static function quoteString(string $value, bool $allow_macros = true, bool $force = false): string
+	{
 		if (!$force) {
 			$number_parser = new CNumberParser(['with_size_suffix' => true, 'with_time_suffix' => true]);
 
@@ -882,15 +952,17 @@ class C10TriggerExpression {
 				$lld_macro_parser = new CLLDMacroParser();
 				$lld_macro_function_parser = new CLLDMacroFunctionParser;
 
-				if ($user_macro_parser->parse($value) == CParser::PARSE_SUCCESS
-						|| $macro_parser->parse($value) == CParser::PARSE_SUCCESS
-						|| $lld_macro_parser->parse($value) == CParser::PARSE_SUCCESS
-						|| $lld_macro_function_parser->parse($value) == CParser::PARSE_SUCCESS) {
+				if (
+					$user_macro_parser->parse($value) == CParser::PARSE_SUCCESS
+					|| $macro_parser->parse($value) == CParser::PARSE_SUCCESS
+					|| $lld_macro_parser->parse($value) == CParser::PARSE_SUCCESS
+					|| $lld_macro_function_parser->parse($value) == CParser::PARSE_SUCCESS
+				) {
 					return $value;
 				}
 			}
 		}
 
-		return '"'.strtr($value, ['\\' => '\\\\', '"' => '\\"']).'"';
+		return '"' . strtr($value, ['\\' => '\\\\', '"' => '\\"']) . '"';
 	}
 }

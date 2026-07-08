@@ -19,8 +19,8 @@
  * @var CView $this
  */
 
-require_once __DIR__.'/../page_header.php';
-require_once __DIR__.'/js/mfa.login.js.php';
+require_once __DIR__ . '/../page_header.php';
+require_once __DIR__ . '/js/mfa.login.js.php';
 
 $error = null;
 
@@ -57,8 +57,11 @@ if (array_key_exists('qr_code_url', $data) && $data['qr_code_url']) {
 			new CDiv(_('Please scan and get your verification code displayed in your authenticator app.')),
 			(new CDiv())->addClass('qr-code'),
 			new CDiv(
-				_s('Unable to scan? You can use %1$s secret key to manually configure your authenticator app:',
-					$hash_function)),
+				_s(
+					'Unable to scan? You can use %1$s secret key to manually configure your authenticator app:',
+					$hash_function
+				)
+			),
 			new CDiv($data['totp_secret'])
 		])
 		->addItem(
@@ -70,8 +73,7 @@ if (array_key_exists('qr_code_url', $data) && $data['qr_code_url']) {
 				])
 				->addItem(new CSubmit('enter', _('Sign in')))
 		);
-}
-else {
+} else {
 	$form = (new CForm())
 		->addItem(hasRequest('request') ? new CVar('request', getRequest('request')) : null)
 		->addItem(
@@ -116,9 +118,9 @@ else {
 
 if (array_key_exists('qr_code_url', $data) && $data['qr_code_url']) {
 	(new CScriptTag('
-		view.init('.json_encode([
-			'qr_code_url' => $data['qr_code_url']
-		]).');
+		view.init(' . json_encode([
+		'qr_code_url' => $data['qr_code_url']
+	]) . ');
 	'))
 		->setOnDocumentReady()
 		->show();

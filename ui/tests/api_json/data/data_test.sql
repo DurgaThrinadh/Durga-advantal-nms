@@ -1,7 +1,7 @@
 -- Test data for API tests
 
--- Activate "Zabbix Server" host
-UPDATE hosts SET status=0 WHERE host='Zabbix server';
+-- Activate "Advantal server" host
+UPDATE hosts SET status=0 WHERE host='Advantal server';
 
 -- host groups
 INSERT INTO hosts (hostid, host, name, status, description) VALUES (50009, 'API Host', 'API Host', 0, '');

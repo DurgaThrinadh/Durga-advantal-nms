@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormGroups.php';
+require_once __DIR__ . '/../common/testFormGroups.php';
 
 /**
  * @backup hosts
@@ -23,24 +23,28 @@ require_once __DIR__.'/../common/testFormGroups.php';
  *
  * @dataSource DiscoveredHosts, HostTemplateGroups
  */
-class testFormHostGroupSearchPage extends testFormGroups {
+class testFormHostGroupSearchPage extends testFormGroups
+{
 
 	protected $link = 'zabbix.php?action=search&search=group';
 	protected $object = 'host';
 	protected $search = 'true';
 	protected static $update_group = 'Group for Update test';
 
-	public function testFormHostGroupSearchPage_Layout() {
+	public function testFormHostGroupSearchPage_Layout()
+	{
 		$this->link = 'zabbix.php?action=search&search=Zabbix+servers';
-		$this->layout('Zabbix servers');
+		$this->layout('Advantal servers');
 	}
 
-	public function testFormHostGroupSearchPage_DiscoveredLayout() {
-		$this->link = 'zabbix.php?action=search&search='.self::DISCOVERED_GROUP;
+	public function testFormHostGroupSearchPage_DiscoveredLayout()
+	{
+		$this->link = 'zabbix.php?action=search&search=' . self::DISCOVERED_GROUP;
 		$this->layout(self::DISCOVERED_GROUP, true);
 	}
 
-	public static function getHostValidationData() {
+	public static function getHostValidationData()
+	{
 		return [
 			[
 				[
@@ -48,22 +52,23 @@ class testFormHostGroupSearchPage extends testFormGroups {
 					'fields' => [
 						'Group name' => self::DISCOVERED_GROUP
 					],
-					'error' => 'Host group "'.self::DISCOVERED_GROUP.'" already exists.'
+					'error' => 'Host group "' . self::DISCOVERED_GROUP . '" already exists.'
 				]
 			]
 		];
 	}
 
-	public static function getHostUpdateData() {
+	public static function getHostUpdateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Group name' => 'Zabbix servers',
+						'Group name' => 'Advantal servers',
 						'Apply permissions and tag filters to all subgroups' => true
 					],
-					'error' => 'Host group "Zabbix servers" already exists.'
+					'error' => 'Host group "Advantal servers" already exists.'
 				]
 			],
 			[
@@ -90,7 +95,8 @@ class testFormHostGroupSearchPage extends testFormGroups {
 	 * @dataProvider getHostValidationData
 	 * @dataProvider getHostUpdateData
 	 */
-	public function testFormHostGroupSearchPage_Update($data) {
+	public function testFormHostGroupSearchPage_Update($data)
+	{
 		$this->link = 'zabbix.php?action=search&search=updat';
 		$this->checkForm($data, 'update');
 	}
@@ -98,19 +104,21 @@ class testFormHostGroupSearchPage extends testFormGroups {
 	/**
 	 * Test group simple update without changing data.
 	 */
-	public function testFormHostGroupSearchPage_SimpleUpdate() {
-		$this->link = 'zabbix.php?action=search&search='.self::DISCOVERED_GROUP;
+	public function testFormHostGroupSearchPage_SimpleUpdate()
+	{
+		$this->link = 'zabbix.php?action=search&search=' . self::DISCOVERED_GROUP;
 		$this->simpleUpdate(self::DISCOVERED_GROUP, true);
 	}
 
-	public static function getHostCloneData() {
+	public static function getHostCloneData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_GOOD,
 					'name' => self::DISCOVERED_GROUP,
 					'fields' => [
-						'Group name' => self::DISCOVERED_GROUP.' cloned group'
+						'Group name' => self::DISCOVERED_GROUP . ' cloned group'
 					],
 					'discovered' => true
 				]
@@ -122,18 +130,21 @@ class testFormHostGroupSearchPage extends testFormGroups {
 	 * @dataProvider getCloneData
 	 * @dataProvider getHostCloneData
 	 */
-	public function testFormHostGroupSearchPage_Clone($data) {
+	public function testFormHostGroupSearchPage_Clone($data)
+	{
 		$this->clone($data);
 	}
 
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testFormHostGroupSearchPage_Cancel($data) {
+	public function testFormHostGroupSearchPage_Cancel($data)
+	{
 		$this->cancel($data);
 	}
 
-	public static function getHostDeleteData() {
+	public static function getHostDeleteData()
+	{
 		return [
 			[
 				[
@@ -146,7 +157,7 @@ class testFormHostGroupSearchPage extends testFormGroups {
 				[
 					'expected' => TEST_BAD,
 					'name' => 'Group for Maintenance',
-					'error' => 'Cannot delete host group "Group for Maintenance" because maintenance'.
+					'error' => 'Cannot delete host group "Group for Maintenance" because maintenance' .
 						' "Maintenance for host group testing" must contain at least one host or host group.'
 				]
 			],
@@ -178,11 +189,13 @@ class testFormHostGroupSearchPage extends testFormGroups {
 	 * @dataProvider getDeleteData
 	 * @dataProvider getHostDeleteData
 	 */
-	public function testFormHostGroupSearchPage_Delete($data) {
+	public function testFormHostGroupSearchPage_Delete($data)
+	{
 		$this->delete($data);
 	}
 
-	public static function getSubgroupPermissionsData() {
+	public static function getSubgroupPermissionsData()
+	{
 		return [
 			[
 				[
@@ -245,8 +258,13 @@ class testFormHostGroupSearchPage extends testFormGroups {
 							'Permissions' => 'Read'
 						],
 						[
-							'groups' => ['Europe', 'Europe/Latvia', 'Europe/Test/Zabbix', 'Europe/Latvia/Riga/Zabbix',
-								'Streets'],
+							'groups' => [
+								'Europe',
+								'Europe/Latvia',
+								'Europe/Test/Zabbix',
+								'Europe/Latvia/Riga/Zabbix',
+								'Streets'
+							],
 							'Permissions' => 'Deny'
 						]
 					],
@@ -289,7 +307,8 @@ class testFormHostGroupSearchPage extends testFormGroups {
 	 * @onBeforeOnce prepareSubgroupData
 	 * @dataProvider getSubgroupPermissionsData
 	 */
-	public function testFormHostGroupSearchPage_ApplyPermissionsToSubgroups($data) {
+	public function testFormHostGroupSearchPage_ApplyPermissionsToSubgroups($data)
+	{
 		$this->link = 'zabbix.php?action=search&search=europe';
 		$this->checkSubgroupsPermissions($data);
 	}

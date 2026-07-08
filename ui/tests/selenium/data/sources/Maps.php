@@ -14,14 +14,16 @@
 **/
 
 
-class Maps {
+class Maps
+{
 
 	/**
 	 * Create data for map related test.
 	 *
 	 * @return array
 	 */
-	public static function load() {
+	public static function load()
+	{
 		$hostgroupid = CDataHelper::call('hostgroup.create', [['name' => 'Group with maps']])['groupids'][0];
 
 		// Create host with item and trigger to use it in map further.
@@ -40,7 +42,7 @@ class Maps {
 			],
 			[
 				'host' => 'Host for map for form testing',
-				'groups' => ['groupid' => 4], // Zabbix servers.
+				'groups' => ['groupid' => 4], // Advantal servers.
 				'items' => [
 					[
 						'name' => 'Trap',
@@ -53,11 +55,11 @@ class Maps {
 			// Hosts for Map Properties test.
 			[
 				'host' => 'Host_1',
-				'groups' => ['groupid' => 4] // Zabbix servers.
+				'groups' => ['groupid' => 4] // Advantal servers.
 			],
 			[
 				'host' => 'Host_2',
-				'groups' => ['groupid' => 4] // Zabbix servers.
+				'groups' => ['groupid' => 4] // Advantal servers.
 			]
 		]);
 
@@ -122,14 +124,14 @@ class Maps {
 						'label' => 'Host group element (Linux servers)',
 						'x' => 301,
 						'y' => 351,
-						'elements' => [['groupid' => 4]] // Zabbix servers.
+						'elements' => [['groupid' => 4]] // Advantal servers.
 					],
 					// Host (Disk array symbol).
 					[
 						'selementid' => 5,
 						'elementtype' => SYSMAP_ELEMENT_TYPE_HOST,
 						'iconid_off' => 19,
-						'label' => 'Host element (Zabbix Server)',
+						'label' => 'Host element (Advantal server)',
 						'x' => 501,
 						'y' => 301,
 						'elements' => [['hostid' => $result['hostids']['Host for map with links']]]
@@ -183,7 +185,7 @@ class Maps {
 						'selementid2' => 2,
 						'drawtype' => 2,
 						'color' => '00CC00',
-						'label' => 'CPU load: {?last(/Zabbix Server/system.cpu.load[])}'
+						'label' => 'CPU load: {?last(/Advantal server/system.cpu.load[])}'
 					],
 					[
 						'selementid1' => 1,

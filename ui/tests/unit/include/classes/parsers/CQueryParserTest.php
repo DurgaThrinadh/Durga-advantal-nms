@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,14 +18,16 @@
 
 use PHPUnit\Framework\TestCase;
 
-class CQueryParserTest extends TestCase {
+class CQueryParserTest extends TestCase
+{
 
-	public function dataProvider() {
+	public function dataProvider()
+	{
 		return [
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]', 0, [], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]', 0, [], [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
+				'host' => 'Advantal server',
 				'item' => 'logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
 				'filter' => [
 					'match' => '',
@@ -110,17 +114,17 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log,ERROR,,1000,,,120.0]', 0, [], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log,ERROR,,1000,,,120.0]', 0, [], [
 				'rc' => CParser::PARSE_SUCCESS_CONT,
-				'match' => '/Zabbix server/logrt',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt',
+				'host' => 'Advantal server',
 				'item' => 'logrt',
 				'filter' => [
 					'match' => '',
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server^/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]', 0, [], [
+			['/Advantal server^/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]', 0, [], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -130,7 +134,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server', 0, [], [
+			['/Advantal server', 0, [], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -140,7 +144,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/', 0, [], [
+			['/Advantal server/', 0, [], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -150,7 +154,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/'.'/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]', 0, [], [
+			['/' . '/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]', 0, [], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -160,7 +164,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/*', 0, [], [
+			['/Advantal server/*', 0, [], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -170,10 +174,10 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/*', 0, ['calculated' => true], [
+			['/Advantal server/*', 0, ['calculated' => true], [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '/Zabbix server/*',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/*',
+				'host' => 'Advantal server',
 				'item' => '*',
 				'filter' => [
 					'match' => '',
@@ -190,7 +194,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/'.'/key', 0, [], [
+			['/' . '/key', 0, [], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -200,7 +204,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/'.'/key', 0, ['calculated' => true], [
+			['/' . '/key', 0, ['calculated' => true], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -230,9 +234,9 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/'.'/key', 0, ['empty_host' => true], [
+			['/' . '/key', 0, ['empty_host' => true], [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '/'.'/key',
+				'match' => '/' . '/key',
 				'host' => '',
 				'item' => 'key',
 				'filter' => [
@@ -240,7 +244,7 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/'.'/*', 0, ['empty_host' => true], [
+			['/' . '/*', 0, ['empty_host' => true], [
 				'rc' => CParser::PARSE_FAIL,
 				'match' => '',
 				'host' => '',
@@ -250,9 +254,9 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/'.'/*', 0, ['calculated' => true, 'empty_host' => true], [
+			['/' . '/*', 0, ['calculated' => true, 'empty_host' => true], [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '/'.'/*',
+				'match' => '/' . '/*',
 				'host' => '',
 				'item' => '*',
 				'filter' => [
@@ -260,40 +264,40 @@ class CQueryParserTest extends TestCase {
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = "tag" and group = "group"]', 0, [], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = "tag" and group = "group"]', 0, [], [
 				'rc' => CParser::PARSE_SUCCESS_CONT,
-				'match' => '/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
+				'host' => 'Advantal server',
 				'item' => 'logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
 				'filter' => [
 					'match' => '',
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = {$MACRO} and group = "group"]', 0, ['calculated' => true], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = {$MACRO} and group = "group"]', 0, ['calculated' => true], [
 				'rc' => CParser::PARSE_SUCCESS_CONT,
-				'match' => '/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
+				'host' => 'Advantal server',
 				'item' => 'logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
 				'filter' => [
 					'match' => '',
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = {#MACRO} and group = "group"]', 0, ['calculated' => true], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = {#MACRO} and group = "group"]', 0, ['calculated' => true], [
 				'rc' => CParser::PARSE_SUCCESS_CONT,
-				'match' => '/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
+				'host' => 'Advantal server',
 				'item' => 'logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
 				'filter' => [
 					'match' => '',
 					'tokens' => []
 				]
 			]],
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[{$MACRO} = {{#MACRO}.func()} and group = "group"]', 0, ['usermacros' => true, 'lldmacros' => true, 'calculated' => true], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[{$MACRO} = {{#MACRO}.func()} and group = "group"]', 0, ['usermacros' => true, 'lldmacros' => true, 'calculated' => true], [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[{$MACRO} = {{#MACRO}.func()} and group = "group"]',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[{$MACRO} = {{#MACRO}.func()} and group = "group"]',
+				'host' => 'Advantal server',
 				'item' => 'logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
 				'filter' => [
 					'match' => '?[{$MACRO} = {{#MACRO}.func()} and group = "group"]',
@@ -343,10 +347,10 @@ class CQueryParserTest extends TestCase {
 					]
 				]
 			]],
-			['/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = "tag" and group = "group"]', 0, ['calculated' => true], [
+			['/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = "tag" and group = "group"]', 0, ['calculated' => true], [
 				'rc' => CParser::PARSE_SUCCESS,
-				'match' => '/Zabbix server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = "tag" and group = "group"]',
-				'host' => 'Zabbix server',
+				'match' => '/Advantal server/logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]?[tag = "tag" and group = "group"]',
+				'host' => 'Advantal server',
 				'item' => 'logrt["/home/zabbix32/test[0-9].log",ERROR,,1000,,,120.0]',
 				'filter' => [
 					'match' => '?[tag = "tag" and group = "group"]',
@@ -407,7 +411,8 @@ class CQueryParserTest extends TestCase {
 	 * @param array   $options
 	 * @param array   $expected
 	 */
-	public function testQueryParse(string $source, int $pos, array $options, array $expected) {
+	public function testQueryParse(string $source, int $pos, array $options, array $expected)
+	{
 		$query_parser = new CQueryParser($options);
 
 		$this->assertSame($expected, [

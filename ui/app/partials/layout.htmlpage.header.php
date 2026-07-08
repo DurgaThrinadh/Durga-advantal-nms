@@ -25,7 +25,7 @@ $scripts = $data['javascript']['files'];
 $page_title = $data['page']['title'];
 
 if (isset($ZBX_SERVER_NAME) && $ZBX_SERVER_NAME !== '') {
-	$page_title = $page_title !== '' ? $ZBX_SERVER_NAME.NAME_DELIMITER.$page_title : $ZBX_SERVER_NAME;
+	$page_title = $page_title !== '' ? $ZBX_SERVER_NAME . NAME_DELIMITER . $page_title : $ZBX_SERVER_NAME;
 }
 
 $page_header = new CHtmlPageHeader($page_title, CWebUser::getLang());
@@ -36,7 +36,7 @@ if (!empty($DB['DB'])) {
 		->addStyle(getTriggerSeverityCss())
 		->addStyle(getTriggerStatusCss());
 
-	// Perform Zabbix server check only for standard pages.
+	// Perform Advantal server check only for standard pages.
 	if ($data['config']['server_check_interval']) {
 		$scripts[] = 'servercheck.js';
 	}
@@ -55,28 +55,28 @@ $modules_assets = APP::ModuleManager()->getAssets();
 
 $tz_offsets = array_column((new DateTime())->getTimezone()->getTransitions(0, ZBX_MAX_DATE), 'offset', 'ts');
 
-$page_header->addCssFile('assets/styles/'.$page_header->getTheme().'.css');
+$page_header->addCssFile('assets/styles/' . $page_header->getTheme() . '.css');
 
 foreach ($modules_assets as $module_id => $assets) {
 	$module = APP::ModuleManager()->getModule($module_id);
-	$relative_path = $module->getRelativePath().'/assets/css';
+	$relative_path = $module->getRelativePath() . '/assets/css';
 
 	foreach ($assets['css'] as $css_file) {
-		$page_header->addCssFile((new CUrl($relative_path.'/'.$css_file))->getUrl());
+		$page_header->addCssFile((new CUrl($relative_path . '/' . $css_file))->getUrl());
 	}
 }
 
 $page_header
 	->addJavaScript('
-		const PHP_TZ_OFFSETS = '.json_encode($tz_offsets).';
-		const PHP_ZBX_FULL_DATE_TIME = "'.DATE_TIME_FORMAT_SECONDS.'";
+		const PHP_TZ_OFFSETS = ' . json_encode($tz_offsets) . ';
+		const PHP_ZBX_FULL_DATE_TIME = "' . DATE_TIME_FORMAT_SECONDS . '";
 	')
 	->addJsFile((new CUrl('js/browsers.js'))->getUrl())
 	->addJsFile((new CUrl('jsLoader.php'))
-		->setArgument('lang', $data['user']['lang'])
-		->setArgument('ver', ZABBIX_VERSION)
-		->setArgument('showGuiMessaging', $show_gui_messaging)
-		->getUrl()
+			->setArgument('lang', $data['user']['lang'])
+			->setArgument('ver', ZABBIX_VERSION)
+			->setArgument('showGuiMessaging', $show_gui_messaging)
+			->getUrl()
 	);
 
 foreach ($data['stylesheet']['files'] as $css_file) {
@@ -96,11 +96,11 @@ if ($scripts) {
 
 	foreach ($modules_assets as $module_id => $assets) {
 		$module = APP::ModuleManager()->getModule($module_id);
-		$relative_path = $module->getRelativePath().'/assets/js';
+		$relative_path = $module->getRelativePath() . '/assets/js';
 		$translation_strings = $module->getTranslationStrings();
 
 		foreach ($assets['js'] as $js_file) {
-			$page_header->addJsFile((new CUrl($relative_path.'/'.$js_file))->getUrl());
+			$page_header->addJsFile((new CUrl($relative_path . '/' . $js_file))->getUrl());
 
 			if (array_key_exists($js_file, $translation_strings)) {
 				$page_header->addJsTranslationStrings($translation_strings[$js_file]);

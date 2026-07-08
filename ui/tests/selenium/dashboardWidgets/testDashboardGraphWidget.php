@@ -15,9 +15,9 @@
 
 
 require_once __DIR__ . '/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTagBehavior.php';
-require_once __DIR__.'/../common/testWidgets.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTagBehavior.php';
+require_once __DIR__ . '/../common/testWidgets.php';
 
 /**
  * @backup widget, profiles
@@ -26,12 +26,14 @@ require_once __DIR__.'/../common/testWidgets.php';
  *
  * @onBefore setDefaultWidgetType, prepareData
  */
-class testDashboardGraphWidget extends testWidgets {
+class testDashboardGraphWidget extends testWidgets
+{
 
 	/**
 	 * Attach MessageBehavior and TagBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -46,7 +48,8 @@ class testDashboardGraphWidget extends testWidgets {
 	const UPDATE_WIDGET = 'Test cases for update';
 	const DEFAULT_WIDGET = 'Test cases for simple update and deletion';
 
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		$response = CDataHelper::call('dashboard.create', [
 			[
 				'name' => 'Dashboard for graph widgets',
@@ -230,10 +233,11 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Set "Graph" as default widget type.
 	 */
-	public function setDefaultWidgetType() {
+	public function setDefaultWidgetType()
+	{
 		DBexecute('DELETE FROM profiles WHERE idx=\'web.dashboard.last_widget_type\' AND userid=\'1\'');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, type)'.
-				' VALUES (99999,1,\'web.dashboard.last_widget_type\',\'svggraph\',3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, type)' .
+			' VALUES (99999,1,\'web.dashboard.last_widget_type\',\'svggraph\',3)');
 	}
 
 	/**
@@ -241,7 +245,8 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @param string $name		name of graphic widget to be opened
 	 */
-	protected function openGraphWidgetConfiguration($name = null) {
+	protected function openGraphWidgetConfiguration($name = null)
+	{
 		$dashboard = CDashboardElement::find()->one()->edit();
 
 		// Open existed widget by widget name.
@@ -264,7 +269,8 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @param string $name		name of graphic widget to be checked
 	 */
-	protected function saveGraphWidget($name) {
+	protected function saveGraphWidget($name)
+	{
 		COverlayDialogElement::ensureNotPresent();
 		$dashboard = CDashboardElement::find()->one();
 		$widget = $dashboard->getWidget($name);
@@ -277,8 +283,9 @@ class testDashboardGraphWidget extends testWidgets {
 	 * Check screenshots of graph widget form.
 	 * @browsers chrome
 	 */
-	public function testDashboardGraphWidget_FormLayout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_FormLayout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one()->edit();
 		$overlay = $dashboard->addWidget();
 		$form = $overlay->asForm();
@@ -295,7 +302,7 @@ class testDashboardGraphWidget extends testWidgets {
 
 			$this->page->removeFocus();
 			sleep(1);
-			$this->assertScreenshotExcept($overlay, [$element], 'tab_'.$tab);
+			$this->assertScreenshotExcept($overlay, [$element], 'tab_' . $tab);
 		}
 
 		$overlay->close();
@@ -304,10 +311,11 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Check validation of graph widget fields.
 	 */
-	protected function validate($data, $tab) {
+	protected function validate($data, $tab)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration(CTestArrayHelper::get($data, 'Widget name'));
 
 		$this->fillDatasets(CTestArrayHelper::get($data, 'Data set'));
@@ -316,7 +324,7 @@ class testDashboardGraphWidget extends testWidgets {
 			case 'Data set':
 				// Remove data set.
 				if (CTestArrayHelper::get($data, 'remove_data_set', false)) {
-					$form->query('xpath:.//button['.CXPathHelper::fromClass('js-remove').']')->one()->click();
+					$form->query('xpath:.//button[' . CXPathHelper::fromClass('js-remove') . ']')->one()->click();
 				}
 				break;
 
@@ -326,8 +334,8 @@ class testDashboardGraphWidget extends testWidgets {
 
 				// Remove all override options.
 				if (CTestArrayHelper::get($data, 'remove_override_options', false)) {
-					$form->query("xpath:.//ul[@class='overrides-options-list']//button[".
-							CXPathHelper::fromClass('js-remove')."]")->all()->click();
+					$form->query("xpath:.//ul[@class='overrides-options-list']//button[" .
+						CXPathHelper::fromClass('js-remove') . "]")->all()->click();
 				}
 
 				break;
@@ -339,8 +347,8 @@ class testDashboardGraphWidget extends testWidgets {
 
 		sleep(2);
 		$form->submit();
-		COverlayDialogElement::find()->one()->waitUntilReady()->query('xpath:div[@class="overlay-dialogue-footer"]'.
-				'//button[@class="dialogue-widget-save"]')->waitUntilClickable()->one();
+		COverlayDialogElement::find()->one()->waitUntilReady()->query('xpath:div[@class="overlay-dialogue-footer"]' .
+			'//button[@class="dialogue-widget-save"]')->waitUntilClickable()->one();
 
 		if (array_key_exists('error', $data)) {
 			$this->assertMessage(TEST_BAD, null, $data['error']);
@@ -350,7 +358,8 @@ class testDashboardGraphWidget extends testWidgets {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 	}
 
-	public static function getDatasetValidationData() {
+	public static function getDatasetValidationData()
+	{
 		return [
 			[
 				[
@@ -569,7 +578,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Data provider for "Data set" tab validation on creating.
 	 */
-	public function getDatasetValidationCreateData() {
+	public function getDatasetValidationCreateData()
+	{
 		$data = [];
 
 		// Add host and item values for the first "Data set" in each case of the data provider.
@@ -614,7 +624,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/*
 	 * Data provider for "Data set" tab validation on updating.
 	 */
-	public function getDatasetValidationUpdateData() {
+	public function getDatasetValidationUpdateData()
+	{
 		$data = [];
 
 		// Add existing widget name for each case in data provider.
@@ -665,11 +676,13 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @dataProvider getDatasetValidationCreateData
 	 * @dataProvider getDatasetValidationUpdateData
 	 */
-	public function testDashboardGraphWidget_DatasetValidation($data) {
+	public function testDashboardGraphWidget_DatasetValidation($data)
+	{
 		$this->validate($data, 'Data set');
 	}
 
-	public static function getTimePeriodValidationData() {
+	public static function getTimePeriodValidationData()
+	{
 		return [
 			// Empty From/To fields.
 			[
@@ -818,7 +831,8 @@ class testDashboardGraphWidget extends testWidgets {
 		];
 	}
 
-	public function getTimePeriodValidationCreateData() {
+	public function getTimePeriodValidationCreateData()
+	{
 		$data = [];
 
 		// Add host and item values for each case in data provider.
@@ -834,7 +848,8 @@ class testDashboardGraphWidget extends testWidgets {
 		return $data;
 	}
 
-	public function getTimePeriodValidationUpdateData() {
+	public function getTimePeriodValidationUpdateData()
+	{
 		$data = [];
 
 		foreach ($this->getTimePeriodValidationData() as $item) {
@@ -852,11 +867,13 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @dataProvider getTimePeriodValidationCreateData
 	 * @dataProvider getTimePeriodValidationUpdateData
 	 */
-	public function testDashboardGraphWidget_TimePeriodValidation($data) {
+	public function testDashboardGraphWidget_TimePeriodValidation($data)
+	{
 		$this->validate($data, 'Time period');
 	}
 
-	public static function getAxesValidationData() {
+	public static function getAxesValidationData()
+	{
 		return [
 			// Left Y-axis validation. Set by default in first data set.
 			[
@@ -1033,7 +1050,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Add host and item values in data provider.
 	 */
-	public function getAxesValidationCreateData() {
+	public function getAxesValidationCreateData()
+	{
 		$data = [];
 
 		foreach ($this->getAxesValidationData() as $item) {
@@ -1042,8 +1060,7 @@ class testDashboardGraphWidget extends testWidgets {
 					'host' => 'ЗАББИКС Сервер',
 					'item' => 'Agent ping'
 				]);
-			}
-			else {
+			} else {
 				$item[0]['Data set'] = [
 					'host' => 'ЗАББИКС Сервер',
 					'item' => 'Agent ping'
@@ -1056,7 +1073,8 @@ class testDashboardGraphWidget extends testWidgets {
 		return $data;
 	}
 
-	public function getAxesValidationUpdateData() {
+	public function getAxesValidationUpdateData()
+	{
 		$data = [];
 
 		foreach ($this->getAxesValidationData() as $item) {
@@ -1074,11 +1092,13 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @dataProvider getAxesValidationCreateData
 	 * @dataProvider getAxesValidationUpdateData
 	 */
-	public function testDashboardGraphWidget_AxesValidation($data) {
+	public function testDashboardGraphWidget_AxesValidation($data)
+	{
 		$this->validate($data, 'Axes');
 	}
 
-	public static function getOverridesValidationData() {
+	public static function getOverridesValidationData()
+	{
 		return [
 			// Base color field validation.
 			[
@@ -1299,7 +1319,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Data provider for "Overrides" tab validation on creating.
 	 */
-	public function getOverridesValidationCreateData() {
+	public function getOverridesValidationCreateData()
+	{
 		$data = [];
 
 		// Add host and item values for tab "Data set" and "Overrides" for each data provider.
@@ -1360,7 +1381,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Data provider for "Overrides" tab validation on updating.
 	 */
-	public function getOverridesValidationUpdateData() {
+	public function getOverridesValidationUpdateData()
+	{
 		$data = [];
 
 		// Add existing widget name for each case in data provider.
@@ -1416,11 +1438,13 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @dataProvider getOverridesValidationCreateData
 	 * @dataProvider getOverridesValidationUpdateData
 	 */
-	public function testDashboardGraphWidget_OverridesValidation($data) {
+	public function testDashboardGraphWidget_OverridesValidation($data)
+	{
 		$this->validate($data, 'Overrides');
 	}
 
-	public static function getCreateData() {
+	public static function getCreateData()
+	{
 		return [
 			// Mandatory fields only.
 			[
@@ -1457,7 +1481,7 @@ class testDashboardGraphWidget extends testWidgets {
 							'Data set label' => '祝你今天過得愉快'
 						],
 						[
-							'host' => ',Zabbix Server',
+							'host' => ',Advantal server',
 							'item' => ',Agentp ping',
 							'Draw' => 'Bar',
 							'Aggregation function' => 'max',
@@ -1480,7 +1504,7 @@ class testDashboardGraphWidget extends testWidgets {
 							]
 						],
 						[
-							'host' => ',Zabbix Server',
+							'host' => ',Advantal server',
 							'item' => ', Agent ping',
 							'options' => [
 								['Draw', 'Bar'],
@@ -1488,7 +1512,7 @@ class testDashboardGraphWidget extends testWidgets {
 							]
 						],
 						[
-							'host' => ',,Zabbix Server,,',
+							'host' => ',,Advantal server,,',
 							'item' => ', Agent, ping,',
 							'options' => [
 								['Draw', 'Bar']
@@ -1737,8 +1761,9 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @dataProvider getCreateData
 	 */
-	public function testDashboardGraphWidget_Create($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_Create($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 
 		$this->fillForm($data, $form);
@@ -1755,7 +1780,8 @@ class testDashboardGraphWidget extends testWidgets {
 		}
 	}
 
-	public static function getUpdateData() {
+	public static function getUpdateData()
+	{
 		return [
 			// Mandatory fields only.
 			[
@@ -1875,7 +1901,7 @@ class testDashboardGraphWidget extends testWidgets {
 							'Aggregate' => 'Data set'
 						],
 						[
-							'host' => ',Zabbix Server',
+							'host' => ',Advantal server',
 							'item' => ',Agentp ping',
 							'Draw' => 'Bar',
 							'Aggregation function' => 'max'
@@ -1896,7 +1922,7 @@ class testDashboardGraphWidget extends testWidgets {
 							]
 						],
 						[
-							'host' => ',Zabbix Server',
+							'host' => ',Advantal server',
 							'item' => ', Agent ping',
 							'options' => [
 								['Point size', '5'],
@@ -1904,7 +1930,7 @@ class testDashboardGraphWidget extends testWidgets {
 							]
 						],
 						[
-							'host' => ',,Zabbix Server,,',
+							'host' => ',,Advantal server,,',
 							'item' => ', Agent, ping,',
 							'options' => [
 								['Draw', 'Bar']
@@ -2035,8 +2061,9 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @dataProvider getUpdateData
 	 * @backup widget
 	 */
-	public function testDashboardGraphWidget_Update($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_Update($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration(self::UPDATE_WIDGET);
 
 		$this->fillForm($data, $form);
@@ -2056,10 +2083,11 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Test update without any modification of graph widget data.
 	 */
-	public function testDashboardGraphWidget_SimpleUpdate() {
+	public function testDashboardGraphWidget_SimpleUpdate()
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration(self::DEFAULT_WIDGET);
 		$form->submit();
 		$this->saveGraphWidget(self::DEFAULT_WIDGET);
@@ -2073,7 +2101,8 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @param array 		$data		data provider with fields values
 	 * @param CFormElement 	$form		widget configuration form element
 	 */
-	protected function fillForm($data, $form) {
+	protected function fillForm($data, $form)
+	{
 		$form->fill(CTestArrayHelper::get($data, 'main_fields', []));
 		$this->fillDatasets(CTestArrayHelper::get($data, 'Data set', []));
 
@@ -2107,7 +2136,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Fill "Data sets" with specified data.
 	 */
-	protected function fillDatasets($data_sets) {
+	protected function fillDatasets($data_sets)
+	{
 		$form = $this->query('id:widget-dialogue-form')->asForm()->one();
 		if ($data_sets) {
 			if (CTestArrayHelper::isAssociative($data_sets)) {
@@ -2120,8 +2150,8 @@ class testDashboardGraphWidget extends testWidgets {
 
 			foreach ($data_sets as $i => $data_set) {
 				$mapping = [
-					'host' => 'xpath://div[@id="ds_'.$i.'_hosts_"]/..',
-					'item' => 'xpath://div[@id="ds_'.$i.'_items_"]/..'
+					'host' => 'xpath://div[@id="ds_' . $i . '_hosts_"]/..',
+					'item' => 'xpath://div[@id="ds_' . $i . '_items_"]/..'
 				];
 				// If host or item of data set exist in data provider, add the xpath selector and value from data provider to them.
 				foreach ($mapping as $field => $selector) {
@@ -2137,7 +2167,7 @@ class testDashboardGraphWidget extends testWidgets {
 				if ($i !== $last) {
 					if ($i + 1 < $count_sets) {
 						$i += 2;
-						$form->query('xpath:(//li[contains(@class, "list-accordion-item")])['.$i.']//button')->one()->click();
+						$form->query('xpath:(//li[contains(@class, "list-accordion-item")])[' . $i . ']//button')->one()->click();
 					}
 					// Press "Add new data set" button, except for last data set.
 					else {
@@ -2153,7 +2183,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Fill "Overrides" with specified data.
 	 */
-	protected function fillOverrides($overrides) {
+	protected function fillOverrides($overrides)
+	{
 		$form = $this->query('id:widget-dialogue-form')->asForm()->one();
 
 		// Check if override already exist in list, if not, add new override.
@@ -2173,20 +2204,20 @@ class testDashboardGraphWidget extends testWidgets {
 				// Prepare non-standard fields.
 				$mapping = [
 					'options' => [
-						'selector' => 'xpath://button[@data-row='.CXPathHelper::escapeQuotes($i).']',
+						'selector' => 'xpath://button[@data-row=' . CXPathHelper::escapeQuotes($i) . ']',
 						'class' => CPopupButtonElement::class
 					],
 					'host' => [
-						'selector' => 'xpath://div[@id="or_'.$i.'_hosts_"]/..',
+						'selector' => 'xpath://div[@id="or_' . $i . '_hosts_"]/..',
 						'class' => CMultiselectElement::class
 					],
 					'item' => [
-						'selector' => 'xpath://div[@id="or_'.$i.'_items_"]/..',
+						'selector' => 'xpath://div[@id="or_' . $i . '_items_"]/..',
 						'class' => CMultiselectElement::class
 					],
-					'time_shift' => 'name:or['.$i.'][timeshift]',
+					'time_shift' => 'name:or[' . $i . '][timeshift]',
 					'color' => [
-						'selector' => 'xpath://button[@id="lbl_or_'.$i.'__color_"]/..',
+						'selector' => 'xpath://button[@id="lbl_or_' . $i . '__color_"]/..',
 						'class' => CColorPickerElement::class
 					]
 				];
@@ -2214,7 +2245,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Check widget field values after creating or updating.
 	 */
-	private function checkWidgetForm($data) {
+	private function checkWidgetForm($data)
+	{
 		$form = $this->query('id:widget-dialogue-form')->asForm()->one();
 
 		// Check values in "Data set" tab.
@@ -2227,8 +2259,8 @@ class testDashboardGraphWidget extends testWidgets {
 		foreach ($data['Data set'] as $i => $data_set) {
 			// Prepare host and item fields.
 			$mapping = [
-				'host' => 'xpath://div[@id="ds_'.$i.'_hosts_"]/..',
-				'item' => 'xpath://div[@id="ds_'.$i.'_items_"]/..'
+				'host' => 'xpath://div[@id="ds_' . $i . '_hosts_"]/..',
+				'item' => 'xpath://div[@id="ds_' . $i . '_items_"]/..'
 			];
 			foreach ($mapping as $field => $selector) {
 				$data_set = [$selector => $data_set[$field]] + $data_set;
@@ -2241,7 +2273,7 @@ class testDashboardGraphWidget extends testWidgets {
 			// Open next data set, if exist.
 			if ($i !== $last) {
 				$i += 2;
-				$form->query('xpath:(//li[contains(@class, "list-accordion-item")])['.$i.']//button')->one()->click();
+				$form->query('xpath:(//li[contains(@class, "list-accordion-item")])[' . $i . ']//button')->one()->click();
 				$form->invalidate();
 			}
 		}
@@ -2275,10 +2307,10 @@ class testDashboardGraphWidget extends testWidgets {
 			foreach ($data['Overrides'] as $i => $override) {
 				// Prepare input fields.
 				$mapping = [
-					'host' => 'xpath://div[@id="or_'.$i.'_hosts_"]/..',
-					'item' => 'xpath://div[@id="or_'.$i.'_items_"]/..',
-					'time_shift' => 'name:or['.$i.'][timeshift]',
-					'color' => 'xpath://button[@id="lbl_or_'.$i.'__color_"]/..'
+					'host' => 'xpath://div[@id="or_' . $i . '_hosts_"]/..',
+					'item' => 'xpath://div[@id="or_' . $i . '_items_"]/..',
+					'time_shift' => 'name:or[' . $i . '][timeshift]',
+					'color' => 'xpath://button[@id="lbl_or_' . $i . '__color_"]/..'
 				];
 				$inputs = [];
 				foreach ($mapping as $field => $selector) {
@@ -2294,7 +2326,7 @@ class testDashboardGraphWidget extends testWidgets {
 				// Check values of override options in data provider and in widget, except color and time shift fields.
 				if (array_key_exists('options', $override)) {
 					$i++;
-					$list = $this->query('xpath:(//ul[@class="overrides-options-list"])['.$i.']')->one();
+					$list = $this->query('xpath:(//ul[@class="overrides-options-list"])[' . $i . ']')->one();
 					$options = $list->query('xpath:.//span[@data-option]')->all();
 					$options_text = $options->asText();
 
@@ -2314,7 +2346,8 @@ class testDashboardGraphWidget extends testWidgets {
 		}
 	}
 
-	public static function getDashboardCancelData() {
+	public static function getDashboardCancelData()
+	{
 		return [
 			// Add new graph widget.
 			[
@@ -2349,10 +2382,11 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @dataProvider getDashboardCancelData
 	 */
-	public function testDashboardGraphWidget_cancelDashboardUpdate($data) {
+	public function testDashboardGraphWidget_cancelDashboardUpdate($data)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration(CTestArrayHelper::get($data, 'Existing widget', []));
 		$form->fill(CTestArrayHelper::get($data, 'main_fields', []));
 		$this->fillDataSets($data['Data set']);
@@ -2368,7 +2402,8 @@ class testDashboardGraphWidget extends testWidgets {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 	}
 
-	public static function getWidgetCancelData() {
+	public static function getWidgetCancelData()
+	{
 		return [
 			// Add new graph widget.
 			[
@@ -2403,15 +2438,16 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @dataProvider getDashboardCancelData
 	 */
-	public function testDashboardGraphWidget_cancelWidgetEditing($data) {
+	public function testDashboardGraphWidget_cancelWidgetEditing($data)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration(CTestArrayHelper::get($data, 'Existing widget', []));
 		$form->fill($data['main_fields']);
 		$this->fillDataSets($data['Data set']);
 		$overlay = $this->query('xpath://div[contains(@class, "overlay-dialogue")][@data-dialogueid="widget_properties"]')
-				->asOverlayDialog()->one();
+			->asOverlayDialog()->one();
 		$overlay->close();
 
 		// Check canceled graph widget.
@@ -2419,8 +2455,9 @@ class testDashboardGraphWidget extends testWidgets {
 
 		// If test fails and widget isn't canceled, need to wait until widget appears on the dashboard.
 		sleep(2);
-		$this->assertTrue(!$dashboard->query('xpath:.//div[contains(@class, "dashboard-grid-widget-header")]/h4[text()='.
-				CXPathHelper::escapeQuotes($data['main_fields']['Name']).']')->one(false)->isValid()
+		$this->assertTrue(
+			!$dashboard->query('xpath:.//div[contains(@class, "dashboard-grid-widget-header")]/h4[text()=' .
+				CXPathHelper::escapeQuotes($data['main_fields']['Name']) . ']')->one(false)->isValid()
 		);
 		$dashboard->save();
 
@@ -2430,8 +2467,9 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Test deleting of graph widget.
 	 */
-	public function testDashboardGraphWidget_Delete() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_Delete()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$widget = $dashboard->edit()->getWidget(self::DEFAULT_WIDGET);
 		$this->assertEquals(true, $widget->isEditable());
@@ -2445,16 +2483,17 @@ class testDashboardGraphWidget extends testWidgets {
 
 		// Check that widget is not present on dashboard and in DB.
 		$this->assertFalse($dashboard->getWidget(self::DEFAULT_WIDGET, false)->isValid());
-		$sql = 'SELECT * FROM widget_field wf LEFT JOIN widget w ON w.widgetid=wf.widgetid'.
-				' WHERE w.name='.zbx_dbstr(self::DEFAULT_WIDGET);
+		$sql = 'SELECT * FROM widget_field wf LEFT JOIN widget w ON w.widgetid=wf.widgetid' .
+			' WHERE w.name=' . zbx_dbstr(self::DEFAULT_WIDGET);
 		$this->assertEquals(0, CDBHelper::getCount($sql));
 	}
 
 	/**
 	 * Test disabled fields in "Data set" tab.
 	 */
-	public function testDashboardGraphWidget_DatasetDisabledFields() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_DatasetDisabledFields()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 
 		foreach (['Line', 'Points', 'Staircase', 'Bar'] as $option) {
@@ -2490,8 +2529,9 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Test "From" and "To" fields in tab "Time period" by setting 'Time period' to 'Custom'.
 	 */
-	public function testDashboardGraphWidget_TimePeriodDisabledFields() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_TimePeriodDisabledFields()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 		$form->selectTab('Time period');
 		$fields = ['From', 'To'];
@@ -2512,8 +2552,9 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Test enable/disable "Number of rows" field by check/uncheck "Show legend".
 	 */
-	public function testDashboardGraphWidget_LegendFieldValidation() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_LegendFieldValidation()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$fields = ['Rows', 'Number of rows', 'Display min/avg/max', 'Number of columns'];
 		$form = $this->openGraphWidgetConfiguration();
 		$form->selectTab('Legend');
@@ -2531,13 +2572,14 @@ class testDashboardGraphWidget extends testWidgets {
 			$removed_label = array_values(array_diff(['Number of rows', 'Maximum number of rows'], [$visible_label]))[0];
 
 			$this->assertTrue($form->getLabel($visible_label)->isValid());
-			$this->assertFalse($form->query('xpath:.//label[text()='.CXPathHelper::escapeQuotes($removed_label).']')
+			$this->assertFalse(
+				$form->query('xpath:.//label[text()=' . CXPathHelper::escapeQuotes($removed_label) . ']')
 					->one(false)->isValid()
 			);
 		}
 
 		foreach (['lines' => 2, 'columns' => 1] as $id => $maxlength) {
-			$this->assertEquals($maxlength, $form->getField('id:legend_'.$id)->getAttribute('maxlength'));
+			$this->assertEquals($maxlength, $form->getField('id:legend_' . $id)->getAttribute('maxlength'));
 		}
 
 		$field_attributes = [
@@ -2562,7 +2604,8 @@ class testDashboardGraphWidget extends testWidgets {
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public static function getSlidebarData() {
+	public static function getSlidebarData()
+	{
 		return [
 			[
 				[
@@ -2684,8 +2727,9 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @dataProvider getSlidebarData
 	 */
-	public function testDashboardGraphWidget_LegendRangeControlsValidation($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_LegendRangeControlsValidation($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 		$form->selectTab('Legend');
 
@@ -2702,7 +2746,9 @@ class testDashboardGraphWidget extends testWidgets {
 			$field = $form->getField($field_name);
 			$this->assertEquals($value, $field->query('xpath:.//input[@type="text"]')->one()->getValue());
 
-			$this->assertEquals('left: '.$data['range_percentage'][$field_name].'%;', $field->query('class:range-control-thumb')
+			$this->assertEquals(
+				'left: ' . $data['range_percentage'][$field_name] . '%;',
+				$field->query('class:range-control-thumb')
 					->one()->getAttribute('style')
 			);
 		}
@@ -2713,8 +2759,9 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Check "Displaying options" tab layout.
 	 */
-	public function testDashboardGraphWidget_DisplayingOptionsFieldValidation() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_DisplayingOptionsFieldValidation()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 		$form->selectTab('Displaying options');
 
@@ -2754,19 +2801,20 @@ class testDashboardGraphWidget extends testWidgets {
 
 		// Check that left percentile line is disabled and right percintile line is enabled.
 		foreach (['percentile_left' => false, 'percentile_right' => true] as $field_id => $enabled) {
-			$this->assertTrue($form->getField('id:'.$field_id)->isEnabled($enabled));
+			$this->assertTrue($form->getField('id:' . $field_id)->isEnabled($enabled));
 
 			if ($enabled) {
-				$form->getField('id:'.$field_id)->fill(true);
-				$this->assertTrue($form->getField('id:'.$field_id.'_value')->isEnabled());
+				$form->getField('id:' . $field_id)->fill(true);
+				$this->assertTrue($form->getField('id:' . $field_id . '_value')->isEnabled());
 			}
 		}
 
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public function testDashboardGraphWidget_ProblemsDisabledFields() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_ProblemsDisabledFields()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 		$form->selectTab('Problems');
 
@@ -2777,21 +2825,26 @@ class testDashboardGraphWidget extends testWidgets {
 			'id:tags_0_value'		// Tag value.
 		];
 		$this->assertEnabledFields(array_merge($fields, $tag_elements), false);
-		$this->assertEquals(0, $form->query('id:tags_table_tags')->query('button', ['Add', 'Remove'])->all()
+		$this->assertEquals(
+			0,
+			$form->query('id:tags_table_tags')->query('button', ['Add', 'Remove'])->all()
 				->filter((CElementFilter::CLICKABLE))->count()
 		);
 
 		// Set "Show problems" and check that fields and buttons are enabled now.
 		$form->fill(['Show problems' => true]);
 		$this->assertEnabledFields(array_merge($fields, $tag_elements), true);
-		$this->assertEquals(2, $form->query('id:tags_table_tags')->query('button', ['Add', 'Remove'])->all()
+		$this->assertEquals(
+			2,
+			$form->query('id:tags_table_tags')->query('button', ['Add', 'Remove'])->all()
 				->filter((CElementFilter::CLICKABLE))->count()
 		);
 
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public static function getAxesDisabledFieldsData() {
+	public static function getAxesDisabledFieldsData()
+	{
 		return [
 			[
 				[
@@ -2840,8 +2893,9 @@ class testDashboardGraphWidget extends testWidgets {
 	 *
 	 * @dataProvider getAxesDisabledFieldsData
 	 */
-	public function testDashboardGraphWidget_AxesDisabledFields($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGraphWidget_AxesDisabledFields($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 
 		$form->fill($data['Data set']);
@@ -2886,7 +2940,8 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Check data set naming in legend and in configuration form.
 	 */
-	public function testDashboardGraphWidget_CheckDataSetNaming() {
+	public function testDashboardGraphWidget_CheckDataSetNaming()
+	{
 		$input_data = [
 			'main_fields' => [
 				'Name' => 'Graph widget for Data set naming check'
@@ -2924,12 +2979,14 @@ class testDashboardGraphWidget extends testWidgets {
 				'Data set #3'
 			],
 			'Legend labels' => [
-				'祝你今天過得愉快', 'max(ЗАББИКС Сервер: CPU guest nice time)', 'max(ЗАББИКС Сервер: CPU guest time)',
+				'祝你今天過得愉快',
+				'max(ЗАББИКС Сервер: CPU guest nice time)',
+				'max(ЗАББИКС Сервер: CPU guest time)',
 				'Data set #3'
 			]
 		];
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = $this->openGraphWidgetConfiguration();
 
 		// Check hint next to the "Data set label" field.
@@ -2958,8 +3015,9 @@ class testDashboardGraphWidget extends testWidgets {
 	/**
 	 * Test function for assuring that text, log, binary and char items are not available in Graph widget.
 	 */
-	public function testDashboardGraphWidget_CheckAvailableItems() {
-		$this->checkAvailableItems('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid, 'Graph');
+	public function testDashboardGraphWidget_CheckAvailableItems()
+	{
+		$this->checkAvailableItems('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid, 'Graph');
 	}
 
 	/**
@@ -2968,7 +3026,8 @@ class testDashboardGraphWidget extends testWidgets {
 	 * @param array $fields			array of checked fields
 	 * @param boolean $enabled		fields state are enabled
 	 */
-	protected function assertEnabledFields($fields, $enabled = true) {
+	protected function assertEnabledFields($fields, $enabled = true)
+	{
 		$form = $this->query('id:widget-dialogue-form')->asForm()->one();
 
 		if (!is_array($fields)) {

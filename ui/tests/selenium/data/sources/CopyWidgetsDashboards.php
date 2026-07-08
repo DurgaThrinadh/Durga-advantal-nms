@@ -13,7 +13,8 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-class CopyWidgetsDashboards {
+class CopyWidgetsDashboards
+{
 
 	const ZABBIX_SERVER_HOSTID = 10084; // ЗАББИКС Сервер.
 
@@ -27,11 +28,12 @@ class CopyWidgetsDashboards {
 	 *
 	 * @return array
 	 */
-	public static function load() {
+	public static function load()
+	{
 		$hosts = CDataHelper::createHosts([
 			[
 				'host' => 'Host with widgets items',
-				'groups' => ['groupid' => 4], // Zabbix servers.
+				'groups' => ['groupid' => 4], // Advantal servers.
 				'items' => [
 					[
 						'name' => 'Widget item',
@@ -43,8 +45,11 @@ class CopyWidgetsDashboards {
 			],
 			[
 				'host' => 'Host with map for copy widgets',
-				'groups' => ['groupid' => CDataHelper::call('hostgroup.create',
-						[['name' => 'Group with maps for copy']])['groupids'][0]
+				'groups' => [
+					'groupid' => CDataHelper::call(
+						'hostgroup.create',
+						[['name' => 'Group with maps for copy']]
+					)['groupids'][0]
 				]
 			]
 		]);
@@ -1107,7 +1112,7 @@ class CopyWidgetsDashboards {
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_GROUP,
 										'name' => 'groupids',
-										'value' => 4 // Zabbix servers.
+										'value' => 4 // Advantal servers.
 									],
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_HOST,
@@ -2017,7 +2022,7 @@ class CopyWidgetsDashboards {
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_GROUP,
 										'name' => 'groupids.0',
-										'value' => 4 // Zabbix servers.
+										'value' => 4 // Advantal servers.
 									],
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_STR,
@@ -2117,7 +2122,7 @@ class CopyWidgetsDashboards {
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_GROUP,
 										'name' => 'groupids.0',
-										'value' => 4 // Zabbix servers.
+										'value' => 4 // Advantal servers.
 									],
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_HOST,
@@ -3118,7 +3123,7 @@ class CopyWidgetsDashboards {
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_GROUP,
 										'name' => 'groupids',
-										'value' => 4 // Zabbix servers.
+										'value' => 4 // Advantal servers.
 									],
 									[
 										'type' => ZBX_WIDGET_FIELD_TYPE_HOST,

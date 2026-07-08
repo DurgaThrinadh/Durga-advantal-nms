@@ -13,10 +13,10 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../behaviors/CTagBehavior.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../behaviors/CTagBehavior.php';
 
 /**
  * @dataSource TagFilter, Proxies, WebScenarios
@@ -25,12 +25,14 @@ require_once __DIR__.'/../behaviors/CTagBehavior.php';
  *
  * @onBefore prepareHostsData
  */
-class testPageHosts extends CLegacyWebTest {
+class testPageHosts extends CLegacyWebTest
+{
 
 	/**
 	 * Attach MessageBehavior, TableBehavior and TagBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -39,11 +41,12 @@ class testPageHosts extends CLegacyWebTest {
 	}
 
 	public $HostName = 'ЗАББИКС Сервер';
-	public $HostGroup = 'Zabbix servers';
+	public $HostGroup = 'Advantal servers';
 	public $HostIp = '127.0.0.1';
 	public $HostPort = '10050';
 
-	public static function prepareHostsData() {
+	public static function prepareHostsData()
+	{
 		CDataHelper::createHosts([
 			[
 				'host' => 'Disabled status',
@@ -62,20 +65,22 @@ class testPageHosts extends CLegacyWebTest {
 		]);
 	}
 
-	public static function allHosts() {
+	public static function allHosts()
+	{
 		return CDBHelper::getDataProvider(
-			'SELECT h.name,h.hostid,g.name AS group_name'.
-			' FROM hosts h'.
-				' LEFT JOIN hosts_groups hg'.
-					' ON hg.hostid=h.hostid'.
-				' LEFT JOIN hstgrp g'.
-					' ON g.groupid=hg.groupid'.
-			' WHERE h.status IN ('.HOST_STATUS_MONITORED.','.HOST_STATUS_NOT_MONITORED.')'.
-			" AND NOT h.flags = 2"
+			'SELECT h.name,h.hostid,g.name AS group_name' .
+				' FROM hosts h' .
+				' LEFT JOIN hosts_groups hg' .
+				' ON hg.hostid=h.hostid' .
+				' LEFT JOIN hstgrp g' .
+				' ON g.groupid=hg.groupid' .
+				' WHERE h.status IN (' . HOST_STATUS_MONITORED . ',' . HOST_STATUS_NOT_MONITORED . ')' .
+				" AND NOT h.flags = 2"
 		);
 	}
 
-	public function testPageHosts_CheckLayout() {
+	public function testPageHosts_CheckLayout()
+	{
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->zbxTestCheckHeader('Hosts');
@@ -132,18 +137,19 @@ class testPageHosts extends CLegacyWebTest {
 	}
 
 	/**
-	* @dataProvider allHosts
-	*/
-	public function testPageHosts_SimpleUpdate($host) {
+	 * @dataProvider allHosts
+	 */
+	public function testPageHosts_SimpleUpdate($host)
+	{
 		$hostid = $host['hostid'];
 		$name = $host['name'];
 
 		$sqlHosts =
-			'SELECT hostid,proxyid,host,status,ipmi_authtype,ipmi_privilege,ipmi_username,'.
-			'ipmi_password,maintenanceid,maintenance_status,maintenance_type,maintenance_from,'.
-			'name,flags,templateid,description,tls_connect,tls_accept'.
-			' FROM hosts'.
-			' WHERE hostid='.$hostid;
+			'SELECT hostid,proxyid,host,status,ipmi_authtype,ipmi_privilege,ipmi_username,' .
+			'ipmi_password,maintenanceid,maintenance_status,maintenance_type,maintenance_from,' .
+			'name,flags,templateid,description,tls_connect,tls_accept' .
+			' FROM hosts' .
+			' WHERE hostid=' . $hostid;
 		$oldHashHosts = CDBHelper::getHash($sqlHosts);
 		$sqlItems = "select * from items where hostid=$hostid order by itemid";
 		$oldHashItems = CDBHelper::getHash($sqlItems);
@@ -183,7 +189,8 @@ class testPageHosts extends CLegacyWebTest {
 		$this->assertEquals($oldHashHostInventory, CDBHelper::getHash($sqlHostInventory));
 	}
 
-	public function getFilterByStatusData() {
+	public function getFilterByStatusData()
+	{
 		return [
 			// Retrieve only Enabled host from specific host group.
 			[
@@ -237,7 +244,8 @@ class testPageHosts extends CLegacyWebTest {
 	/**
 	 * @dataProvider getFilterByStatusData
 	 */
-	public function testPageHosts_FilterByStatus($data) {
+	public function testPageHosts_FilterByStatus($data)
+	{
 		$this->page->login()->open('zabbix.php?action=host.list');
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
 
@@ -249,8 +257,7 @@ class testPageHosts extends CLegacyWebTest {
 		if (array_key_exists('expected', $data)) {
 			// Using column Name check that only the expected Hosts are returned in the list.
 			$this->assertTableDataColumn($data['expected']);
-		}
-		else {
+		} else {
 			// Check that 'No data found' string is returned if no results are expected.
 			$this->assertTableData();
 		}
@@ -259,8 +266,9 @@ class testPageHosts extends CLegacyWebTest {
 		$this->query('button:Reset')->one()->click();
 	}
 
-	public function testPageHosts_MassDisableAll() {
-		DBexecute("update hosts set status=".HOST_STATUS_MONITORED." where status=".HOST_STATUS_NOT_MONITORED);
+	public function testPageHosts_MassDisableAll()
+	{
+		DBexecute("update hosts set status=" . HOST_STATUS_MONITORED . " where status=" . HOST_STATUS_NOT_MONITORED);
 
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$this->zbxTestCheckTitle('Configuration of hosts');
@@ -273,16 +281,17 @@ class testPageHosts extends CLegacyWebTest {
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Hosts disabled');
 
-		$sql = "select * from hosts where status=".HOST_STATUS_MONITORED.
+		$sql = "select * from hosts where status=" . HOST_STATUS_MONITORED .
 			" and NOT flags = 2";
 		$this->assertEquals(0, CDBHelper::getCount($sql), "Chuck Norris: all hosts disabled but DB does not match");
 	}
 
 	/**
-	* @dataProvider allHosts
-	*/
-	public function testPageHosts_MassDisable($host) {
-		DBexecute("update hosts set status=".HOST_STATUS_MONITORED." where status=".HOST_STATUS_NOT_MONITORED);
+	 * @dataProvider allHosts
+	 */
+	public function testPageHosts_MassDisable($host)
+	{
+		DBexecute("update hosts set status=" . HOST_STATUS_MONITORED . " where status=" . HOST_STATUS_NOT_MONITORED);
 
 		$hostid = $host['hostid'];
 
@@ -290,22 +299,23 @@ class testPageHosts extends CLegacyWebTest {
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->query('button:Reset')->one()->click();
 
-		$this->zbxTestCheckboxSelect('hostids_'.$hostid);
+		$this->zbxTestCheckboxSelect('hostids_' . $hostid);
 		$this->zbxTestClickButtonText('Disable');
 		$this->zbxTestAcceptAlert();
 
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Host disabled');
 
-		$sql = "select * from hosts where hostid=$hostid and status=".HOST_STATUS_NOT_MONITORED;
+		$sql = "select * from hosts where hostid=$hostid and status=" . HOST_STATUS_NOT_MONITORED;
 		$this->assertEquals(1, CDBHelper::getCount($sql), "Chuck Norris: host $hostid disabled but status is wrong in the DB");
 	}
 
 	/**
-	* @dataProvider allHosts
-	*/
-	public function testPageHosts_MassActivate($host) {
-		DBexecute("update hosts set status=".HOST_STATUS_NOT_MONITORED." where status=".HOST_STATUS_MONITORED);
+	 * @dataProvider allHosts
+	 */
+	public function testPageHosts_MassActivate($host)
+	{
+		DBexecute("update hosts set status=" . HOST_STATUS_NOT_MONITORED . " where status=" . HOST_STATUS_MONITORED);
 
 		$hostid = $host['hostid'];
 
@@ -313,19 +323,20 @@ class testPageHosts extends CLegacyWebTest {
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->query('button:Reset')->one()->click();
 
-		$this->zbxTestCheckboxSelect('hostids_'.$hostid);
+		$this->zbxTestCheckboxSelect('hostids_' . $hostid);
 		$this->zbxTestClickButtonText('Enable');
 		$this->zbxTestAcceptAlert();
 
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Host enabled');
 
-		$sql = "select * from hosts where hostid=$hostid and status=".HOST_STATUS_MONITORED;
+		$sql = "select * from hosts where hostid=$hostid and status=" . HOST_STATUS_MONITORED;
 		$this->assertEquals(1, CDBHelper::getCount($sql), "Chuck Norris: host $hostid activated but status is wrong in the DB");
 	}
 
-	public function testPageHosts_MassActivateAll() {
-		DBexecute("update hosts set status=".HOST_STATUS_NOT_MONITORED." where status=".HOST_STATUS_MONITORED);
+	public function testPageHosts_MassActivateAll()
+	{
+		DBexecute("update hosts set status=" . HOST_STATUS_NOT_MONITORED . " where status=" . HOST_STATUS_MONITORED);
 
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$this->zbxTestCheckTitle('Configuration of hosts');
@@ -338,12 +349,13 @@ class testPageHosts extends CLegacyWebTest {
 		$this->zbxTestCheckTitle('Configuration of hosts');
 		$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Hosts enabled');
 
-		$sql = "select host from hosts where status=".HOST_STATUS_NOT_MONITORED.
+		$sql = "select host from hosts where status=" . HOST_STATUS_NOT_MONITORED .
 			" and NOT flags = 2";
 		$this->assertEquals(0, CDBHelper::getCount($sql), "Chuck Norris: all hosts activated but DB does not match");
 	}
 
-	public function testPageHosts_FilterByName() {
+	public function testPageHosts_FilterByName()
+	{
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$table = $this->query('class:list-table')->asTable()->one();
 		$filter = $this->query('name:zbx_filter')->asForm()->one();
@@ -355,12 +367,13 @@ class testPageHosts extends CLegacyWebTest {
 		$this->zbxTestTextNotPresent('Displaying 0 of 0 found');
 	}
 
-	public function testPageHosts_FilterByTemplates() {
+	public function testPageHosts_FilterByTemplates()
+	{
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$table = $this->getTable();
 		$filter = $this->query('name:zbx_filter')->asForm()->one();
 		$filter->query('button:Reset')->one()->click();
-		$filter->fill(['Templates' => ['values' =>'Template for web scenario testing', 'context' => 'Templates']]);
+		$filter->fill(['Templates' => ['values' => 'Template for web scenario testing', 'context' => 'Templates']]);
 		$filter->submit();
 		$table->waitUntilReloaded();
 		$this->zbxTestWaitForPageToLoad();
@@ -368,12 +381,13 @@ class testPageHosts extends CLegacyWebTest {
 		$this->assertTableStats(1);
 	}
 
-	public function getProxyFilterData() {
+	public function getProxyFilterData()
+	{
 		return [
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Monitored by' => 'Proxy'
 					],
 					'expected' => [
@@ -421,7 +435,8 @@ class testPageHosts extends CLegacyWebTest {
 	/**
 	 * @dataProvider getProxyFilterData
 	 */
-	public function testPageHosts_FilterMonitoredBy($data) {
+	public function testPageHosts_FilterMonitoredBy($data)
+	{
 		$this->page->login()->open(self::HOST_LIST_PAGE)->waitUntilReady();
 		$table = $this->getTable();
 
@@ -429,19 +444,20 @@ class testPageHosts extends CLegacyWebTest {
 		$filter->query('button:Reset')->one()->click();
 		$filter->fill($data['filter']);
 		$filter->submit();
-		$table ->waitUntilReloaded();
+		$table->waitUntilReloaded();
 		$this->page->waitUntilReady();
 
 		$this->assertTableStats(count($data['expected']));
 		$table = $this->query('class:list-table')->asTable()->one();
 		$this->assertEquals(array_keys($data['expected']), $this->getTableColumnData('Name'));
 
-		foreach($data['expected'] as $host => $proxy) {
+		foreach ($data['expected'] as $host => $proxy) {
 			$this->assertEquals($proxy, $table->findRow('Name', $host)->getColumn('Proxy')->getText());
 		}
 	}
 
-	public function testPageHosts_FilterNone() {
+	public function testPageHosts_FilterNone()
+	{
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$table = $this->query('class:list-table')->asTable()->waitUntilPresent()->one();
 		$filter = $this->query('name:zbx_filter')->asForm()->one();
@@ -459,7 +475,8 @@ class testPageHosts extends CLegacyWebTest {
 		$this->assertTableStats();
 	}
 
-	public function testPageHosts_FilterByAllFields() {
+	public function testPageHosts_FilterByAllFields()
+	{
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$table = $this->query('class:list-table')->asTable()->one();
 		$filter = $this->query('name:zbx_filter')->asForm()->one();
@@ -474,13 +491,15 @@ class testPageHosts extends CLegacyWebTest {
 		$this->assertTableStats(1);
 	}
 
-	public function testPageHosts_FilterReset() {
+	public function testPageHosts_FilterReset()
+	{
 		$this->zbxTestLogin(self::HOST_LIST_PAGE);
 		$this->query('button:Reset')->one()->click();
 		$this->zbxTestTextNotPresent('Displaying 0 of 0 found');
 	}
 
-	public static function getFilterByTagsData() {
+	public static function getFilterByTagsData()
+	{
 		return [
 			// "And" and "And/Or" checks.
 			[
@@ -562,7 +581,7 @@ class testPageHosts extends CLegacyWebTest {
 				[
 					'evaluation_type' => 'And/Or',
 					'tags' => [
-							['name' => 'action', 'operator' => 'Contains']
+						['name' => 'action', 'operator' => 'Contains']
 					],
 					'result' => [
 						['Name' => 'Host for tags filtering'],
@@ -858,14 +877,15 @@ class testPageHosts extends CLegacyWebTest {
 	 *
 	 * @dataProvider getFilterByTagsData
 	 */
-	public function testPageHosts_FilterByTags($data) {
+	public function testPageHosts_FilterByTags($data)
+	{
 		$this->page->login()->open((new CUrl('zabbix.php'))
-			->setArgument('action', 'host.list')
-			->setArgument('filter_groups[]', 4)
-			->setArgument('filter_host', 'host')
-			->setArgument('filter_port', 10051)
-			->setArgument('filter_set', 1)
-			->getUrl()
+				->setArgument('action', 'host.list')
+				->setArgument('filter_groups[]', 4)
+				->setArgument('filter_host', 'host')
+				->setArgument('filter_port', 10051)
+				->setArgument('filter_set', 1)
+				->getUrl()
 		);
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
 		$table = $this->getTable();
@@ -884,7 +904,8 @@ class testPageHosts extends CLegacyWebTest {
 	/**
 	 * Test the Enable and Disable link in the Host list.
 	 */
-	public function testPageHosts_EnableDisableLink() {
+	public function testPageHosts_EnableDisableLink()
+	{
 		$this->page->login()->open('zabbix.php?action=host.list')->waitUntilReady();
 		$host_row = $this->query('class:list-table')->asTable()->one()->findRow('Name', 'Enabled status');
 
@@ -893,14 +914,15 @@ class testPageHosts extends CLegacyWebTest {
 			$this->assertTrue($this->page->isAlertPresent());
 			$this->page->acceptAlert();
 			$this->page->waitUntilReady();
-			$this->assertMessage(TEST_GOOD, 'Host '.strtolower($status));
+			$this->assertMessage(TEST_GOOD, 'Host ' . strtolower($status));
 			$this->assertEquals($status, $host_row->getColumn('Status')->getText());
-			$this->assertEquals($id, CDBHelper::getValue('SELECT status FROM hosts WHERE host='.zbx_dbstr('Enabled status')));
+			$this->assertEquals($id, CDBHelper::getValue('SELECT status FROM hosts WHERE host=' . zbx_dbstr('Enabled status')));
 			CMessageElement::find()->one()->close();
 		}
 	}
 
-	public function testPageHosts_Delete() {
+	public function testPageHosts_Delete()
+	{
 		$this->page->login()->open('zabbix.php?action=host.list')->waitUntilReady();
 
 		$table = $this->query('class:list-table')->asTable()->one();

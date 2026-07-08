@@ -13,14 +13,15 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
 
 /**
  * Test suite for High availability
  *
  * @backup ha_node
  */
-class testHighAvailability extends CIntegrationTest {
+class testHighAvailability extends CIntegrationTest
+{
 
 	const STANDALONE_NAME = '<standalone server>';
 	const NODE1_NAME = 'node1';
@@ -30,7 +31,8 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		$socketDir = $this->getConfigurationValue(self::COMPONENT_SERVER_HANODE1, 'SocketDir');
 
 		if (file_exists($socketDir) === false) {
@@ -46,12 +48,13 @@ class testHighAvailability extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function serverConfigurationProvider_cacheSize() {
+	public function serverConfigurationProvider_cacheSize()
+	{
 		return [
 			self::COMPONENT_SERVER => [
 				'HANodeName' => self::NODE1_NAME,
 				'CacheSize' => '256K',
-				'ListenPort' => PHPUNIT_PORT_PREFIX.self::SERVER_HANODE1_PORT_SUFFIX
+				'ListenPort' => PHPUNIT_PORT_PREFIX . self::SERVER_HANODE1_PORT_SUFFIX
 			]
 		];
 	}
@@ -61,26 +64,28 @@ class testHighAvailability extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function serverConfigurationProvider_ha() {
+	public function serverConfigurationProvider_ha()
+	{
 		return [
 			self::COMPONENT_SERVER => [
 				'HANodeName' => self::NODE1_NAME,
-				'ListenPort' => PHPUNIT_PORT_PREFIX.self::SERVER_HANODE1_PORT_SUFFIX
+				'ListenPort' => PHPUNIT_PORT_PREFIX . self::SERVER_HANODE1_PORT_SUFFIX
 			],
 			self::COMPONENT_SERVER_HANODE1 => [
 				'HANodeName' => self::NODE2_NAME,
-				'NodeAddress' => 'localhost:'.self::getConfigurationValue(self::COMPONENT_SERVER_HANODE1, 'ListenPort')
+				'NodeAddress' => 'localhost:' . self::getConfigurationValue(self::COMPONENT_SERVER_HANODE1, 'ListenPort')
 			]
 		];
 	}
 
 	/**
-	 * Launching Zabbix server in stand-alone mode
+	 * Launching Advantal server in stand-alone mode
 	 *
 	 * @required-components server_ha1
 	 */
-	public function testHighAvailability_checkStandaloneModeStartup() {
-		$this->assertFalse($this->isLogLinePresent(self::COMPONENT_SERVER_HANODE1, '"'.self::NODE1_NAME.'" node started in "active" mode'));
+	public function testHighAvailability_checkStandaloneModeStartup()
+	{
+		$this->assertFalse($this->isLogLinePresent(self::COMPONENT_SERVER_HANODE1, '"' . self::NODE1_NAME . '" node started in "active" mode'));
 
 		return true;
 	}
@@ -91,9 +96,10 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_checkHaStartup() {
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"'.self::NODE1_NAME.'" node started in "active" mode', true, 3, 3);
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"'.self::NODE2_NAME.'" node started in "standby" mode', true, 3, 3);
+	public function testHighAvailability_checkHaStartup()
+	{
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"' . self::NODE1_NAME . '" node started in "active" mode', true, 3, 3);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"' . self::NODE2_NAME . '" node started in "standby" mode', true, 3, 3);
 
 		return true;
 	}
@@ -106,15 +112,16 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_checkModeSwitching() {
+	public function testHighAvailability_checkModeSwitching()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"'.self::NODE2_NAME.'" node switched to "active" mode', true, 5, 15);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"' . self::NODE2_NAME . '" node switched to "active" mode', true, 5, 15);
 
 		$this->startComponent(self::COMPONENT_SERVER, "HA manager started");
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"'.self::NODE1_NAME.'" node started in "standby" mode', true, 5, 15);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"' . self::NODE1_NAME . '" node started in "standby" mode', true, 5, 15);
 
 		$this->stopComponent(self::COMPONENT_SERVER_HANODE1);
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"'.self::NODE1_NAME.'" node switched to "active" mode', true, 5, 15);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"' . self::NODE1_NAME . '" node switched to "active" mode', true, 5, 15);
 
 		return true;
 	}
@@ -127,7 +134,8 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_checkModeSwitching2() {
+	public function testHighAvailability_checkModeSwitching2()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
 		$this->startComponent(self::COMPONENT_SERVER, "HA manager started");
 
@@ -138,11 +146,12 @@ class testHighAvailability extends CIntegrationTest {
 		return true;
 	}
 
-	private function verifyNodesStatus($expected_nodes) {
+	private function verifyNodesStatus($expected_nodes)
+	{
 		$this->executeRuntimeControlCommand(self::COMPONENT_SERVER, 'ha_status');
 
 		foreach ($expected_nodes as $node) {
-			$re = $node["nodename"].".*".$node["expected_status"];
+			$re = $node["nodename"] . ".*" . $node["expected_status"];
 			$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, $re, true, 20, 3, true);
 		}
 
@@ -155,7 +164,8 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_haStatus() {
+	public function testHighAvailability_haStatus()
+	{
 		$expected_nodes = [
 			[
 				"nodename" => self::NODE1_NAME,
@@ -176,7 +186,8 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_removeNode() {
+	public function testHighAvailability_removeNode()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER_HANODE1);
 		$this->executeRuntimeControlCommand(self::COMPONENT_SERVER, 'ha_remove_node=node2');
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, "removed node", true, 3, 5);
@@ -196,12 +207,13 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_failover() {
+	public function testHighAvailability_failover()
+	{
 		$this->executeRuntimeControlCommand(self::COMPONENT_SERVER, 'ha_set_failover_delay=10s');
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'HA failover delay set to 10s');
 
 		$this->stopComponent(self::COMPONENT_SERVER);
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"'.self::NODE2_NAME.'" node switched to "active" mode');
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"' . self::NODE2_NAME . '" node switched to "active" mode');
 
 		$this->startComponent(self::COMPONENT_SERVER, 'HA manager started in standby mode');
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, 'started [trigger housekeeper');
@@ -218,7 +230,7 @@ class testHighAvailability extends CIntegrationTest {
 		], 15, 2);
 		$this->assertCount(1, $response['result']);
 
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"'.self::NODE1_NAME.'" node switched to "active" mode');
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"' . self::NODE1_NAME . '" node switched to "active" mode');
 	}
 
 	/**
@@ -227,7 +239,8 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_cacheSize() {
+	public function testHighAvailability_cacheSize()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
 
 		$newConfig = [
@@ -235,7 +248,7 @@ class testHighAvailability extends CIntegrationTest {
 		];
 
 		self::prepareComponentConfiguration(self::COMPONENT_SERVER, $newConfig);
-		$this->startComponent(self::COMPONENT_SERVER, 'Zabbix Server stopped', true);
+		$this->startComponent(self::COMPONENT_SERVER, 'Advantal server stopped', true);
 		$this->assertTrue(true); // Ignore warning for risky test, checks are performed in nested funcs and exceptions can be thrown
 	}
 
@@ -245,15 +258,16 @@ class testHighAvailability extends CIntegrationTest {
 	 * @required-components server, server_ha1
 	 * @configurationDataProvider serverConfigurationProvider_ha
 	 */
-	public function testHighAvailability_checkRtc() {
+	public function testHighAvailability_checkRtc()
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"'.self::NODE2_NAME.'" node switched to "active" mode', true, 5, 15);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER_HANODE1, '"' . self::NODE2_NAME . '" node switched to "active" mode', true, 5, 15);
 
 		$this->startComponent(self::COMPONENT_SERVER, "HA manager started");
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"'.self::NODE1_NAME.'" node started in "standby" mode', true, 5, 15);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"' . self::NODE1_NAME . '" node started in "standby" mode', true, 5, 15);
 
 		$this->stopComponent(self::COMPONENT_SERVER_HANODE1);
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"'.self::NODE1_NAME.'" node switched to "active" mode', true, 5, 15);
+		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, '"' . self::NODE1_NAME . '" node switched to "active" mode', true, 5, 15);
 
 		$expected_nodes = [
 			[

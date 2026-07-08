@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @onBefore prepareData
@@ -25,14 +25,16 @@ require_once __DIR__.'/../behaviors/CTableBehavior.php';
  *
  * @backup users
  */
-class testPageUsers extends CWebTest {
+class testPageUsers extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior, CTableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CTableBehavior::class,
 			CMessageBehavior::class
@@ -50,7 +52,8 @@ class testPageUsers extends CWebTest {
 	/**
 	 * Data for CheckLayout, CheckFilter and MassDelete scenarios.
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		CDataHelper::call('user.create', [
 			[
 				'username' => 'Ne-w admin абц 頑張って 😀',
@@ -120,7 +123,8 @@ class testPageUsers extends CWebTest {
 		self::$users_count = CDBHelper::getCount(self::USERS_SQL);
 	}
 
-	public function testPageUsers_CheckLayout() {
+	public function testPageUsers_CheckLayout()
+	{
 		// Open Users page.
 		$this->page->login()->open(self::LINK)->waitUntilReady();
 		$this->page->assertTitle('Configuration of users');
@@ -132,7 +136,7 @@ class testPageUsers extends CWebTest {
 
 		// Check placeholders.
 		foreach (['filter_roles__ms', 'filter_usrgrpids__ms'] as $field_id) {
-			$this->assertEquals('type here to search', $form->getField('id:'.$field_id)->getAttribute('placeholder'));
+			$this->assertEquals('type here to search', $form->getField('id:' . $field_id)->getAttribute('placeholder'));
 		}
 
 		$select_dialogs = [
@@ -142,8 +146,8 @@ class testPageUsers extends CWebTest {
 
 		// Click Select buttons and check dialog titles.
 		foreach ($select_dialogs as $id_suffix => $expected_title) {
-			$form->query('xpath:.//div[@id="filter_'.$id_suffix.'"]/following::button[text()="Select"]')->waitUntilClickable()
-					->one()->click();
+			$form->query('xpath:.//div[@id="filter_' . $id_suffix . '"]/following::button[text()="Select"]')->waitUntilClickable()
+				->one()->click();
 			$dialog = COverlayDialogElement::find()->one()->waitUntilReady();
 			$this->assertEquals($expected_title, $dialog->getTitle());
 			$dialog->query('button:Cancel')->one()->click();
@@ -156,10 +160,14 @@ class testPageUsers extends CWebTest {
 		}
 
 		// Check button states.
-		$this->assertEquals(3, $this->query('button', ['Create user', 'Apply', 'Reset'])
+		$this->assertEquals(
+			3,
+			$this->query('button', ['Create user', 'Apply', 'Reset'])
 				->all()->filter(CElementFilter::CLICKABLE)->count()
 		);
-		$this->assertEquals(4, $this->query('button', ['Provision now', 'Reset TOTP secret', 'Unblock', 'Delete'])
+		$this->assertEquals(
+			4,
+			$this->query('button', ['Provision now', 'Reset TOTP secret', 'Unblock', 'Delete'])
 				->all()->filter(CElementFilter::DISABLED)->count()
 		);
 
@@ -180,14 +188,30 @@ class testPageUsers extends CWebTest {
 		$login_time = time();
 		$is_online = [];
 		for ($i = -1; $i <= 3; $i++) {
-			$is_online[] = 'Yes ('.date('Y-m-d H:i:s', $login_time + $i).')';
+			$is_online[] = 'Yes (' . date('Y-m-d H:i:s', $login_time + $i) . ')';
 		}
 
 		// Check table headers and sortable headers.
 		$table = $this->getTable();
 		$this->assertEquals(['Username', 'Name', 'Last name', 'User role', 'Provisioned'], $table->getSortableHeaders()->asText());
-		$this->assertEquals(['', 'Username', 'Name', 'Last name', 'User role', 'Groups', 'Is online?', 'Login', 'Frontend access',
-				'API access', 'Debug mode', 'Status', 'Provisioned', 'Info'], $table->getHeadersText()
+		$this->assertEquals(
+			[
+				'',
+				'Username',
+				'Name',
+				'Last name',
+				'User role',
+				'Groups',
+				'Is online?',
+				'Login',
+				'Frontend access',
+				'API access',
+				'Debug mode',
+				'Status',
+				'Provisioned',
+				'Info'
+			],
+			$table->getHeadersText()
 		);
 
 		// Data for checking table rows in layout test.
@@ -197,7 +221,7 @@ class testPageUsers extends CWebTest {
 				'Name' => 'Zabbix',
 				'Last name' => 'Administrator',
 				'User role' => 'Super admin role',
-				'Groups' => 'Internal, Zabbix administrators',
+				'Groups' => 'Internal, Advantal Administrators',
 				'Login' => 'Ok',
 				'Frontend access' => 'Internal',
 				'API access' => 'Enabled',
@@ -332,7 +356,7 @@ class testPageUsers extends CWebTest {
 			],
 			'Groups' => [
 				'Internal' => 'zabbix.php?action=usergroup.edit&usrgrpid=13',
-				'Zabbix administrators' => 'zabbix.php?action=usergroup.edit&usrgrpid=7'
+				'Advantal Administrators' => 'zabbix.php?action=usergroup.edit&usrgrpid=7'
 			]
 		];
 
@@ -341,7 +365,7 @@ class testPageUsers extends CWebTest {
 		foreach ($expected_links as $column => $links) {
 			foreach ($links as $link_text => $expected_href) {
 				$link = $row->getColumn($column)->query('link', $link_text)->one();
-				$this->assertTrue($link->isClickable(), $link_text.' in '.$column.' should be clickable');
+				$this->assertTrue($link->isClickable(), $link_text . ' in ' . $column . ' should be clickable');
 				$this->assertEquals($expected_href, $link->getAttribute('href'));
 			}
 		}
@@ -351,7 +375,7 @@ class testPageUsers extends CWebTest {
 			'Admin' => [
 				'Groups' => [
 					'Internal' => 'green',
-					'Zabbix administrators' => 'green'
+					'Advantal Administrators' => 'green'
 				],
 				'Is online?' => [
 					'Yes' => 'green'
@@ -418,13 +442,14 @@ class testPageUsers extends CWebTest {
 						$column = $row->getColumn($column);
 						$this->assertStringContainsString($expected_text, $column->getText());
 						$this->assertTrue($column->hasClass($expected_class));
-					}
-					else {
-						$xpath = 'xpath:.//*[text()='.CXPathHelper::escapeQuotes($expected_text).
-							' and contains(@class, '.CXPathHelper::escapeQuotes($expected_class).')]';
-						$this->assertEquals(1, $row->getColumn($column)->query($xpath)->all()->count(),
-								'Expected exactly one element with text '.$expected_text.' and class '.$expected_class.
-								' in column '.$column
+					} else {
+						$xpath = 'xpath:.//*[text()=' . CXPathHelper::escapeQuotes($expected_text) .
+							' and contains(@class, ' . CXPathHelper::escapeQuotes($expected_class) . ')]';
+						$this->assertEquals(
+							1,
+							$row->getColumn($column)->query($xpath)->all()->count(),
+							'Expected exactly one element with text ' . $expected_text . ' and class ' . $expected_class .
+								' in column ' . $column
 						);
 					}
 				}
@@ -438,10 +463,14 @@ class testPageUsers extends CWebTest {
 		$this->selectTableRows();
 		$this->assertSelectedCount(self::$users_count);
 		// Check that buttons "Unblock" and "Delete" become clickable after some users are selected.
-		$this->assertEquals(2, $this->query('button', ['Unblock', 'Delete'])
+		$this->assertEquals(
+			2,
+			$this->query('button', ['Unblock', 'Delete'])
 				->all()->filter(CElementFilter::CLICKABLE)->count()
 		);
-		$this->assertEquals(2, $this->query('button', ['Provision now', 'Reset TOTP secret'])
+		$this->assertEquals(
+			2,
+			$this->query('button', ['Provision now', 'Reset TOTP secret'])
 				->all()->filter(CElementFilter::DISABLED)->count()
 		);
 
@@ -449,7 +478,8 @@ class testPageUsers extends CWebTest {
 		$this->assertSelectedCount(0);
 	}
 
-	public function getFilterData() {
+	public function getFilterData()
+	{
 		return [
 			// #0 No match for name with special symbols.
 			[
@@ -641,7 +671,7 @@ class testPageUsers extends CWebTest {
 			[
 				[
 					'filter' => [
-						'User groups' => 'Zabbix administrators',
+						'User groups' => 'Advantal Administrators',
 						'Username' => 'Admin',
 						'Last name' => 'Administrator'
 					],
@@ -655,7 +685,7 @@ class testPageUsers extends CWebTest {
 			[
 				[
 					'filter' => [
-						'User groups' => 'Zabbix administrators',
+						'User groups' => 'Advantal Administrators',
 						'Username' => 'Admin',
 						'Last name' => 'Administrator',
 						'User roles' => 'Super admin role',
@@ -672,7 +702,8 @@ class testPageUsers extends CWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageUsers_CheckFilter($data) {
+	public function testPageUsers_CheckFilter($data)
+	{
 		$this->page->login()->open(self::LINK)->waitUntilReady();
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 		$this->query('button:Reset')->one()->click();
@@ -687,22 +718,23 @@ class testPageUsers extends CWebTest {
 			$this->assertTableDataColumn($data['expected'], 'Username');
 			// Assert text of displayed rows amount.
 			$this->assertTableStats(count($data['expected']));
-		}
-		else {
+		} else {
 			// Check no data found.
 			$this->assertTableData();
 		}
 	}
 
-	public function testPageUsers_FilterReset() {
+	public function testPageUsers_FilterReset()
+	{
 		$this->page->login()->open(self::LINK)->waitUntilReady();
 		$this->query('name:zbx_filter')->one()->query('button:Reset')->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
 		$this->assertTableStats(self::$users_count);
 	}
 
-	public function testPageUsers_Sort() {
-		$this->page->login()->open(self::LINK.'&sortorder=DESC')->waitUntilReady();
+	public function testPageUsers_Sort()
+	{
+		$this->page->login()->open(self::LINK . '&sortorder=DESC')->waitUntilReady();
 		$this->query('button:Reset')->one()->click();
 		$this->page->waitUntilReady();
 		$table = $this->getTable();
@@ -719,7 +751,8 @@ class testPageUsers extends CWebTest {
 		}
 	}
 
-	public function getUnblockData() {
+	public function getUnblockData()
+	{
 		return [
 			// #0 Unblock one user.
 			[
@@ -747,7 +780,8 @@ class testPageUsers extends CWebTest {
 	/**
 	 * Data for Unblock scenario.
 	 */
-	public function prepareUnblockData() {
+	public function prepareUnblockData()
+	{
 		self::$time = time();
 
 		CDataHelper::call('settings.update', [
@@ -755,10 +789,11 @@ class testPageUsers extends CWebTest {
 		]);
 
 		// Make 3 users blocked.
-		DBexecute('UPDATE users SET'.
-				' attempt_failed = 5,'.
-				' attempt_clock = '.self::$time.','.
-				' attempt_ip = \'fe80::81b6:3d9c:4a2f:1e53%eth0\''.
+		DBexecute(
+			'UPDATE users SET' .
+				' attempt_failed = 5,' .
+				' attempt_clock = ' . self::$time . ',' .
+				' attempt_ip = \'fe80::81b6:3d9c:4a2f:1e53%eth0\'' .
 				' WHERE username IN (\'user-for-blocking\', \'test-user\', \'test-timezone\');'
 		);
 	}
@@ -768,7 +803,8 @@ class testPageUsers extends CWebTest {
 	 *
 	 * @dataProvider getUnblockData
 	 */
-	public function testPageUsers_Unblock($data) {
+	public function testPageUsers_Unblock($data)
+	{
 		$this->page->login()->open(self::LINK)->waitUntilReady();
 		$this->query('name:zbx_filter')->one()->query('button:Reset')->waitUntilClickable()->one()->click();
 
@@ -785,7 +821,7 @@ class testPageUsers extends CWebTest {
 		$this->page->acceptAlert();
 		$this->page->waitUntilReady();
 
-		$this->assertMessage(TEST_GOOD, 'User'.(($user_count === 1) ? '' : 's').' unblocked');
+		$this->assertMessage(TEST_GOOD, 'User' . (($user_count === 1) ? '' : 's') . ' unblocked');
 
 		foreach ($users as $user) {
 			$this->assertEquals('Ok', $this->getTable()->findRow('Username', $user)->getColumn('Login')->getText());
@@ -794,21 +830,23 @@ class testPageUsers extends CWebTest {
 		$this->assertSelectedCount(0);
 
 		// Assert that all targeted users were unblocked.
-		$db_check = CDBHelper::getCount('SELECT NULL FROM users'.
-				' WHERE username IN ('.CDBHelper::escape($users).')'.
-					' AND attempt_failed = 0'.
-					' AND attempt_clock = '.self::$time.''.
-					' AND attempt_ip = \'fe80::81b6:3d9c:4a2f:1e53%eth0\''
+		$db_check = CDBHelper::getCount(
+			'SELECT NULL FROM users' .
+				' WHERE username IN (' . CDBHelper::escape($users) . ')' .
+				' AND attempt_failed = 0' .
+				' AND attempt_clock = ' . self::$time . '' .
+				' AND attempt_ip = \'fe80::81b6:3d9c:4a2f:1e53%eth0\''
 		);
 		$this->assertEquals($user_count, $db_check);
 
 		// If active users provided, check their data was not changed.
 		if (CTestArrayHelper::get($data, 'active_users')) {
-			$db_check = CDBHelper::getCount('SELECT NULL FROM users'.
-					' WHERE username IN ('.CDBHelper::escape($data['active_users']).')'.
-						' AND attempt_failed = 0'.
-						' AND attempt_clock = 0'.
-						' AND attempt_ip = \'\''
+			$db_check = CDBHelper::getCount(
+				'SELECT NULL FROM users' .
+					' WHERE username IN (' . CDBHelper::escape($data['active_users']) . ')' .
+					' AND attempt_failed = 0' .
+					' AND attempt_clock = 0' .
+					' AND attempt_ip = \'\''
 			);
 			$this->assertEquals(count($data['active_users']), $db_check);
 		}
@@ -817,7 +855,8 @@ class testPageUsers extends CWebTest {
 	/**
 	 * Data for Reset TOTP scenario.
 	 */
-	public function prepareResetTOTPData() {
+	public function prepareResetTOTPData()
+	{
 		self::$mfaid = CDataHelper::call('mfa.create', [
 			'type' => MFA_TYPE_TOTP,
 			'name' => 'Users page TOTP',
@@ -881,10 +920,11 @@ class testPageUsers extends CWebTest {
 		];
 
 		foreach (self::$mfa_secrets as $secret) {
-			DBexecute('INSERT INTO mfa_totp_secret (mfa_totp_secretid, mfaid, userid, totp_secret, status, used_codes)'.
-					' VALUES ('.zbx_dbstr($secret['mfa_totp_secretid']).', '.zbx_dbstr($secret['mfaid']).', '.
-					zbx_dbstr($secret['userid']).', '.zbx_dbstr($secret['totp_secret']).', '.zbx_dbstr($secret['status']).
-					','.zbx_dbstr($secret['used_codes']).')'
+			DBexecute(
+				'INSERT INTO mfa_totp_secret (mfa_totp_secretid, mfaid, userid, totp_secret, status, used_codes)' .
+					' VALUES (' . zbx_dbstr($secret['mfa_totp_secretid']) . ', ' . zbx_dbstr($secret['mfaid']) . ', ' .
+					zbx_dbstr($secret['userid']) . ', ' . zbx_dbstr($secret['totp_secret']) . ', ' . zbx_dbstr($secret['status']) .
+					',' . zbx_dbstr($secret['used_codes']) . ')'
 			);
 		}
 	}
@@ -894,7 +934,8 @@ class testPageUsers extends CWebTest {
 	 *
 	 * @onBefore prepareResetTOTPData
 	 */
-	public function testPageUsers_ResetTOTP() {
+	public function testPageUsers_ResetTOTP()
+	{
 		$secret_sql = 'SELECT * FROM mfa_totp_secret ORDER BY mfa_totp_secretid';
 		$this->assertEquals(self::$mfa_secrets, CDBHelper::getAll($secret_sql));
 
@@ -915,7 +956,8 @@ class testPageUsers extends CWebTest {
 	}
 
 
-	public function getCancelData() {
+	public function getCancelData()
+	{
 		return [
 			// #0 Cancel delete.
 			[
@@ -981,7 +1023,8 @@ class testPageUsers extends CWebTest {
 	 *
 	 * @depends testPageUsers_ResetTOTP
 	 */
-	public function testPageUsers_Cancel($data) {
+	public function testPageUsers_Cancel($data)
+	{
 		$old_hash = CDBHelper::getHash(self::USERS_SQL);
 		$action = CTestArrayHelper::get($data, 'action');
 		// Get users, if 'users' key is missing, default to [] for mass delete.
@@ -994,8 +1037,8 @@ class testPageUsers extends CWebTest {
 
 		$this->query('button', $action)->one()->waitUntilClickable()->click();
 		$expected_text = ($action === 'Reset TOTP secret')
-			? 'Multi-factor TOTP secret'.(($user_count > 1) ? 's' : '').' will be deleted.'
-			: $action.' selected user'.(($user_count > 1) ? 's?' : '?');
+			? 'Multi-factor TOTP secret' . (($user_count > 1) ? 's' : '') . ' will be deleted.'
+			: $action . ' selected user' . (($user_count > 1) ? 's?' : '?');
 
 		$this->assertEquals($expected_text, $this->page->getAlertText());
 
@@ -1005,7 +1048,8 @@ class testPageUsers extends CWebTest {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::USERS_SQL));
 	}
 
-	public function getDeleteData() {
+	public function getDeleteData()
+	{
 		return [
 			// #0 Delete one user.
 			[
@@ -1071,7 +1115,8 @@ class testPageUsers extends CWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testPageUsers_Delete($data) {
+	public function testPageUsers_Delete($data)
+	{
 		// Get users, if 'users' key is missing, default to [] for mass delete.
 		$users = CTestArrayHelper::get($data, 'users', []);
 		// User count that will be selected before delete action.
@@ -1086,23 +1131,26 @@ class testPageUsers extends CWebTest {
 		$this->page->waitUntilReady();
 
 		if (CTestArrayHelper::get($data, 'expected') === TEST_GOOD) {
-			$this->assertMessage(TEST_GOOD, 'User'.(($user_count === 1) ? '' : 's').' deleted');
+			$this->assertMessage(TEST_GOOD, 'User' . (($user_count === 1) ? '' : 's') . ' deleted');
 			// After a successful delete action, the user selection is reset.
 			$this->assertSelectedCount(0);
 
 			// Assert that 0 of the targeted users were found.
-			$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM users'.
-					' WHERE username IN ('.CDBHelper::escape($users).')')
+			$this->assertEquals(
+				0,
+				CDBHelper::getCount('SELECT NULL FROM users' .
+					' WHERE username IN (' . CDBHelper::escape($users) . ')')
 			);
-		}
-		else {
-			$this->assertMessage(TEST_BAD, 'Cannot delete user'.(($user_count === 1) ? '' : 's'), $data['message']);
+		} else {
+			$this->assertMessage(TEST_BAD, 'Cannot delete user' . (($user_count === 1) ? '' : 's'), $data['message']);
 			// After an unsuccessful delete action, the user selection remained the same.
 			$this->assertSelectedCount($user_count);
 
 			// Assert that the users are still in the database.
-			$this->assertEquals($user_count, CDBHelper::getCount('SELECT NULL FROM users'.
-					' WHERE username IN ('.CDBHelper::escape($users).')')
+			$this->assertEquals(
+				$user_count,
+				CDBHelper::getCount('SELECT NULL FROM users' .
+					' WHERE username IN (' . CDBHelper::escape($users) . ')')
 			);
 		}
 

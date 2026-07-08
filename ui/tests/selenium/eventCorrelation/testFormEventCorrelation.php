@@ -14,24 +14,25 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup correlation
  *
  * @onBefore prepareData
  */
-class testFormEventCorrelation extends CWebTest {
+class testFormEventCorrelation extends CWebTest
+{
 
-	const HASH_SQL = 'SELECT * FROM correlation c INNER JOIN corr_condition cc ON c.correlationid = cc.correlationid'.
-			' LEFT JOIN corr_operation co ON c.correlationid = co.correlationid'.
-			' LEFT JOIN corr_condition_group ccg ON cc.corr_conditionid = ccg.corr_conditionid'.
-			' LEFT JOIN corr_condition_tag cct ON cc.corr_conditionid = cct.corr_conditionid'.
-			' LEFT JOIN corr_condition_tagpair cctp ON cc.corr_conditionid = cctp.corr_conditionid'.
-			' LEFT JOIN corr_condition_tagvalue cctv ON cc.corr_conditionid = cctv.corr_conditionid'.
-			' ORDER BY cc.corr_conditionid';
+	const HASH_SQL = 'SELECT * FROM correlation c INNER JOIN corr_condition cc ON c.correlationid = cc.correlationid' .
+		' LEFT JOIN corr_operation co ON c.correlationid = co.correlationid' .
+		' LEFT JOIN corr_condition_group ccg ON cc.corr_conditionid = ccg.corr_conditionid' .
+		' LEFT JOIN corr_condition_tag cct ON cc.corr_conditionid = cct.corr_conditionid' .
+		' LEFT JOIN corr_condition_tagpair cctp ON cc.corr_conditionid = cctp.corr_conditionid' .
+		' LEFT JOIN corr_condition_tagvalue cctv ON cc.corr_conditionid = cctv.corr_conditionid' .
+		' ORDER BY cc.corr_conditionid';
 
 	protected static $update_correlation_id;
 	protected static $update_correlation_initial = [
@@ -50,14 +51,16 @@ class testFormEventCorrelation extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
 		];
 	}
 
-	public function prepareData() {
+	public function prepareData()
+	{
 		CDataHelper::call('correlation.create', [
 			[
 				'name' => 'Event correlation for layout check',
@@ -122,14 +125,16 @@ class testFormEventCorrelation extends CWebTest {
 
 		// Create the correlation that will be reset each time for the update scenarios.
 		self::$update_correlation_id = CDataHelper::call(
-				'correlation.create', self::$update_correlation_initial
+			'correlation.create',
+			self::$update_correlation_initial
 		)['correlationids'][0];
 	}
 
 	/**
 	 * Test the layout and basic functionality of the form.
 	 */
-	public function testFormEventCorrelation_Layout() {
+	public function testFormEventCorrelation_Layout()
+	{
 		$this->page->login()->open('zabbix.php?action=correlation.list')->waitUntilReady();
 
 		// Open 'New event correlation' modal.
@@ -140,12 +145,13 @@ class testFormEventCorrelation extends CWebTest {
 
 		// Check modal header buttons.
 		foreach (['Help', 'Close'] as $button_title) {
-			$this->assertTrue($dialog->query('xpath:.//*[@title="'.$button_title.'"]')->one()->isClickable());
+			$this->assertTrue($dialog->query('xpath:.//*[@title="' . $button_title . '"]')->one()->isClickable());
 		}
 
 		// Check form labels.
-		$this->assertEqualsCanonicalizing(['Name', 'Conditions', 'Description', 'Operations', 'Enabled'],
-				$form->getLabels(CElementFilter::VISIBLE)->asText()
+		$this->assertEqualsCanonicalizing(
+			['Name', 'Conditions', 'Description', 'Operations', 'Enabled'],
+			$form->getLabels(CElementFilter::VISIBLE)->asText()
 		);
 
 		// Check form inputs to be enabled.
@@ -160,8 +166,13 @@ class testFormEventCorrelation extends CWebTest {
 		$field_attributes = [
 			'Name' => ['type' => 'text', 'maxlength' => 255, 'value' => '', 'autofocus' => 'true'],
 			'id:evaltype' => ['value' => 0],
-			'id:formula' => ['type' => 'text', 'value' => '', 'maxlength' => 255, 'placeholder' => 'A or (B and C) ...',
-					'disabled' => 'true'],
+			'id:formula' => [
+				'type' => 'text',
+				'value' => '',
+				'maxlength' => 255,
+				'placeholder' => 'A or (B and C) ...',
+				'disabled' => 'true'
+			],
 			'Description' => ['maxlength' => 65535, 'value' => '', 'rows' => 7]
 		];
 
@@ -175,7 +186,7 @@ class testFormEventCorrelation extends CWebTest {
 
 		// Check that Type of calculation field is hidden.
 		foreach (['evaltype', 'formula'] as $id) {
-			$this->assertFalse($form->getField('id:'.$id)->isVisible());
+			$this->assertFalse($form->getField('id:' . $id)->isVisible());
 		}
 
 		// Check Conditions table.
@@ -185,14 +196,16 @@ class testFormEventCorrelation extends CWebTest {
 
 		// Check Operations checkbox list.
 		$operations_checkbox_list = $form->getField('Operations');
-		$this->assertEqualsCanonicalizing(['Close old events', 'Close new event'],
-				$operations_checkbox_list->getLabels(CElementFilter::VISIBLE)->asText()
+		$this->assertEqualsCanonicalizing(
+			['Close old events', 'Close new event'],
+			$operations_checkbox_list->getLabels(CElementFilter::VISIBLE)->asText()
 		);
 		$this->assertEquals([], $operations_checkbox_list->getValue());
 		$this->assertTrue($operations_checkbox_list->isEnabled());
 
 		// Check that "one operation must be selected" text exists.
-		$this->assertTrue($dialog->query('xpath:.//label[text()="At least one operation must be selected."]')->one()
+		$this->assertTrue(
+			$dialog->query('xpath:.//label[text()="At least one operation must be selected."]')->one()
 				->hasClass('form-label-asterisk')
 		);
 
@@ -202,7 +215,9 @@ class testFormEventCorrelation extends CWebTest {
 		$this->assertEquals(true, $enabled_checkbox->getValue());
 
 		// Check modal footer buttons.
-		$this->assertEquals(['Add', 'Cancel'], $dialog->getFooter()->query('button')->all()
+		$this->assertEquals(
+			['Add', 'Cancel'],
+			$dialog->getFooter()->query('button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 
@@ -259,7 +274,9 @@ class testFormEventCorrelation extends CWebTest {
 		}
 
 		// Check modal footer buttons.
-		$this->assertEquals(['Add', 'Cancel'], $condition_dialog->getFooter()->query('button')->all()
+		$this->assertEquals(
+			['Add', 'Cancel'],
+			$condition_dialog->getFooter()->query('button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 
@@ -271,7 +288,7 @@ class testFormEventCorrelation extends CWebTest {
 		$form->invalidate();
 
 		foreach (['evaltype', 'formula'] as $id) {
-			$field = $form->getField('id:'.$id);
+			$field = $form->getField('id:' . $id);
 			$this->assertTrue($field->isVisible() && $field->isEnabled());
 		}
 
@@ -285,7 +302,8 @@ class testFormEventCorrelation extends CWebTest {
 		COverlayDialogElement::closeAll();
 	}
 
-	public function getEventCorrelationData() {
+	public function getEventCorrelationData()
+	{
 		return [
 			// #0
 			[
@@ -433,7 +451,7 @@ class testFormEventCorrelation extends CWebTest {
 					'conditions' => [
 						[
 							'Type' => 'New event host group',
-							'Host groups' => 'Zabbix servers'
+							'Host groups' => 'Advantal servers'
 						],
 						[
 							'Type' => 'New event host group',
@@ -1014,7 +1032,8 @@ class testFormEventCorrelation extends CWebTest {
 	 *
 	 * @dataProvider getEventCorrelationData
 	 */
-	public function testFormEventCorrelation_Create($data) {
+	public function testFormEventCorrelation_Create($data)
+	{
 		$this->checkCreateUpdate($data);
 	}
 
@@ -1023,7 +1042,8 @@ class testFormEventCorrelation extends CWebTest {
 	 *
 	 * @onBefore resetUpdateCorrelation
 	 */
-	public function testFormEventCorrelation_SimpleUpdate() {
+	public function testFormEventCorrelation_SimpleUpdate()
+	{
 		$this->checkCreateUpdate([], true);
 	}
 
@@ -1033,14 +1053,16 @@ class testFormEventCorrelation extends CWebTest {
 	 * @onBefore     resetUpdateCorrelation
 	 * @dataProvider getEventCorrelationData
 	 */
-	public function testFormEventCorrelation_Update($data) {
+	public function testFormEventCorrelation_Update($data)
+	{
 		$this->checkCreateUpdate($data, true);
 	}
 
 	/**
 	 * Test cloning of an Event Correlation.
 	 */
-	public function testFormEventCorrelation_Clone() {
+	public function testFormEventCorrelation_Clone()
+	{
 		$this->page->login()->open('zabbix.php?action=correlation.list')->waitUntilReady();
 		$this->query('link:Event correlation for clone')->one()->click();
 
@@ -1075,7 +1097,8 @@ class testFormEventCorrelation extends CWebTest {
 	/**
 	 * Test deletion of an Event Correlation.
 	 */
-	public function testFormEventCorrelation_Delete() {
+	public function testFormEventCorrelation_Delete()
+	{
 		$this->page->login()->open('zabbix.php?action=correlation.list')->waitUntilReady();
 		$table = $this->query('class:list-table')->asTable()->one();
 		$row_count_before = $table->getRows()->count();
@@ -1089,41 +1112,46 @@ class testFormEventCorrelation extends CWebTest {
 		$this->assertMessage(TEST_GOOD, 'Event correlation deleted');
 		$this->assertTableStats($row_count_before - 1);
 		$this->assertFalse($this->query('link', $name)->exists());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM correlation WHERE name='.CDBHelper::escape($name)));
+		$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM correlation WHERE name=' . CDBHelper::escape($name)));
 	}
 
 	/**
 	 * Test opening an Event Correlation create form but then cancelling.
 	 */
-	public function testFormEventCorrelation_CancelCreate() {
+	public function testFormEventCorrelation_CancelCreate()
+	{
 		$this->checkCancelAction('create');
 	}
 
 	/**
 	 * Test opening an Event Correlation update form but then cancelling.
 	 */
-	public function testFormEventCorrelation_CancelUpdate() {
+	public function testFormEventCorrelation_CancelUpdate()
+	{
 		$this->checkCancelAction('update');
 	}
 
 	/**
 	 * Test trying to add a Condition, but then cancelling.
 	 */
-	public function testFormEventCorrelation_CancelAddCondition() {
+	public function testFormEventCorrelation_CancelAddCondition()
+	{
 		$this->checkCancelAction('add_condition');
 	}
 
 	/**
 	 * Test opening an Event Correlation clone form but then cancelling.
 	 */
-	public function testFormEventCorrelation_CancelClone() {
+	public function testFormEventCorrelation_CancelClone()
+	{
 		$this->checkCancelAction('clone');
 	}
 
 	/**
 	 * Test trying to delete an Event Correlation but then cancelling.
 	 */
-	public function testFormEventCorrelation_CancelDelete() {
+	public function testFormEventCorrelation_CancelDelete()
+	{
 		$this->checkCancelAction('delete');
 	}
 
@@ -1133,7 +1161,8 @@ class testFormEventCorrelation extends CWebTest {
 	 * @param array $data      data from data provider
 	 * @param bool  $update    if an update should be performed
 	 */
-	protected function checkCreateUpdate($data, $update = false) {
+	protected function checkCreateUpdate($data, $update = false)
+	{
 		// Setup for DB data check later.
 		$hash_before = CDBHelper::getHash(self::HASH_SQL);
 		$count_sql = 'SELECT NULL FROM correlation';
@@ -1146,7 +1175,7 @@ class testFormEventCorrelation extends CWebTest {
 		if ($update) {
 			// When it is needed to avoid Name conflicts.
 			if (CTestArrayHelper::get($data, 'unique_name')) {
-				$data['fields']['Name'] = $data['fields']['Name'].' update';
+				$data['fields']['Name'] = $data['fields']['Name'] . ' update';
 			}
 
 			// Clear the Name field when updating (unless required).
@@ -1159,7 +1188,7 @@ class testFormEventCorrelation extends CWebTest {
 		$this->page->login()->open('zabbix.php?action=correlation.list')->waitUntilReady();
 
 		// Open the correct Correlation form.
-		$locator = $update ? 'link:'.self::$update_correlation_initial['name'] : 'button:Create event correlation';
+		$locator = $update ? 'link:' . self::$update_correlation_initial['name'] : 'button:Create event correlation';
 		$this->query($locator)->one()->click();
 
 		$dialog = COverlayDialogElement::find()->waitUntilReady()->one();
@@ -1198,9 +1227,9 @@ class testFormEventCorrelation extends CWebTest {
 			}
 		}
 
-		if (array_key_exists('expected_expression'.($update ? '_update' : ''), $data)) {
+		if (array_key_exists('expected_expression' . ($update ? '_update' : ''), $data)) {
 			$expression_text = $form->query('id:expression')->one()->getText();
-			$this->assertEquals($data['expected_expression'.($update ? '_update' : '')], $expression_text);
+			$this->assertEquals($data['expected_expression' . ($update ? '_update' : '')], $expression_text);
 		}
 
 		// Submit 'New event correlation' form only if error in the 'New condition' modal not expected.
@@ -1213,7 +1242,7 @@ class testFormEventCorrelation extends CWebTest {
 			// When no error expected.
 
 			$dialog->ensureNotPresent();
-			$this->assertMessage(TEST_GOOD, 'Event correlation '.($update ? 'updated' : 'created'));
+			$this->assertMessage(TEST_GOOD, 'Event correlation ' . ($update ? 'updated' : 'created'));
 
 			if ($update) {
 				// Validate the old Name when updating.
@@ -1223,20 +1252,24 @@ class testFormEventCorrelation extends CWebTest {
 
 				// Check the default condition when updating.
 				if (!CTestArrayHelper::get($data, 'remove_condition')) {
-					$data['conditions'] = array_merge([['Type' => 'Old event tag name', 'Tag' => '0 update tag']],
-							CTestArrayHelper::get($data, 'conditions', [])
+					$data['conditions'] = array_merge(
+						[['Type' => 'Old event tag name', 'Tag' => '0 update tag']],
+						CTestArrayHelper::get($data, 'conditions', [])
 					);
 				}
 
 				// Set the default expected 'Description' when updating.
-				$data['fields']['Description'] = CTestArrayHelper::get($data['fields'], 'Description',
-						'Test description update'
+				$data['fields']['Description'] = CTestArrayHelper::get(
+					$data['fields'],
+					'Description',
+					'Test description update'
 				);
 			}
 
 			// Assert data in DB.
 			$this->assertEquals($count_before + ($update ? 0 : 1), CDBHelper::getCount($count_sql));
-			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM correlation WHERE name='.
+			$this->assertEquals(1, CDBHelper::getCount(
+				'SELECT NULL FROM correlation WHERE name=' .
 					zbx_dbstr($data['fields']['Name'])
 			));
 
@@ -1260,8 +1293,7 @@ class testFormEventCorrelation extends CWebTest {
 			$this->assertConditionsTable($data['conditions'], $dialog, CTestArrayHelper::get($data, 'custom_conditions_order'));
 
 			$dialog->close();
-		}
-		else if (array_key_exists('condition_error', $data)) {
+		} else if (array_key_exists('condition_error', $data)) {
 			// When expecting an error in the 'New condition' modal.
 
 			$this->assertMessage(TEST_BAD, null, $data['condition_error']);
@@ -1269,11 +1301,10 @@ class testFormEventCorrelation extends CWebTest {
 
 			// Close both dialogs.
 			COverlayDialogElement::closeAll();
-		}
-		else {
+		} else {
 			// When expecting an error in the 'New event correlation' modal.
 
-			$this->assertMessage(TEST_BAD, 'Cannot '.($update ? 'update' : 'create').' event correlation', $data['errors']);
+			$this->assertMessage(TEST_BAD, 'Cannot ' . ($update ? 'update' : 'create') . ' event correlation', $data['errors']);
 			$dialog->close();
 			$this->assertEquals($hash_before, CDBHelper::getHash(self::HASH_SQL));
 		}
@@ -1282,7 +1313,8 @@ class testFormEventCorrelation extends CWebTest {
 	/**
 	 * Resets the update correlation to the starting state.
 	 */
-	public function resetUpdateCorrelation() {
+	public function resetUpdateCorrelation()
+	{
 		// Data is the initial state + the id of the Correlation that is going to be reset.
 		$data = self::$update_correlation_initial;
 		$data['correlationid'] = self::$update_correlation_id;
@@ -1294,7 +1326,8 @@ class testFormEventCorrelation extends CWebTest {
 	 *
 	 * @param string $action    name of the action cancelled
 	 */
-	protected function checkCancelAction($action) {
+	protected function checkCancelAction($action)
+	{
 		$old_hash = CDBHelper::getHash(self::HASH_SQL);
 
 		$this->page->login()->open('zabbix.php?action=correlation.list')->waitUntilReady();
@@ -1361,7 +1394,8 @@ class testFormEventCorrelation extends CWebTest {
 	 * @param COverlayDialogElement $dialog          dialog element that contains the table	 *
 	 * @param bool                  $custom_order    if true then displayed conditions will be sorted
 	 */
-	protected function assertConditionsTable($conditions, $dialog, $custom_order = false) {
+	protected function assertConditionsTable($conditions, $dialog, $custom_order = false)
+	{
 		// Assert the Label column.
 		$count = $dialog->query('id:condition_table')->asTable()->one()->getRows()->count();
 		$this->assertTableDataColumn(array_slice(range('A', 'Z'), 0, $count), 'Label', 'id:condition_table');
@@ -1379,7 +1413,8 @@ class testFormEventCorrelation extends CWebTest {
 	 *
 	 * @return array
 	 */
-	protected function getExpectedConditionsArray($conditions, $custom_order = false) {
+	protected function getExpectedConditionsArray($conditions, $custom_order = false)
+	{
 		$result = [];
 
 		/*
@@ -1420,24 +1455,24 @@ class testFormEventCorrelation extends CWebTest {
 		foreach ($conditions as $condition) {
 			switch ($condition['Type']) {
 				case 'Event tag pair':
-					$text = 'Value of old event tag '.$condition['Old tag name'].' equals value of new event tag '.
-							$condition['New tag name'];
+					$text = 'Value of old event tag ' . $condition['Old tag name'] . ' equals value of new event tag ' .
+						$condition['New tag name'];
 					break;
 
 				case 'Old event tag value':
-					$text = 'Value of old event tag '.$condition['Tag'].' '.
-							CTestArrayHelper::get($condition, 'Operator', 'equals').' '.$condition['Value'];
+					$text = 'Value of old event tag ' . $condition['Tag'] . ' ' .
+						CTestArrayHelper::get($condition, 'Operator', 'equals') . ' ' . $condition['Value'];
 					break;
 
 				case 'New event tag value':
-					$text = 'Value of new event tag '.$condition['Tag'].' '.
-							CTestArrayHelper::get($condition, 'Operator', 'equals').' '.$condition['Value'];
+					$text = 'Value of new event tag ' . $condition['Tag'] . ' ' .
+						CTestArrayHelper::get($condition, 'Operator', 'equals') . ' ' . $condition['Value'];
 					break;
 
 				default:
-					$text = $condition['Type'].' '.
-							(array_key_exists('Operator', $condition) ? $condition['Operator'] : 'equals').' '.
-							CTestArrayHelper::get($condition, 'Tag', CTestArrayHelper::get($condition, 'Host groups'));
+					$text = $condition['Type'] . ' ' .
+						(array_key_exists('Operator', $condition) ? $condition['Operator'] : 'equals') . ' ' .
+						CTestArrayHelper::get($condition, 'Tag', CTestArrayHelper::get($condition, 'Host groups'));
 			}
 
 			$result[] = trim($text);
@@ -1452,7 +1487,8 @@ class testFormEventCorrelation extends CWebTest {
 	 * @param CFormElement $form      form element that will be filled
 	 * @param array        $values    the values to fill in the form
 	 */
-	protected function fillConditionForm($form, $values) {
+	protected function fillConditionForm($form, $values)
+	{
 		$values['Type'] = CFormElement::RELOADABLE_FILL($values['Type']);
 		$values['Operator'] = CTestArrayHelper::get($values, 'Operator', 'equals');
 		unset($values['custom_order']);

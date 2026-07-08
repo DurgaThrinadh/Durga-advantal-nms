@@ -14,26 +14,29 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup alerts
  *
  * @dataSource LoginUsers, Actions
  */
-class testPageReportsActionLog extends CWebTest {
+class testPageReportsActionLog extends CWebTest
+{
 
 	/**
 	 * Attach TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CTableBehavior::class];
 	}
 
-	public function testPageReportsActionLog_CheckLayout() {
+	public function testPageReportsActionLog_CheckLayout()
+	{
 		$this->page->login()->open('zabbix.php?action=actionlog.list')->waitUntilReady();
 
 		// Check header and title.
@@ -47,8 +50,10 @@ class testPageReportsActionLog extends CWebTest {
 		}
 
 		// Check that filter set to display Last hour data.
-		$this->assertEquals('selected', $this->query('xpath://a[@data-label="Last 1 hour"]')->one()
-			->getAttribute('class')
+		$this->assertEquals(
+			'selected',
+			$this->query('xpath://a[@data-label="Last 1 hour"]')->one()
+				->getAttribute('class')
 		);
 
 		// Check data set values in input field.
@@ -60,7 +65,8 @@ class testPageReportsActionLog extends CWebTest {
 
 		// Check filter buttons.
 		foreach (['Apply', 'Reset'] as $button) {
-			$this->assertTrue($form->query('xpath:.//div[@class="filter-forms"]/button[text()="'.$button.'"]')
+			$this->assertTrue(
+				$form->query('xpath:.//div[@class="filter-forms"]/button[text()="' . $button . '"]')
 					->one()->isClickable()
 			);
 		}
@@ -75,17 +81,21 @@ class testPageReportsActionLog extends CWebTest {
 		$this->assertEquals(255, $form->getField('Search string')->waitUntilVisible()->getAttribute('maxlength'));
 
 		// Check table headers.
-		$this->assertEquals(['Time', 'Action', 'Media type', 'Recipient', 'Message', 'Status', 'Info'],
-				$this->query('class:list-table')->asTable()->one()->getHeadersText()
+		$this->assertEquals(
+			['Time', 'Action', 'Media type', 'Recipient', 'Message', 'Status', 'Info'],
+			$this->query('class:list-table')->asTable()->one()->getHeadersText()
 		);
 
 		// Check status available values.
-		$this->assertEquals(['In progress', 'Sent/Executed', 'Failed'], $this->query('id:filter_status')
+		$this->assertEquals(
+			['In progress', 'Sent/Executed', 'Failed'],
+			$this->query('id:filter_status')
 				->asCheckboxList()->one()->getLabels()->asText()
 		);
 	}
 
-	public static function getCheckFilterData() {
+	public static function getCheckFilterData()
+	{
 		return [
 			// #0.
 			[
@@ -197,7 +207,7 @@ class testPageReportsActionLog extends CWebTest {
 						'Actions' => ['Trigger action 3']
 					],
 					'result' => [
-						['Action' => 'Trigger action 3', 'Recipient' => "Admin (Zabbix Administrator)\ntest.test@zabbix.com"]
+						['Action' => 'Trigger action 3', 'Recipient' => "Admin (Advantal Administrator)\ntest.test@zabbix.com"]
 					]
 				]
 			],
@@ -209,11 +219,11 @@ class testPageReportsActionLog extends CWebTest {
 						'Media types' => ['Email']
 					],
 					'result' => [
-						['Media type' => 'Email', 'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"],
-						['Media type' => 'Email', 'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"],
-						['Media type' => 'Email', 'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"],
-						['Media type' => 'Email', 'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"],
-						['Media type' => 'Email', 'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"]
+						['Media type' => 'Email', 'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"],
+						['Media type' => 'Email', 'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"],
+						['Media type' => 'Email', 'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"],
+						['Media type' => 'Email', 'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"],
+						['Media type' => 'Email', 'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"]
 					]
 				]
 			],
@@ -239,32 +249,32 @@ class testPageReportsActionLog extends CWebTest {
 						[
 							'Action' => 'Trigger action 3',
 							'Media type' => 'Discord',
-							'Recipient' => "Admin (Zabbix Administrator)\ntest.test@zabbix.com"
+							'Recipient' => "Admin (Advantal Administrator)\ntest.test@zabbix.com"
 						],
 						[
 							'Action' => 'Trigger action 2',
 							'Media type' => 'Email',
-							'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"
 						],
 						[
 							'Action' => 'Trigger action 2',
 							'Media type' => 'Email',
-							'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"
 						],
 						[
 							'Action' => 'Trigger action 2',
 							'Media type' => 'Email',
-							'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"
 						],
 						[
 							'Action' => 'Trigger action 2',
 							'Media type' => 'Email',
-							'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"
 						],
 						[
 							'Action' => 'Trigger action 2',
 							'Media type' => 'Email',
-							'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com"
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com"
 						]
 					]
 				]
@@ -371,7 +381,7 @@ class testPageReportsActionLog extends CWebTest {
 					],
 					'result' => [
 						[
-							'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com",
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com",
 							'Status' => "In progress:\n3 retries left"
 						]
 					]
@@ -436,16 +446,22 @@ class testPageReportsActionLog extends CWebTest {
 					],
 					'result' => [
 						[
-							'Action' => 'Trigger action 2', 'Media type' => 'Email',
-								'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com", 'Status' => 'Sent'
+							'Action' => 'Trigger action 2',
+							'Media type' => 'Email',
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com",
+							'Status' => 'Sent'
 						],
 						[
-							'Action' => 'Trigger action 2', 'Media type' => 'Email',
-								'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com", 'Status' => 'Sent'
+							'Action' => 'Trigger action 2',
+							'Media type' => 'Email',
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com",
+							'Status' => 'Sent'
 						],
 						[
-							'Action' => 'Trigger action 2', 'Media type' => 'Email',
-								'Recipient' => "Admin (Zabbix Administrator)\nigor.danoshaites@zabbix.com", 'Status' => 'Sent'
+							'Action' => 'Trigger action 2',
+							'Media type' => 'Email',
+							'Recipient' => "Admin (Advantal Administrator)\nigor.danoshaites@zabbix.com",
+							'Status' => 'Sent'
 						]
 					]
 				]
@@ -467,8 +483,8 @@ class testPageReportsActionLog extends CWebTest {
 					],
 					'result' => [
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 20\n\nMessage:\nEvent ".
-									"at 2012.02.20 10:00:40 Hostname: H1 Value of item key1 > 20: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 20\n\nMessage:\nEvent " .
+								"at 2012.02.20 10:00:40 Hostname: H1 Value of item key1 > 20: PROBLEM"
 						]
 					]
 				]
@@ -481,24 +497,24 @@ class testPageReportsActionLog extends CWebTest {
 					],
 					'result' => [
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 20\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:40 Hostname: H1 Value of item key1 > 20: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 20\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:40 Hostname: H1 Value of item key1 > 20: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 10\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:30 Hostname: H1 Value of item key1 > 10: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 10\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:30 Hostname: H1 Value of item key1 > 10: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 7\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:20 Hostname: H1 Value of item key1 > 7: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 7\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:20 Hostname: H1 Value of item key1 > 7: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 6\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:10 Hostname: H1 Value of item key1 > 6: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 6\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:10 Hostname: H1 Value of item key1 > 6: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 5\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:00 Hostname: H1 Value of item key1 > 5: PROBLEM Last value: 6"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 5\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:00 Hostname: H1 Value of item key1 > 5: PROBLEM Last value: 6"
 						]
 					]
 				]
@@ -511,8 +527,8 @@ class testPageReportsActionLog extends CWebTest {
 					],
 					'result' => [
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 5\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:00 Hostname: H1 Value of item key1 > 5: PROBLEM Last value: 6"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 5\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:00 Hostname: H1 Value of item key1 > 5: PROBLEM Last value: 6"
 						]
 					]
 				]
@@ -554,24 +570,24 @@ class testPageReportsActionLog extends CWebTest {
 							'Message' => "Command:\nCommand: H1:ls -la"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 20\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:40 Hostname: H1 Value of item key1 > 20: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 20\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:40 Hostname: H1 Value of item key1 > 20: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 10\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:30 Hostname: H1 Value of item key1 > 10: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 10\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:30 Hostname: H1 Value of item key1 > 10: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 7\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:20 Hostname: H1 Value of item key1 > 7: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 7\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:20 Hostname: H1 Value of item key1 > 7: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 6\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:10 Hostname: H1 Value of item key1 > 6: PROBLEM"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 6\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:10 Hostname: H1 Value of item key1 > 6: PROBLEM"
 						],
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 5\n\nMessage:\nEvent at 2012.02.20 ".
-									"10:00:00 Hostname: H1 Value of item key1 > 5: PROBLEM Last value: 6"
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 5\n\nMessage:\nEvent at 2012.02.20 " .
+								"10:00:00 Hostname: H1 Value of item key1 > 5: PROBLEM Last value: 6"
 						]
 					]
 				]
@@ -593,7 +609,7 @@ class testPageReportsActionLog extends CWebTest {
 					],
 					'result' => [
 						[
-							'Message' => "Subject:\nPROBLEM: Value of item key1 > 10\n\nMessage:\nEvent at 2012.02.20 ".
+							'Message' => "Subject:\nPROBLEM: Value of item key1 > 10\n\nMessage:\nEvent at 2012.02.20 " .
 								"10:00:30 Hostname: H1 Value of item key1 > 10: PROBLEM"
 						]
 					],
@@ -645,9 +661,10 @@ class testPageReportsActionLog extends CWebTest {
 	 *
 	 * @dataProvider getCheckFilterData
 	 */
-	public function testPageReportsActionLog_CheckFilter($data) {
-		$this->page->login()->open('zabbix.php?action=actionlog.list&from=2012-02-20+09:01:00&to=2012-02-20+11:01:00&'.
-				'filter_messages=&filter_set=1')->waitUntilReady();
+	public function testPageReportsActionLog_CheckFilter($data)
+	{
+		$this->page->login()->open('zabbix.php?action=actionlog.list&from=2012-02-20+09:01:00&to=2012-02-20+11:01:00&' .
+			'filter_messages=&filter_set=1')->waitUntilReady();
 
 		// Filter by time.
 		$form = $this->query('name:zbx_filter')->asForm()->one();
@@ -693,26 +710,30 @@ class testPageReportsActionLog extends CWebTest {
 	/**
 	 * Check Status column colors and Info column hintbox.
 	 */
-	public function testPageReportsActionLog_CheckStatusInfo() {
-		$this->page->login()->open('zabbix.php?action=actionlog.list&from=2012-02-20+09:01:00&to=2012-02-20+11:01:00&'.
-				'filter_messages=&filter_set=1')->waitUntilReady();
+	public function testPageReportsActionLog_CheckStatusInfo()
+	{
+		$this->page->login()->open('zabbix.php?action=actionlog.list&from=2012-02-20+09:01:00&to=2012-02-20+11:01:00&' .
+			'filter_messages=&filter_set=1')->waitUntilReady();
 
 		// Check status color correctness.
 		$table = $this->query('class:list-table')->asTable()->one();
 		$statuses = ['Executed' => 'green', 'In progress:' => 'yellow', 'Failed' => 'red', 'Sent' => 'green'];
 
 		foreach ($statuses as $status => $color) {
-			$this->assertEquals($color, $table->query("xpath:(//td/span[text()=".CXPathHelper::escapeQuotes($status)."])[1]")
+			$this->assertEquals(
+				$color,
+				$table->query("xpath:(//td/span[text()=" . CXPathHelper::escapeQuotes($status) . "])[1]")
 					->one()->getAttribute('class')
 			);
 		}
 
 		// Check hintbox.
 		$table->findRow('Status', 'Failed')->getColumn('Info')->query("xpath:.//button[@data-hintbox]")
-				->waitUntilClickable()->one()->click();
+			->waitUntilClickable()->one()->click();
 		$hintbox = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->waitUntilPresent();
-		$this->assertEquals('Get value from agent failed: cannot connect to [[127.0.0.1]:10050]: [111] Connection refused',
-				$hintbox->one()->getText()
+		$this->assertEquals(
+			'Get value from agent failed: cannot connect to [[127.0.0.1]:10050]: [111] Connection refused',
+			$hintbox->one()->getText()
 		);
 
 		// Close hintbox.
@@ -722,9 +743,10 @@ class testPageReportsActionLog extends CWebTest {
 	/**
 	 * Check Reset button.
 	 */
-	public function testPageReportsActionLog_CheckResetButton() {
-		$this->page->login()->open('zabbix.php?action=actionlog.list&from=2012-02-20+09:01:00&to=2012-02-20+11:01:00&'.
-				'filter_messages=&filter_set=1')->waitUntilReady();
+	public function testPageReportsActionLog_CheckResetButton()
+	{
+		$this->page->login()->open('zabbix.php?action=actionlog.list&from=2012-02-20+09:01:00&to=2012-02-20+11:01:00&' .
+			'filter_messages=&filter_set=1')->waitUntilReady();
 		$table = $this->getTable();
 
 		// If the filter is not visible - enable it.

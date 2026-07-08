@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testSystemInformation.php';
+require_once __DIR__ . '/../common/testSystemInformation.php';
 
 /**
  * @backup ha_node, profiles
@@ -23,15 +23,17 @@ require_once __DIR__.'/../common/testSystemInformation.php';
  *
  * @onBefore prepareUsersData
  */
-class testPageReportsSystemInformation extends testSystemInformation {
+class testPageReportsSystemInformation extends testSystemInformation
+{
 
-	public function testPageReportsSystemInformation_checkDisabledHA() {
+	public function testPageReportsSystemInformation_checkDisabledHA()
+	{
 		$this->page->login()->open('zabbix.php?action=report.status')->waitUntilReady();
 
 		// Check field that is skipped in screenshot assertion.
 		$data = [
 			[
-				'Parameter' => 'Zabbix frontend version',
+				'Parameter' => 'Advantal frontend version',
 				'Value' => ZABBIX_VERSION,
 				'Details' => ''
 			]
@@ -39,8 +41,9 @@ class testPageReportsSystemInformation extends testSystemInformation {
 		$this->assertTableHasData($data);
 
 		// Remove zabbix version due to unstable screenshot which depends on column width with different version length.
-		CElementQuery::getDriver()->executeScript("arguments[0].textContent = '';",
-				[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
+		CElementQuery::getDriver()->executeScript(
+			"arguments[0].textContent = '';",
+			[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
 		);
 		$this->assertScreenshotExcept(null, $this->query('xpath://footer')->one(), 'report_without_ha');
 	}
@@ -48,19 +51,21 @@ class testPageReportsSystemInformation extends testSystemInformation {
 	/**
 	 * @onBefore prepareHANodeData
 	 */
-	public function testPageReportsSystemInformation_checkEnabledHA() {
+	public function testPageReportsSystemInformation_checkEnabledHA()
+	{
 		$this->assertEnabledHACluster();
 		$this->assertScreenshotExcept(null, self::$skip_fields, 'report_with_ha');
 	}
 
 	/**
-	 * Function checks that zabbix server status is updated after failover delay passes and frontend config is re-validated.
+	 * Function checks that Advantal server status is updated after failover delay passes and frontend config is re-validated.
 	 *
 	 * @depends testPageReportsSystemInformation_checkEnabledHA
 	 *
 	 * @onBefore changeFailoverDelay
 	 */
-	public function testPageReportsSystemInformation_CheckServerStatus() {
+	public function testPageReportsSystemInformation_CheckServerStatus()
+	{
 		$this->assertServerStatusAfterFailover();
 	}
 }

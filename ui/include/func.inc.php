@@ -21,7 +21,8 @@
  *
  * @return bool
  */
-function zbx_is_callable(array $names) {
+function zbx_is_callable(array $names)
+{
 	foreach ($names as $name) {
 		if (!is_callable($name)) {
 			return false;
@@ -32,9 +33,10 @@ function zbx_is_callable(array $names) {
 }
 
 /************ REQUEST ************/
-function redirect($url) {
+function redirect($url)
+{
 	$curl = (new CUrl($url))->removeArgument(CSRF_TOKEN_NAME);
-	header('Location: '.$curl->getUrl());
+	header('Location: ' . $curl->getUrl());
 	exit;
 }
 
@@ -45,7 +47,8 @@ function redirect($url) {
  *
  * @return bool  true, if the request method matches
  */
-function isRequestMethod($method) {
+function isRequestMethod($method)
+{
 	return (strtolower($method) === strtolower($_SERVER['REQUEST_METHOD']));
 }
 
@@ -56,7 +59,8 @@ function isRequestMethod($method) {
  *
  * @return bool
  */
-function hasRequest($name) {
+function hasRequest($name)
+{
 	return isset($_REQUEST[$name]);
 }
 
@@ -68,11 +72,13 @@ function hasRequest($name) {
  *
  * @return mixed
  */
-function getRequest($name, $def = null) {
+function getRequest($name, $def = null)
+{
 	return isset($_REQUEST[$name]) ? $_REQUEST[$name] : $def;
 }
 
-function countRequest($str = null) {
+function countRequest($str = null)
+{
 	if (!empty($str)) {
 		$count = 0;
 
@@ -83,42 +89,62 @@ function countRequest($str = null) {
 		}
 
 		return $count;
-	}
-	else {
+	} else {
 		return count($_REQUEST);
 	}
 }
 
 /************* DATE *************/
-function getMonthCaption($num) {
+function getMonthCaption($num)
+{
 	switch ($num) {
-		case 1: return _('January');
-		case 2: return _('February');
-		case 3: return _('March');
-		case 4: return _('April');
-		case 5: return _('May');
-		case 6: return _('June');
-		case 7: return _('July');
-		case 8: return _('August');
-		case 9: return _('September');
-		case 10: return _('October');
-		case 11: return _('November');
-		case 12: return _('December');
+		case 1:
+			return _('January');
+		case 2:
+			return _('February');
+		case 3:
+			return _('March');
+		case 4:
+			return _('April');
+		case 5:
+			return _('May');
+		case 6:
+			return _('June');
+		case 7:
+			return _('July');
+		case 8:
+			return _('August');
+		case 9:
+			return _('September');
+		case 10:
+			return _('October');
+		case 11:
+			return _('November');
+		case 12:
+			return _('December');
 	}
 
 	return _s('[Wrong value for month: "%1$s" ]', $num);
 }
 
-function getDayOfWeekCaption($num) {
+function getDayOfWeekCaption($num)
+{
 	switch ($num) {
-		case 1: return _('Monday');
-		case 2: return _('Tuesday');
-		case 3: return _('Wednesday');
-		case 4: return _('Thursday');
-		case 5: return _('Friday');
-		case 6: return _('Saturday');
+		case 1:
+			return _('Monday');
+		case 2:
+			return _('Tuesday');
+		case 3:
+			return _('Wednesday');
+		case 4:
+			return _('Thursday');
+		case 5:
+			return _('Friday');
+		case 6:
+			return _('Saturday');
 		case 0:
-		case 7: return _('Sunday');
+		case 7:
+			return _('Sunday');
 	}
 
 	return _s('[Wrong value for day: "%1$s" ]', $num);
@@ -135,7 +161,8 @@ function getDayOfWeekCaption($num) {
  *
  * @return string
  */
-function zbx_date2str($format, $time = null, ?string $timezone = null) {
+function zbx_date2str($format, $time = null, ?string $timezone = null)
+{
 	static $weekdaynames, $weekdaynameslong, $months, $monthslong;
 
 	if ($time === null) {
@@ -225,8 +252,7 @@ function zbx_date2str($format, $time = null, ?string $timezone = null) {
 
 		if (!$char_escaped && array_key_exists($char, $replacements)) {
 			$output .= $replacements[$char];
-		}
-		else {
+		} else {
 			$output .= $datetime->format($char);
 		}
 	}
@@ -242,20 +268,20 @@ function zbx_date2str($format, $time = null, ?string $timezone = null) {
  *
  * @return string
  */
-function zbx_date2age($start_date, $end_date = 0) {
+function zbx_date2age($start_date, $end_date = 0)
+{
 	$end_date = ($end_date != 0) ? $end_date : time();
 
 	return convertUnitsS($end_date - $start_date);
 }
 
-function zbxDateToTime($strdate) {
+function zbxDateToTime($strdate)
+{
 	if (6 == sscanf($strdate, '%04d%02d%02d%02d%02d%02d', $year, $month, $date, $hours, $minutes, $seconds)) {
 		return mktime($hours, $minutes, $seconds, $month, $date, $year);
-	}
-	elseif (5 == sscanf($strdate, '%04d%02d%02d%02d%02d', $year, $month, $date, $hours, $minutes)) {
+	} elseif (5 == sscanf($strdate, '%04d%02d%02d%02d%02d', $year, $month, $date, $hours, $minutes)) {
 		return mktime($hours, $minutes, 0, $month, $date, $year);
-	}
-	else {
+	} else {
 		return ($strdate && is_numeric($strdate)) ? $strdate : time();
 	}
 }
@@ -268,11 +294,13 @@ function zbxDateToTime($strdate) {
  *
  * @return string
  */
-function CRLFtoLF($string) {
+function CRLFtoLF($string)
+{
 	return str_replace("\r\n", "\n", $string);
 }
 
-function rgb2hex($color) {
+function rgb2hex($color)
+{
 	$HEX = [
 		dechex($color[0]),
 		dechex($color[1]),
@@ -280,32 +308,32 @@ function rgb2hex($color) {
 	];
 	foreach ($HEX as $id => $value) {
 		if (strlen($value) != 2) {
-			$HEX[$id] = '0'.$value;
+			$HEX[$id] = '0' . $value;
 		}
 	}
 
-	return $HEX[0].$HEX[1].$HEX[2];
+	return $HEX[0] . $HEX[1] . $HEX[2];
 }
 
-function hex2rgb($color) {
+function hex2rgb($color)
+{
 	if ($color[0] == '#') {
 		$color = substr($color, 1);
 	}
 
 	if (strlen($color) == 6) {
-		list($r, $g, $b) = [$color[0].$color[1], $color[2].$color[3], $color[4].$color[5]];
-	}
-	elseif (strlen($color) == 3) {
-		list($r, $g, $b) = [$color[0].$color[0], $color[1].$color[1], $color[2].$color[2]];
-	}
-	else {
+		list($r, $g, $b) = [$color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5]];
+	} elseif (strlen($color) == 3) {
+		list($r, $g, $b) = [$color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]];
+	} else {
 		return false;
 	}
 
 	return [hexdec($r), hexdec($g), hexdec($b)];
 }
 
-function getColorVariations($color, $variations_requested = 1) {
+function getColorVariations($color, $variations_requested = 1)
+{
 	if ($variations_requested <= 1) {
 		return [$color];
 	}
@@ -347,7 +375,8 @@ function getColorVariations($color, $variations_requested = 1) {
  *
  * @return int
  */
-function str2mem($value) {
+function str2mem($value)
+{
 	$value = trim($value);
 	$suffix = strtoupper(substr($value, -1));
 
@@ -359,11 +388,9 @@ function str2mem($value) {
 
 	if ($suffix === 'G') {
 		$value *= ZBX_GIBIBYTE;
-	}
-	elseif ($suffix === 'M') {
+	} elseif ($suffix === 'M') {
 		$value *= ZBX_MEBIBYTE;
-	}
-	elseif ($suffix === 'K') {
+	} elseif ($suffix === 'K') {
 		$value *= ZBX_KIBIBYTE;
 	}
 
@@ -378,22 +405,21 @@ function str2mem($value) {
  *
  * @return string
  */
-function mem2str($bytes) {
+function mem2str($bytes)
+{
 	if ($bytes > ZBX_GIBIBYTE) {
-		return round($bytes / ZBX_GIBIBYTE, ZBX_UNITS_ROUNDOFF_SUFFIXED).'G';
-	}
-	elseif ($bytes > ZBX_MEBIBYTE) {
-		return round($bytes / ZBX_MEBIBYTE, ZBX_UNITS_ROUNDOFF_SUFFIXED).'M';
-	}
-	elseif ($bytes > ZBX_KIBIBYTE) {
-		return round($bytes / ZBX_KIBIBYTE, ZBX_UNITS_ROUNDOFF_SUFFIXED).'K';
-	}
-	else {
-		return round($bytes).'B';
+		return round($bytes / ZBX_GIBIBYTE, ZBX_UNITS_ROUNDOFF_SUFFIXED) . 'G';
+	} elseif ($bytes > ZBX_MEBIBYTE) {
+		return round($bytes / ZBX_MEBIBYTE, ZBX_UNITS_ROUNDOFF_SUFFIXED) . 'M';
+	} elseif ($bytes > ZBX_KIBIBYTE) {
+		return round($bytes / ZBX_KIBIBYTE, ZBX_UNITS_ROUNDOFF_SUFFIXED) . 'K';
+	} else {
+		return round($bytes) . 'B';
 	}
 }
 
-function convertUnitsUptime($value) {
+function convertUnitsUptime($value)
+{
 	$value = round($value);
 	$value_abs = abs($value);
 
@@ -435,7 +461,8 @@ function convertUnitsUptime($value) {
  *
  * @return string
  */
-function convertUnitsS($value, $ignore_millisec = false) {
+function convertUnitsS($value, $ignore_millisec = false)
+{
 	$value = (float) $value;
 	$value_abs = abs($value);
 
@@ -454,8 +481,7 @@ function convertUnitsS($value, $ignore_millisec = false) {
 	if ($v == 12) {
 		$parts['years'] = $start === null ? 1 : $parts['years'] + 1;
 		$start = 0;
-	}
-	elseif ($start === null || ceil(log10($parts['years'])) <= ZBX_FLOAT_DIG) {
+	} elseif ($start === null || ceil(log10($parts['years'])) <= ZBX_FLOAT_DIG) {
 		if ($v > 0) {
 			$parts['months'] = $v;
 			$value_abs_int -= $v * SEC_PER_MONTH;
@@ -463,11 +489,13 @@ function convertUnitsS($value, $ignore_millisec = false) {
 		}
 
 		$level = 2;
-		foreach ([
-			'days' => SEC_PER_DAY,
-			'hours' => SEC_PER_HOUR,
-			'minutes' => SEC_PER_MIN
-		] as $part => $sec_per_part) {
+		foreach (
+			[
+				'days' => SEC_PER_DAY,
+				'hours' => SEC_PER_HOUR,
+				'minutes' => SEC_PER_MIN
+			] as $part => $sec_per_part
+		) {
 			$v = floor($value_abs_int / $sec_per_part);
 			if ($v > 0) {
 				$parts[$part] = $v;
@@ -489,8 +517,7 @@ function convertUnitsS($value, $ignore_millisec = false) {
 				if ($v > 0) {
 					$parts['seconds'] = $v;
 				}
-			}
-			else {
+			} else {
 				$parts['seconds'] = $value_abs_int;
 
 				if ($start === null || $start >= 4) {
@@ -517,10 +544,10 @@ function convertUnitsS($value, $ignore_millisec = false) {
 	$result = [];
 
 	foreach (array_filter($parts) as $part_unit => $part_value) {
-		$result[] = formatFloat($part_value, ['decimals' => ZBX_UNITS_ROUNDOFF_SUFFIXED]).$units[$part_unit];
+		$result[] = formatFloat($part_value, ['decimals' => ZBX_UNITS_ROUNDOFF_SUFFIXED]) . $units[$part_unit];
 	}
 
-	return $result ? ($value < 0 ? '-' : '').implode(' ', $result) : '0';
+	return $result ? ($value < 0 ? '-' : '') . implode(' ', $result) : '0';
 }
 
 /**
@@ -532,7 +559,8 @@ function convertUnitsS($value, $ignore_millisec = false) {
  *
  * @return string
  */
-function convertSecondsToTimeUnits(int $value): string {
+function convertSecondsToTimeUnits(int $value): string
+{
 	$parts = [];
 	$start = null;
 
@@ -544,11 +572,13 @@ function convertSecondsToTimeUnits(int $value): string {
 
 	$level = 1;
 
-	foreach ([
-		'days' => SEC_PER_DAY,
-		'hours' => SEC_PER_HOUR,
-		'minutes' => SEC_PER_MIN
-	] as $part => $sec_per_part) {
+	foreach (
+		[
+			'days' => SEC_PER_DAY,
+			'hours' => SEC_PER_HOUR,
+			'minutes' => SEC_PER_MIN
+		] as $part => $sec_per_part
+	) {
 		$v = floor($value / $sec_per_part);
 
 		if ($v > 0) {
@@ -583,7 +613,7 @@ function convertSecondsToTimeUnits(int $value): string {
 	$result = [];
 
 	foreach ($parts as $part_unit => $part_value) {
-		$result[] = $part_value.$units[$part_unit];
+		$result[] = $part_value . $units[$part_unit];
 	}
 
 	return $result ? implode(' ', $result) : '0';
@@ -599,7 +629,8 @@ function convertSecondsToTimeUnits(int $value): string {
  *
  * @return string
  */
-function convertUnits(array $options): string {
+function convertUnits(array $options): string
+{
 	[
 		'value' => $value,
 		'units' => $units
@@ -608,7 +639,7 @@ function convertUnits(array $options): string {
 	$result = $value;
 
 	if ($units !== '') {
-		$result .= ' '.$units;
+		$result .= ' ' . $units;
 	}
 
 	return $result;
@@ -641,7 +672,8 @@ function convertUnits(array $options): string {
  *
  * @return array
  */
-function convertUnitsRaw(array $options): array {
+function convertUnitsRaw(array $options): array
+{
 	static $power_table = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
 
 	$options += [
@@ -688,7 +720,10 @@ function convertUnitsRaw(array $options): array {
 	if ($units === 's') {
 		if ($options['decimals'] !== null && $options['decimals'] != 0) {
 			return [
-				'value' => convertUnitsSWithDecimals($value, $options['ignore_milliseconds'], $options['decimals'],
+				'value' => convertUnitsSWithDecimals(
+					$value,
+					$options['ignore_milliseconds'],
+					$options['decimals'],
 					$options['decimals_exact']
 				),
 				'units' => '',
@@ -752,8 +787,7 @@ function convertUnitsRaw(array $options): array {
 				break;
 			}
 		}
-	}
-	else {
+	} else {
 		$unit_power = array_key_exists($options['power'], $power_table) ? $options['power'] : count($power_table) - 1;
 		$unit_prefix = $power_table[$unit_power];
 
@@ -768,7 +802,7 @@ function convertUnitsRaw(array $options): array {
 		]);
 	}
 
-	$result_units = ($result == 0 ? '' : $unit_prefix).$units;
+	$result_units = ($result == 0 ? '' : $unit_prefix) . $units;
 
 	return [
 		'value' => $result,
@@ -787,10 +821,11 @@ function convertUnitsRaw(array $options): array {
  * @return int|float|null  Decimal integer seconds or null on error. Returns a floating-point number if the resulting
  *                         value exceeds PHP_INT_MAX.
  */
-function timeUnitToSeconds($time, $with_year = false): int|float|null {
+function timeUnitToSeconds($time, $with_year = false): int|float|null
+{
 	$suffixes = $with_year ? ZBX_TIME_SUFFIXES_WITH_YEAR : ZBX_TIME_SUFFIXES;
 
-	if (!preg_match('/^'.ZBX_PREG_INT.'(?<suffix>['.$suffixes.'])?$/', $time, $matches)) {
+	if (!preg_match('/^' . ZBX_PREG_INT . '(?<suffix>[' . $suffixes . '])?$/', $time, $matches)) {
 		return null;
 	}
 
@@ -808,7 +843,8 @@ function timeUnitToSeconds($time, $with_year = false): int|float|null {
  *
  * @return boolean
  */
-function zbx_ctype_digit($x) {
+function zbx_ctype_digit($x)
+{
 	return ctype_digit(strval($x));
 }
 
@@ -821,7 +857,8 @@ function zbx_ctype_digit($x) {
  *
  * @return bool
  */
-function zbx_empty($value) {
+function zbx_empty($value)
+{
 	if ($value === null) {
 		return true;
 	}
@@ -835,7 +872,8 @@ function zbx_empty($value) {
 	return false;
 }
 
-function zbx_is_int($var) {
+function zbx_is_int($var)
+{
 	if (is_array($var)) {
 		return false;
 	}
@@ -848,8 +886,7 @@ function zbx_is_int($var) {
 		if (function_exists('ctype_digit') && ctype_digit($var) || strcmp(intval($var), $var) == 0) {
 			return true;
 		}
-	}
-	else {
+	} else {
 		if ($var > 0 && zbx_ctype_digit($var)) {
 			return true;
 		}
@@ -868,7 +905,8 @@ function zbx_is_int($var) {
  *
  * @return array
  */
-function zbx_array_diff(array $primary, array $secondary, $field) {
+function zbx_array_diff(array $primary, array $secondary, $field)
+{
 	$fields1 = zbx_objectValues($primary, $field);
 	$fields2 = zbx_objectValues($secondary, $field);
 
@@ -887,11 +925,9 @@ function zbx_array_diff(array $primary, array $secondary, $field) {
 	foreach ($primary as $array) {
 		if (!isset($array[$field])) {
 			$result['first'][] = $array;
-		}
-		elseif (isset($first[$array[$field]])) {
+		} elseif (isset($first[$array[$field]])) {
 			$result['first'][] = $array;
-		}
-		else {
+		} else {
 			$result['both'][$array[$field]] = $array;
 		}
 	}
@@ -899,8 +935,7 @@ function zbx_array_diff(array $primary, array $secondary, $field) {
 	foreach ($secondary as $array) {
 		if (!isset($array[$field])) {
 			$result['second'][] = $array;
-		}
-		elseif (isset($second[$array[$field]])) {
+		} elseif (isset($second[$array[$field]])) {
 			$result['second'][] = $array;
 		}
 	}
@@ -909,7 +944,8 @@ function zbx_array_diff(array $primary, array $secondary, $field) {
 }
 
 /************* STRING *************/
-function zbx_nl2br($str) {
+function zbx_nl2br($str)
+{
 	$str_res = [];
 	foreach (explode("\n", $str) as $str_line) {
 		array_push($str_res, $str_line, BR());
@@ -919,12 +955,14 @@ function zbx_nl2br($str) {
 	return $str_res;
 }
 
-function zbx_formatDomId($value) {
+function zbx_formatDomId($value)
+{
 	return str_replace(['[', ']'], ['_', ''], $value);
 }
 
 /************* SORT *************/
-function natksort(&$array) {
+function natksort(&$array)
+{
 	$keys = array_keys($array);
 	natcasesort($keys);
 
@@ -940,7 +978,8 @@ function natksort(&$array) {
 }
 
 // recursively sort an array by key
-function zbx_rksort(&$array, $flags = null) {
+function zbx_rksort(&$array, $flags = null)
+{
 	if (is_array($array)) {
 		foreach ($array as $id => $data) {
 			zbx_rksort($array[$id]);
@@ -964,7 +1003,8 @@ function zbx_rksort(&$array, $flags = null) {
  *
  * @see order_macros()
  */
-function order_result(&$data, $sortfield = null, $sortorder = ZBX_SORT_UP) {
+function order_result(&$data, $sortfield = null, $sortorder = ZBX_SORT_UP)
+{
 	if (empty($data)) {
 		return false;
 	}
@@ -1014,7 +1054,8 @@ function order_result(&$data, $sortfield = null, $sortorder = ZBX_SORT_UP) {
  *
  * @return array
  */
-function order_macros(array $macros, $sortfield, $order = ZBX_SORT_UP) {
+function order_macros(array $macros, $sortfield, $order = ZBX_SORT_UP)
+{
 	$temp = [];
 	foreach ($macros as $key => $macro) {
 		$temp[$key] = substr($macro[$sortfield], 2, -1);
@@ -1030,7 +1071,8 @@ function order_macros(array $macros, $sortfield, $order = ZBX_SORT_UP) {
 }
 
 // preserve keys
-function zbx_array_merge() {
+function zbx_array_merge()
+{
 	$args = func_get_args();
 	$result = [];
 	foreach ($args as &$array) {
@@ -1046,7 +1088,8 @@ function zbx_array_merge() {
 	return $result;
 }
 
-function uint_in_array($needle, $haystack) {
+function uint_in_array($needle, $haystack)
+{
 	foreach ($haystack as $value) {
 		if (bccomp($needle, $value) == 0) {
 			return true;
@@ -1056,18 +1099,17 @@ function uint_in_array($needle, $haystack) {
 	return false;
 }
 
-function str_in_array($needle, $haystack, $strict = false) {
+function str_in_array($needle, $haystack, $strict = false)
+{
 	if (is_array($needle)) {
 		return in_array($needle, $haystack, $strict);
-	}
-	elseif ($strict) {
+	} elseif ($strict) {
 		foreach ($haystack as $value) {
 			if ($needle === $value) {
 				return true;
 			}
 		}
-	}
-	else {
+	} else {
 		foreach ($haystack as $value) {
 			if (strcmp($needle, $value) == 0) {
 				return true;
@@ -1078,13 +1120,13 @@ function str_in_array($needle, $haystack, $strict = false) {
 	return false;
 }
 
-function zbx_value2array(&$values) {
+function zbx_value2array(&$values)
+{
 	if (!is_array($values) && !is_null($values)) {
 		$tmp = [];
 		if (is_object($values)) {
 			$tmp[] = $values;
-		}
-		else {
+		} else {
 			$tmp[$values] = $values;
 		}
 		$values = $tmp;
@@ -1092,7 +1134,8 @@ function zbx_value2array(&$values) {
 }
 
 // creates chain of relation parent -> child, for all chain levels
-function createParentToChildRelation(&$chain, $link, $parentField, $childField) {
+function createParentToChildRelation(&$chain, $link, $parentField, $childField)
+{
 	if (!isset($chain[$link[$parentField]])) {
 		$chain[$link[$parentField]] = [];
 	}
@@ -1104,7 +1147,8 @@ function createParentToChildRelation(&$chain, $link, $parentField, $childField) 
 }
 
 // object or array of objects to hash
-function zbx_toHash(mixed $value, string $field): ?array {
+function zbx_toHash(mixed $value, string $field): ?array
+{
 	if (is_null($value)) {
 		return $value;
 	}
@@ -1113,16 +1157,13 @@ function zbx_toHash(mixed $value, string $field): ?array {
 
 	if (!is_array($value)) {
 		$result = [$value => $value];
-	}
-	elseif (isset($value[$field])) {
+	} elseif (isset($value[$field])) {
 		$result[$value[$field]] = $value;
-	}
-	else {
+	} else {
 		foreach ($value as $val) {
 			if (!is_array($val)) {
 				$result[$val] = $val;
-			}
-			elseif (isset($val[$field])) {
+			} elseif (isset($val[$field])) {
 				$result[$val[$field]] = $val;
 			}
 		}
@@ -1146,7 +1187,8 @@ function zbx_toHash(mixed $value, string $field): ?array {
  *
  * @return array
  */
-function zbx_toObject($value, $field, $preserve_keys = false) {
+function zbx_toObject($value, $field, $preserve_keys = false)
+{
 	if (is_null($value)) {
 		return $value;
 	}
@@ -1155,8 +1197,7 @@ function zbx_toObject($value, $field, $preserve_keys = false) {
 	// Value or Array to Object or Array of objects
 	if (!is_array($value)) {
 		$result = [[$field => $value]];
-	}
-	elseif (!isset($value[$field])) {
+	} elseif (!isset($value[$field])) {
 		foreach ($value as $key => $val) {
 			if (!is_array($val)) {
 				$result[$key] = [$field => $val];
@@ -1182,7 +1223,8 @@ function zbx_toObject($value, $field, $preserve_keys = false) {
  *
  * @return array
  */
-function zbx_toArray($value) {
+function zbx_toArray($value)
+{
 	if ($value === null) {
 		return $value;
 	}
@@ -1193,15 +1235,12 @@ function zbx_toArray($value) {
 
 		if (zbx_ctype_digit(key($value))) {
 			$result = array_values($value);
-		}
-		elseif (!empty($value)) {
+		} elseif (!empty($value)) {
 			$result = [$value];
-		}
-		else {
+		} else {
 			$result = [];
 		}
-	}
-	else {
+	} else {
 		$result = [$value];
 	}
 
@@ -1218,25 +1257,23 @@ function zbx_toArray($value) {
  *
  * @return array
  */
-function zbx_objectValues($value, $field) {
+function zbx_objectValues($value, $field)
+{
 	if (is_null($value)) {
 		return $value;
 	}
 
 	if (!is_array($value)) {
 		$result = [$value];
-	}
-	elseif (isset($value[$field])) {
+	} elseif (isset($value[$field])) {
 		$result = [$value[$field]];
-	}
-	else {
+	} else {
 		$result = [];
 
 		foreach ($value as $val) {
 			if (!is_array($val)) {
 				$result[] = $val;
-			}
-			elseif (isset($val[$field])) {
+			} elseif (isset($val[$field])) {
 				$result[] = $val[$field];
 			}
 		}
@@ -1245,7 +1282,8 @@ function zbx_objectValues($value, $field) {
 	return $result;
 }
 
-function zbx_cleanHashes(&$value) {
+function zbx_cleanHashes(&$value)
+{
 	if (is_array($value)) {
 		// reset() is needed to move internal array pointer to the beginning of the array
 		reset($value);
@@ -1257,7 +1295,8 @@ function zbx_cleanHashes(&$value) {
 	return $value;
 }
 
-function zbx_toCSV($values) {
+function zbx_toCSV($values)
+{
 	$csv = '';
 	$glue = '","';
 	foreach ($values as $row) {
@@ -1267,13 +1306,14 @@ function zbx_toCSV($values) {
 		foreach ($row as $num => $value) {
 			$row[$num] = str_replace('"', '""', $value);
 		}
-		$csv .= '"'.implode($glue, $row).'"'."\n";
+		$csv .= '"' . implode($glue, $row) . '"' . "\n";
 	}
 
 	return $csv;
 }
 
-function zbx_str2links($text) {
+function zbx_str2links($text)
+{
 	$result = [];
 
 	foreach (explode("\n", $text) as $line) {
@@ -1305,14 +1345,14 @@ function zbx_str2links($text) {
 	return $result;
 }
 
-function zbx_subarray_push(&$mainArray, $sIndex, $element = null, $key = null) {
+function zbx_subarray_push(&$mainArray, $sIndex, $element = null, $key = null)
+{
 	if (!isset($mainArray[$sIndex])) {
 		$mainArray[$sIndex] = [];
 	}
 	if ($key) {
 		$mainArray[$sIndex][$key] = is_null($element) ? $sIndex : $element;
-	}
-	else {
+	} else {
 		$mainArray[$sIndex][] = is_null($element) ? $sIndex : $element;
 	}
 }
@@ -1330,7 +1370,8 @@ function zbx_subarray_push(&$mainArray, $sIndex, $element = null, $key = null) {
  *
  * @return CColHeader
  */
-function make_sorting_header($obj, $tabfield, $sortField, $sortOrder, $link = null) {
+function make_sorting_header($obj, $tabfield, $sortField, $sortOrder, $link = null)
+{
 	$sortorder = ($sortField == $tabfield && $sortOrder == ZBX_SORT_UP) ? ZBX_SORT_DOWN : ZBX_SORT_UP;
 
 	$link = CUrlFactory::getContextUrl($link);
@@ -1344,8 +1385,7 @@ function make_sorting_header($obj, $tabfield, $sortField, $sortOrder, $link = nu
 	if ($tabfield == $sortField) {
 		if ($sortorder == ZBX_SORT_UP) {
 			$arrow = (new CSpan())->addClass(ZBX_STYLE_ARROW_DOWN);
-		}
-		else {
+		} else {
 			$arrow = (new CSpan())->addClass(ZBX_STYLE_ARROW_UP);
 		}
 	}
@@ -1371,7 +1411,8 @@ function make_sorting_header($obj, $tabfield, $sortField, $sortOrder, $link = nu
  *
  * @return string
  */
-function formatFloat(float $number, array $options = []): string {
+function formatFloat(float $number, array $options = []): string
+{
 	$defaults = [
 		'precision' => ZBX_FLOAT_DIG,
 		'decimals' => 0,
@@ -1398,40 +1439,40 @@ function formatFloat(float $number, array $options = []): string {
 		}
 
 		$digits = $decimals >= 0
-			? rtrim(str_replace('.', '', sprintf('%.'.$decimals.'F', $mantissa_rounded)), '0')
+			? rtrim(str_replace('.', '', sprintf('%.' . $decimals . 'F', $mantissa_rounded)), '0')
 			: '';
 
 		return [$digits, $exponent, $mantissa_rounded == abs($mantissa)];
 	};
 
 	$format_fn = static function (string $sign, string $integer, string $fraction, ?int $exponent = null)
-			use ($decimals, $decimals_exact): string {
+	use ($decimals, $decimals_exact): string {
 		if ($decimals_exact) {
 			$fraction = str_pad($fraction, $decimals, '0');
 		}
 
-		return $sign.$integer.($fraction !== '' ? '.'.$fraction : '').
-			($exponent !== null ? 'E'.($exponent >= 0 ? '+' : '').$exponent : '');
+		return $sign . $integer . ($fraction !== '' ? '.' . $fraction : '') .
+			($exponent !== null ? 'E' . ($exponent >= 0 ? '+' : '') . $exponent : '');
 	};
 
 	if ($zero_as_zero && $number == 0) {
 		return '0';
-	}
-	elseif ($number == INF) {
+	} elseif ($number == INF) {
 		return _('Infinity');
-	}
-	elseif ($number == -INF) {
-		return '-'._('Infinity');
+	} elseif ($number == -INF) {
+		return '-' . _('Infinity');
 	}
 
 	$sign = $number < 0 ? '-' : '';
 
-	[$mantissa, $exponent] = explode('E', sprintf('%.'.(PHP_FLOAT_DIG - 1).'E', $number));
+	[$mantissa, $exponent] = explode('E', sprintf('%.' . (PHP_FLOAT_DIG - 1) . 'E', $number));
 
 	$mantissa = (float) $mantissa;
 	$exponent = (int) $exponent;
 
-	[$digits_dec, $exponent_dec, $precise_dec] = $round_fn($mantissa, $exponent,
+	[$digits_dec, $exponent_dec, $precise_dec] = $round_fn(
+		$mantissa,
+		$exponent,
 		$exponent >= 0
 			? min($exponent + $decimals, $precision - 1)
 			: ($decimals_exact
@@ -1442,37 +1483,40 @@ function formatFloat(float $number, array $options = []): string {
 
 	[$digits_sci, $exponent_sci] = $round_fn($mantissa, $exponent, $decimals);
 
-	if ($exponent_dec >= ($precise_dec ? min(PHP_FLOAT_DIG, $precision + 3) : $precision)
-			|| $small_scientific && (
-				$decimals_exact && $exponent_sci < -1 && -$exponent_sci + strlen($digits_sci) > $decimals + 1
-					|| !$decimals_exact && -$exponent_sci + strlen($digits_sci) > min(PHP_FLOAT_DIG, $precision + 3))) {
+	if (
+		$exponent_dec >= ($precise_dec ? min(PHP_FLOAT_DIG, $precision + 3) : $precision)
+		|| $small_scientific && (
+			$decimals_exact && $exponent_sci < -1 && -$exponent_sci + strlen($digits_sci) > $decimals + 1
+			|| !$decimals_exact && -$exponent_sci + strlen($digits_sci) > min(PHP_FLOAT_DIG, $precision + 3))
+	) {
 		return $format_fn($sign, $digits_sci[0], substr($digits_sci, 1), $exponent_sci);
-	}
-	elseif ($exponent_dec >= 0) {
-		return $format_fn($sign, str_pad(substr($digits_dec, 0, $exponent_dec + 1), $exponent_dec + 1, '0'),
+	} elseif ($exponent_dec >= 0) {
+		return $format_fn(
+			$sign,
+			str_pad(substr($digits_dec, 0, $exponent_dec + 1), $exponent_dec + 1, '0'),
 			substr($digits_dec, $exponent_dec + 1)
 		);
-	}
-	else {
+	} else {
 		return $digits_dec !== ''
-			? $format_fn($sign, '0', str_repeat('0', -$exponent_dec - 1).$digits_dec)
+			? $format_fn($sign, '0', str_repeat('0', -$exponent_dec - 1) . $digits_dec)
 			: $format_fn('', '0', '');
 	}
 }
 
 /**
-* Truncate float to the amount of significant digits, to allow safe float comparison.
-*
-* @param float $number
-*
-* @return float
-*/
-function truncateFloat(float $number): float {
+ * Truncate float to the amount of significant digits, to allow safe float comparison.
+ *
+ * @param float $number
+ *
+ * @return float
+ */
+function truncateFloat(float $number): float
+{
 	if (is_infinite($number)) {
 		return $number;
 	}
 
-	return (float) sprintf('%.'.(ZBX_FLOAT_DIG - 1).'E', $number);
+	return (float) sprintf('%.' . (ZBX_FLOAT_DIG - 1) . 'E', $number);
 }
 
 /**
@@ -1482,8 +1526,9 @@ function truncateFloat(float $number): float {
  *
  * @return int
  */
-function getNumDecimals(float $number): int {
-	[$mantissa, $exponent] = explode('E', sprintf('%.'.(ZBX_FLOAT_DIG - 1).'E', $number));
+function getNumDecimals(float $number): int
+{
+	[$mantissa, $exponent] = explode('E', sprintf('%.' . (ZBX_FLOAT_DIG - 1) . 'E', $number));
 
 	$significant_size = strlen(rtrim($mantissa, '0')) - ($number < 0 ? 2 : 1);
 
@@ -1501,7 +1546,8 @@ function getNumDecimals(float $number): int {
  *
  * @return string
  */
-function num2letter($number) {
+function num2letter($number)
+{
 	$start = ord('A');
 	$base = 26;
 	$str = '';
@@ -1513,7 +1559,7 @@ function num2letter($number) {
 		}
 		$remainder = $number % $base;
 		$number = ($number - $remainder) / $base;
-		$str = chr($start + $remainder).$str;
+		$str = chr($start + $remainder) . $str;
 	} while (0 != $number);
 
 	return $str;
@@ -1530,23 +1576,26 @@ function num2letter($number) {
  *
  * @param int $mode
  */
-function access_deny($mode = ACCESS_DENY_OBJECT) {
+function access_deny($mode = ACCESS_DENY_OBJECT)
+{
 	// deny access to an object
 	if ($mode == ACCESS_DENY_OBJECT && CWebUser::isLoggedIn()) {
 		show_error_message(_('No permissions to referred object or it does not exist!'));
 
-		require_once dirname(__FILE__).'/page_header.php';
+		require_once dirname(__FILE__) . '/page_header.php';
 		(new CHtmlPage())->show();
-		require_once dirname(__FILE__).'/page_footer.php';
+		require_once dirname(__FILE__) . '/page_footer.php';
 	}
 	// deny access to a page
 	else {
 		// URL to redirect the user to after logging in.
 		$url = (new CUrl(!empty($_REQUEST['request']) ? $_REQUEST['request'] : ''))->removeArgument(CSRF_TOKEN_NAME);
 
-		if (CAuthenticationHelper::getPublic(CAuthenticationHelper::HTTP_LOGIN_FORM) == ZBX_AUTH_FORM_HTTP
-				&& CAuthenticationHelper::getPublic(CAuthenticationHelper::HTTP_AUTH_ENABLED) == ZBX_AUTH_HTTP_ENABLED
-				&& (!CWebUser::isLoggedIn() || CWebUser::isGuest())) {
+		if (
+			CAuthenticationHelper::getPublic(CAuthenticationHelper::HTTP_LOGIN_FORM) == ZBX_AUTH_FORM_HTTP
+			&& CAuthenticationHelper::getPublic(CAuthenticationHelper::HTTP_AUTH_ENABLED) == ZBX_AUTH_HTTP_ENABLED
+			&& (!CWebUser::isLoggedIn() || CWebUser::isGuest())
+		) {
 			$redirect_to = (new CUrl('index_http.php'))->setArgument('request', $url->toString());
 			redirect($redirect_to->toString());
 		}
@@ -1558,8 +1607,11 @@ function access_deny($mode = ACCESS_DENY_OBJECT) {
 			$data = [
 				'header' => _('Access denied'),
 				'messages' => [
-					_s('You are logged in as "%1$s".',
-						CWebUser::$data['username']).' '._('You have no permissions to access this page.'
+					_s(
+						'You are logged in as "%1$s".',
+						CWebUser::$data['username']
+					) . ' ' . _(
+						'You have no permissions to access this page.'
 					),
 					_('If you think this message is wrong, please consult your administrators about getting the necessary permissions.')
 				],
@@ -1597,8 +1649,7 @@ function access_deny($mode = ACCESS_DENY_OBJECT) {
 
 		if (detect_page_type() == PAGE_TYPE_JS) {
 			echo (new CView('layout.json', ['main_block' => json_encode(['error' => $data['header']])]))->getOutput();
-		}
-		else {
+		} else {
 			echo (new CView('general.warning', $data))->getOutput();
 		}
 		session_write_close();
@@ -1606,7 +1657,8 @@ function access_deny($mode = ACCESS_DENY_OBJECT) {
 	}
 }
 
-function detect_page_type($default = PAGE_TYPE_HTML) {
+function detect_page_type($default = PAGE_TYPE_HTML)
+{
 	if (isset($_REQUEST['output'])) {
 		switch (strtolower($_REQUEST['output'])) {
 			case 'text':
@@ -1642,8 +1694,13 @@ function detect_page_type($default = PAGE_TYPE_HTML) {
  *
  * @return CTag
  */
-function makeMessageBox(string $class, array $messages, ?string $title = null, bool $show_close_box = true,
-		bool $show_details = false): CTag {
+function makeMessageBox(
+	string $class,
+	array $messages,
+	?string $title = null,
+	bool $show_close_box = true,
+	bool $show_details = false
+): CTag {
 
 	$aria_labels = [
 		ZBX_STYLE_MSG_GOOD => _('Success message'),
@@ -1686,7 +1743,7 @@ function makeMessageBox(string $class, array $messages, ?string $title = null, b
 		$message_box->addItem(
 			(new CSimpleButton())
 				->addClass(ZBX_STYLE_BTN_OVERLAY_CLOSE)
-				->onClick('jQuery(this).closest(\'.'.$class.'\').remove();')
+				->onClick('jQuery(this).closest(\'.' . $class . '\').remove();')
 				->setTitle(_('Close'))
 		);
 	}
@@ -1699,9 +1756,12 @@ function makeMessageBox(string $class, array $messages, ?string $title = null, b
  *
  * @return array
  */
-function filter_messages(): array {
-	if (!CSettingsHelper::getPublic(CSettingsHelper::SHOW_TECHNICAL_ERRORS)
-			&& CWebUser::getType() != USER_TYPE_SUPER_ADMIN && !CWebUser::getDebugMode()) {
+function filter_messages(): array
+{
+	if (
+		!CSettingsHelper::getPublic(CSettingsHelper::SHOW_TECHNICAL_ERRORS)
+		&& CWebUser::getType() != USER_TYPE_SUPER_ADMIN && !CWebUser::getDebugMode()
+	) {
 
 		$type = CMessageHelper::getType();
 		$title = CMessageHelper::getTitle();
@@ -1711,8 +1771,7 @@ function filter_messages(): array {
 		if ($title !== null) {
 			if ($type === CMessageHelper::MESSAGE_TYPE_SUCCESS) {
 				CMessageHelper::setSuccessTitle($title);
-			}
-			else {
+			} else {
 				CMessageHelper::setErrorTitle($title);
 			}
 		}
@@ -1721,11 +1780,10 @@ function filter_messages(): array {
 		foreach ($messages as $message) {
 			if ($message['type'] === CMessageHelper::MESSAGE_TYPE_ERROR	&& $message['is_technical_error']) {
 				if (!$generic_exists) {
-					CMessageHelper::addError(_('System error occurred. Please contact Zabbix administrator.'));
+					CMessageHelper::addError(_('System error occurred. Please contact Advantal Administrator.'));
 					$generic_exists = true;
 				}
-			}
-			else {
+			} else {
 				CMessageHelper::addMessage($message);
 			}
 		}
@@ -1743,7 +1801,8 @@ function filter_messages(): array {
  *
  * @return CTag|null
  */
-function getMessages(bool $good = false, ?string $title = null, bool $show_close_box = true): ?CTag {
+function getMessages(bool $good = false, ?string $title = null, bool $show_close_box = true): ?CTag
+{
 	$messages = get_and_clear_messages();
 
 	$message_box = ($title || $messages)
@@ -1753,7 +1812,8 @@ function getMessages(bool $good = false, ?string $title = null, bool $show_close
 	return $message_box;
 }
 
-function show_messages($good = null, $okmsg = null, $errmsg = null) {
+function show_messages($good = null, $okmsg = null, $errmsg = null)
+{
 	global $page, $ZBX_MESSAGES_PREPARED;
 
 	if (defined('ZBX_API_REQUEST')) {
@@ -1774,17 +1834,14 @@ function show_messages($good = null, $okmsg = null, $errmsg = null) {
 		if ($has_errors) {
 			$class = ZBX_STYLE_MSG_BAD;
 			$good = false;
-		}
-		elseif ($has_warnings) {
+		} elseif ($has_warnings) {
 			$class = ZBX_STYLE_MSG_WARNING;
 			$good = true;
-		}
-		else {
+		} else {
 			$class = ZBX_STYLE_MSG_GOOD;
 			$good = true;
 		}
-	}
-	else {
+	} else {
 		$class = $good ? ZBX_STYLE_MSG_GOOD : ZBX_STYLE_MSG_BAD;
 	}
 
@@ -1845,7 +1902,12 @@ function show_messages($good = null, $okmsg = null, $errmsg = null) {
 			$y = 1;
 			foreach ($image_messages as $message) {
 				$y += $message['height'];
-				imageText($canvas, $image_font_size, 0, 1, $y,
+				imageText(
+					$canvas,
+					$image_font_size,
+					0,
+					1,
+					$y,
 					imagecolorallocate($canvas, $message['color']['R'], $message['color']['G'], $message['color']['B']),
 					$message['text']
 				);
@@ -1881,7 +1943,8 @@ function show_messages($good = null, $okmsg = null, $errmsg = null) {
  *
  * @return string|null  One or several HTML message boxes.
  */
-function get_prepared_messages(array $options = []): ?string {
+function get_prepared_messages(array $options = []): ?string
+{
 	global $ZBX_MESSAGES_PREPARED;
 
 	if (!is_array($ZBX_MESSAGES_PREPARED)) {
@@ -1906,8 +1969,7 @@ function get_prepared_messages(array $options = []): ?string {
 		$messages_current = $ZBX_MESSAGES_PREPARED;
 		$restore_messages = [];
 		$restore_messages_prepared = [];
-	}
-	else {
+	} else {
 		$messages_current = [];
 		$restore_messages = CMessageHelper::getMessages();
 		$restore_messages_prepared = $ZBX_MESSAGES_PREPARED;
@@ -1922,7 +1984,8 @@ function get_prepared_messages(array $options = []): ?string {
 		$attempt_ip = CProfile::get('web.login.attempt.ip', '');
 		$attempt_date = CProfile::get('web.login.attempt.clock', 0);
 
-		error(_n('%4$s failed login attempt logged. Last failed attempt was from %1$s on %2$s at %3$s.',
+		error(_n(
+			'%4$s failed login attempt logged. Last failed attempt was from %1$s on %2$s at %3$s.',
 			'%4$s failed login attempts logged. Last failed attempt was from %1$s on %2$s at %3$s.',
 			$attempt_ip,
 			zbx_date2str(DATE_FORMAT, $attempt_date),
@@ -1961,7 +2024,11 @@ function get_prepared_messages(array $options = []): ?string {
 
 	$html = '';
 	foreach (array_merge($messages_authentication, $messages_session, $messages_current) as $box) {
-		$html .= makeMessageBox($box['class'], $box['messages'], $box['title'], $box['show_close_box'],
+		$html .= makeMessageBox(
+			$box['class'],
+			$box['messages'],
+			$box['title'],
+			$box['show_close_box'],
 			$box['show_details']
 		)->toString();
 	}
@@ -1975,15 +2042,18 @@ function get_prepared_messages(array $options = []): ?string {
 	return ($html === '') ? null : $html;
 }
 
-function show_message(string $msg): void {
+function show_message(string $msg): void
+{
 	show_messages(true, $msg, '');
 }
 
-function show_error_message(string $msg): void {
+function show_error_message(string $msg): void
+{
 	show_messages(false, '', $msg);
 }
 
-function info($msgs): void {
+function info($msgs): void
+{
 	zbx_value2array($msgs);
 
 	foreach ($msgs as $msg) {
@@ -1996,7 +2066,8 @@ function info($msgs): void {
  *
  * @param array|string $messages
  */
-function warning($messages): void {
+function warning($messages): void
+{
 	zbx_value2array($messages);
 
 	foreach ($messages as $message) {
@@ -2010,7 +2081,8 @@ function warning($messages): void {
  * @param string|array $msgs                Error message text.
  * @param bool         $is_technical_error
  */
-function error($msgs, bool $is_technical_error = false): void {
+function error($msgs, bool $is_technical_error = false): void
+{
 	$msgs = zbx_toArray($msgs);
 
 	foreach ($msgs as $msg) {
@@ -2018,20 +2090,23 @@ function error($msgs, bool $is_technical_error = false): void {
 	}
 }
 
-function get_and_clear_messages(): array {
+function get_and_clear_messages(): array
+{
 	$messages = filter_messages();
 	CMessageHelper::clear();
 
 	return $messages;
 }
 
-function fatal_error($msg) {
-	require_once dirname(__FILE__).'/page_header.php';
+function fatal_error($msg)
+{
+	require_once dirname(__FILE__) . '/page_header.php';
 	show_error_message($msg);
-	require_once dirname(__FILE__).'/page_footer.php';
+	require_once dirname(__FILE__) . '/page_footer.php';
 }
 
-function parse_period($str) {
+function parse_period($str)
+{
 	$out = null;
 	$time_periods_parser = new CTimePeriodsParser();
 
@@ -2054,7 +2129,7 @@ function parse_period($str) {
 	}
 
 	foreach ($out as &$periods) {
-		usort($periods, static function(array $p1, array $p2): int {
+		usort($periods, static function (array $p1, array $p2): int {
 			if ($p1['start_h'] == $p2['start_h']) {
 				return $p1['start_m'] <=> $p2['start_m'];
 			}
@@ -2072,7 +2147,8 @@ function parse_period($str) {
  *
  * @param integer $format    One of IMAGE_FORMAT_* constants. If not set global $IMAGE_FORMAT_DEFAULT will be used.
  */
-function set_image_header($format = null) {
+function set_image_header($format = null)
+{
 	global $IMAGE_FORMAT_DEFAULT;
 
 	switch ($format !== null ? $format : $IMAGE_FORMAT_DEFAULT) {
@@ -2095,7 +2171,8 @@ function set_image_header($format = null) {
 	header('Expires: Mon, 17 Aug 1998 12:51:50 GMT');
 }
 
-function imageOut(&$image, $format = null) {
+function imageOut(&$image, $format = null)
+{
 	global $page, $IMAGE_FORMAT_DEFAULT;
 
 	if (is_null($format)) {
@@ -2106,8 +2183,7 @@ function imageOut(&$image, $format = null) {
 
 	if (IMAGE_FORMAT_JPEG == $format) {
 		imagejpeg($image);
-	}
-	else {
+	} else {
 		imagepng($image);
 	}
 
@@ -2137,7 +2213,8 @@ function imageOut(&$image, $format = null) {
  *
  * @return bool
  */
-function hasErrorMessages() {
+function hasErrorMessages()
+{
 	return CMessageHelper::getType() === CMessageHelper::MESSAGE_TYPE_ERROR;
 }
 
@@ -2147,16 +2224,16 @@ function hasErrorMessages() {
  * @param string $name     entity name, used as sessionStorage suffix
  * @param array  $keepids  checked rows ids
  */
-function uncheckTableRows($name = null, $keepids = []) {
-	$key = 'cb_'.basename($_SERVER['SCRIPT_NAME'], '.php').($name !== null ? '_'.$name : '');
+function uncheckTableRows($name = null, $keepids = [])
+{
+	$key = 'cb_' . basename($_SERVER['SCRIPT_NAME'], '.php') . ($name !== null ? '_' . $name : '');
 
 	if ($keepids) {
 		$keepids = array_fill_keys($keepids, '');
 
-		insert_js('sessionStorage.setItem('.json_encode($key).', JSON.stringify('.json_encode($keepids).'));');
-	}
-	else {
-		insert_js('sessionStorage.removeItem('.json_encode($key).');');
+		insert_js('sessionStorage.setItem(' . json_encode($key) . ', JSON.stringify(' . json_encode($keepids) . '));');
+	} else {
+		insert_js('sessionStorage.removeItem(' . json_encode($key) . ');');
 	}
 }
 
@@ -2167,7 +2244,8 @@ function uncheckTableRows($name = null, $keepids = []) {
  *
  * @return string
  */
-function trimPath($name) {
+function trimPath($name)
+{
 	$path = splitPath($name);
 	$path = array_map('trim', $path);
 	$path = str_replace(['\\', '/'], ['\\\\', '\\/'], $path);
@@ -2181,7 +2259,8 @@ function trimPath($name) {
  *
  * @return array
  */
-function splitPath($path) {
+function splitPath($path)
+{
 	$path_items = [];
 	$path_item = '';
 
@@ -2217,10 +2296,11 @@ function splitPath($path) {
  *
  * @return int
  */
-function get_color($image, $color, $alpha = 0) {
-	$red = hexdec('0x'.substr($color, 0, 2));
-	$green = hexdec('0x'.substr($color, 2, 2));
-	$blue = hexdec('0x'.substr($color, 4, 2));
+function get_color($image, $color, $alpha = 0)
+{
+	$red = hexdec('0x' . substr($color, 0, 2));
+	$green = hexdec('0x' . substr($color, 2, 2));
+	$blue = hexdec('0x' . substr($color, 4, 2));
 
 	return imagecolorexactalpha($image, $red, $green, $blue, $alpha);
 }
@@ -2230,7 +2310,8 @@ function get_color($image, $color, $alpha = 0) {
  *
  * @return array
  */
-function getUserGraphTheme() {
+function getUserGraphTheme()
+{
 	$themes = DB::find('graph_theme', [
 		'theme' => getUserTheme(CWebUser::$data)
 	]);
@@ -2251,7 +2332,7 @@ function getUserGraphTheme() {
 		'nonworktimecolor' => 'EBEBEB',
 		'leftpercentilecolor' => '429E47',
 		'righttpercentilecolor' => 'E33734',
-		'colorpalette' => '1A7C11,F63100,2774A4,A54F10,FC6EA3,6C59DC,AC8C14,611F27,F230E0,5CCD18,BB2A02,5A2B57,'.
+		'colorpalette' => '1A7C11,F63100,2774A4,A54F10,FC6EA3,6C59DC,AC8C14,611F27,F230E0,5CCD18,BB2A02,5A2B57,' .
 			'89ABF8,7EC25C,274482,2B5429,8048B4,FD5434,790E1F,87AC4D,E89DF4'
 	];
 }
@@ -2266,15 +2347,16 @@ function getUserGraphTheme() {
  *
  * @return bool
  */
-function zbx_err_handler($errno, $errstr, $errfile, $errline) {
+function zbx_err_handler($errno, $errstr, $errfile, $errline)
+{
 	// Suppress errors when calling with error control operator @function_name().
 	if ((error_reporting()
-			& ~(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR)) == 0) {
+		& ~(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR)) == 0) {
 		return true;
 	}
 
 	// Don't show the call to this handler function.
-	error($errstr.' ['.CProfiler::getInstance()->formatCallStack().']', true);
+	error($errstr . ' [' . CProfiler::getInstance()->formatCallStack() . ']', true);
 
 	return false;
 }
@@ -2287,7 +2369,8 @@ function zbx_err_handler($errno, $errstr, $errfile, $errline) {
  *
  * @return array
  */
-function getTimeUnitFilters($values) {
+function getTimeUnitFilters($values)
+{
 	if (is_array($values)) {
 		$res = [];
 
@@ -2306,22 +2389,22 @@ function getTimeUnitFilters($values) {
 
 	$sec = timeUnitToSeconds($values);
 
-	$res = [$sec, $sec.'s'];
+	$res = [$sec, $sec . 's'];
 
 	if ($sec % SEC_PER_MIN == 0) {
-		$res[] = floor($sec / SEC_PER_MIN).'m';
+		$res[] = floor($sec / SEC_PER_MIN) . 'm';
 	}
 
 	if ($sec % SEC_PER_HOUR == 0) {
-		$res[] = floor($sec / SEC_PER_HOUR).'h';
+		$res[] = floor($sec / SEC_PER_HOUR) . 'h';
 	}
 
 	if ($sec % SEC_PER_DAY == 0) {
-		$res[] = floor($sec / SEC_PER_DAY).'d';
+		$res[] = floor($sec / SEC_PER_DAY) . 'd';
 	}
 
 	if ($sec % SEC_PER_WEEK == 0) {
-		$res[] = floor($sec / SEC_PER_WEEK).'w';
+		$res[] = floor($sec / SEC_PER_WEEK) . 'w';
 	}
 
 	return $res;
@@ -2335,7 +2418,8 @@ function getTimeUnitFilters($values) {
  *
  * @return string
  */
-function makeUpdateIntervalFilter($field_name, $values) {
+function makeUpdateIntervalFilter($field_name, $values)
+{
 	$filters = [];
 
 	foreach (getTimeUnitFilters($values) as $filter) {
@@ -2343,14 +2427,14 @@ function makeUpdateIntervalFilter($field_name, $values) {
 		$filter = str_replace("%", "!%", $filter);
 		$filter = str_replace("_", "!_", $filter);
 
-		$filters[] = $field_name.' LIKE '.zbx_dbstr($filter).' ESCAPE '.zbx_dbstr('!');
-		$filters[] = $field_name.' LIKE '.zbx_dbstr($filter.';%').' ESCAPE '.zbx_dbstr('!');
+		$filters[] = $field_name . ' LIKE ' . zbx_dbstr($filter) . ' ESCAPE ' . zbx_dbstr('!');
+		$filters[] = $field_name . ' LIKE ' . zbx_dbstr($filter . ';%') . ' ESCAPE ' . zbx_dbstr('!');
 	}
 
 	$res = $filters ? implode(' OR ', $filters) : '';
 
 	if (count($filters) > 1) {
-		$res = '('.$res.')';
+		$res = '(' . $res . ')';
 	}
 
 	return $res;
@@ -2365,10 +2449,11 @@ function makeUpdateIntervalFilter($field_name, $values) {
  * @param string|null $options['from']
  * @param string|null $options['to']
  */
-function updateTimeSelectorPeriod(array $options) {
+function updateTimeSelectorPeriod(array $options)
+{
 	if ($options['from'] !== null && $options['to'] !== null) {
-		CProfile::update($options['profileIdx'].'.from', $options['from'], PROFILE_TYPE_STR, $options['profileIdx2']);
-		CProfile::update($options['profileIdx'].'.to', $options['to'], PROFILE_TYPE_STR, $options['profileIdx2']);
+		CProfile::update($options['profileIdx'] . '.from', $options['from'], PROFILE_TYPE_STR, $options['profileIdx2']);
+		CProfile::update($options['profileIdx'] . '.to', $options['to'], PROFILE_TYPE_STR, $options['profileIdx2']);
 	}
 }
 
@@ -2380,21 +2465,24 @@ function updateTimeSelectorPeriod(array $options) {
  *
  * @return array
  */
-function getTimeSelectorPeriod(array $options) {
+function getTimeSelectorPeriod(array $options)
+{
 	$profileIdx = array_key_exists('profileIdx', $options) ? $options['profileIdx'] : null;
 	$profileIdx2 = array_key_exists('profileIdx2', $options) ? $options['profileIdx2'] : null;
 
 	if ($profileIdx === null) {
-		$options['from'] = 'now-'.CSettingsHelper::get(CSettingsHelper::PERIOD_DEFAULT);
+		$options['from'] = 'now-' . CSettingsHelper::get(CSettingsHelper::PERIOD_DEFAULT);
 		$options['to'] = 'now';
-	}
-	elseif (!array_key_exists('from', $options) || !array_key_exists('to', $options)
-			|| $options['from'] === null || $options['to'] === null) {
-		$options['from'] = CProfile::get($profileIdx.'.from',
-			'now-'.CSettingsHelper::get(CSettingsHelper::PERIOD_DEFAULT),
+	} elseif (
+		!array_key_exists('from', $options) || !array_key_exists('to', $options)
+		|| $options['from'] === null || $options['to'] === null
+	) {
+		$options['from'] = CProfile::get(
+			$profileIdx . '.from',
+			'now-' . CSettingsHelper::get(CSettingsHelper::PERIOD_DEFAULT),
 			$profileIdx2
 		);
-		$options['to'] = CProfile::get($profileIdx.'.to', 'now', $profileIdx2);
+		$options['to'] = CProfile::get($profileIdx . '.to', 'now', $profileIdx2);
 	}
 
 	$range_time_parser = new CRangeTimeParser();
@@ -2416,13 +2504,14 @@ function getTimeSelectorPeriod(array $options) {
  *
  * @return array
  */
-function getTimeselectorActions($from, $to): array {
+function getTimeselectorActions($from, $to): array
+{
 	$ts_now = time();
 	$parser = new CRangeTimeParser();
 	$ts_from = ($parser->parse($from) !== CParser::PARSE_FAIL) ? $parser->getDateTime(true)->getTimestamp() : null;
 	$ts_to = ($parser->parse($to) !== CParser::PARSE_FAIL) ? $parser->getDateTime(false)->getTimestamp() : null;
 	$valid = ($ts_from !== null && $ts_to !== null);
-	$parser->parse('now-'.CSettingsHelper::get(CSettingsHelper::MAX_PERIOD));
+	$parser->parse('now-' . CSettingsHelper::get(CSettingsHelper::MAX_PERIOD));
 	$max_period = 1 + $ts_now - $parser->getDateTime(true)->getTimestamp();
 
 	return [
@@ -2440,8 +2529,9 @@ function getTimeselectorActions($from, $to): array {
  *
  * @return string
  */
-function relativeDateToText($from, $to) {
-	$key = $from.':'.$to;
+function relativeDateToText($from, $to)
+{
+	$key = $from . ':' . $to;
 	$ranges = [
 		'now-1d/d:now-1d/d' => _('Yesterday'),
 		'now-2d/d:now-2d/d' => _('Day before yesterday'),
@@ -2469,8 +2559,10 @@ function relativeDateToText($from, $to) {
 		if ($relative_time_parser->parse($from) == CParser::PARSE_SUCCESS) {
 			$tokens = $relative_time_parser->getTokens();
 
-			if (count($tokens) == 1 && $tokens[0]['type'] == CRelativeTimeParser::ZBX_TOKEN_OFFSET
-					&& $tokens[0]['sign'] === '-') {
+			if (
+				count($tokens) == 1 && $tokens[0]['type'] == CRelativeTimeParser::ZBX_TOKEN_OFFSET
+				&& $tokens[0]['sign'] === '-'
+			) {
 				$suffix = $tokens[0]['suffix'];
 				$value = (int) $tokens[0]['value'];
 
@@ -2509,7 +2601,7 @@ function relativeDateToText($from, $to) {
 		}
 	}
 
-	return $from.' – '.$to;
+	return $from . ' – ' . $to;
 }
 
 /**
@@ -2519,7 +2611,8 @@ function relativeDateToText($from, $to) {
  *
  * @return string
  */
-function secondsToPeriod(int $seconds): string {
+function secondsToPeriod(int $seconds): string
+{
 	$hours = floor($seconds / 3600);
 	$seconds -= $hours * 3600;
 
@@ -2552,7 +2645,8 @@ function secondsToPeriod(int $seconds): string {
  *
  * @return string
  */
-function generateUuidV4($seed = '') {
+function generateUuidV4($seed = '')
+{
 	$data = ($seed === '') ? random_bytes(16) : hex2bin(md5($seed));
 
 	// Set head of 7th byte to 0100 (0100xxxx)
@@ -2569,7 +2663,8 @@ function generateUuidV4($seed = '') {
  *
  * @return array
  */
-function getTileProviders(): array {
+function getTileProviders(): array
+{
 	return [
 		'OpenStreetMap.Mapnik' => [
 			'name' => 'OpenStreetMap Mapnik',
@@ -2606,7 +2701,8 @@ function getTileProviders(): array {
  *
  * @return bool True if the string is valid in the specified encoding, false otherwise.
  */
-function zbx_mb_check_encoding(string $string, string $encoding): bool {
+function zbx_mb_check_encoding(string $string, string $encoding): bool
+{
 	if (function_exists('mb_check_encoding')) {
 		return mb_check_encoding($string, $encoding);
 	}

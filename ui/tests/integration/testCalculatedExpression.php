@@ -13,7 +13,7 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
 
 /**
  * Test suite for:
@@ -25,7 +25,8 @@ require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
  * @hosts test_calc
  * @onAfter clearData
  */
-class testCalculatedExpression extends CIntegrationTest {
+class testCalculatedExpression extends CIntegrationTest
+{
 
 	private static $hostid;
 	private static $itemIds = [];
@@ -45,7 +46,8 @@ class testCalculatedExpression extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function serverConfigurationProvider() {
+	public function serverConfigurationProvider()
+	{
 		return [
 			self::COMPONENT_SERVER => [
 				'DebugLevel' => 4,
@@ -57,7 +59,8 @@ class testCalculatedExpression extends CIntegrationTest {
 	/**
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 
 		// Create host.
 		$response = $this->call('host.create', [
@@ -74,7 +77,7 @@ class testCalculatedExpression extends CIntegrationTest {
 			],
 			'groups' => [
 				[
-					'groupid' => 4 // Zabbix servers
+					'groupid' => 4 // Advantal servers
 				]
 			]
 		]);
@@ -448,13 +451,13 @@ class testCalculatedExpression extends CIntegrationTest {
 		$trapIdSecond = $this->createTrap();
 
 		// formula averaging two items' last values
-		$formula = 'avg(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . self::$iterator-1 . ',#1) + avg(/'
-			. self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY. self::$iterator . ',#1)';
+		$formula = 'avg(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . self::$iterator - 1 . ',#1) + avg(/'
+			. self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . self::$iterator . ',#1)';
 		$itemid = $this->createCalculatedItemWithFormula($formula, 'multi_avg');
 		self::$itemIds = array_merge(self::$itemIds, [$itemid]);
 
 		$this->reloadConfigurationCache(self::COMPONENT_SERVER, 1);
-		$this->sendIncrementingSequence(3, self::TRAPPER_ITEM_KEY . self::$iterator-1);
+		$this->sendIncrementingSequence(3, self::TRAPPER_ITEM_KEY . self::$iterator - 1);
 		$this->sendScaledSequenceToSecondItem(self::TRAPPER_ITEM_KEY . self::$iterator, 3);
 
 		$history = $this->historyGet($trapIdFirst);
@@ -490,7 +493,8 @@ class testCalculatedExpression extends CIntegrationTest {
 	 * @depends testCalculatedExpression_CombinedFunctions
 	 * @depends testCalculatedExpression_MultiItemAverage
 	 */
-	public function testCalculatedExpression_ItemCount_TagFilter(){
+	public function testCalculatedExpression_ItemCount_TagFilter()
+	{
 
 		$formula = 'item_count(/test_calc/*?[tag="env:prod"])';
 
@@ -548,7 +552,7 @@ class testCalculatedExpression extends CIntegrationTest {
 			'1.0,last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '.bucket[1]),' .
 			'2.0,last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '.bucket[2]),' .
 			'"+Inf",last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '.bucket[Inf])' .
-		')';
+			')';
 
 		// create a calculated item using bucket_percentile
 		$response = $this->call('item.create', [
@@ -592,9 +596,13 @@ class testCalculatedExpression extends CIntegrationTest {
 		);
 
 		// wait for calculated item to process
-		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, "zbx_expression_eval_execute() expression:" .
-			"'histogram_quantile(0.25,0.1,last(0),0.5,last(1),1.0,last(2),2.0,last(3),\"+Inf\",last(4))'",
-			true, 120);
+		$this->waitForLogLineToBePresent(
+			self::COMPONENT_SERVER,
+			"zbx_expression_eval_execute() expression:" .
+				"'histogram_quantile(0.25,0.1,last(0),0.5,last(1),1.0,last(2),2.0,last(3),\"+Inf\",last(4))'",
+			true,
+			120
+		);
 
 		/* Histogram_quantile(0.25, ...) calculates the 25th percentile (quantile φ=0.25) from the histogram buckets. */
 		/* Bucket boundaries and cumulative counts: */
@@ -612,7 +620,7 @@ class testCalculatedExpression extends CIntegrationTest {
 	{
 		$itemids = [];
 		// create several trapper items simulating disk usage for different filesystems
-		foreach( ['fs1', 'fs2', 'fs3', 'fs4'] as $i => $fs) {
+		foreach (['fs1', 'fs2', 'fs3', 'fs4'] as $i => $fs) {
 			$response = $this->call('item.create', [
 				'hostid'	=> self::$hostid,
 				'name'		=> "disk.pused[$fs]",
@@ -680,7 +688,8 @@ class testCalculatedExpression extends CIntegrationTest {
 		$this->assertEquals('2', $this->getItemLastValue($calcItemId));
 	}
 
-	public static function clearData(): void {
+	public static function clearData(): void
+	{
 
 		if (!empty(self::$itemIds)) {
 			CDataHelper::call('item.delete', self::$itemIds);

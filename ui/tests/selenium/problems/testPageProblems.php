@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../behaviors/CTagBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../behaviors/CTagBehavior.php';
 
 /**
  * @backup profiles
@@ -25,14 +25,16 @@ require_once __DIR__.'/../behaviors/CTagBehavior.php';
  *
  * @dataSource UserPermissions, WidgetCommunication, MonitoringOverview
  */
-class testPageProblems extends CWebTest {
+class testPageProblems extends CWebTest
+{
 
 	/**
 	 * Attach TagBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CTableBehavior::class,
 			[
@@ -45,12 +47,13 @@ class testPageProblems extends CWebTest {
 	const URL = 'zabbix.php?action=problem.view&filter_reset=1';
 	protected static $time;
 
-	public function prepareProblemsData() {
+	public function prepareProblemsData()
+	{
 		/**
 		 * Change refresh interval so Problems page doesn't refresh automatically,
 		 * and popup dialogs don't disappear.
 		 */
-		DBexecute('UPDATE users SET refresh=999 WHERE username='.zbx_dbstr('Admin'));
+		DBexecute('UPDATE users SET refresh=999 WHERE username=' . zbx_dbstr('Admin'));
 
 		// Create host group for hosts with item and trigger.
 		$hostgroups = CDataHelper::call('hostgroup.create', [['name' => 'Group for Problems Page']]);
@@ -188,13 +191,18 @@ class testPageProblems extends CWebTest {
 		foreach ($trigger_data as $trigger_name => $clock) {
 			CDBHelper::setTriggerProblem($trigger_name, TRIGGER_VALUE_TRUE, $clock);
 		}
-		CDBHelper::setTriggerProblem(['Symbols in Item metric', 'Filled opdata with macros', 'XSS code in Item metric',
-				'SQL Injection Item metric', 'Trigger for String problem', 'Two trigger expressions',
-				'Multiple   spaces   in problem name'
+		CDBHelper::setTriggerProblem([
+			'Symbols in Item metric',
+			'Filled opdata with macros',
+			'XSS code in Item metric',
+			'SQL Injection Item metric',
+			'Trigger for String problem',
+			'Two trigger expressions',
+			'Multiple   spaces   in problem name'
 		]);
 
-		$dayid = CDBHelper::getValue('SELECT eventid FROM problem WHERE name='.zbx_dbstr('Trigger for Age problem 1 day'));
-		$monthid = CDBHelper::getValue('SELECT eventid FROM problem WHERE name='.zbx_dbstr('Trigger for Age problem 1 month'));
+		$dayid = CDBHelper::getValue('SELECT eventid FROM problem WHERE name=' . zbx_dbstr('Trigger for Age problem 1 day'));
+		$monthid = CDBHelper::getValue('SELECT eventid FROM problem WHERE name=' . zbx_dbstr('Trigger for Age problem 1 month'));
 
 		// Close problems to check time selector filter tab.
 		foreach ([$dayid, $monthid] as $eventid) {
@@ -206,7 +214,8 @@ class testPageProblems extends CWebTest {
 		}
 	}
 
-	public function testPageProblems_Layout() {
+	public function testPageProblems_Layout()
+	{
 		$this->page->login()->open(self::URL);
 		$this->page->assertTitle('Problems');
 		$this->page->assertHeader('Problems');
@@ -221,15 +230,33 @@ class testPageProblems extends CWebTest {
 		}
 
 		$filter_form = $filter_tab->getForm();
-		$this->assertEquals(['Show', 'Host groups', 'Hosts', 'Triggers', 'Problem', 'Severity', 'Age less than',
-				'Show symptoms', 'Show suppressed problems', 'Acknowledgement status', 'Host inventory',
-				'Tags', 'Show tags', 'Tag display priority', 'Show operational data', 'Compact view',
-				'Show details'], $filter_form->getLabels()->asText()
+		$this->assertEquals(
+			[
+				'Show',
+				'Host groups',
+				'Hosts',
+				'Triggers',
+				'Problem',
+				'Severity',
+				'Age less than',
+				'Show symptoms',
+				'Show suppressed problems',
+				'Acknowledgement status',
+				'Host inventory',
+				'Tags',
+				'Show tags',
+				'Tag display priority',
+				'Show operational data',
+				'Compact view',
+				'Show details'
+			],
+			$filter_form->getLabels()->asText()
 		);
 
 		// Check complicated labels.
 		foreach (['By me', 'Tag name', 'Show timeline', 'Highlight whole row'] as $label) {
-			$this->assertTrue($filter_form->query('xpath:.//label[text()='.CXPathHelper::escapeQuotes($label).']')
+			$this->assertTrue(
+				$filter_form->query('xpath:.//label[text()=' . CXPathHelper::escapeQuotes($label) . ']')
 					->one()->isVisible()
 			);
 		}
@@ -287,8 +314,9 @@ class testPageProblems extends CWebTest {
 		foreach (['Hosts', 'Triggers'] as $field) {
 			$overlay = $filter_form->getField($field)->edit();
 			$this->assertEquals($field, $overlay->getTitle());
-			$this->assertEquals("Filter is not set\nUse the filter to display results",
-					$overlay->query('class:no-data-message')->one()->getText()
+			$this->assertEquals(
+				"Filter is not set\nUse the filter to display results",
+				$overlay->query('class:no-data-message')->one()->getText()
 			);
 			$overlay->close();
 		}
@@ -307,20 +335,77 @@ class testPageProblems extends CWebTest {
 		}
 
 		$dropdowns = [
-			'name:inventory[0][field]' => ['Type', 'Type (Full details)', 'Name', 'Alias', 'OS', 'OS (Full details)',
-					'OS (Short)', 'Serial number A', 'Serial number B', 'Tag', 'Asset tag', 'MAC address A',
-					'MAC address B', 'Hardware', 'Hardware (Full details)', 'Software', 'Software (Full details)',
-					'Software application A', 'Software application B', 'Software application C', 'Software application D',
-					'Software application E', 'Contact', 'Location', 'Location latitude', 'Location longitude',
-					'Notes', 'Chassis', 'Model', 'HW architecture', 'Vendor', 'Contract number', 'Installer name',
-					'Deployment status', 'URL A', 'URL B', 'URL C', 'Host networks', 'Host subnet mask', 'Host router',
-					'OOB IP address', 'OOB subnet mask', 'OOB router', 'Date HW purchased', 'Date HW installed',
-					'Date HW maintenance expires', 'Date HW decommissioned', 'Site address A', 'Site address B',
-					'Site address C', 'Site city', 'Site state / province', 'Site country', 'Site ZIP / postal',
-					'Site rack location', 'Site notes', 'Primary POC name', 'Primary POC email', 'Primary POC phone A',
-					'Primary POC phone B', 'Primary POC cell', 'Primary POC screen name', 'Primary POC notes',
-					'Secondary POC name', 'Secondary POC email', 'Secondary POC phone A', 'Secondary POC phone B',
-					'Secondary POC cell', 'Secondary POC screen name', 'Secondary POC notes'
+			'name:inventory[0][field]' => [
+				'Type',
+				'Type (Full details)',
+				'Name',
+				'Alias',
+				'OS',
+				'OS (Full details)',
+				'OS (Short)',
+				'Serial number A',
+				'Serial number B',
+				'Tag',
+				'Asset tag',
+				'MAC address A',
+				'MAC address B',
+				'Hardware',
+				'Hardware (Full details)',
+				'Software',
+				'Software (Full details)',
+				'Software application A',
+				'Software application B',
+				'Software application C',
+				'Software application D',
+				'Software application E',
+				'Contact',
+				'Location',
+				'Location latitude',
+				'Location longitude',
+				'Notes',
+				'Chassis',
+				'Model',
+				'HW architecture',
+				'Vendor',
+				'Contract number',
+				'Installer name',
+				'Deployment status',
+				'URL A',
+				'URL B',
+				'URL C',
+				'Host networks',
+				'Host subnet mask',
+				'Host router',
+				'OOB IP address',
+				'OOB subnet mask',
+				'OOB router',
+				'Date HW purchased',
+				'Date HW installed',
+				'Date HW maintenance expires',
+				'Date HW decommissioned',
+				'Site address A',
+				'Site address B',
+				'Site address C',
+				'Site city',
+				'Site state / province',
+				'Site country',
+				'Site ZIP / postal',
+				'Site rack location',
+				'Site notes',
+				'Primary POC name',
+				'Primary POC email',
+				'Primary POC phone A',
+				'Primary POC phone B',
+				'Primary POC cell',
+				'Primary POC screen name',
+				'Primary POC notes',
+				'Secondary POC name',
+				'Secondary POC email',
+				'Secondary POC phone A',
+				'Secondary POC phone B',
+				'Secondary POC cell',
+				'Secondary POC screen name',
+				'Secondary POC notes'
 			],
 			'id:tags_00_operator' => ['Exists', 'Equals', 'Contains', 'Does not exist', 'Does not equal', 'Does not contain']
 		];
@@ -360,8 +445,7 @@ class testPageProblems extends CWebTest {
 				$age_field->waitUntilNotVisible();
 				$fields_values['Show']['value'] = 'History';
 				$attribute_status = false;
-			}
-			else {
+			} else {
 				$age_field->waitUntilVisible();
 				$fields_values['Show']['value'] = 'Problems';
 				$attribute_status = true;
@@ -413,7 +497,9 @@ class testPageProblems extends CWebTest {
 			$this->assertTrue($filter_form->getField('Highlight whole row')->isEnabled());
 		}
 
-		$this->assertEquals(3, $filter_tab->query('button', ['Save as', 'Apply', 'Reset'])
+		$this->assertEquals(
+			3,
+			$filter_tab->query('button', ['Save as', 'Apply', 'Reset'])
 				->all()->filter(CElementFilter::CLICKABLE)->count()
 		);
 
@@ -499,10 +585,10 @@ class testPageProblems extends CWebTest {
 
 		// Check that some unfiltered data is displayed in the table.
 		$this->assertTableStats(CDBHelper::getCount(
-				'SELECT null FROM problem'.
-				' WHERE cause_eventid IS NULL'.
-				' AND eventid'.
-					' NOT IN (SELECT eventid FROM event_suppress)'
+			'SELECT null FROM problem' .
+				' WHERE cause_eventid IS NULL' .
+				' AND eventid' .
+				' NOT IN (SELECT eventid FROM event_suppress)'
 		));
 
 		// Check Mass update button.
@@ -513,7 +599,8 @@ class testPageProblems extends CWebTest {
 		$mass_update_button->waitUntilClickable();
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// #0 Host group filter - empty result.
 			[
@@ -567,7 +654,7 @@ class testPageProblems extends CWebTest {
 						[
 							[
 								'Time' => '2018-08-07 11:05:35',
-								'User/Recipient' => 'Admin (Zabbix Administrator)',
+								'User/Recipient' => 'Admin (Advantal Administrator)',
 								'Action' => '',
 								'Message/Command' => '',
 								'Status' => '',
@@ -621,7 +708,7 @@ class testPageProblems extends CWebTest {
 						[
 							[
 								'Time' => '2018-08-07 11:05:35',
-								'User/Recipient' => 'Admin (Zabbix Administrator)',
+								'User/Recipient' => 'Admin (Advantal Administrator)',
 								'Action' => '',
 								'Message/Command' => '',
 								'Status' => '',
@@ -829,7 +916,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -850,7 +937,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -871,7 +958,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Host group for tag permissions', 'Zabbix servers'],
+						'Host groups' => ['Host group for tag permissions', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -893,7 +980,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Host group for tag permissions', 'Zabbix servers'],
+						'Host groups' => ['Host group for tag permissions', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -981,7 +1068,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -1003,7 +1090,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -1028,7 +1115,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -1051,7 +1138,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
@@ -1073,13 +1160,13 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
 						'Type' => 'And/Or',
 						'tags' => [
-							['name' => 'Alpha', 'operator' => 'Does not contain', 'value' => 'a'] ,
+							['name' => 'Alpha', 'operator' => 'Does not contain', 'value' => 'a'],
 							['name' => 'Delta', 'operator' => 'Does not contain', 'value' => 'd']
 						]
 					],
@@ -1096,13 +1183,13 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => ['Group to check triggers filtering', 'Zabbix servers'],
+						'Host groups' => ['Group to check triggers filtering', 'Advantal servers'],
 						'Show timeline' => false
 					],
 					'Tags' => [
 						'Type' => 'Or',
 						'tags' => [
-							['name' => 'Alpha', 'operator' => 'Does not contain', 'value' => 'a'] ,
+							['name' => 'Alpha', 'operator' => 'Does not contain', 'value' => 'a'],
 							['name' => 'Delta', 'operator' => 'Does not contain', 'value' => 'd']
 						]
 					],
@@ -1120,7 +1207,7 @@ class testPageProblems extends CWebTest {
 			[
 				[
 					'fields' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => 'ЗАББИКС Сервер',
 						'Triggers' => ['Test trigger to check tag filter on problem page', 'Test trigger with tag'],
 						'Problem' => 'Test trigger',
@@ -1129,8 +1216,10 @@ class testPageProblems extends CWebTest {
 						'Show symptoms' => true,
 						'Acknowledgement status' => 'Unacknowledged',
 						'Host inventory' => [
-							'action' => USER_ACTION_UPDATE, 'index' => 0,
-							'field' => 'Location latitude', 'value' => '56.97612'
+							'action' => USER_ACTION_UPDATE,
+							'index' => 0,
+							'field' => 'Location latitude',
+							'value' => '56.97612'
 						],
 						'Show tags' => 3,
 						'id:tag_name_format_0' => 'Shortened',
@@ -1665,7 +1754,8 @@ class testPageProblems extends CWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageProblems_Filter($data) {
+	public function testPageProblems_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=problem.view&filter_reset=1&sort=clock&sortorder=ASC');
 		$form = CFilterElement::find()->one()->getForm();
 		$table = $this->query('class:list-table')->asTable()->waitUntilPresent()->one();
@@ -1691,8 +1781,7 @@ class testPageProblems extends CWebTest {
 
 			if (CTestArrayHelper::get($data['time_selector'], 'link')) {
 				$form->query('link', $data['time_selector']['link'])->waitUntilClickable()->one()->click();
-			}
-			else {
+			} else {
 				$form->fill($data['time_selector']);
 			}
 
@@ -1709,20 +1798,21 @@ class testPageProblems extends CWebTest {
 		if (array_key_exists('fields', $data) && CTestArrayHelper::get($data['fields'], 'Compact view', false)) {
 			$this->assertTrue($this->query($compact_selector)->exists());
 
-			$this->assertEquals(CTestArrayHelper::get($data['fields'], 'Highlight whole row', false),
-					$this->query($highlight_selector)->exists()
+			$this->assertEquals(
+				CTestArrayHelper::get($data['fields'], 'Highlight whole row', false),
+				$this->query($highlight_selector)->exists()
 			);
-		}
-		else {
+		} else {
 			foreach ([$compact_selector, $highlight_selector] as $selector) {
 				$this->assertFalse($this->query($selector)->exists());
 			}
 		}
 
 		// If Show timeline = true, it adds one more row to the result table.
-		$this->assertTableStats(CTestArrayHelper::get($data, 'table_timeline')
-			? count($data['result']) - 1
-			: count($data['result'])
+		$this->assertTableStats(
+			CTestArrayHelper::get($data, 'table_timeline')
+				? count($data['result']) - 1
+				: count($data['result'])
 		);
 
 		$dialog_selector = 'xpath://div[@class="overlay-dialogue wordbreak"]';
@@ -1732,8 +1822,7 @@ class testPageProblems extends CWebTest {
 
 				if (!$description) {
 					$this->assertFalse($cell->query('xpath:.//button[contains(@class, "zi-alert-with-content")]')->exists());
-				}
-				else {
+				} else {
 					$cell->query('tag:button')->waitUntilClickable()->one()->click();
 					$description_dialog = $this->query($dialog_selector)->waitUntilVisible()->one();
 					$this->assertEquals($description, $description_dialog->getText());
@@ -1750,12 +1839,11 @@ class testPageProblems extends CWebTest {
 
 				if (!$action) {
 					$this->assertFalse($tick->exists());
-				}
-				else {
+				} else {
 					$this->assertTrue($tick->exists());
 					$cell->query('tag:button')->waitUntilClickable()->one()->forceClick();
 					$action_dialog = $this->query($dialog_selector)->asOverlayDialog()->waitUntilReady()->one();
-					$this->assertTableData($action, $dialog_selector.'//table');
+					$this->assertTableData($action, $dialog_selector . '//table');
 					$action_dialog->query('xpath:.//button[@title="Close"]')->waitUntilClickable()->one()->click();
 					$action_dialog->waitUntilNotPresent();
 				}
@@ -1768,11 +1856,10 @@ class testPageProblems extends CWebTest {
 
 				if (!$dependency) {
 					$this->assertFalse($arrow->exists());
-				}
-				else {
+				} else {
 					$arrow->one()->click();
 					$dependency_dialog = $this->query($dialog_selector)->one()->waitUntilVisible();
-					$this->assertEquals("Depends on\n".$dependency, $dependency_dialog->getText());
+					$this->assertEquals("Depends on\n" . $dependency, $dependency_dialog->getText());
 					$dependency_dialog->query('xpath:.//button[@title="Close"]')->one()->click();
 					$dependency_dialog->waitUntilNotPresent();
 				}
@@ -1783,7 +1870,7 @@ class testPageProblems extends CWebTest {
 			foreach ($data['check_tags'] as $tag => $text) {
 				$selector = ($tag === '...')
 					? 'xpath:.//button[@class="btn-icon zi-more"]'
-					: 'xpath:.//span[text()='.CXPathHelper::escapeQuotes($tag).']';
+					: 'xpath:.//span[text()=' . CXPathHelper::escapeQuotes($tag) . ']';
 				$table->getRow(0)->getColumn('Tags')->query($selector)->one()->click();
 				$popup = $this->query($dialog_selector)->one()->waitUntilVisible();
 				$this->assertEquals($text, $popup->getText());
@@ -1809,7 +1896,8 @@ class testPageProblems extends CWebTest {
 		}
 	}
 
-	public static function getFilterForOperationalData() {
+	public static function getFilterForOperationalData()
+	{
 		return [
 			'String in operational data' => [
 				[
@@ -1991,8 +2079,9 @@ class testPageProblems extends CWebTest {
 	/**
 	 * @dataProvider getFilterForOperationalData
 	 */
-	public function testPageProblems_OperationalData($data){
-		$this->page->login()->open(self::URL.'&sort=clock&sortorder=ASC');
+	public function testPageProblems_OperationalData($data)
+	{
+		$this->page->login()->open(self::URL . '&sort=clock&sortorder=ASC');
 		$form = CFilterElement::find()->one()->getForm();
 		$table = $this->query('class:list-table')->asTable()->waitUntilPresent()->one();
 
@@ -2001,7 +2090,7 @@ class testPageProblems extends CWebTest {
 
 		$column = ($data['filter']['Show operational data'] === 'With problem name') ? 'Problem' : 'Operational data';
 		$problem_name = ($data['filter']['Show operational data'] === 'With problem name' && $data['custom data'] !== '')
-			? $data['filter']['Problem'].' ('.$data['custom data'].')'
+			? $data['filter']['Problem'] . ' (' . $data['custom data'] . ')'
 			: $data['filter']['Problem'];
 		$opdata_column = $table->findRow('Problem', $problem_name)->getColumn($column);
 
@@ -2016,15 +2105,16 @@ class testPageProblems extends CWebTest {
 		if ($data['filter']['Show operational data'] === 'With problem name') {
 			$data_in_column = ($data_in_column === '')
 				? $data['filter']['Problem']
-				: $data['filter']['Problem'].' ('.$data_in_column.')';
+				: $data['filter']['Problem'] . ' (' . $data_in_column . ')';
 		}
 
 		$this->assertEquals($data_in_column, $opdata_column->getText());
 
 		if (array_key_exists('screen_name', $data)) {
 			// Remove time from table column - column width varies depending on time text, causing unstable screenshots.
-			CElementQuery::getDriver()->executeScript("arguments[0].textContent = '';",
-					[$table->findRow('Problem', $problem_name)->getColumn('Time')]
+			CElementQuery::getDriver()->executeScript(
+				"arguments[0].textContent = '';",
+				[$table->findRow('Problem', $problem_name)->getColumn('Time')]
 			);
 			$this->assertScreenshot($opdata_column, $data['screen_name']);
 		}
@@ -2040,8 +2130,13 @@ class testPageProblems extends CWebTest {
 			$this->assertEquals(count($data['popup rows']), $popup_table->getRows()->count());
 
 			$row = $popup_table->getRow($i);
-			$row->assertValues([$popup_row['item'], date('Y-m-d H:i:s', self::$time), $metric_in_column,
-					$popup_row['button']]
+			$row->assertValues(
+				[
+					$popup_row['item'],
+					date('Y-m-d H:i:s', self::$time),
+					$metric_in_column,
+					$popup_row['button']
+				]
 			);
 
 			// Check correct graph or history link.
@@ -2052,7 +2147,8 @@ class testPageProblems extends CWebTest {
 		}
 	}
 
-	public function testPageProblems_ResetButton() {
+	public function testPageProblems_ResetButton()
+	{
 		$this->page->login()->open(self::URL);
 		$form = $this->query('name:zbx_filter')->asForm()->waitUntilVisible()->one();
 		$table = $this->query('class:list-table')->asTable()->one();

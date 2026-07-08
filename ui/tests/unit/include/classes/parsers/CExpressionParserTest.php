@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,16 +18,18 @@
 
 use PHPUnit\Framework\TestCase;
 
-class CExpressionParserTest extends TestCase {
+class CExpressionParserTest extends TestCase
+{
 
-	public static function dataProvider() {
+	public static function dataProvider()
+	{
 		return [
 			['', ['error' => 'incorrect expression starting from ""', 'match' => ''], CParser::PARSE_FAIL],
 			[' ', ['error' => 'incorrect expression starting from ""', 'match' => ''], CParser::PARSE_FAIL],
 			['+', ['error' => 'incorrect expression starting from "+"', 'match' => ''], CParser::PARSE_FAIL],
 			['1+1', ['error' => '', 'match' => '1+1'], CParser::PARSE_SUCCESS],
 			['1+1 ', null, CParser::PARSE_SUCCESS],
-			[' 1+1 '."\t\r\n", null, CParser::PARSE_SUCCESS],
+			[' 1+1 ' . "\t\r\n", null, CParser::PARSE_SUCCESS],
 			['abc', ['error' => 'incorrect expression starting from "abc"', 'match' => ''], CParser::PARSE_FAIL],
 			['{#LLD}', ['error' => 'incorrect expression starting from "{#LLD}"', 'match' => ''], CParser::PARSE_FAIL],
 			['{#LLD}', null, CParser::PARSE_SUCCESS, ['lldmacros' => true]],
@@ -2184,16 +2188,16 @@ class CExpressionParserTest extends TestCase {
 			['min(last(/{HOST.HOST2}/key), 1)', null, CParser::PARSE_SUCCESS, ['host_macro_n' => true]],
 
 			['last(/*/agent.ping) = 1 or last(/host2/*) = 1 or last(/*/*)', null, CParser::PARSE_SUCCESS, ['calculated' => true]],
-			['last(/'.'/agent.ping) = 1', null, CParser::PARSE_FAIL, ['calculated' => true]],
-			['last(/'.'/agent.ping) = 1', null, CParser::PARSE_SUCCESS, ['empty_host' => true]],
-			['last(/'.'/*) = 1', null, CParser::PARSE_FAIL, ['calculated' => true]],
-			['last(/'.'/*) = 1', null, CParser::PARSE_FAIL, ['empty_host' => true]],
-			['last(/'.'/*) = 1', null, CParser::PARSE_SUCCESS, ['calculated' => true, 'empty_host' => true]],
-			['last(/*/agent.ping) = 1 or last(/host2/*?[group = "Zabbix servers" and (tag = "tag1" or tag = "tag2")]) = 1 or last(/*/*)', null, CParser::PARSE_SUCCESS, ['calculated' => true]],
-			['last(/*/agent.ping) = 1 or last(/host2/*?[group = "Zabbix servers" and (tag = {$MACRO} or tag = "tag2")]) = 1 or last(/*/*)', null, CParser::PARSE_SUCCESS, ['usermacros' => true, 'calculated' => true]],
-			['last(/*/agent.ping) = 1 or last(/host2/*?[group = "Zabbix servers" and (tag = {$MACRO} or tag = "tag2")]) = 1 or last(/*/*)', ['error' => 'incorrect expression starting from "last(/host2/*?[group = "Zabbix servers" and (tag = {$MACRO} or tag = "tag2")]) = 1 or last(/*/*)"', 'match' => 'last(/*/agent.ping) = 1'], CParser::PARSE_SUCCESS_CONT, ['calculated' => true]],
-			['last(/host2/*?[group = "Zabbix servers" and (tag = {#MACRO} or tag = "tag2")]) = 1', null, CParser::PARSE_FAIL, ['calculated' => true]],
-			['last(/host2/*?[group = "Zabbix servers" and (tag = {#MACRO} or tag = {{#MACRO}.func()})]) = 1', null, CParser::PARSE_SUCCESS, ['lldmacros' => true, 'calculated' => true]],
+			['last(/' . '/agent.ping) = 1', null, CParser::PARSE_FAIL, ['calculated' => true]],
+			['last(/' . '/agent.ping) = 1', null, CParser::PARSE_SUCCESS, ['empty_host' => true]],
+			['last(/' . '/*) = 1', null, CParser::PARSE_FAIL, ['calculated' => true]],
+			['last(/' . '/*) = 1', null, CParser::PARSE_FAIL, ['empty_host' => true]],
+			['last(/' . '/*) = 1', null, CParser::PARSE_SUCCESS, ['calculated' => true, 'empty_host' => true]],
+			['last(/*/agent.ping) = 1 or last(/host2/*?[group = "Advantal servers" and (tag = "tag1" or tag = "tag2")]) = 1 or last(/*/*)', null, CParser::PARSE_SUCCESS, ['calculated' => true]],
+			['last(/*/agent.ping) = 1 or last(/host2/*?[group = "Advantal servers" and (tag = {$MACRO} or tag = "tag2")]) = 1 or last(/*/*)', null, CParser::PARSE_SUCCESS, ['usermacros' => true, 'calculated' => true]],
+			['last(/*/agent.ping) = 1 or last(/host2/*?[group = "Advantal servers" and (tag = {$MACRO} or tag = "tag2")]) = 1 or last(/*/*)', ['error' => 'incorrect expression starting from "last(/host2/*?[group = "Advantal servers" and (tag = {$MACRO} or tag = "tag2")]) = 1 or last(/*/*)"', 'match' => 'last(/*/agent.ping) = 1'], CParser::PARSE_SUCCESS_CONT, ['calculated' => true]],
+			['last(/host2/*?[group = "Advantal servers" and (tag = {#MACRO} or tag = "tag2")]) = 1', null, CParser::PARSE_FAIL, ['calculated' => true]],
+			['last(/host2/*?[group = "Advantal servers" and (tag = {#MACRO} or tag = {{#MACRO}.func()})]) = 1', null, CParser::PARSE_SUCCESS, ['lldmacros' => true, 'calculated' => true]],
 			['last(/*/agent.ping) = 1 or last(/host2/*) = 1 or last(/*/*) or last(/{HOST.HOST}/key)', ['error' => 'incorrect expression starting from "last(/{HOST.HOST}/key)"', 'match' => 'last(/*/agent.ping) = 1 or last(/host2/*) = 1 or last(/*/*)'], CParser::PARSE_SUCCESS_CONT, ['calculated' => true]],
 			['last(/*/agent.ping) = 1 or last(/host2/*) = 1 or last(/*/*) or last(/{HOST.HOST}/key)', null, CParser::PARSE_SUCCESS, ['calculated' => true, 'host_macro' => true]],
 			['last(/*/agent.ping) = {TRIGGER.VALUE}', ['error' => 'incorrect expression starting from "{TRIGGER.VALUE}"', 'match' => 'last(/*/agent.ping)'], CParser::PARSE_SUCCESS_CONT, ['calculated' => true]],
@@ -2222,7 +2226,8 @@ class CExpressionParserTest extends TestCase {
 	 * @param bool        $options['calculated']
 	 * @param bool        $options['host_macro']
 	 */
-	public function testParseExpression(string $expression, ?array $result, int $rc, array $options = []) {
+	public function testParseExpression(string $expression, ?array $result, int $rc, array $options = [])
+	{
 		$expression_parser = new CExpressionParser($options);
 
 		$this->assertSame($rc, $expression_parser->parse($expression));
@@ -2236,7 +2241,8 @@ class CExpressionParserTest extends TestCase {
 		}
 	}
 
-	public static function dataProviderTokens() {
+	public static function dataProviderTokens()
+	{
 		return [
 			[
 				'((-12 + {$MACRO} + {{$MACRO}.regsub("^([a-z]+)", \1)})) = 1K or not {{#M}.regsub("^([0-9]+)", \1)} and {TRIGGER.VALUE} and "\\"str\\"" = func(/host/key, #25:now/M, "eq", "str") or math() or min( last(/host/key), {$MACRO}, {{$MACRO}.regsub("^([0-9]+)", \1)}, 123, "abc" , min(min(/host/key, 1d:now/d), 125) + 10 ) or {{TRIGGER.VALUE}.regsub("^(\d+)$", \1)}',
@@ -2785,7 +2791,8 @@ class CExpressionParserTest extends TestCase {
 	/**
 	 * @dataProvider dataProviderTokens
 	 */
-	public function testTokens(string $expression, array $expected, array $options = []) {
+	public function testTokens(string $expression, array $expected, array $options = [])
+	{
 		$expression_parser = new CExpressionParser($options);
 		$this->assertSame(CParser::PARSE_SUCCESS, $expression_parser->parse($expression));
 		$this->assertSame($expected, [

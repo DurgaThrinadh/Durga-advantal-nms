@@ -417,32 +417,33 @@ class CMenuHelper {
 	public static function getUserMenu(): CMenu {
 		$menu = new CMenu();
 
-		if (!CBrandHelper::isRebranded()) {
-			$lang = CWebUser::getLang();
-			$menu
-				->add(
-					(new CMenuItem(_('Support')))
-						->setIcon(ZBX_ICON_SUPPORT)
-						->setUrl(new CUrl(getSupportUrl($lang)))
-						->setTitle(_('Zabbix Technical Support'))
-						->setTarget('_blank')
-				)
-				->add(
-					(new CMenuItem(_('Integrations')))
-						->setIcon(ZBX_ICON_INTEGRATIONS)
-						->setUrl(new CUrl(getIntegrationsUrl($lang)))
-						->setTitle(_('Zabbix Integrations'))
-						->setTarget('_blank')
-				);
-		}
+		// Removed for Advantal NMS branding
+		// if (!CBrandHelper::isRebranded()) {
+		// 	$lang = CWebUser::getLang();
+		// 	$menu
+		// 		->add(
+		// 			(new CMenuItem(_('Support')))
+		// 				->setIcon(ZBX_ICON_SUPPORT)
+		// 				->setUrl(new CUrl(getSupportUrl($lang)))
+		// 				->setTitle(_('Zabbix Technical Support'))
+		// 				->setTarget('_blank')
+		// 		)
+		// 		->add(
+		// 			(new CMenuItem(_('Integrations')))
+		// 				->setIcon(ZBX_ICON_INTEGRATIONS)
+		// 				->setUrl(new CUrl(getIntegrationsUrl($lang)))
+		// 				->setTitle(_('Zabbix Integrations'))
+		// 				->setTarget('_blank')
+		// 		);
+		// }
 
-		$menu->add(
-			(new CMenuItem(_('Help')))
-				->setIcon(ZBX_ICON_HELP_CIRCLED)
-				->setUrl(new CUrl(CBrandHelper::getHelpUrl()))
-				->setTitle(_('Help'))
-				->setTarget('_blank')
-		);
+		// $menu->add(
+		// 	(new CMenuItem(_('Help')))
+		// 		->setIcon(ZBX_ICON_HELP_CIRCLED)
+		// 		->setUrl(new CUrl(CBrandHelper::getHelpUrl()))
+		// 		->setTitle(_('Help'))
+		// 		->setTarget('_blank')
+		// );
 
 		$user = array_intersect_key(CWebUser::$data, array_flip(['username', 'name', 'surname'])) + [
 			'name' => null,

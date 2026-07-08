@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup scripts
@@ -25,20 +25,32 @@ require_once __DIR__.'/../behaviors/CTableBehavior.php';
  *
  * @onBefore prepareScriptData
  */
-class testPageAlertsScripts extends CWebTest {
+class testPageAlertsScripts extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			[
 				'class' => CTableBehavior::class,
-				'column_names' => ['', 'Name', 'Scope', 'Count', 'Used in actions', 'Type', 'Execute on', 'Commands',
-					'User group', 'Host group', 'Host access'
+				'column_names' => [
+					'',
+					'Name',
+					'Scope',
+					'Count',
+					'Used in actions',
+					'Type',
+					'Execute on',
+					'Commands',
+					'User group',
+					'Host group',
+					'Host access'
 				]
 			]
 		];
@@ -55,7 +67,8 @@ class testPageAlertsScripts extends CWebTest {
 	private static $script_scope_event = 'Manual event action for filter check';
 	private static $custom_action = 'Trigger action for Scripts page testing';
 
-	public function prepareScriptData() {
+	public function prepareScriptData()
+	{
 		CDataHelper::call('script.create', [
 			[
 				'name' => self::$script_scope_event,
@@ -105,7 +118,7 @@ class testPageAlertsScripts extends CWebTest {
 					],
 					'opcommand_hst' => [
 						[
-							'hostid'=> '0'
+							'hostid' => '0'
 						]
 					]
 				]
@@ -113,7 +126,8 @@ class testPageAlertsScripts extends CWebTest {
 		]);
 	}
 
-	public function getScriptsData() {
+	public function getScriptsData()
+	{
 		return [
 			[
 				[
@@ -126,7 +140,7 @@ class testPageAlertsScripts extends CWebTest {
 						'Execute on' => 'Server (proxy)',
 						'Commands' => '/sbin/zabbix_server --runtime-control config_cache_reload',
 						'User group' => 'All',
-						'Host group' => 'Zabbix servers',
+						'Host group' => 'Advantal servers',
 						'Host access' => 'Read'
 					],
 					[
@@ -137,7 +151,7 @@ class testPageAlertsScripts extends CWebTest {
 						'Type' => 'Script',
 						'Execute on' => 'Server (proxy)',
 						'Commands' => 'sudo /usr/bin/nmap -O {HOST.CONN}',
-						'User group' => 'Zabbix administrators',
+						'User group' => 'Advantal Administrators',
 						'Host group' => 'All',
 						'Host access' => 'Read'
 					],
@@ -150,7 +164,7 @@ class testPageAlertsScripts extends CWebTest {
 						'Execute on' => 'Server (proxy)',
 						'Commands' => '1-2-3-4 spaces',
 						'User group' => 'All',
-						'Host group' => 'Zabbix servers',
+						'Host group' => 'Advantal servers',
 						'Host access' => 'Read'
 					],
 					[
@@ -186,7 +200,7 @@ class testPageAlertsScripts extends CWebTest {
 						'Execute on' => 'Server (proxy)',
 						'Commands' => '/sbin/shutdown -r',
 						'User group' => 'All',
-						'Host group' => 'Zabbix servers',
+						'Host group' => 'Advantal servers',
 						'Host access' => 'Read'
 					],
 					[
@@ -245,7 +259,8 @@ class testPageAlertsScripts extends CWebTest {
 	/**
 	 * @dataProvider getScriptsData
 	 */
-	public function testPageAlertsScripts_Layout($data) {
+	public function testPageAlertsScripts_Layout($data)
+	{
 		$scripts_count = count($data);
 
 		$this->page->login()->open('zabbix.php?action=script.list');
@@ -253,7 +268,9 @@ class testPageAlertsScripts extends CWebTest {
 		$this->page->assertHeader('Scripts');
 
 		// Check buttons on the Script page.
-		$this->assertEquals(3, $this->query('button', ['Create script', 'Apply', 'Reset'])
+		$this->assertEquals(
+			3,
+			$this->query('button', ['Create script', 'Apply', 'Reset'])
 				->all()->filter(CElementFilter::CLICKABLE)->count()
 		);
 		$this->assertFalse($this->query('button:Delete')->one()->isClickable());
@@ -290,8 +307,20 @@ class testPageAlertsScripts extends CWebTest {
 
 		// Check table headers.
 		$table = $this->query('class:list-table')->asTable()->one();
-		$this->assertEquals(['', 'Name', 'Scope', 'Used in actions', 'Type', 'Execute on', 'Commands', 'User group',
-			'Host group', 'Host access'], $table->getHeadersText()
+		$this->assertEquals(
+			[
+				'',
+				'Name',
+				'Scope',
+				'Used in actions',
+				'Type',
+				'Execute on',
+				'Commands',
+				'User group',
+				'Host group',
+				'Host access'
+			],
+			$table->getHeadersText()
 		);
 
 		// Check sortable headers.
@@ -305,7 +334,8 @@ class testPageAlertsScripts extends CWebTest {
 		$this->assertTrue($filter->isExpanded());
 	}
 
-	public function getFilterData() {
+	public function getFilterData()
+	{
 		return [
 			// #0. Name with special symbols.
 			[
@@ -524,7 +554,8 @@ class testPageAlertsScripts extends CWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageAlertsScripts_Filter($data) {
+	public function testPageAlertsScripts_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=script.list');
 		$form = $this->query('name:zbx_filter')->asForm()->waitUntilVisible()->one();
 		$table = $this->getTable();
@@ -542,7 +573,8 @@ class testPageAlertsScripts extends CWebTest {
 		$this->query('button:Reset')->one()->click();
 	}
 
-	public function getSortData() {
+	public function getSortData()
+	{
 		return [
 			[
 				[
@@ -585,19 +617,21 @@ class testPageAlertsScripts extends CWebTest {
 	/**
 	 * @dataProvider getSortData
 	 */
-	public function testPageAlertsScripts_Sort($data) {
+	public function testPageAlertsScripts_Sort($data)
+	{
 		$this->page->login()->open('zabbix.php?action=script.list');
 		$table = $this->query('class:list-table')->asTable()->one();
 		$header = $table->query('link', $data['sort_field'])->one();
 
-		foreach(['desc', 'asc'] as $sorting) {
+		foreach (['desc', 'asc'] as $sorting) {
 			$expected = ($sorting === 'desc') ? $data['expected'] : array_reverse($data['expected']);
 			$header->click();
 			$this->assertTableDataColumn($expected, $data['sort_field']);
 		}
 	}
 
-	public function getDeleteData() {
+	public function getDeleteData()
+	{
 		return [
 			[
 				[
@@ -611,8 +645,8 @@ class testPageAlertsScripts extends CWebTest {
 					'name' => [
 						self::$custom_script
 					],
-					'error' => 'Cannot delete scripts. Script "'.self::$custom_script.
-							'" is used in action operation "'.self::$custom_action.'".'
+					'error' => 'Cannot delete scripts. Script "' . self::$custom_script .
+						'" is used in action operation "' . self::$custom_action . '".'
 				]
 			],
 			[
@@ -622,8 +656,8 @@ class testPageAlertsScripts extends CWebTest {
 						self::$custom_script,
 						self::$script_for_filter
 					],
-					'error' => 'Cannot delete scripts. Script "'.self::$custom_script.
-							'" is used in action operation "'.self::$custom_action.'".'
+					'error' => 'Cannot delete scripts. Script "' . self::$custom_script .
+						'" is used in action operation "' . self::$custom_action . '".'
 				]
 			],
 			[
@@ -649,7 +683,8 @@ class testPageAlertsScripts extends CWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testPageAlertsScripts_Delete($data) {
+	public function testPageAlertsScripts_Delete($data)
+	{
 		if ($data['expected'] === TEST_BAD) {
 			$old_hash = CDBHelper::getHash(self::$script_sql);
 		}
@@ -658,8 +693,8 @@ class testPageAlertsScripts extends CWebTest {
 
 		// Scripts count that will be selected before delete action.
 		$scripts_count = (array_key_exists('name', $data))
-				? count($data['name'])
-				: CDBHelper::getCount(self::$script_sql);
+			? count($data['name'])
+			: CDBHelper::getCount(self::$script_sql);
 		$this->selectTableRows(CTestArrayHelper::get($data, 'name'));
 		$this->query('button:Delete')->one()->waitUntilClickable()->click();
 		$this->page->acceptAlert();
@@ -667,27 +702,30 @@ class testPageAlertsScripts extends CWebTest {
 
 		// Verify that there is no possibility to delete selected script(s) if at least one of them contains linked action.
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
-			$this->assertMessage(TEST_BAD, 'Cannot delete script'.(($scripts_count > 1) ? 's' : ''), $data['error']);
+			$this->assertMessage(TEST_BAD, 'Cannot delete script' . (($scripts_count > 1) ? 's' : ''), $data['error']);
 			$this->assertSelectedCount($scripts_count);
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::$script_sql));
 
 			// Uncheck selected scripts due to not influence further tests.
 			$this->query('button:Reset')->one()->click();
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, ($scripts_count > 1) ? 'Scripts deleted' : 'Script deleted');
 			$this->assertSelectedCount(0);
-			$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name IN ('.
-					CDBHelper::escape($data['name']).')')
+			$this->assertEquals(
+				0,
+				CDBHelper::getCount('SELECT NULL FROM scripts WHERE name IN (' .
+					CDBHelper::escape($data['name']) . ')')
 			);
 		}
 	}
 
-	public function testPageAlertsScripts_CancelDelete() {
+	public function testPageAlertsScripts_CancelDelete()
+	{
 		$this->cancelDelete([self::$custom_script]);
 	}
 
-	public function testPageAlertsScripts_CancelMassDelete() {
+	public function testPageAlertsScripts_CancelMassDelete()
+	{
 		$this->cancelDelete();
 	}
 
@@ -696,7 +734,8 @@ class testPageAlertsScripts extends CWebTest {
 	 *
 	 * @param array $scripts      script names, if empty delete will perform for all scripts
 	 */
-	private function cancelDelete($scripts = []) {
+	private function cancelDelete($scripts = [])
+	{
 		$old_hash = CDBHelper::getHash(self::$script_sql);
 
 		$this->page->login()->open('zabbix.php?action=script.list');
@@ -717,7 +756,8 @@ class testPageAlertsScripts extends CWebTest {
 	/**
 	 * Verify that there is possibility to open 'action' modal popup via link located in 'Used in actions' tab.
 	 */
-	public function testPageAlertsScripts_ActionLinks() {
+	public function testPageAlertsScripts_ActionLinks()
+	{
 		$this->page->login()->open('zabbix.php?action=script.list');
 		$this->query('link', self::$custom_action)->one()->waitUntilClickable()->click();
 		$dialog = COverlayDialogElement::find()->waitUntilReady()->asForm()->one();

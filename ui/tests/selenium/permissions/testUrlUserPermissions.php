@@ -13,22 +13,24 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
 
 /**
  * @onBefore removeGuestFromDisabledGroup, prepareUserData
  *
  * @backup users
  */
-class testUrlUserPermissions extends CLegacyWebTest {
+class testUrlUserPermissions extends CLegacyWebTest
+{
 
-	public function prepareUserData() {
+	public function prepareUserData()
+	{
 		CDataHelper::call('user.create', [
 			[
 				'username' => 'test-admin',
 				'passwd' => 'zabbix12345',
 				'roleid' => USER_TYPE_ZABBIX_ADMIN,
-				'usrgrps' => [['usrgrpid' => 7]] // Zabbix administrators.
+				'usrgrps' => [['usrgrpid' => 7]] // Advantal Administrators.
 			],
 			// Add new admin user without any group
 			[
@@ -57,15 +59,18 @@ class testUrlUserPermissions extends CLegacyWebTest {
 	/**
 	 * Guest user needs to be out of "Disabled" group to have access to frontend.
 	 */
-	public function removeGuestFromDisabledGroup() {
+	public function removeGuestFromDisabledGroup()
+	{
 		DBexecute('DELETE FROM users_groups WHERE userid=2 AND usrgrpid=9');
 	}
 
-	public function addGuestToDisabledGroup() {
+	public function addGuestToDisabledGroup()
+	{
 		DBexecute('INSERT INTO users_groups (id, usrgrpid, userid) VALUES (1552, 9, 2)');
 	}
 
-	public static function data() {
+	public static function data()
+	{
 		return [
 			// #0 Dashboards.
 			[[
@@ -947,7 +952,8 @@ class testUrlUserPermissions extends CLegacyWebTest {
 	/**
 	 * @dataProvider data
 	 */
-	public function testUrlUserPermissions_Users($data) {
+	public function testUrlUserPermissions_Users($data)
+	{
 		foreach ($data['users'] as $alias => $user) {
 			if ($alias !== 'guest') {
 				$password = ($alias === 'user-zabbix') ? 'zabbix' : 'zabbix12345';
@@ -963,13 +969,11 @@ class testUrlUserPermissions extends CLegacyWebTest {
 
 				$this->zbxTestCheckTitle($data['title']);
 				if ($data['url'] === 'zabbix.php?action=userprofile.edit') {
-					$this->zbxTestCheckHeader($data['header'].$alias);
-				}
-				else {
+					$this->zbxTestCheckHeader($data['header'] . $alias);
+				} else {
 					$this->zbxTestCheckHeader($data['header']);
 				}
-			}
-			elseif ($user && array_key_exists('no_permissions_to_object', $data) ) {
+			} elseif ($user && array_key_exists('no_permissions_to_object', $data)) {
 				$this->zbxTestOpen($data['url']);
 
 				if ($alias === 'guest') {
@@ -977,11 +981,12 @@ class testUrlUserPermissions extends CLegacyWebTest {
 				}
 
 				$this->zbxTestCheckTitle($data['title']);
-				$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'No permissions to referred object or it'.
+				$this->zbxTestWaitUntilMessageTextPresent(
+					'msg-bad',
+					'No permissions to referred object or it' .
 						' does not exist!'
 				);
-			}
-			else {
+			} else {
 				$this->zbxTestOpen($data['url']);
 
 				if ($alias === 'guest') {
@@ -989,10 +994,14 @@ class testUrlUserPermissions extends CLegacyWebTest {
 				}
 
 				$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'Access denied');
-				$this->zbxTestAssertElementText("//ul/li[1]", 'You are logged in as "'.$alias.'". You have no'.
+				$this->zbxTestAssertElementText(
+					"//ul/li[1]",
+					'You are logged in as "' . $alias . '". You have no' .
 						' permissions to access this page.'
 				);
-				$this->zbxTestAssertElementText("//ul/li[2]", 'If you think this message is wrong, please consult your'.
+				$this->zbxTestAssertElementText(
+					"//ul/li[2]",
+					'If you think this message is wrong, please consult your' .
 						' administrators about getting the necessary permissions.'
 				);
 			}
@@ -1006,12 +1015,15 @@ class testUrlUserPermissions extends CLegacyWebTest {
 	 *
 	 * @dataProvider data
 	 */
-	public function testUrlUserPermissions_DisabledGuest($data) {
+	public function testUrlUserPermissions_DisabledGuest($data)
+	{
 		$this->zbxTestOpen($data['url']);
 		$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'You are not logged in');
 		$this->zbxTestAssertElementText("//ul/li[1]", 'You must login to view this page.');
 		$this->zbxTestAssertElementText("//ul/li[2]", 'Possibly the session has expired or the password was changed.');
-		$this->zbxTestAssertElementText("//ul/li[3]", 'If you think this message is wrong, please consult your'.
+		$this->zbxTestAssertElementText(
+			"//ul/li[3]",
+			'If you think this message is wrong, please consult your' .
 				' administrators about getting the necessary permissions.'
 		);
 	}
@@ -1019,7 +1031,8 @@ class testUrlUserPermissions extends CLegacyWebTest {
 	/**
 	 * Login as guest user.
 	 */
-	protected function guestLogin() {
+	protected function guestLogin()
+	{
 		$this->query('button:Login')->one()->click();
 		$this->page->waitUntilReady();
 		$this->query('link:sign in as guest')->one()->click();

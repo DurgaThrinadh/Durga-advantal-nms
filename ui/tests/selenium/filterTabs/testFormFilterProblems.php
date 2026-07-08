@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormFilter.php';
+require_once __DIR__ . '/../common/testFormFilter.php';
 
 /**
  * @backup profiles, hosts
@@ -23,7 +23,8 @@ require_once __DIR__.'/../common/testFormFilter.php';
  *
  * @onBefore prepareProblemsData
  */
-class testFormFilterProblems extends testFormFilter {
+class testFormFilterProblems extends testFormFilter
+{
 
 	/**
 	 * Id of the host with problems.
@@ -49,7 +50,8 @@ class testFormFilterProblems extends testFormFilter {
 	public $url = 'zabbix.php?action=problem.view&show_timeline=0';
 	public $table_selector = 'class:list-table';
 
-	public function prepareProblemsData() {
+	public function prepareProblemsData()
+	{
 		// Create hostgroup for hosts with items triggers.
 		$hostgroups = CDataHelper::call('hostgroup.create', [['name' => 'Group for Problems Filter']]);
 		$this->assertArrayHasKey('groupids', $hostgroups);
@@ -85,8 +87,8 @@ class testFormFilterProblems extends testFormFilter {
 		$triggers_data = [];
 		foreach ($item_names as $i => $item) {
 			$triggers_data[] = [
-				'description' => 'Filter problems trigger '.$i,
-				'expression' => 'last(/Host for Problems Filter/'.$item.')=0',
+				'description' => 'Filter problems trigger ' . $i,
+				'expression' => 'last(/Host for Problems Filter/' . $item . ')=0',
 				'priority' => $i
 			];
 		}
@@ -113,7 +115,8 @@ class testFormFilterProblems extends testFormFilter {
 		}
 	}
 
-	public static function getCheckCreatedFilterData() {
+	public static function getCheckCreatedFilterData()
+	{
 		return [
 			[
 				[
@@ -232,12 +235,14 @@ class testFormFilterProblems extends testFormFilter {
 	 *
 	 * @dataProvider getCheckCreatedFilterData
 	 */
-	public function testFormFilterProblems_CheckCreatedFilter($data) {
+	public function testFormFilterProblems_CheckCreatedFilter($data)
+	{
 		$this->createFilter($data, 'filter-create', 'zabbix');
 		$this->checkFilters($data, $this->table_selector);
 	}
 
-	public static function getCheckRememberedFilterData() {
+	public static function getCheckRememberedFilterData()
+	{
 		return [
 			[
 				[
@@ -248,7 +253,7 @@ class testFormFilterProblems extends testFormFilter {
 			],
 			[
 				[
-					'Host groups' => ['Zabbix servers'],
+					'Host groups' => ['Advantal servers'],
 					'Hosts' => ['ЗАББИКС Сервер'],
 					'Not classified' => true,
 					'Warning' => true,
@@ -265,33 +270,38 @@ class testFormFilterProblems extends testFormFilter {
 	 *
 	 * @dataProvider getCheckRememberedFilterData
 	 */
-	public function testFormFilterProblems_CheckRememberedFilter($data) {
+	public function testFormFilterProblems_CheckRememberedFilter($data)
+	{
 		$this->checkRememberedFilters($data);
 	}
 
 	/**
 	 * Delete filters.
 	 */
-	public function testFormFilterProblems_Delete() {
+	public function testFormFilterProblems_Delete()
+	{
 		$this->deleteFilter('filter-delete', 'zabbix');
 	}
 
 	/**
 	 * Updating filter form.
 	 */
-	public function testFormFilterProblems_UpdateForm() {
+	public function testFormFilterProblems_UpdateForm()
+	{
 		$this->updateFilterForm('filter-update', 'zabbix', $this->table_selector);
 	}
 
 	/**
 	 * Updating saved filter properties.
 	 */
-	public function testFormFilterProblems_UpdateProperties() {
+	public function testFormFilterProblems_UpdateProperties()
+	{
 		$this->updateFilterProperties('filter-update', 'zabbix');
 	}
 
 
-	public static function getCustomTimePeriodData() {
+	public static function getCustomTimePeriodData()
+	{
 		return [
 			[
 				[
@@ -321,7 +331,8 @@ class testFormFilterProblems extends testFormFilter {
 	 *
 	 * @dataProvider getCustomTimePeriodData
 	 */
-	public function testFormFilterProblems_TimePeriod($data) {
+	public function testFormFilterProblems_TimePeriod($data)
+	{
 		$this->createFilter($data, 'Admin', 'zabbix');
 		$filter = CFilterElement::find()->one()->setContext(CFilterElement::CONTEXT_LEFT);
 		$form = $filter->getForm();
@@ -339,8 +350,7 @@ class testFormFilterProblems extends testFormFilter {
 			COverlayDialogElement::ensureNotPresent();
 			$this->page->waitUntilReady();
 			$table->waitUntilReloaded();
-		}
-		else {
+		} else {
 			// Changing time period from timeselector tab.
 			$form->fill(['Show' => 'History']);
 			$filter->setContext(CFilterElement::CONTEXT_RIGHT);
@@ -356,7 +366,7 @@ class testFormFilterProblems extends testFormFilter {
 		// Checking that Show field tabs are disabled or enabled.
 		$value = ($data['filter']['Name'] === 'Timeselect_1') ? false : true;
 		foreach (['Recent problems', 'Problems'] as $label) {
-			$this->assertTrue($form->query('xpath://label[text()="'.$label.'"]/../input')->one()->isEnabled($value));
+			$this->assertTrue($form->query('xpath://label[text()="' . $label . '"]/../input')->one()->isEnabled($value));
 		}
 
 		$this->assertTrue($this->query('xpath://li[@data-target="tabfilter_timeselector"]')->one()->isEnabled($value));

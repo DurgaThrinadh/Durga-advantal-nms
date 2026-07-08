@@ -14,19 +14,21 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
 
 /**
  * @backup dashboard
  *
  * @onBefore prepareData
  */
-class testDashboardHostNavigatorWidget extends testWidgets {
+class testDashboardHostNavigatorWidget extends testWidgets
+{
 
 	/**
 	 * Attach MessageBehavior, TableBehavior and TagBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -51,7 +53,8 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 	 *
 	 * @return CMultifieldTable
 	 */
-	protected function getGroupByTable() {
+	protected function getGroupByTable()
+	{
 		return $this->query('id:group_by-table')->asMultifieldTable([
 			'mapping' => [
 				'2' => [
@@ -68,7 +71,8 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 		])->waitUntilVisible()->one();
 	}
 
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		CDataHelper::call('dashboard.create', [
 			[
 				'name' => self::DEFAULT_DASHBOARD,
@@ -167,7 +171,7 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 			],
 			[
 				'host' => self::MAINTENANCE_HOSTNAME,
-				'groups' => ['groupid' => 4] // Zabbix servers.
+				'groups' => ['groupid' => 4] // Advantal servers.
 			]
 		]);
 
@@ -180,25 +184,28 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 				'description' => 'Maintenance for icon check in Host navigator widget',
 				'active_since' => time() - 100,
 				'active_till' => time() + 31536000,
-				'groups' => [['groupid' => 4]], // Zabbix servers.
+				'groups' => [['groupid' => 4]], // Advantal servers.
 				'timeperiods' => [[]]
 			]
 		]);
 		$maintenanceid = $maintenances['maintenanceids'][0];
 
-		DBexecute("INSERT INTO maintenances_hosts (maintenance_hostid, maintenanceid, hostid) VALUES (1000000, ".
-				zbx_dbstr($maintenanceid).",".zbx_dbstr($maintenace_hostid).")"
+		DBexecute(
+			"INSERT INTO maintenances_hosts (maintenance_hostid, maintenanceid, hostid) VALUES (1000000, " .
+				zbx_dbstr($maintenanceid) . "," . zbx_dbstr($maintenace_hostid) . ")"
 		);
 
-		DBexecute("UPDATE hosts SET maintenanceid=".zbx_dbstr($maintenanceid).
-				", maintenance_status=1, maintenance_type=".MAINTENANCE_TYPE_NORMAL.", maintenance_from=".zbx_dbstr(time()-1000).
-				" WHERE hostid=".zbx_dbstr($maintenace_hostid)
+		DBexecute(
+			"UPDATE hosts SET maintenanceid=" . zbx_dbstr($maintenanceid) .
+				", maintenance_status=1, maintenance_type=" . MAINTENANCE_TYPE_NORMAL . ", maintenance_from=" . zbx_dbstr(time() - 1000) .
+				" WHERE hostid=" . zbx_dbstr($maintenace_hostid)
 		);
 	}
 
-	public function testDashboardHostNavigatorWidget_Layout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.
-				self::$dashboardid[self::DEFAULT_DASHBOARD])->waitUntilReady();
+	public function testDashboardHostNavigatorWidget_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' .
+			self::$dashboardid[self::DEFAULT_DASHBOARD])->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$dialog = $dashboard->edit()->addWidget();
 		$this->assertEquals('Add widget', $dialog->getTitle());
@@ -237,10 +244,22 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 		$this->getGroupByTable()->fill(['attribute' => 'Host group']);
 
 		$options = [
-			'Refresh interval' => ['Default (1 minute)', 'No refresh', '10 seconds', '30 seconds', '1 minute',
-				'2 minutes', '10 minutes', '15 minutes'
+			'Refresh interval' => [
+				'Default (1 minute)',
+				'No refresh',
+				'10 seconds',
+				'30 seconds',
+				'1 minute',
+				'2 minutes',
+				'10 minutes',
+				'15 minutes'
 			],
-			'id:host_tags_0_operator' => ['Exists', 'Equals', 'Contains', 'Does not exist', 'Does not equal',
+			'id:host_tags_0_operator' => [
+				'Exists',
+				'Equals',
+				'Contains',
+				'Does not exist',
+				'Does not equal',
 				'Does not contain'
 			],
 			'Group by' => ['Host group', 'Tag value', 'Severity']
@@ -295,13 +314,17 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 
 		// Check 'Host tags' and 'Group by' table buttons.
 		foreach (['id:tags_table_host_tags', 'id:group_by-table'] as $locator) {
-			$this->assertEquals(2, $form->query($locator)->one()->query('button', ['Add', 'Remove'])->all()
+			$this->assertEquals(
+				2,
+				$form->query($locator)->one()->query('button', ['Add', 'Remove'])->all()
 					->filter((CElementFilter::CLICKABLE))->count()
 			);
 		}
 
 		// Check if footer buttons present and clickable.
-		$this->assertEquals(['Add', 'Cancel'], $dialog->getFooter()->query('button')->all()
+		$this->assertEquals(
+			['Add', 'Cancel'],
+			$dialog->getFooter()->query('button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 
@@ -325,7 +348,8 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public static function getWidgetData() {
+	public static function getWidgetData()
+	{
 		return [
 			// #0.
 			[
@@ -475,7 +499,7 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 				[
 					'expected' => TEST_GOOD,
 					'fields' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Refresh interval' => '10 seconds'
 					]
 				]
@@ -486,7 +510,7 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 					'expected' => TEST_GOOD,
 					'fields' => [
 						'Host groups' => [
-							'Zabbix servers',
+							'Advantal servers',
 							'First Group for Host navigator check'
 						],
 						'Refresh interval' => '30 seconds'
@@ -630,7 +654,7 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 						'Name' => STRING_255,
 						'Show header' => true,
 						'Host groups' => [
-							'Zabbix servers',
+							'Advantal servers',
 							'First Group for Host navigator check'
 						],
 						'Host patterns' => [
@@ -716,18 +740,21 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 	/**
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardHostNavigatorWidget_Create($data) {
+	public function testDashboardHostNavigatorWidget_Create($data)
+	{
 		$this->checkWidgetForm($data);
 	}
 
 	/**
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardHostNavigatorWidget_Update($data) {
+	public function testDashboardHostNavigatorWidget_Update($data)
+	{
 		$this->checkWidgetForm($data, true);
 	}
 
-	public function testDashboardHostNavigatorWidget_SimpleUpdate() {
+	public function testDashboardHostNavigatorWidget_SimpleUpdate()
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 		$this->setWidgetConfiguration(self::$dashboardid[self::DASHBOARD_FOR_WIDGET_CREATE], self::$update_widget);
 		CDashboardElement::find()->one()->save();
@@ -742,17 +769,18 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 	 *
 	 * @param boolean $update	updating is performed
 	 */
-	protected function checkWidgetForm($data, $update = false) {
+	protected function checkWidgetForm($data, $update = false)
+	{
 		if ($data['expected'] === TEST_BAD) {
 			$old_hash = CDBHelper::getHash(self::SQL);
 		}
 
 		$data['fields']['Name'] = ($data['fields'] === [])
 			? ''
-			: CTestArrayHelper::get($data, 'fields.Name', 'Host navigator '.microtime());
+			: CTestArrayHelper::get($data, 'fields.Name', 'Host navigator ' . microtime());
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.
-				self::$dashboardid[self::DASHBOARD_FOR_WIDGET_CREATE])->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' .
+			self::$dashboardid[self::DASHBOARD_FOR_WIDGET_CREATE])->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -787,8 +815,7 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 			$this->assertMessage($data['expected'], null, $data['error']);
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 			COverlayDialogElement::find()->one()->close();
-		}
-		else {
+		} else {
 			// If name is empty string it is replaced by default widget name "Host navigator".
 			$header = ($data['fields']['Name'] === '') ? 'Host navigator' : $data['fields']['Name'];
 
@@ -829,7 +856,8 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 		}
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			// Cancel update widget.
 			[
@@ -865,20 +893,20 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testDashboardHostNavigatorWidget_Cancel($data) {
+	public function testDashboardHostNavigatorWidget_Cancel($data)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 		$new_name = 'Widget to be cancelled';
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.
-				self::$dashboardid[self::DEFAULT_DASHBOARD])->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' .
+			self::$dashboardid[self::DEFAULT_DASHBOARD])->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one()->edit();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
 		// Start updating or creating a widget.
 		if (CTestArrayHelper::get($data, 'update', false)) {
 			$form = $dashboard->getWidget(self::DEFAULT_WIDGET)->edit();
-		}
-		else {
+		} else {
 			$form = $dashboard->addWidget()->asForm();
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Host navigator')]);
 		}
@@ -904,8 +932,7 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 
 			// Check that changes took place on the unsaved dashboard.
 			$this->assertTrue($dashboard->getWidget($new_name)->isVisible());
-		}
-		else {
+		} else {
 			$dialog = COverlayDialogElement::find()->one();
 			$dialog->query('button:Cancel')->one()->click();
 			$dialog->ensureNotPresent();
@@ -922,17 +949,17 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 		// Save or cancel dashboard update.
 		if (CTestArrayHelper::get($data, 'save_dashboard', false)) {
 			$dashboard->save();
-		}
-		else {
+		} else {
 			$dashboard->cancelEditing();
 		}
 
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 	}
 
-	public function testDashboardHostNavigatorWidget_Delete() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.
-				self::$dashboardid[self::DEFAULT_DASHBOARD])->waitUntilReady();
+	public function testDashboardHostNavigatorWidget_Delete()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' .
+			self::$dashboardid[self::DEFAULT_DASHBOARD])->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one()->edit();
 		$widget = $dashboard->getWidget(self::DELETE_WIDGET);
 		$dashboard->deleteWidget(self::DELETE_WIDGET);
@@ -942,38 +969,47 @@ class testDashboardHostNavigatorWidget extends testWidgets {
 
 		// Check that widget is not present on dashboard.
 		$this->assertFalse($dashboard->getWidget(self::DELETE_WIDGET, false)->isValid());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM widget_field wf'.
-				' LEFT JOIN widget w'.
-					' ON w.widgetid=wf.widgetid'.
-					' WHERE w.name='.zbx_dbstr(self::DELETE_WIDGET)
+		$this->assertEquals(0, CDBHelper::getCount(
+			'SELECT * FROM widget_field wf' .
+				' LEFT JOIN widget w' .
+				' ON w.widgetid=wf.widgetid' .
+				' WHERE w.name=' . zbx_dbstr(self::DELETE_WIDGET)
 		));
 	}
 
 	/**
 	 * Maintenance icon hintbox check.
 	 */
-	public function testDashboardHostNavigatorWidget_MaintenanceIconHintbox() {
-		$this->setWidgetConfiguration(self::$dashboardid[self::DEFAULT_DASHBOARD], self::DEFAULT_WIDGET,
-				['Host patterns' => self::MAINTENANCE_HOSTNAME, 'Show hosts in maintenance' => true]);
+	public function testDashboardHostNavigatorWidget_MaintenanceIconHintbox()
+	{
+		$this->setWidgetConfiguration(
+			self::$dashboardid[self::DEFAULT_DASHBOARD],
+			self::DEFAULT_WIDGET,
+			['Host patterns' => self::MAINTENANCE_HOSTNAME, 'Show hosts in maintenance' => true]
+		);
 		$dashboard = CDashboardElement::find()->one();
 		$dashboard->save();
 		$this->page->waitUntilReady();
 		$this->assertMessage(TEST_GOOD, 'Dashboard updated');
 
 		$widget = $dashboard->getWidget(self::DEFAULT_WIDGET);
-		$widget->query('xpath://button['.CXPathHelper::fromClass('zi-wrench-alt-small').']')->waitUntilClickable()->one()->click();
+		$widget->query('xpath://button[' . CXPathHelper::fromClass('zi-wrench-alt-small') . ']')->waitUntilClickable()->one()->click();
 		$hint = $widget->query('xpath://div[@data-hintboxid]')->asOverlayDialog()->waitUntilPresent()->all()->last()->getText();
-		$hint_text = "Maintenance for Host navigator widget [Maintenance with data collection]\n".
-				"Maintenance for icon check in Host navigator widget";
+		$hint_text = "Maintenance for Host navigator widget [Maintenance with data collection]\n" .
+			"Maintenance for icon check in Host navigator widget";
 		$this->assertEquals($hint_text, $hint);
 	}
 
 	/**
 	 * Row highlight check.
 	 */
-	public function testDashboardHostNavigatorWidget_RowHighlight() {
-		$this->setWidgetConfiguration(self::$dashboardid[self::DEFAULT_DASHBOARD], self::DEFAULT_WIDGET,
-				['Host patterns' => 'Second host for host navigator widget']);
+	public function testDashboardHostNavigatorWidget_RowHighlight()
+	{
+		$this->setWidgetConfiguration(
+			self::$dashboardid[self::DEFAULT_DASHBOARD],
+			self::DEFAULT_WIDGET,
+			['Host patterns' => 'Second host for host navigator widget']
+		);
 		$this->checkRowHighlight(self::DEFAULT_WIDGET, 'Second host for host navigator widget', true);
 		CDashboardElement::find()->one()->save();
 		$this->checkRowHighlight(self::DEFAULT_WIDGET, 'Second host for host navigator widget');

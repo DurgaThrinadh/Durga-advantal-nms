@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../include/CWebTest.php';
+require_once __DIR__ . '/../include/CWebTest.php';
 
 use Facebook\WebDriver\WebDriverKeys;
 
@@ -25,7 +25,8 @@ use Facebook\WebDriver\WebDriverKeys;
  *
  * @onBefore prepareData
  */
-class testDocumentationLinks extends CWebTest {
+class testDocumentationLinks extends CWebTest
+{
 
 	// LLD and host prototype for case 'Host LLD host prototype edit form'.
 	protected static $lldid;
@@ -33,7 +34,8 @@ class testDocumentationLinks extends CWebTest {
 	protected static $triggerids;
 	protected static $eventids;
 
-	public function prepareData() {
+	public function prepareData()
+	{
 		self::$triggerids = CDataHelper::get('MonitoringOverview.triggerids');
 		self::$eventids = CDataHelper::get('MonitoringOverview.eventids');
 		self::$version = substr(ZABBIX_VERSION, 0, 3);
@@ -90,7 +92,7 @@ class testDocumentationLinks extends CWebTest {
 				'maintenance_type' => MAINTENANCE_TYPE_NODATA,
 				'active_since' => 1534885200,
 				'active_till' => 1534971600,
-				'groups' => [['groupid' => 4]], // Zabbix servers.
+				'groups' => [['groupid' => 4]], // Advantal servers.
 				'timeperiods' => [[]]
 			]
 		]);
@@ -99,7 +101,7 @@ class testDocumentationLinks extends CWebTest {
 		$response = CDataHelper::createHosts([
 			[
 				'host' => 'Host with host prototype for documentations links',
-				'groups' => [['groupid' => 4]], // Zabbix server
+				'groups' => [['groupid' => 4]], // Advantal server
 				'discoveryrules' => [
 					[
 						'name' => 'Drule for documentation links check',
@@ -116,7 +118,7 @@ class testDocumentationLinks extends CWebTest {
 			[
 				'host' => 'Host prototype for documentation links test {#H}',
 				'ruleid' => self::$lldid,
-				'groupLinks' => [['groupid'=> 4]] // Zabbix servers.
+				'groupLinks' => [['groupid' => 4]] // Advantal servers.
 			]
 		]);
 		$prototype_hostids = CDataHelper::getIds('host');
@@ -133,7 +135,8 @@ class testDocumentationLinks extends CWebTest {
 	 */
 	private static $path_start = 'https://www.zabbix.com/documentation/';
 
-	public static function getGeneralDocumentationLinkData() {
+	public static function getGeneralDocumentationLinkData()
+	{
 		return [
 			// #0 Dashboard list.
 			[
@@ -294,7 +297,7 @@ class testDocumentationLinks extends CWebTest {
 					'doc_link' => '/en/manual/web_interface/frontend_sections/monitoring/hosts/web'
 				]
 			],
-			// #15 Monitoring -> Host dashboards view (dashboards of Zabbix server host).
+			// #15 Monitoring -> Host dashboards view (dashboards of Advantal server host).
 			[
 				[
 					'url' => 'zabbix.php?action=host.dashboard.view&hostid=10084',
@@ -571,7 +574,7 @@ class testDocumentationLinks extends CWebTest {
 					'actions' => [
 						[
 							'callback' => 'openFormWithLink',
-							'element' => 'xpath://a[text()="Zabbix servers"]'
+							'element' => 'xpath://a[text()="Advantal servers"]'
 						]
 					],
 					'doc_link' => '/en/manual/config/hosts/host_groups#configuration'
@@ -610,11 +613,11 @@ class testDocumentationLinks extends CWebTest {
 				[
 					'url' => 'zabbix.php?action=template.list',
 					'actions' => [
-								[
-									'callback' => 'openFormWithLink',
-									'element' => 'xpath://a[text()="AIX by Zabbix agent"]'
-								]
-							],
+						[
+							'callback' => 'openFormWithLink',
+							'element' => 'xpath://a[text()="AIX by Zabbix agent"]'
+						]
+					],
 					'doc_link' => '/en/manual/config/templates/template#creating-a-template'
 				]
 			],
@@ -801,7 +804,7 @@ class testDocumentationLinks extends CWebTest {
 			// #69 Template dashboard widget create popup.
 			[
 				[
-				'url' => 'zabbix.php?action=template.dashboard.edit&dashboardid=50',
+					'url' => 'zabbix.php?action=template.dashboard.edit&dashboardid=50',
 					'actions' => [
 						[
 							'callback' => 'openFormWithLink',
@@ -1525,7 +1528,7 @@ class testDocumentationLinks extends CWebTest {
 					'actions' => [
 						[
 							'callback' => 'openFormWithLink',
-							'element' => 'xpath://a[text()="Report problems to Zabbix administrators"]'
+							'element' => 'xpath://a[text()="Report problems to Advantal Administrators"]'
 						]
 					],
 					'doc_link' => '/en/manual/config/notifications/action#configuring-an-action'
@@ -2711,7 +2714,8 @@ class testDocumentationLinks extends CWebTest {
 	 * TODO: remove ignoreBrowserErrors after DEV-4233
 	 * @ignoreBrowserErrors
 	 */
-	public function testDocumentationLinks_checkGeneralLinks($data) {
+	public function testDocumentationLinks_checkGeneralLinks($data)
+	{
 		if (CTestArrayHelper::get($data, 'replace')) {
 			$replacements = [
 				'{triggerid}' => self::$triggerids['1_trigger_Not_classified'],
@@ -2742,7 +2746,7 @@ class testDocumentationLinks extends CWebTest {
 
 		// Get the documentation link and compare it with expected result.
 		$link = $location->query('class', ['btn-icon zi-help', 'btn-icon zi-help-small'])->one();
-		$this->assertEquals(self::$path_start.self::$version.$data['doc_link'], $link->getAttribute('href'));
+		$this->assertEquals(self::$path_start . self::$version . $data['doc_link'], $link->getAttribute('href'));
 
 		// If the link was located in a popup - close this popup.
 		if ($dialog->isValid()) {
@@ -2770,19 +2774,22 @@ class testDocumentationLinks extends CWebTest {
 	 *
 	 * @param string  $locator		locator of the element that needs to be clicked to open form with doc link
 	 */
-	private function openFormWithLink($locator) {
+	private function openFormWithLink($locator)
+	{
 		$this->query($locator)->waitUntilPresent()->one()->click();
 	}
 
 	/*
 	 * Open the Mass update overlay dialog.
 	 */
-	private function openMassUpdate() {
+	private function openMassUpdate()
+	{
 		$this->query('xpath://input[contains(@id, "all_")]')->asCheckbox()->one()->set(true);
 		$this->query('button:Mass update')->waitUntilClickable()->one()->click();
 	}
 
-	public static function getMapDocumentationLinkData() {
+	public static function getMapDocumentationLinkData()
+	{
 		return [
 			// #0 Edit element form.
 			[
@@ -2824,8 +2831,9 @@ class testDocumentationLinks extends CWebTest {
 	/**
 	 * @dataProvider getMapDocumentationLinkData
 	 */
-	public function testDocumentationLinks_checkMapElementLinks($data) {
-		$this->page->login()->open('sysmap.php?sysmapid='.CDataHelper::get('Maps.links_mapid'))->waitUntilReady();
+	public function testDocumentationLinks_checkMapElementLinks($data)
+	{
+		$this->page->login()->open('sysmap.php?sysmapid=' . CDataHelper::get('Maps.links_mapid'))->waitUntilReady();
 
 		// Checking element selection documentation links requires pressing control key when selecting elements.
 		if (is_array($data['element'])) {
@@ -2837,8 +2845,7 @@ class testDocumentationLinks extends CWebTest {
 			}
 
 			$keyboard->releaseKey(WebDriverKeys::LEFT_CONTROL);
-		}
-		else {
+		} else {
 			$this->query($data['element'])->one()->click();
 		}
 
@@ -2847,6 +2854,6 @@ class testDocumentationLinks extends CWebTest {
 		// Maps contain headers for all map elements, so only the visible one should be checked.
 		$link = $dialog->query('class:zi-help-small')->all()->filter(new CElementFilter(CElementFilter::VISIBLE))->first();
 
-		$this->assertEquals(self::$path_start.self::$version.$data['doc_link'], $link->getAttribute('href'));
+		$this->assertEquals(self::$path_start . self::$version . $data['doc_link'], $link->getAttribute('href'));
 	}
 }

@@ -14,14 +14,15 @@
 **/
 
 
-require_once __DIR__.'/../common/testPagePrototypes.php';
+require_once __DIR__ . '/../common/testPagePrototypes.php';
 
 /**
  * @backup hosts
  *
  * @onBefore prepareHostPrototypeData
  */
-class testPageHostPrototypes extends testPagePrototypes {
+class testPageHostPrototypes extends testPagePrototypes
+{
 
 	public $source = 'host';
 	public $tag = '3a Host prototype monitored discovered {#H}';
@@ -30,11 +31,12 @@ class testPageHostPrototypes extends testPagePrototypes {
 	protected static $prototype_hostids;
 	protected static $host_druleids;
 
-	public function prepareHostPrototypeData() {
+	public function prepareHostPrototypeData()
+	{
 		$host_result = CDataHelper::createHosts([
 			[
 				'host' => 'Host for prototype check',
-				'groups' => [['groupid' => 4]], // Zabbix server
+				'groups' => [['groupid' => 4]], // Advantal server
 				'discoveryrules' => [
 					[
 						'name' => 'Drule for prototype check',
@@ -63,7 +65,7 @@ class testPageHostPrototypes extends testPagePrototypes {
 				'ruleid' => self::$host_druleids['Host for prototype check:drule'],
 				'groupLinks' => [
 					[
-						'groupid'=> 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'tags' => [
@@ -82,7 +84,7 @@ class testPageHostPrototypes extends testPagePrototypes {
 				'ruleid' => self::$host_druleids['Host for prototype check:drule'],
 				'groupLinks' => [
 					[
-						'groupid'=> 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'status' => HOST_STATUS_NOT_MONITORED
@@ -92,7 +94,7 @@ class testPageHostPrototypes extends testPagePrototypes {
 				'ruleid' => self::$host_druleids['Host for prototype check:drule'],
 				'groupLinks' => [
 					[
-						'groupid'=> 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'status' => HOST_STATUS_NOT_MONITORED,
@@ -103,7 +105,7 @@ class testPageHostPrototypes extends testPagePrototypes {
 				'ruleid' => self::$host_druleids['Host for prototype check:drule'],
 				'groupLinks' => [
 					[
-						'groupid'=> 4 // Zabbix server
+						'groupid' => 4 // Advantal server
 					]
 				],
 				'discover' => HOST_NO_DISCOVER,
@@ -116,8 +118,9 @@ class testPageHostPrototypes extends testPagePrototypes {
 		self::$entity_count = count(self::$prototype_hostids);
 	}
 
-	public function testPageHostPrototypes_Layout() {
-		$this->page->login()->open($this->link.self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
+	public function testPageHostPrototypes_Layout()
+	{
+		$this->page->login()->open($this->link . self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
 		$this->checkLayout();
 	}
 
@@ -126,9 +129,10 @@ class testPageHostPrototypes extends testPagePrototypes {
 	 *
 	 * @dataProvider getHostPrototypesSortingData
 	 */
-	public function testPageHostPrototypes_Sorting($data) {
-		$this->page->login()->open('host_prototypes.php?context=host&sort='.$data['sort'].'&sortorder=ASC&parent_discoveryid='.
-				self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
+	public function testPageHostPrototypes_Sorting($data)
+	{
+		$this->page->login()->open('host_prototypes.php?context=host&sort=' . $data['sort'] . '&sortorder=ASC&parent_discoveryid=' .
+			self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
 		$this->executeSorting($data);
 	}
 
@@ -137,8 +141,9 @@ class testPageHostPrototypes extends testPagePrototypes {
 	 *
 	 * @dataProvider getHostPrototypesButtonLinkData
 	 */
-	public function testPageHostPrototypes_ButtonLink($data) {
-		$this->page->login()->open($this->link.self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
+	public function testPageHostPrototypes_ButtonLink($data)
+	{
+		$this->page->login()->open($this->link . self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
 		$this->checkTableAction($data);
 	}
 
@@ -147,8 +152,9 @@ class testPageHostPrototypes extends testPagePrototypes {
 	 *
 	 * @dataProvider getHostPrototypesDeleteData
 	 */
-	public function testPageHostPrototypes_Delete($data) {
-		$this->page->login()->open($this->link.self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
+	public function testPageHostPrototypes_Delete($data)
+	{
+		$this->page->login()->open($this->link . self::$host_druleids['Host for prototype check:drule'])->waitUntilReady();
 
 		$ids = [];
 		foreach ($data['name'] as $name) {

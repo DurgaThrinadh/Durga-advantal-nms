@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @backup items
@@ -25,14 +25,16 @@ require_once __DIR__.'/../behaviors/CTableBehavior.php';
  *
  * @onBefore prepareLLDData
  */
-class testPageLowLevelDiscovery extends CWebTest {
+class testPageLowLevelDiscovery extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -42,11 +44,12 @@ class testPageLowLevelDiscovery extends CWebTest {
 	const HOST_ID = 90001;
 	const SELECTOR = 'xpath://form[@name="discovery"]/table[contains(@class, "list-table")]';
 
-	public static function prepareLLDData() {
+	public static function prepareLLDData()
+	{
 		$host_responce = CDataHelper::createHosts([
 			[
 				'host' => 'Host with LLD',
-				'groups' => [['groupid' => 4]], // Zabbix servers.
+				'groups' => [['groupid' => 4]], // Advantal servers.
 				'discoveryrules' => [
 					[
 						'name' => 'Trapper LLD for filter',
@@ -65,13 +68,24 @@ class testPageLowLevelDiscovery extends CWebTest {
 		]);
 	}
 
-	public function testPageLowLevelDiscovery_CheckLayout() {
-		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D='.self::HOST_ID.'&context=host');
+	public function testPageLowLevelDiscovery_CheckLayout()
+	{
+		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D=' . self::HOST_ID . '&context=host');
 		$form = $this->query('name:zbx_filter')->one()->asForm();
 
 		// Check all field names.
-		$fields = ['Host groups', 'Hosts', 'Name', 'Key', 'Type', 'Update interval', 'Delete lost resources',
-				'Disable lost resources', 'SNMP OID', 'State', 'Status'
+		$fields = [
+			'Host groups',
+			'Hosts',
+			'Name',
+			'Key',
+			'Type',
+			'Update interval',
+			'Delete lost resources',
+			'Disable lost resources',
+			'SNMP OID',
+			'State',
+			'Status'
 		];
 		$this->assertEquals($fields, $form->getLabels()->asText());
 
@@ -88,12 +102,25 @@ class testPageLowLevelDiscovery extends CWebTest {
 
 		// Check all dropdowns.
 		$dropdowns = [
-				'Type' => ['Zabbix agent', 'Zabbix agent (active)', 'Simple check',
-						'SNMP agent', 'Zabbix internal','Zabbix trapper', 'External check',
-						'Database monitor', 'HTTP agent', 'IPMI agent', 'SSH agent',
-						'TELNET agent', 'JMX agent', 'Dependent item', 'All'],
-				'State' => ['Normal', 'Not supported', 'All'],
-				'Status' => ['All', 'Enabled', 'Disabled']
+			'Type' => [
+				'Zabbix agent',
+				'Zabbix agent (active)',
+				'Simple check',
+				'SNMP agent',
+				'Zabbix internal',
+				'Zabbix trapper',
+				'External check',
+				'Database monitor',
+				'HTTP agent',
+				'IPMI agent',
+				'SSH agent',
+				'TELNET agent',
+				'JMX agent',
+				'Dependent item',
+				'All'
+			],
+			'State' => ['Normal', 'Not supported', 'All'],
+			'Status' => ['All', 'Enabled', 'Disabled']
 		];
 		foreach ($dropdowns as $name => $values) {
 			foreach ($values as $value) {
@@ -121,8 +148,20 @@ class testPageLowLevelDiscovery extends CWebTest {
 		}
 
 		// Checking Title, Header and Column names.
-		$headers = ['', 'Host', 'Name', 'Items', 'Triggers', 'Graphs', 'Hosts',
-				'Key', 'Interval', 'Type', 'Status', 'Info'];
+		$headers = [
+			'',
+			'Host',
+			'Name',
+			'Items',
+			'Triggers',
+			'Graphs',
+			'Hosts',
+			'Key',
+			'Interval',
+			'Type',
+			'Status',
+			'Info'
+		];
 		$this->page->assertTitle('Configuration of discovery rules');
 		$this->page->assertHeader('Discovery rules');
 		$table = $this->query(self::SELECTOR)->asTable()->one();
@@ -134,8 +173,9 @@ class testPageLowLevelDiscovery extends CWebTest {
 		}
 	}
 
-	public function testPageLowLevelDiscovery_ResetButton() {
-		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D='.self::HOST_ID.'&context=host');
+	public function testPageLowLevelDiscovery_ResetButton()
+	{
+		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D=' . self::HOST_ID . '&context=host');
 		$table = $this->query(self::SELECTOR)->asTable()->one();
 		$form = $this->query('name:zbx_filter')->one()->asForm();
 
@@ -166,8 +206,9 @@ class testPageLowLevelDiscovery extends CWebTest {
 	/**
 	 * @backup items
 	 */
-	public function testPageLowLevelDiscovery_EnableDisableSingle() {
-		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D='.self::HOST_ID.'&context=host');
+	public function testPageLowLevelDiscovery_EnableDisableSingle()
+	{
+		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D=' . self::HOST_ID . '&context=host');
 		$table = $this->query(self::SELECTOR)->asTable()->one();
 		$row = $table->findRow('Name', 'Discovery rule 2');
 
@@ -176,33 +217,35 @@ class testPageLowLevelDiscovery extends CWebTest {
 		foreach ($discovery_status as $action => $expected_status) {
 			$row->query('link', $action)->one()->click();
 			$message_action = ($action === 'Enabled') ? 'disabled' : 'enabled';
-			$this->assertMessage(TEST_GOOD, 'Discovery rule '.$message_action);
-			$status = CDBHelper::getValue('SELECT status FROM items WHERE name='.zbx_dbstr('Discovery rule 2').' and hostid='
-				.self::HOST_ID);
+			$this->assertMessage(TEST_GOOD, 'Discovery rule ' . $message_action);
+			$status = CDBHelper::getValue('SELECT status FROM items WHERE name=' . zbx_dbstr('Discovery rule 2') . ' and hostid='
+				. self::HOST_ID);
 			$this->assertEquals($expected_status, $status);
 			$link_color = ($action === 'Enabled') ? 'red' : 'green';
-			$this->assertTrue($row->query('xpath://td/a[@class="link-action '.$link_color.'"]')->one()->isPresent());
+			$this->assertTrue($row->query('xpath://td/a[@class="link-action ' . $link_color . '"]')->one()->isPresent());
 			CMessageElement::find()->one()->close();
 		}
 	}
 
-	public function testPageLowLevelDiscovery_EnableDisableAll() {
+	public function testPageLowLevelDiscovery_EnableDisableAll()
+	{
 		$lld_names = ['Discovery rule 1', 'Discovery rule 2', 'Discovery rule 3'];
-		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D='.self::HOST_ID.'&context=host');
+		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D=' . self::HOST_ID . '&context=host');
 
 		// Press Enable or Disable buttons and check the result.
 		foreach (['Disable', 'Enable'] as $action) {
 			$this->massChangeStatus($action);
 			$expected_status = ($action === 'Disable') ? 1 : 0;
 			foreach ($lld_names as $name) {
-				$status = CDBHelper::getValue('SELECT status FROM items WHERE name='.zbx_dbstr($name).
-					' and hostid='.self::HOST_ID);
+				$status = CDBHelper::getValue('SELECT status FROM items WHERE name=' . zbx_dbstr($name) .
+					' and hostid=' . self::HOST_ID);
 				$this->assertEquals($expected_status, $status);
 			}
 		}
 	}
 
-	public static function getCheckNowData() {
+	public static function getCheckNowData()
+	{
 		return [
 			[
 				[
@@ -264,9 +307,10 @@ class testPageLowLevelDiscovery extends CWebTest {
 	 *
 	 * @dataProvider getCheckNowData
 	 */
-	public function testPageLowLevelDiscovery_CheckNow($data) {
+	public function testPageLowLevelDiscovery_CheckNow($data)
+	{
 		$context = CTestArrayHelper::get($data, 'type') === 'template' ? '&context=template' : '&context=host';
-		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D='.$data['hostid'].$context);
+		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D=' . $data['hostid'] . $context);
 		// Enable all LLDs, so Execute now can be sent successfully.
 		$this->massChangeStatus('Enable');
 		$this->selectTableRows($data['names'], 'Name', self::SELECTOR);
@@ -297,7 +341,8 @@ class testPageLowLevelDiscovery extends CWebTest {
 	 *
 	 * @return array
 	 */
-	private function getTableData() {
+	private function getTableData()
+	{
 		$result = [];
 
 		foreach ($this->query(self::SELECTOR)->asTable()->one()->getRows() as $row) {
@@ -307,7 +352,8 @@ class testPageLowLevelDiscovery extends CWebTest {
 		return $result;
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// #0.
 			[
@@ -424,7 +470,7 @@ class testPageLowLevelDiscovery extends CWebTest {
 				[
 					'filter' => [
 						'Host groups' => [
-							'Zabbix servers'
+							'Advantal servers'
 						],
 						'Name' => 'DiscoveryRule ZBX6663'
 					],
@@ -473,7 +519,7 @@ class testPageLowLevelDiscovery extends CWebTest {
 						'Eleventh LLD',
 						'fifth LLD',
 						'forth LLD',
-						'Zabbix server health: Zabbix stats cluster: High availability cluster node discovery',
+						'Advantal server health: Zabbix stats cluster: High availability cluster node discovery',
 						'LLD for Discovered host tests',
 						'LLD for host group test',
 						'LLD number 8',
@@ -490,8 +536,8 @@ class testPageLowLevelDiscovery extends CWebTest {
 						'Test of discovered host Template: Template discovery rule',
 						'Trapper LLD for filter',
 						'Trīspadsmitais LLD',
-						'Zabbix server health: Zabbix proxies stats: Zabbix proxy discovery',
-						'Zabbix server health: Zabbix proxy groups stats: Zabbix proxy groups discovery',
+						'Advantal server health: Zabbix proxies stats: Zabbix proxy discovery',
+						'Advantal server health: Zabbix proxy groups stats: Zabbix proxy groups discovery',
 						'Četrpadsmitais LLD'
 					]
 				]
@@ -525,7 +571,7 @@ class testPageLowLevelDiscovery extends CWebTest {
 					'filter' => [
 						'Type' => 'Database monitor',
 						'Update interval' => '1h',
-						'Name'=> 'Database'
+						'Name' => 'Database'
 					],
 					'context' => 'template',
 					'expected' => [
@@ -570,7 +616,7 @@ class testPageLowLevelDiscovery extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => 'Test item host',
 						'Name' => 'Test discovery rule',
 						'Key' => 'test',
@@ -599,11 +645,12 @@ class testPageLowLevelDiscovery extends CWebTest {
 	/**
 	 * @dataProvider getFilterData
 	 */
-	public function testPageLowLevelDiscovery_Filter($data) {
+	public function testPageLowLevelDiscovery_Filter($data)
+	{
 		$context = CTestArrayHelper::get($data, 'context', 'host');
-		$this->page->login()->open('host_discovery.php?filter_name=&sortorder=ASC&filter_key='.
-				'&filter_type=-1&filter_delay=&filter_lifetime=&filter_snmp_oid='.
-				'&filter_state=-1&filter_status=-1&filter_set=1&context='.$context);
+		$this->page->login()->open('host_discovery.php?filter_name=&sortorder=ASC&filter_key=' .
+			'&filter_type=-1&filter_delay=&filter_lifetime=&filter_snmp_oid=' .
+			'&filter_state=-1&filter_status=-1&filter_set=1&context=' . $context);
 		$form = $this->query('name:zbx_filter')->one()->asForm();
 		$form->fill($data['filter']);
 		$form->submit();
@@ -619,17 +666,19 @@ class testPageLowLevelDiscovery extends CWebTest {
 		}
 	}
 
-	private function massChangeStatus($action) {
+	private function massChangeStatus($action)
+	{
 		$table = $this->query(self::SELECTOR)->asTable()->one();
 		$this->query('id:all_items')->asCheckbox()->one()->check();
 		$this->query('button', $action)->one()->click();
 		$this->page->acceptAlert();
 		$string = ($table->getRows()->count() == 1) ? 'Discovery rule ' : 'Discovery rules ';
-		$this->assertEquals($string.lcfirst($action).'d', CMessageElement::find()->one()->getTitle());
+		$this->assertEquals($string . lcfirst($action) . 'd', CMessageElement::find()->one()->getTitle());
 		CMessageElement::find()->one()->close();
 	}
 
-	public static function getDeleteAllButtonData() {
+	public static function getDeleteAllButtonData()
+	{
 		return [
 			[
 				[
@@ -669,8 +718,9 @@ class testPageLowLevelDiscovery extends CWebTest {
 	/**
 	 * @dataProvider getDeleteAllButtonData
 	 */
-	public function testPageLowLevelDiscovery_DeleteAllButton($data) {
-		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D='.$data['hostid'].'&context=host');
+	public function testPageLowLevelDiscovery_DeleteAllButton($data)
+	{
+		$this->page->login()->open('host_discovery.php?filter_set=1&filter_hostids%5B0%5D=' . $data['hostid'] . '&context=host');
 		// Delete all discovery rules.
 		$form = $this->query('name:zbx_filter')->one()->asForm();
 		$form->fill($data['filter']);
@@ -682,7 +732,7 @@ class testPageLowLevelDiscovery extends CWebTest {
 
 		foreach ($data['keys'] as $key) {
 			$count = CDBHelper::getCount('SELECT status FROM items WHERE key_='
-					.zbx_dbstr($key).' and hostid='.zbx_dbstr($data['hostid']));
+				. zbx_dbstr($key) . ' and hostid=' . zbx_dbstr($data['hostid']));
 			$this->assertEquals($data['db_count'], $count);
 		}
 	}

@@ -16,22 +16,24 @@
 
 use Facebook\WebDriver\Exception\TimeoutException;
 
-require_once __DIR__.'/../include/CWebTest.php';
-require_once __DIR__.'/behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../include/CWebTest.php';
+require_once __DIR__ . '/behaviors/CTableBehavior.php';
 
 /**
  * @backup hstgrp
  *
  * @onBefore prepareData
  */
-class testPageSearch extends CWebTest {
+class testPageSearch extends CWebTest
+{
 
 	/**
 	 * Attach TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CTableBehavior::class];
 	}
 
@@ -95,7 +97,7 @@ class testPageSearch extends CWebTest {
 			'selector' => 'id:search_templategroup',
 			'table_selector' => "xpath://section[@id='search_templategroup']//table",
 			'title' => 'Template groups',
-			'column_groups' => ['Template group','Configuration'],
+			'column_groups' => ['Template group', 'Configuration'],
 			'columns' => [
 				['text' => 'Test object Templategroup', 'href' => 'zabbix.php?action=templategroup.edit&groupid={id}'],
 				['text' => 'Templates 1', 'href' => 'zabbix.php?action=template.list&filter_set=1&filter_groups%5B0%5D={id}']
@@ -103,12 +105,13 @@ class testPageSearch extends CWebTest {
 		]
 	];
 
-	public function prepareData() {
+	public function prepareData()
+	{
 		// This is needed so that all links in Search results are active. Also get IDs for checking links.
-		$response = CDataHelper::call('hostgroup.create', [['name' => $this->search_string.' Hostgroup']]);
+		$response = CDataHelper::call('hostgroup.create', [['name' => $this->search_string . ' Hostgroup']]);
 		self::$widgets['hostgroups']['link_id'] = $response['groupids'][0];
 
-		$response = CDataHelper::call('templategroup.create', [['name' => $this->search_string.' Templategroup']]);
+		$response = CDataHelper::call('templategroup.create', [['name' => $this->search_string . ' Templategroup']]);
 		self::$widgets['templategroups']['link_id'] = $response['groupids'][0];
 
 		$response = CDataHelper::call('templategroup.create', [['name' => 'Entities Templategroup']]);
@@ -138,7 +141,7 @@ class testPageSearch extends CWebTest {
 				'groups' => ['groupid' => '6']
 			],
 			[
-				'host' => $this->search_string.' Host',
+				'host' => $this->search_string . ' Host',
 				'groups' => ['groupid' => self::$widgets['hostgroups']['link_id']],
 				'interfaces' => [
 					'type' => 1,
@@ -180,13 +183,13 @@ class testPageSearch extends CWebTest {
 				]
 			]
 		]);
-		self::$widgets['hosts']['link_id'] = $response['hostids'][$this->search_string.' Host'];
+		self::$widgets['hosts']['link_id'] = $response['hostids'][$this->search_string . ' Host'];
 		$host_id = $response['hostids']['Entities Host'];
 		$item_id = $response['itemids']['Entities Host:key[1]'];
 
 		$response = CDataHelper::createTemplates([
 			[
-				'host' => $this->search_string.' Template',
+				'host' => $this->search_string . ' Template',
 				'groups' => ['groupid' => self::$widgets['templategroups']['link_id']]
 			],
 			[
@@ -220,7 +223,7 @@ class testPageSearch extends CWebTest {
 				]
 			]
 		]);
-		self::$widgets['templates']['link_id'] = $response['templateids'][$this->search_string.' Template'];
+		self::$widgets['templates']['link_id'] = $response['templateids'][$this->search_string . ' Template'];
 		$template_id = $response['templateids']['Entities Template'];
 		$template_item_id = $response['itemids']['Entities Template:key[1]'];
 
@@ -271,7 +274,8 @@ class testPageSearch extends CWebTest {
 	/**
 	 * Check the layout of the Search form.
 	 */
-	public function testPageSearch_LayoutForm() {
+	public function testPageSearch_LayoutForm()
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view');
 		$form = $this->query('class:form-search')->waitUntilVisible()->asForm()->one();
 
@@ -295,16 +299,17 @@ class testPageSearch extends CWebTest {
 
 		$search_field->fill($this->search_string);
 		$search_button->waitUntilClickable()->click()->waitUntilStalled();
-		$this->page->assertHeader('Search: '.$this->search_string);
+		$this->page->assertHeader('Search: ' . $this->search_string);
 	}
 
 	/**
 	 * Check the layout of the Search result page.
 	 */
-	public function testPageSearch_LayoutPage() {
+	public function testPageSearch_LayoutPage()
+	{
 		$this->openSearchResults($this->search_string);
 
-		$this->page->assertHeader('Search: '.$this->search_string);
+		$this->page->assertHeader('Search: ' . $this->search_string);
 		$this->page->assertTitle('Search');
 
 		// Assert result widget layout for each widget.
@@ -331,8 +336,7 @@ class testPageSearch extends CWebTest {
 					// Check that the link href matches.
 					$expected_href = str_replace('{id}', $widget_params['link_id'], $column['href']);
 					$this->assertEquals($expected_href, $column_element->query('tag:a')->one()->getAttribute('href'));
-				}
-				else {
+				} else {
 					$this->assertFalse($column_element->isAttributePresent('href'));
 				}
 			}
@@ -351,7 +355,8 @@ class testPageSearch extends CWebTest {
 		}
 	}
 
-	public static function getSearchData() {
+	public static function getSearchData()
+	{
 		return [
 			[
 				[
@@ -366,8 +371,8 @@ class testPageSearch extends CWebTest {
 			],
 			[
 				[
-					'search_string' => 'Zabbix servers',
-					'host_groups' => [['Host group' => 'Zabbix servers']]
+					'search_string' => 'Advantal servers',
+					'host_groups' => [['Host group' => 'Advantal servers']]
 				]
 			],
 			[
@@ -455,17 +460,18 @@ class testPageSearch extends CWebTest {
 	 *
 	 * @dataProvider getSearchData
 	 */
-	public function testPageSearch_VerifyResults($data) {
+	public function testPageSearch_VerifyResults($data)
+	{
 		// Get expected result count from DB.
 		if (CTestArrayHelper::get($data, 'count_from_db')) {
-			$template_sql = 'SELECT NULL FROM hosts WHERE LOWER(host) LIKE '.zbx_dbstr('%'.$data['search_string'].'%').' AND status=3';
-			$hostgroup_sql = 'SELECT NULL FROM hstgrp WHERE type=0 AND LOWER(name) LIKE '.zbx_dbstr('%'.$data['search_string'].'%');
-			$templategroup_sql = 'SELECT NULL FROM hstgrp WHERE type=1 AND LOWER(name) LIKE '.zbx_dbstr('%'.$data['search_string'].'%');
-			$host_sql = 'SELECT DISTINCT(h.host) FROM hosts h LEFT JOIN interface i on i.hostid=h.hostid'.
-				' WHERE h.status in (0,1) AND h.flags in (0,4) AND (LOWER(h.host) LIKE '.zbx_dbstr('%'.$data['search_string'].'%').
-				' OR LOWER(h.name) LIKE '.zbx_dbstr('%'.$data['search_string'].'%').
-				' OR i.dns LIKE '.zbx_dbstr('%'.$data['search_string'].'%').
-				' OR i.ip LIKE '.zbx_dbstr('%'.$data['search_string'].'%').')';
+			$template_sql = 'SELECT NULL FROM hosts WHERE LOWER(host) LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%') . ' AND status=3';
+			$hostgroup_sql = 'SELECT NULL FROM hstgrp WHERE type=0 AND LOWER(name) LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%');
+			$templategroup_sql = 'SELECT NULL FROM hstgrp WHERE type=1 AND LOWER(name) LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%');
+			$host_sql = 'SELECT DISTINCT(h.host) FROM hosts h LEFT JOIN interface i on i.hostid=h.hostid' .
+				' WHERE h.status in (0,1) AND h.flags in (0,4) AND (LOWER(h.host) LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%') .
+				' OR LOWER(h.name) LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%') .
+				' OR i.dns LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%') .
+				' OR i.ip LIKE ' . zbx_dbstr('%' . $data['search_string'] . '%') . ')';
 
 			$db_count = [];
 			foreach (['hosts' => $host_sql, 'host_groups' => $hostgroup_sql, 'templates' => $template_sql, 'template_groups' => $templategroup_sql] as $type => $sql) {
@@ -475,7 +481,7 @@ class testPageSearch extends CWebTest {
 
 		$this->openSearchResults($data['search_string'], CTestArrayHelper::get($data, 'fire_keyup_event'));
 
-		$this->page->assertHeader('Search: '.$data['search_string']);
+		$this->page->assertHeader('Search: ' . $data['search_string']);
 
 		// Verify each widget type.
 		foreach (self::$widgets as $widget_params) {
@@ -494,17 +500,17 @@ class testPageSearch extends CWebTest {
 			if ($expected_count === 0) {
 				$this->assertFalse($widget->query('xpath:.//div[@class="section-foot"]')->exists());
 				$this->assertEquals('No data found', $widget->query('class:no-data-message')->one()->getText());
-			}
-			else {
+			} else {
 				$footer_text = $widget->query('xpath:.//div[@class="section-foot"]')->one()->getText();
 
 				// Only a maximum of 150 records are displayed at once.
-				$this->assertEquals('Displaying '.(min($expected_count, 150)).' of '.$expected_count.' found', $footer_text);
+				$this->assertEquals('Displaying ' . (min($expected_count, 150)) . ' of ' . $expected_count . ' found', $footer_text);
 			}
 		}
 	}
 
-	public static function getEntityData() {
+	public static function getEntityData()
+	{
 		return [
 			[
 				[
@@ -610,7 +616,8 @@ class testPageSearch extends CWebTest {
 	 *
 	 * @dataProvider getEntityData
 	 */
-	public function testPageSearch_VerifyEntityCount($data) {
+	public function testPageSearch_VerifyEntityCount($data)
+	{
 		$this->openSearchResults($data['search_string']);
 
 		// For each widget type.
@@ -630,8 +637,7 @@ class testPageSearch extends CWebTest {
 				if (CTestArrayHelper::get($column_data, 'count')) {
 					$this->assertEquals($column_data['count'], $column->query('tag:sup')->one()->getText());
 					$this->assertFalse($column->isAttributePresent('href'));
-				}
-				else {
+				} else {
 					// The text should not end with a space and a number.
 					$this->assertEquals(0, preg_match('/ [0-9]+$/', $column->getText()));
 				}
@@ -640,7 +646,8 @@ class testPageSearch extends CWebTest {
 	}
 
 
-	public static function getSuggestionsData() {
+	public static function getSuggestionsData()
+	{
 		return [
 			[
 				[
@@ -709,7 +716,8 @@ class testPageSearch extends CWebTest {
 	 *
 	 * @dataProvider getSuggestionsData
 	 */
-	public function testPageSearch_VerifySearchSuggestions($data) {
+	public function testPageSearch_VerifySearchSuggestions($data)
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view');
 		$form = $this->query('class:form-search')->waitUntilVisible()->asForm()->one();
 		$form->fill(['id:search' => $data['search_string']]);
@@ -726,12 +734,10 @@ class testPageSearch extends CWebTest {
 			if (count($data['expected_suggestions']) > 0) {
 				$items = $this->query($item_selector)->waitUntilVisible()->all()->asText();
 				$this->assertEquals($data['expected_suggestions'], array_values($items));
-			}
-			else {
+			} else {
 				$this->verifyThatSuggestionsNotShown();
 			}
-		}
-		else {
+		} else {
 			$this->assertEquals($data['expected_count'], $this->query($item_selector)->waitUntilVisible()->all()->count());
 		}
 	}
@@ -739,7 +745,8 @@ class testPageSearch extends CWebTest {
 	/**
 	 * Test if the global search form is not being submitted with empty search string.
 	 */
-	public function testPageSearch_FindEmptyString() {
+	public function testPageSearch_FindEmptyString()
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=1');
 		$form = $this->query('class:form-search')->waitUntilVisible()->asForm()->one();
 
@@ -753,12 +760,12 @@ class testPageSearch extends CWebTest {
 	/**
 	 * Verify that the suggestion list is NOT visible.
 	 */
-	protected function verifyThatSuggestionsNotShown() {
+	protected function verifyThatSuggestionsNotShown()
+	{
 		try {
 			$this->query('class:search-suggest')->waitUntilVisible(1);
 			throw new Exception('Suggestions list shown when it should not be.');
-		}
-		catch (TimeoutException $e) {
+		} catch (TimeoutException $e) {
 			// All good, the suggestion list is not visible, continue the test.
 		}
 	}
@@ -768,7 +775,8 @@ class testPageSearch extends CWebTest {
 	 *
 	 * @param string  $search_string    text that will be entered in the search field
 	 */
-	protected function openSearchResults($search_string, $send_keyup = false) {
+	protected function openSearchResults($search_string, $send_keyup = false)
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view')->waitUntilReady();
 		$form = $this->query('class:form-search')->waitUntilVisible()->asForm()->one();
 		$form->fill(['id:search' => $search_string]);
