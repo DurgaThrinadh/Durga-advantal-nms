@@ -4,27 +4,6 @@
 
 An enterprise-class, open-source distributed network monitoring solution by **Advantal Technologies Pvt Ltd**, designed to monitor the performance and availability of network devices, servers, services, and other IT resources.
 
-Advantal NMS is a flexible solution that can monitor anything from a simple, standalone application to a large-scale environment, with features including:
-
-- **Resource discovery:** Discover network entities, server resources, and onboard/offboard devices. Use out-of-the-box integrations (templates) to monitor anything from a low-level device to a SAAS service.
-- **Metric acquisition:** Use an agent or agent-less approach for metric acquisition from any source – devices, sensors, operating systems, virtualization platforms, container platforms like Docker, Kubernetes, cloud infrastructures, databases, webpages, Java ecosystems, application servers, API endpoints, business applications, and many more.
-- **Root cause analysis and problem detection:** Count on high-performance, real-time problem detection that correlates both existing and incoming problems and performs root cause analyses.
-- **Incidents, alerts, and notifications:** Receive an alert when an issue is triggered (proactively or post-mortem) in the ecosystem. Use multiple messaging channels (including Slack, JIRA, Microsoft Teams, email or text messages) to get notified about the different types of events occurring in your environment.
-- **"Single pane of glass" overview:** Visualize collected data and monitoring events in graphs, lists, geomaps, and network topology maps.
-- **Multitenancy and distributed monitoring:** Enjoy the convenience of one monitoring solution for multiple data centers, departments, and organizations, and monitor remote locations behind firewalls with remote command execution capability.
-- **Unparalleled flexibility:** Adapt Advantal NMS to your needs and utilize built-in functionalities, including the ability to stream metrics and events over HTTP, reporting, auditing, security, service SLA calculations, and many more.
-
-## Deployment
-
-```bash
-git clone https://github.com/DurgaThrinadh/Durga-advantal-nms
-cd Durga-advantal-nms
-git checkout feature/durga-advantal-nms-setup
-docker compose up -d --build
-```
-
-Access: `http://<server-ip>:9090` (Login: Admin / zabbix)
-
 ## Architecture
 
 | Container | Role | Port |
@@ -34,6 +13,86 @@ Access: `http://<server-ip>:9090` (Login: Admin / zabbix)
 | advantal-web | Web frontend (PHP/Nginx) | 9090 |
 | advantal-agent | Monitoring agent | Internal |
 | advantal-snmptraps | SNMP trap receiver | 162/UDP |
+
+---
+
+## Server Deployment Guide
+
+### Files Required
+- `advantal-server.tar`
+- `advantal-web.tar`
+- `docker-compose.yml`
+
+### Step 1: Load Docker Images
+```bash
+docker load -i advantal-server.tar
+docker load -i advantal-web.tar
+```
+
+### Step 2: Start All Services
+```bash
+docker compose up -d
+```
+
+### Step 3: Verify All Containers Running
+```bash
+docker ps
+```
+
+### Access
+- Web UI: `http://<server-ip>:9090`
+- Login: `Admin` / `Test@nms`
+
+---
+
+## Useful Commands
+
+```bash
+# Check container status
+docker compose ps
+
+# Check logs
+docker compose logs advantal-server
+docker compose logs advantal-web
+docker compose logs advantal-db
+
+# Access database (psql)
+docker exec -it advantal-db psql -U zabbix -d zabbix
+
+# Restart all services
+docker compose restart
+
+# Stop all services (data preserved)
+docker compose down
+
+# Stop and DELETE all data
+docker compose down -v
+
+# Check agent status
+docker compose logs advantal-agent
+```
+
+---
+
+## Post-Deploy Setup (one-time, via Web UI)
+
+1. Data collection → Hosts → rename "Zabbix server" → "Advantal server"
+2. Data collection → Host groups → rename "Zabbix servers" → "Advantal servers"
+3. Users → Admin → Name: "Advantal", Surname: "Administrator"
+4. User settings → Change password to `Test@nms`
+
+---
+
+## Build from Source (for developers)
+
+```bash
+git clone https://github.com/DurgaThrinadh/Durga-advantal-nms
+cd Durga-advantal-nms
+git checkout feature/durga-advantal-nms-setup
+docker compose up -d --build
+```
+
+---
 
 ## License
 
