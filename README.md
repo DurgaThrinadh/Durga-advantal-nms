@@ -21,6 +21,9 @@ An enterprise-class, open-source distributed network monitoring solution by **Ad
 ### Files Required
 - `advantal-server.tar`
 - `advantal-web.tar`
+- `advantal-db.tar`
+- `advantal-agent.tar`
+- `advantal-snmptraps.tar`
 - `docker-compose.yml`
 
 ### Step 1: Load Docker Images
@@ -55,6 +58,8 @@ docker compose ps
 docker compose logs advantal-server
 docker compose logs advantal-web
 docker compose logs advantal-db
+docker compose logs advantal-agent
+docker compose logs advantal-snmptraps.tar
 
 # Access database (psql)
 docker exec -it advantal-db psql -U zabbix -d zabbix
