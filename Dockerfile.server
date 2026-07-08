@@ -1,86 +1,162 @@
 # =====================================================
 # Advantal NMS - Zabbix Server (built from source)
-# Compiles the C backend from src/
+# Matches official zabbix/zabbix-server-pgsql:ubuntu-7.0
+# Compiles the C/Go backend from source
 # =====================================================
 
-# Stage 1: Build
+# Stage 1: Build (mirrors official zabbix-build-base + zabbix-build-pgsql)
 FROM ubuntu:22.04 AS builder
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    GOPATH=/root/go \
+    PATH=/usr/local/go/bin:/root/go/bin:$PATH
 
-RUN apt-get update && apt-get install -y \
-    autoconf automake gcc make pkg-config \
-    libpcre2-dev libssl-dev libpq-dev \
-    libcurl4-openssl-dev libxml2-dev \
-    libsnmp-dev libevent-dev libldap2-dev \
-    libssh2-1-dev unixodbc-dev \
-    default-libmysqlclient-dev \
+# Install ALL build dependencies (matching official image)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    autoconf automake binutils gcc make pkg-config gettext git curl patch \
+    libc6-dev libc-ares-dev libcurl4-openssl-dev libevent-dev \
+    libmodbus-dev libldap2-dev libopenipmi-dev libpcre2-dev \
+    libsnmp-dev libsqlite3-dev libpq-dev libssh-dev libxml2-dev \
+    unixodbc-dev zlib1g-dev libssl-dev \
+    openjdk-17-jdk-headless unzip dos2unix perl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Go (official uses golang-1.22 for 7.0 branch)
+RUN curl -fsSL https://go.dev/dl/go1.22.5.linux-amd64.tar.gz | tar -C /usr/local -xzf -
 
 WORKDIR /build
 
-# Copy source files needed for compilation
+# Copy full source tree needed for compilation
 COPY src/ /build/src/
 COPY include/ /build/include/
 COPY conf/ /build/conf/
 COPY database/ /build/database/
-COPY configure.ac Makefile.am bootstrap.sh build-backend.xml /build/
+COPY create/ /build/create/
+COPY man/ /build/man/
+COPY misc/ /build/misc/
 COPY m4/ /build/m4/
 COPY build/ /build/build/
+COPY configure.ac Makefile.am bootstrap.sh /build/
 
-# Generate configure script and compile
-RUN cd /build && \
+# Generate configure, compile, and install (matching official flags)
+RUN set -eux && \
+    cd /build && \
+    # Fix ALL Windows CRLF line endings in the entire source tree
+    find . -type f \( -name "*.sh" -o -name "*.am" -o -name "*.ac" -o -name "*.m4" \
+        -o -name "*.pl" -o -name "*.c" -o -name "*.h" -o -name "*.tmpl" \
+        -o -name "*.sql" -o -name "*.in" -o -name "*.cfg" -o -name "*.conf" \
+        -o -name "*.go" -o -name "*.mod" -o -name "*.sum" -o -name "Makefile*" \
+        -o -name "*.xml" -o -name "*.php" \) -exec dos2unix -q {} + && \
+    touch AUTHORS ChangeLog NEWS README && \
+    chmod +x bootstrap.sh && \
+    chmod +x create/bin/*.pl && \
     ./bootstrap.sh && \
     ./configure \
+        --datadir=/usr/lib \
+        --libdir=/usr/lib/zabbix \
+        --prefix=/usr \
+        --sysconfdir=/etc/zabbix \
+        --enable-ipv6 \
         --enable-server \
+        --enable-agent \
         --enable-agent2 \
         --enable-proxy \
-        --with-postgresql \
-        --with-net-snmp \
-        --with-libcurl \
-        --with-libxml2 \
-        --with-openssl \
+        --enable-webservice \
         --with-ldap \
-        --with-ssh2 \
-        --with-unixodbc && \
-    make -j$(nproc) && \
-    make install
+        --with-libcurl \
+        --with-libpcre2 \
+        --with-libxml2 \
+        --with-net-snmp \
+        --with-openipmi \
+        --with-openssl \
+        --with-postgresql \
+        --with-ssh \
+        --with-unixodbc \
+        --silent && \
+    make -j$(nproc) -s dbschema && \
+    make -j$(nproc) -s && \
+    strip src/zabbix_server/zabbix_server && \
+    strip src/zabbix_proxy/zabbix_proxy && \
+    strip src/zabbix_get/zabbix_get && \
+    strip src/zabbix_sender/zabbix_sender && \
+    strip src/zabbix_agent/zabbix_agentd && \
+    (strip src/go/bin/zabbix_agent2 2>/dev/null || true) && \
+    (strip src/go/bin/zabbix_web_service 2>/dev/null || true) && \
+    cat database/postgresql/schema.sql > database/postgresql/create.sql && \
+    cat database/postgresql/images.sql >> database/postgresql/create.sql && \
+    cat database/postgresql/data.sql >> database/postgresql/create.sql && \
+    gzip -c database/postgresql/create.sql > /tmp/create.sql.gz
 
-# Stage 2: Runtime
+# Stage 2: Runtime (mirrors official zabbix-server-pgsql runtime)
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    MIBDIRS=/var/lib/mibs/ietf:/var/lib/mibs/iana:/usr/share/snmp/mibs:/var/lib/zabbix/mibs \
+    MIBS=+ALL \
+    ZABBIX_USER_HOME_DIR=/var/lib/zabbix \
+    ZABBIX_CONF_DIR=/etc/zabbix
 
-RUN apt-get update && apt-get install -y \
-    libpcre2-8-0 libssl3 libpq5 \
-    libcurl4 libxml2 libsnmp40 \
-    libevent-2.1-7 libldap-2.5-0 \
-    libssh2-1 unixodbc \
-    snmp-mibs-downloader fping \
+# Install runtime dependencies (matching official image, Ubuntu 22.04 package names)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash traceroute nmap \
+    tzdata ca-certificates iputils-ping fping openssl \
+    libc6 libc-ares2 libcurl4 libevent-2.1-7 libevent-pthreads-2.1-7 \
+    libopenipmi0 libpcre2-8-0 libpq5 libsnmp40 libssh-4 libssl3 \
+    libxml2 postgresql-client snmp-mibs-downloader gzip unixodbc zlib1g \
     && rm -rf /var/lib/apt/lists/*
 
-# Create zabbix user
-RUN groupadd --system zabbix && \
-    useradd --system -g zabbix -d /var/lib/zabbix zabbix && \
-    mkdir -p /var/lib/zabbix /var/log/zabbix /var/run/zabbix \
-             /etc/zabbix /usr/lib/zabbix/alertscripts \
-             /usr/lib/zabbix/externalscripts && \
-    chown -R zabbix:zabbix /var/lib/zabbix /var/log/zabbix /var/run/zabbix
+# Create zabbix user (matching official UID/GID)
+RUN groupadd --system --gid 1995 zabbix && \
+    useradd --system --comment "Zabbix monitoring system" \
+        -g zabbix -G dialout --uid 1997 --shell /sbin/nologin \
+        --home-dir ${ZABBIX_USER_HOME_DIR} zabbix && \
+    mkdir -p ${ZABBIX_CONF_DIR} \
+        ${ZABBIX_USER_HOME_DIR} \
+        ${ZABBIX_USER_HOME_DIR}/dbscripts \
+        ${ZABBIX_USER_HOME_DIR}/enc \
+        ${ZABBIX_USER_HOME_DIR}/enc_internal \
+        ${ZABBIX_USER_HOME_DIR}/export \
+        ${ZABBIX_USER_HOME_DIR}/mibs \
+        ${ZABBIX_USER_HOME_DIR}/modules \
+        ${ZABBIX_USER_HOME_DIR}/snmptraps \
+        ${ZABBIX_USER_HOME_DIR}/ssh_keys \
+        ${ZABBIX_USER_HOME_DIR}/ssl \
+        ${ZABBIX_USER_HOME_DIR}/ssl/certs \
+        ${ZABBIX_USER_HOME_DIR}/ssl/keys \
+        ${ZABBIX_USER_HOME_DIR}/ssl/ssl_ca \
+        /usr/lib/zabbix/alertscripts \
+        /usr/lib/zabbix/externalscripts \
+        /var/log/zabbix /var/run/zabbix \
+        /usr/share/doc/zabbix-server-postgresql && \
+    chown -R zabbix:0 ${ZABBIX_CONF_DIR} ${ZABBIX_USER_HOME_DIR} \
+        /var/log/zabbix /var/run/zabbix && \
+    chmod -R g=u ${ZABBIX_CONF_DIR} ${ZABBIX_USER_HOME_DIR} \
+        /var/log/zabbix /var/run/zabbix && \
+    chgrp zabbix /usr/bin/nmap && \
+    setcap cap_net_raw+eip /usr/bin/nmap
 
-# Copy compiled binaries from builder
-COPY --from=builder /usr/local/sbin/zabbix_server /usr/local/sbin/
-COPY --from=builder /usr/local/bin/ /usr/local/bin/
-COPY --from=builder /usr/local/lib/ /usr/local/lib/
-COPY --from=builder /build/conf/zabbix_server.conf /etc/zabbix/
+# Copy compiled binaries from builder (same paths as official)
+COPY --from=builder /build/src/zabbix_server/zabbix_server /usr/sbin/
+COPY --from=builder /build/src/zabbix_get/zabbix_get /usr/bin/
+COPY --from=builder /build/src/zabbix_sender/zabbix_sender /usr/bin/
+COPY --from=builder /build/conf/zabbix_server.conf ${ZABBIX_CONF_DIR}/
 
 # Copy database schemas
-COPY --from=builder /build/database/postgresql/ /usr/share/zabbix-sql-scripts/postgresql/
+COPY --from=builder /tmp/create.sql.gz /usr/share/doc/zabbix-server-postgresql/
 
-# Configure
-RUN ldconfig
+# Copy entrypoint script
+COPY docker/server-entrypoint.sh /usr/bin/docker-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/bin/docker-entrypoint.sh && \
+    chmod +x /usr/bin/docker-entrypoint.sh
 
-USER zabbix
+EXPOSE 10051/tcp
 
-EXPOSE 10051
+WORKDIR ${ZABBIX_USER_HOME_DIR}
 
-CMD ["/usr/local/sbin/zabbix_server", "-f", "-c", "/etc/zabbix/zabbix_server.conf"]
+VOLUME ["${ZABBIX_USER_HOME_DIR}/snmptraps", "${ZABBIX_USER_HOME_DIR}/export"]
+
+USER 1997
+
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+
+CMD ["/usr/sbin/zabbix_server", "--foreground", "-c", "/etc/zabbix/zabbix_server.conf"]

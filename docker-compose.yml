@@ -25,13 +25,10 @@ services:
   # Advantal Server (CUSTOM BUILD from src/)
   # =====================================================
   advantal-server:
-    # --- Option A: Official image (fast, no backend changes) ---
-    image: zabbix/zabbix-server-pgsql:ubuntu-7.0-latest
-    # --- Option B: Custom build from source (when you modify src/) ---
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile.server
-    # image: advantal-nms-server:7.0
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    image: advantal-nms-server:7.0
     container_name: advantal-server
     restart: unless-stopped
     depends_on:
