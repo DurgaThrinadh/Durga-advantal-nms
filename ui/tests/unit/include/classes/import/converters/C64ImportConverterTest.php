@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,15 +16,29 @@
 **/
 
 
-class C64ImportConverterTest extends CImportConverterTest {
+class C64ImportConverterTest extends CImportConverterTest
+{
 
-	public function importConverterDataProviderItemTimeout(): array {
+	public function importConverterDataProviderItemTimeout(): array
+	{
 		$item_types = [
-			CXmlConstantName::CALCULATED, CXmlConstantName::DEPENDENT, CXmlConstantName::EXTERNAL,
-			CXmlConstantName::HTTP_AGENT, CXmlConstantName::INTERNAL, CXmlConstantName::IPMI, CXmlConstantName::JMX,
-			CXmlConstantName::ODBC, CXmlConstantName::SCRIPT, CXmlConstantName::SIMPLE, CXmlConstantName::SNMP_AGENT,
-			CXmlConstantName::SNMP_TRAP, CXmlConstantName::SSH, CXmlConstantName::TELNET,
-			CXmlConstantName::ZABBIX_ACTIVE, CXmlConstantName::TRAP, CXmlConstantName::ZABBIX_PASSIVE
+			CXmlConstantName::CALCULATED,
+			CXmlConstantName::DEPENDENT,
+			CXmlConstantName::EXTERNAL,
+			CXmlConstantName::HTTP_AGENT,
+			CXmlConstantName::INTERNAL,
+			CXmlConstantName::IPMI,
+			CXmlConstantName::JMX,
+			CXmlConstantName::ODBC,
+			CXmlConstantName::SCRIPT,
+			CXmlConstantName::SIMPLE,
+			CXmlConstantName::SNMP_AGENT,
+			CXmlConstantName::SNMP_TRAP,
+			CXmlConstantName::SSH,
+			CXmlConstantName::TELNET,
+			CXmlConstantName::ZABBIX_ACTIVE,
+			CXmlConstantName::TRAP,
+			CXmlConstantName::ZABBIX_PASSIVE
 		];
 
 		$source_items = [];
@@ -132,32 +148,33 @@ class C64ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	public function importConverterDataProviderExpressionHistoryFunction(): array {
+	public function importConverterDataProviderExpressionHistoryFunction(): array
+	{
 		$expression_simple = 'last(/host/key)';
-		$expression_macro_simple = '{?'.$expression_simple.'}';
+		$expression_macro_simple = '{?' . $expression_simple . '}';
 
 		$source_expression = 'find(/host/key,10m,"iregexp","\.+\\\"[a-z0-9]+")';
 		$source_expression_empty_host = 'find(//key,10m,"iregexp","\.+\\\"[a-z0-9]+")';
 		$source_expression_host_macro = 'find(/{HOST.HOST}/key,10m,"iregexp","\.+\\\"[a-z0-9]+")';
-		$source_expression_macro = '{?'.$source_expression.'}';
-		$source_expression_macro_function = '{'.$source_expression_macro.'.regsub("(.*)_([0-9]+)", \2)}';
-		$source_expression_macro_empty_host = '{?'.$source_expression_empty_host.'}';
-		$source_expression_macro_host_macro = '{?'.$source_expression_host_macro.'}';
+		$source_expression_macro = '{?' . $source_expression . '}';
+		$source_expression_macro_function = '{' . $source_expression_macro . '.regsub("(.*)_([0-9]+)", \2)}';
+		$source_expression_macro_empty_host = '{?' . $source_expression_empty_host . '}';
+		$source_expression_macro_host_macro = '{?' . $source_expression_host_macro . '}';
 
 		$expected_expression = 'find(/host/key,10m,"iregexp","\\\.+\\\\\"[a-z0-9]+")';
 		$expected_expression_empty_host = 'find(//key,10m,"iregexp","\\\.+\\\\\"[a-z0-9]+")';
 		$expected_expression_host_macro = 'find(/{HOST.HOST}/key,10m,"iregexp","\\\.+\\\\\"[a-z0-9]+")';
-		$expected_expression_macro = '{?'.$expected_expression.'}';
-		$expected_expression_macro_function = '{'.$expected_expression_macro.'.regsub("(.*)_([0-9]+)", \2)}';
-		$expected_expression_macro_empty_host = '{?'.$expected_expression_empty_host.'}';
-		$expected_expression_macro_host_macro = '{?'.$expected_expression_host_macro.'}';
+		$expected_expression_macro = '{?' . $expected_expression . '}';
+		$expected_expression_macro_function = '{' . $expected_expression_macro . '.regsub("(.*)_([0-9]+)", \2)}';
+		$expected_expression_macro_empty_host = '{?' . $expected_expression_empty_host . '}';
+		$expected_expression_macro_host_macro = '{?' . $expected_expression_host_macro . '}';
 
-		$source_text = 'prefix'.$expression_macro_simple.$source_expression_macro.
-			$source_expression_macro_function.$source_expression_macro_empty_host.
-			$source_expression_macro_host_macro.'suffix';
-		$expected_text = 'prefix'.$expression_macro_simple.$expected_expression_macro.
-			$expected_expression_macro_function.$expected_expression_macro_empty_host.
-			$expected_expression_macro_host_macro.'suffix';
+		$source_text = 'prefix' . $expression_macro_simple . $source_expression_macro .
+			$source_expression_macro_function . $source_expression_macro_empty_host .
+			$source_expression_macro_host_macro . 'suffix';
+		$expected_text = 'prefix' . $expression_macro_simple . $expected_expression_macro .
+			$expected_expression_macro_function . $expected_expression_macro_empty_host .
+			$expected_expression_macro_host_macro . 'suffix';
 
 		$source_triggers = [
 			[
@@ -403,38 +420,39 @@ class C64ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	public function importConverterDataProviderCalcItemFormula(): array {
+	public function importConverterDataProviderCalcItemFormula(): array
+	{
 		$formulas = [
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],0s))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],0s))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], 15s))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], 15s))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], {$MACRO}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], {$MACRO}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"], "{$MACRO: context}"))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"], 1h ))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))'.
-					' or sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"], "{$MACRO: context}"))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"], 1h ))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))' .
+					' or sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => false
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],{#LLD}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],{#LLD}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => true
 			],
 			[
-				'source' => 'sum(last_foreach(/*/key?[group="Zabbix servers"],  {#LLD}))',
-				'expected' => 'sum(last_foreach(/*/key?[group="Zabbix servers"]))',
+				'source' => 'sum(last_foreach(/*/key?[group="Advantal servers"],  {#LLD}))',
+				'expected' => 'sum(last_foreach(/*/key?[group="Advantal servers"]))',
 				'prototype' => true
 			]
 		];
@@ -447,7 +465,9 @@ class C64ImportConverterTest extends CImportConverterTest {
 		foreach ($formulas as $formula) {
 			if (!$formula['prototype']) {
 				$source_items[] = ['type' => CXmlConstantName::CALCULATED, 'params' => $formula['source']];
-				$expected_items[] = ['type' => CXmlConstantName::CALCULATED, 'params' => $formula['expected'],
+				$expected_items[] = [
+					'type' => CXmlConstantName::CALCULATED,
+					'params' => $formula['expected'],
 					'history' => '90d'
 				];
 			}
@@ -517,7 +537,8 @@ class C64ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	public function importConverterDataProviderPlainTextWidget(): array {
+	public function importConverterDataProviderPlainTextWidget(): array
+	{
 		return [
 			[
 				[
@@ -620,11 +641,13 @@ class C64ImportConverterTest extends CImportConverterTest {
 	 * @param array $data
 	 * @param array $expected
 	 */
-	public function testConvert(array $data, array $expected): void {
+	public function testConvert(array $data, array $expected): void
+	{
 		$this->assertConvert($this->createExpectedResult($expected), $this->createSource($data));
 	}
 
-	protected function createSource(array $data = []): array {
+	protected function createSource(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '6.4'
@@ -632,7 +655,8 @@ class C64ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function createExpectedResult(array $data = []): array {
+	protected function createExpectedResult(array $data = []): array
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '7.0'
@@ -640,12 +664,14 @@ class C64ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function assertConvert(array $expected, array $source): void {
+	protected function assertConvert(array $expected, array $source): void
+	{
 		$result = $this->createConverter()->convert($source);
 		$this->assertEquals($expected, $result);
 	}
 
-	protected function createConverter(): C64ImportConverter {
+	protected function createConverter(): C64ImportConverter
+	{
 		return new C64ImportConverter();
 	}
 }

@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testMultiselectDialogs.php';
+require_once __DIR__ . '/../common/testMultiselectDialogs.php';
 
 /**
  * Test for checking multiselects dialogs on Problems page.
@@ -23,15 +23,17 @@ require_once __DIR__.'/../common/testMultiselectDialogs.php';
  *
  * @onBefore prepareTriggerData
  */
-class testMultiselectsProblems extends testMultiselectDialogs {
+class testMultiselectsProblems extends testMultiselectDialogs
+{
 
-	public static function getCheckDialogsData() {
+	public static function getCheckDialogsData()
+	{
 		return [
 			// #0.
 			[
 				[
 					'fields' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					]
 				]
 			],
@@ -59,7 +61,8 @@ class testMultiselectsProblems extends testMultiselectDialogs {
 	 *
 	 * @dataProvider getCheckDialogsData
 	 */
-	public function testMultiselectsProblems_CheckDialogs($data) {
+	public function testMultiselectsProblems_CheckDialogs($data)
+	{
 		$this->page->login()->open('zabbix.php?action=problem.view');
 		$filter_form = $this->query('name:zbx_filter')->asForm()->one();
 		$multiselects = [
@@ -78,7 +81,8 @@ class testMultiselectsProblems extends testMultiselectDialogs {
 		$this->query('button:Reset')->waitUntilClickable()->one()->click();
 	}
 
-	public static function prepareTriggerData() {
+	public static function prepareTriggerData()
+	{
 		// Create host groups.
 		CDataHelper::call('hostgroup.create', [
 			['name' => 'All Triggers'],
@@ -195,7 +199,8 @@ class testMultiselectsProblems extends testMultiselectDialogs {
 		]);
 	}
 
-	public static function getTriggerData() {
+	public static function getTriggerData()
+	{
 		return [
 			[
 				[
@@ -216,7 +221,7 @@ class testMultiselectsProblems extends testMultiselectDialogs {
 			// Host is not visible because there are no triggers or trigger is disabled.
 			[
 				[
-					'hostgroup' => 'Zabbix servers',
+					'hostgroup' => 'Advantal servers',
 					'host' => ['No Triggers Host', 'Disabled Triggers Host'],
 					'overlay' => 'hosts'
 				]
@@ -237,7 +242,8 @@ class testMultiselectsProblems extends testMultiselectDialogs {
 	 *
 	 * @dataProvider getTriggerData
 	 */
-	public function testMultiselectsProblems_TriggerDialogs($data) {
+	public function testMultiselectsProblems_TriggerDialogs($data)
+	{
 		CMultiselectElement::setDefaultFillMode(CMultiselectElement::MODE_SELECT);
 
 		$this->page->login()->open('zabbix.php?action=problem.view')->waitUntilReady();
@@ -274,4 +280,3 @@ class testMultiselectsProblems extends testMultiselectDialogs {
 		COverlayDialogElement::closeAll(true);
 	}
 }
-

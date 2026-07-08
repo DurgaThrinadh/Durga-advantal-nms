@@ -14,10 +14,11 @@
 **/
 
 
-require_once __DIR__ .'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CPreprocessingBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CPreprocessingBehavior.php';
+
 use Facebook\WebDriver\Exception\ElementClickInterceptedException;
 
 /**
@@ -25,14 +26,16 @@ use Facebook\WebDriver\Exception\ElementClickInterceptedException;
  *
  * @backup items, interface
  */
-class testMassUpdateItems extends CWebTest{
+class testMassUpdateItems extends CWebTest
+{
 
 	/**
 	 * Attach PreprocessingBehavior and MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CPreprocessingBehavior::class
@@ -50,27 +53,28 @@ class testMassUpdateItems extends CWebTest{
 		'Type' => [
 			'name' => 'type',
 			'class' => 'CSegmentedRadioElement',
-			'selector' => 'xpath:./ul[contains(@class, "radio-list-control")]'.
-					'|./ul/li/ul[contains(@class, "radio-list-control")]|./div/ul[contains(@class, "radio-list-control")]'
+			'selector' => 'xpath:./ul[contains(@class, "radio-list-control")]' .
+				'|./ul/li/ul[contains(@class, "radio-list-control")]|./div/ul[contains(@class, "radio-list-control")]'
 		],
 		'Interval' => [
 			'name' => 'delay',
 			'class' => 'CElement',
-			'selector' => 'xpath:./input[@name][not(@type) or @type="text" or @type="password"][not(@class) or '.
-					'not(contains(@class, "display-none"))]|./textarea[@name]'
+			'selector' => 'xpath:./input[@name][not(@type) or @type="text" or @type="password"][not(@class) or ' .
+				'not(contains(@class, "display-none"))]|./textarea[@name]'
 		],
 		'Period' => [
 			'name' => 'period',
 			'class' => 'CElement',
-			'selector' => 'xpath:./input[@name][not(@type) or @type="text" or @type="password"][not(@class) or '.
-					'not(contains(@class, "display-none"))]|./textarea[@name]'
+			'selector' => 'xpath:./input[@name][not(@type) or @type="text" or @type="password"][not(@class) or ' .
+				'not(contains(@class, "display-none"))]|./textarea[@name]'
 		]
 	];
 
 	/**
 	 * Add interface to host.
 	 */
-	public function prepareInterfaceData() {
+	public function prepareInterfaceData()
+	{
 		CDataHelper::call('hostinterface.create', [
 			[
 				'hostid' => self::HOSTID,
@@ -97,7 +101,8 @@ class testMassUpdateItems extends CWebTest{
 	/**
 	 * Data for mass updating of items and item prototypes.
 	 */
-	public function getCommonChangeData() {
+	public function getCommonChangeData()
+	{
 		return [
 			// #0.
 			[
@@ -374,7 +379,7 @@ class testMassUpdateItems extends CWebTest{
 					],
 					'change' => [
 						'Type' => ['id' => 'type', 'value' => 'Zabbix trapper'],
-						'Allowed hosts' => ['id' => 'trapper_hosts', 'value' => 'Zabbix server']
+						'Allowed hosts' => ['id' => 'trapper_hosts', 'value' => 'Advantal server']
 					],
 					'details' => 'Invalid parameter "/1/trapper_hosts": incorrect address starting from "server".'
 				]
@@ -1145,31 +1150,31 @@ class testMassUpdateItems extends CWebTest{
 				]
 			],
 			// TODO: uncomment or delete after discussion
-//			[
-//				[
-//					'names' => [
-//						'1_Item',
-//						'2_Item'
-//					],
-//					'change' => [
-//						'Type' => ['id' => 'type', 'value' => 'TELNET agent'],
-//						'User name' => ['id' => 'username', 'value' => 'telnet_name'],
-//						'Password' => ['id' => 'password', 'value' => 'telnet_password']
-//					]
-//				]
-//			],
-//			[
-//				[
-//					'names' => [
-//						'1_Item',
-//						'2_Item'
-//					],
-//					'change' => [
-//						'Type' => ['id' => 'type', 'value' => 'Calculated'],
-//						'Type of information' => ['id' => 'value_type', 'value' => 'Numeric (float)']
-//					]
-//				]
-//			],
+			//			[
+			//				[
+			//					'names' => [
+			//						'1_Item',
+			//						'2_Item'
+			//					],
+			//					'change' => [
+			//						'Type' => ['id' => 'type', 'value' => 'TELNET agent'],
+			//						'User name' => ['id' => 'username', 'value' => 'telnet_name'],
+			//						'Password' => ['id' => 'password', 'value' => 'telnet_password']
+			//					]
+			//				]
+			//			],
+			//			[
+			//				[
+			//					'names' => [
+			//						'1_Item',
+			//						'2_Item'
+			//					],
+			//					'change' => [
+			//						'Type' => ['id' => 'type', 'value' => 'Calculated'],
+			//						'Type of information' => ['id' => 'value_type', 'value' => 'Numeric (float)']
+			//					]
+			//				]
+			//			],
 			// #56.
 			[
 				[
@@ -1188,7 +1193,7 @@ class testMassUpdateItems extends CWebTest{
 								'value' => 'Item_tag_value'
 							]
 						],
-						'16_Calculated' =>[
+						'16_Calculated' => [
 							[
 								'tag' => 'Item_tag_name_1',
 								'value' => 'Item_tag_value_1'
@@ -1210,7 +1215,8 @@ class testMassUpdateItems extends CWebTest{
 	 * @param    array      $data	      data provider
 	 * @param    boolean    $prototypes   true if item prototype, false if item
 	 */
-	public function executeItemsMassUpdate($data, $prototypes = false) {
+	public function executeItemsMassUpdate($data, $prototypes = false)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash('SELECT * FROM items ORDER BY itemid');
 		}
@@ -1234,7 +1240,7 @@ class testMassUpdateItems extends CWebTest{
 					 * The value of an SNMP interface option element contains not only the IP and port, but also the
 					 * interface type and context name or community. In this case the address and details must be merged.
 					 */
-					$interface = $value['value'].CTestArrayHelper::get($data, 'interface_text_part', '');
+					$interface = $value['value'] . CTestArrayHelper::get($data, 'interface_text_part', '');
 
 					$form->query('id', $value['id'])->asDropdown()->one()->select($interface);
 					break;
@@ -1245,7 +1251,7 @@ class testMassUpdateItems extends CWebTest{
 				case 'Password':
 				case 'Log time format':
 				case 'Allowed hosts':
-				case 'Request body' :
+				case 'Request body':
 				case 'URL':
 				case 'JMX endpoint':
 				case 'Public key file':
@@ -1268,8 +1274,8 @@ class testMassUpdateItems extends CWebTest{
 
 					if (array_key_exists('Custom intervals', $value)) {
 						$update_interval_field->query('id:custom_intervals')
-								->asMultifieldTable(['mapping' => self::INTERVAL_MAPPING])->one()
-								->fill($value['Custom intervals']);
+							->asMultifieldTable(['mapping' => self::INTERVAL_MAPPING])->one()
+							->fill($value['Custom intervals']);
 					}
 					break;
 
@@ -1292,7 +1298,7 @@ class testMassUpdateItems extends CWebTest{
 					// Take a screenshot to test draggable object position of headers in mass update.
 					if (array_key_exists('screenshot', $data)) {
 						$this->page->removeFocus();
-						$this->assertScreenshot($form->query('id:headers_pairs')->waitUntilPresent()->one(), 'Item mass update headers'.$prototypes);
+						$this->assertScreenshot($form->query('id:headers_pairs')->waitUntilPresent()->one(), 'Item mass update headers' . $prototypes);
 					}
 
 					break;
@@ -1302,17 +1308,16 @@ class testMassUpdateItems extends CWebTest{
 						$form->query('button:Select prototype')->one()->click();
 						$master_dialog = COverlayDialogElement::find()->all()->last()->waitUntilReady();
 						$master_dialog->query('link', $value['value'])->one()->waitUntilClickable()->click();
-					}
-					else {
+					} else {
 						$form->query('id', $value['id'])->one()->asMultiselect()
-								->setFillMode(CMultiselectElement::MODE_SELECT)->fill($value['value']);
+							->setFillMode(CMultiselectElement::MODE_SELECT)->fill($value['value']);
 					}
 					break;
 
 				case 'Value mapping':
 					$form->getField('Value mapping')->edit();
-					COverlayDialogElement::find()->one()->waitUntilReady()->query('xpath://a[text()="'.$value['value'].'"]')
-							->one()->waitUntilClickable()->click();
+					COverlayDialogElement::find()->one()->waitUntilReady()->query('xpath://a[text()="' . $value['value'] . '"]')
+						->one()->waitUntilClickable()->click();
 					break;
 			}
 		}
@@ -1327,23 +1332,23 @@ class testMassUpdateItems extends CWebTest{
 			 */
 			if ($field === 'Timeout') {
 				$this->assertMessage(TEST_BAD, null, $data['details']);
-			}
-			else {
-				$this->assertMessage(TEST_BAD, ($prototypes ? 'Cannot update item prototypes' : 'Cannot update items'),
+			} else {
+				$this->assertMessage(
+					TEST_BAD,
+					($prototypes ? 'Cannot update item prototypes' : 'Cannot update items'),
 					$data['details']
 				);
 			}
 
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM items ORDER BY itemid'));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, ($prototypes ? 'Item prototypes updated' : 'Items updated'));
 
 			// Check changed fields in saved item form.
 			foreach ($data['names'] as $name) {
-				$table = $this->query('xpath://form[@name='.
-						CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list').
-						']/table')->asTable()->one();
+				$table = $this->query('xpath://form[@name=' .
+					CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list') .
+					']/table')->asTable()->one();
 				$table->query('link', $name)->one()->waitUntilClickable()->click();
 				$overlay = COverlayDialogElement::find()->one()->waitUntilReady();
 				$form = $overlay->asForm();
@@ -1374,13 +1379,14 @@ class testMassUpdateItems extends CWebTest{
 						case 'History':
 						case 'Trends':
 							if (CTestArrayHelper::get($value, 'input.value', 'null') === '0') {
-								$this->assertEquals('Do not store',
-										$form->query('id',$value['radio']['id'])->one()->asSegmentedRadio()->getValue()
+								$this->assertEquals(
+									'Do not store',
+									$form->query('id', $value['radio']['id'])->one()->asSegmentedRadio()->getValue()
 								);
-							}
-							else {
-								$this->assertEquals($value['radio']['value'],
-										$form->query('id', $value['radio']['id'])->one()->asSegmentedRadio()->getValue()
+							} else {
+								$this->assertEquals(
+									$value['radio']['value'],
+									$form->query('id', $value['radio']['id'])->one()->asSegmentedRadio()->getValue()
 								);
 
 								if ($value['radio']['value'] === 'Do not store' && $value['radio']['id'] === 'history_mode') {
@@ -1388,8 +1394,9 @@ class testMassUpdateItems extends CWebTest{
 								}
 
 								if (array_key_exists('input', $value)) {
-									$this->assertEquals($value['input']['value'],
-											$form->query('id', $value['input']['id'])->one()->getValue()
+									$this->assertEquals(
+										$value['input']['value'],
+										$form->query('id', $value['input']['id'])->one()->getValue()
 									);
 								}
 							}
@@ -1408,11 +1415,13 @@ class testMassUpdateItems extends CWebTest{
 							$this->assertEquals($value['Delay'], $form->getField($field)->getValue());
 							if (array_key_exists('Custom intervals', $value)) {
 								// Remove action and index fields.
-								foreach($value['Custom intervals'] as &$interval) {
+								foreach ($value['Custom intervals'] as &$interval) {
 									unset($interval['action'], $interval['index']);
 								}
 								unset($interval);
-								$this->assertEquals($value['Custom intervals'], $form->getField('Custom intervals')
+								$this->assertEquals(
+									$value['Custom intervals'],
+									$form->getField('Custom intervals')
 										->asMultifieldTable(['mapping' => self::INTERVAL_MAPPING])->getValue()
 								);
 							}
@@ -1425,20 +1434,24 @@ class testMassUpdateItems extends CWebTest{
 							}
 							unset($header);
 
-							$this->assertEquals($value, $form->query('xpath:.//div[@id="js-item-headers-field"]//table')
+							$this->assertEquals(
+								$value,
+								$form->query('xpath:.//div[@id="js-item-headers-field"]//table')
 									->asMultifieldTable()->one()->getValue()
 							);
 							break;
 
 						case 'Master item':
-							$this->assertEquals([self::HOST_NAME.': '.$value['value']],
-									$form->query('xpath://*[@id="master_itemid"]/..')->asMultiselect()->one()->getValue()
+							$this->assertEquals(
+								[self::HOST_NAME . ': ' . $value['value']],
+								$form->query('xpath://*[@id="master_itemid"]/..')->asMultiselect()->one()->getValue()
 							);
 							break;
 
 						case 'Value mapping':
-							$this->assertEquals([$value['value']],
-									$form->query('xpath://*[@id="'.$value['id'].'"]/..')->asMultiselect()->one()->getValue()
+							$this->assertEquals(
+								[$value['value']],
+								$form->query('xpath://*[@id="' . $value['id'] . '"]/..')->asMultiselect()->one()->getValue()
 							);
 							break;
 					}
@@ -1465,7 +1478,8 @@ class testMassUpdateItems extends CWebTest{
 	/**
 	 * Add items with preprocessing for mass updating.
 	 */
-	public function prepareItemPreprocessingData() {
+	public function prepareItemPreprocessingData()
+	{
 		CDataHelper::call('item.create', [
 			[
 				'hostid' => self::HOSTID,
@@ -1534,7 +1548,8 @@ class testMassUpdateItems extends CWebTest{
 		]);
 	}
 
-	public function getCommonPreprocessingChangeData() {
+	public function getCommonPreprocessingChangeData()
+	{
 		return [
 			// #0.
 			[
@@ -1562,8 +1577,8 @@ class testMassUpdateItems extends CWebTest{
 						['type' => 'Simple change'],
 						['type' => 'Simple change']
 					],
-					'details' => 'Invalid parameter "/1/preprocessing/2": only one object can exist within the '.
-							'combinations of (type)=((9, 10)).'
+					'details' => 'Invalid parameter "/1/preprocessing/2": only one object can exist within the ' .
+						'combinations of (type)=((9, 10)).'
 				]
 			],
 			// #2.
@@ -1577,8 +1592,8 @@ class testMassUpdateItems extends CWebTest{
 					'Preprocessing steps' => [
 						['type' => 'In range', 'parameter_1' => '8', 'parameter_2' => '-8']
 					],
-					'details' => 'Invalid parameter "/1/preprocessing/1/params/2": cannot be less than or equal to '.
-							'the value of parameter "/1/preprocessing/1/params/1".'
+					'details' => 'Invalid parameter "/1/preprocessing/1/params/2": cannot be less than or equal to ' .
+						'the value of parameter "/1/preprocessing/1/params/1".'
 				]
 			],
 			// #3.
@@ -1607,8 +1622,8 @@ class testMassUpdateItems extends CWebTest{
 						['type' => 'Discard unchanged'],
 						['type' => 'Discard unchanged with heartbeat', 'parameter_1' => '1']
 					],
-					'details' => 'Invalid parameter "/1/preprocessing/2": only one object can exist within the '.
-							'combinations of (type)=((19, 20)).'
+					'details' => 'Invalid parameter "/1/preprocessing/2": only one object can exist within the ' .
+						'combinations of (type)=((19, 20)).'
 				]
 			],
 			// #5.
@@ -1712,14 +1727,19 @@ class testMassUpdateItems extends CWebTest{
 						'2_Item_Tags_Preprocessing'
 					],
 					'Preprocessing steps' => [
-						['type' => 'Check for not supported value', 'parameter_1' => 'error matches','parameter_2' => '^test.*$',
-								'on_fail' => true, 'error_handler' => 'Set value to', 'error_handler_params' => 'custom value'
+						[
+							'type' => 'Check for not supported value',
+							'parameter_1' => 'error matches',
+							'parameter_2' => '^test.*$',
+							'on_fail' => true,
+							'error_handler' => 'Set value to',
+							'error_handler_params' => 'custom value'
 						],
 						['type' => 'Replace', 'parameter_1' => 'text', 'parameter_2' => 'REPLACEMENT'],
 						['type' => 'Right trim', 'parameter_1' => 'abc'],
 						['type' => 'Left trim', 'parameter_1' => 'def'],
 						['type' => 'Trim', 'parameter_1' => '1a2b3c'],
-						['type' => 'CSV to JSON','parameter_1' => ' ', 'parameter_2' => '\\', 'parameter_3' => true],
+						['type' => 'CSV to JSON', 'parameter_1' => ' ', 'parameter_2' => '\\', 'parameter_3' => true],
 						['type' => 'SNMP walk value', 'parameter_1' => 'oid'],
 						['type' => 'Custom multiplier', 'parameter_1' => '123'],
 						['type' => 'Regular expression', 'parameter_1' => 'expression', 'parameter_2' => 'test output'],
@@ -1730,8 +1750,11 @@ class testMassUpdateItems extends CWebTest{
 						['type' => 'Simple change'],
 						['type' => 'In range', 'parameter_1' => '-5', 'parameter_2' => '9.5'],
 						['type' => 'Discard unchanged with heartbeat', 'parameter_1' => '5'],
-						['type' => 'Prometheus pattern', 'parameter_1' => 'cpu_usage_system', 'parameter_2' => 'label',
-								'parameter_3' => 'label_name'
+						[
+							'type' => 'Prometheus pattern',
+							'parameter_1' => 'cpu_usage_system',
+							'parameter_2' => 'label',
+							'parameter_3' => 'label_name'
 						]
 					],
 					'Screenshot' => true
@@ -1746,7 +1769,8 @@ class testMassUpdateItems extends CWebTest{
 	 * @param    array      $data	      data provider
 	 * @param    boolean    $prototypes   true if item prototype, false if item
 	 */
-	public function executeItemsPreprocessingMassUpdate($data, $prototypes = false) {
+	public function executeItemsPreprocessingMassUpdate($data, $prototypes = false)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash('SELECT * FROM items ORDER BY itemid');
 		}
@@ -1766,14 +1790,14 @@ class testMassUpdateItems extends CWebTest{
 				// It is necessary because of unexpected viewport shift.
 				$this->page->updateViewport();
 				// TODO: unstable screenshots on Jenkins. Added border radius 0 for checkboxes.
-				$this->page->getDriver()->executeScript('document.querySelectorAll(\'.checkbox-radio[type="checkbox"]'.
-						'+ label span\').forEach(function (e){ e.style.borderRadius = 0; });');
-				$this->assertScreenshot($form->query('id:preprocessing')->waitUntilPresent()->one(),
-						'Item mass update preprocessing'.$prototypes
+				$this->page->getDriver()->executeScript('document.querySelectorAll(\'.checkbox-radio[type="checkbox"]' .
+					'+ label span\').forEach(function (e){ e.style.borderRadius = 0; });');
+				$this->assertScreenshot(
+					$form->query('id:preprocessing')->waitUntilPresent()->one(),
+					'Item mass update preprocessing' . $prototypes
 				);
 			}
-		}
-		else {
+		} else {
 			$form->fill(['id:preprocessing_action' => 'Remove all']);
 		}
 
@@ -1784,20 +1808,18 @@ class testMassUpdateItems extends CWebTest{
 			$error = $prototypes ? 'Cannot update item prototypes' : 'Cannot update items';
 			$this->assertMessage(TEST_BAD, $error, $data['details']);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM items ORDER BY itemid'));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, ($prototypes ? 'Item prototypes updated' : 'Items updated'));
 
 			// Check changed fields in saved item form.
 			foreach ($data['names'] as $name) {
-				$table = $this->query('xpath://form[@name='.
-						CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list').
-						']/table')->asTable()->one();
+				$table = $this->query('xpath://form[@name=' .
+					CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list') .
+					']/table')->asTable()->one();
 				// TODO: not stable test testPageMassUpdateItems_ChangePreprocessing#8 on Jenkins, failed to properly waitUntilReady for page
 				try {
 					$table->query('link', $name)->one()->waitUntilClickable()->click();
-				}
-				catch (ElementClickInterceptedException $e) {
+				} catch (ElementClickInterceptedException $e) {
 					$table->query('link', $name)->one()->waitUntilClickable()->click();
 				}
 				$overlay = COverlayDialogElement::find()->one()->waitUntilReady();
@@ -1810,7 +1832,8 @@ class testMassUpdateItems extends CWebTest{
 		}
 	}
 
-	public function getCommonTagsChangeData() {
+	public function getCommonTagsChangeData()
+	{
 		return [
 			// Empty tag name.
 			[
@@ -2189,10 +2212,10 @@ class testMassUpdateItems extends CWebTest{
 							[
 								'action' => USER_ACTION_UPDATE,
 								'index' => 0,
-								'tag' => 'Long tag name. Long tag name. Long tag name. Long tag name. Long tag name.'.
-										' Long tag name. Long tag name. Long tag name.',
-								'value' => 'Long tag value. Long tag value. Long tag value. Long tag value. Long tag value.'.
-										' Long tag value. Long tag value. Long tag value. Long tag value.'
+								'tag' => 'Long tag name. Long tag name. Long tag name. Long tag name. Long tag name.' .
+									' Long tag name. Long tag name. Long tag name.',
+								'value' => 'Long tag value. Long tag value. Long tag value. Long tag value. Long tag value.' .
+									' Long tag value. Long tag value. Long tag value. Long tag value.'
 							]
 						]
 					]
@@ -2207,7 +2230,8 @@ class testMassUpdateItems extends CWebTest{
 	 * @param    array      $data	      data provider
 	 * @param    boolean    $prototypes   true if item prototype, false if item
 	 */
-	public function executeItemsTagsMassUpdate($data, $prototypes = false) {
+	public function executeItemsTagsMassUpdate($data, $prototypes = false)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash('SELECT * FROM items ORDER BY itemid');
 		}
@@ -2230,15 +2254,14 @@ class testMassUpdateItems extends CWebTest{
 			$error = $prototypes ? 'Cannot update item prototypes' : 'Cannot update items';
 			$this->assertMessage(TEST_BAD, $error, $data['details']);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM items ORDER BY itemid'));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, ($prototypes ? 'Item prototypes updated' : 'Items updated'));
 
 			// Check changed fields in saved item form.
 			foreach ($data['names'] as $name) {
-				$table = $this->query('xpath://form[@name='.
-						CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list').
-						']/table')->asTable()->one();
+				$table = $this->query('xpath://form[@name=' .
+					CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list') .
+					']/table')->asTable()->one();
 				$table->query('link', $name)->one()->waitUntilClickable()->click();
 				$overlay = COverlayDialogElement::find()->one()->waitUntilReady();
 				$form = $overlay->asForm();
@@ -2281,7 +2304,8 @@ class testMassUpdateItems extends CWebTest{
 	 *
 	 * @param    boolean    $prototypes   true if item prototype, false if item
 	 */
-	public function executeMassUpdateCancel($prototypes = false) {
+	public function executeMassUpdateCancel($prototypes = false)
+	{
 		$old_hash = CDBHelper::getHash('SELECT * FROM items ORDER BY itemid');
 
 		$items  = [
@@ -2307,16 +2331,17 @@ class testMassUpdateItems extends CWebTest{
 	 *
 	 * @return CElement
 	 */
-	private function openMassUpdateForm($prototypes, $data) {
+	private function openMassUpdateForm($prototypes, $data)
+	{
 		$link = ($prototypes)
-			? 'zabbix.php?action=item.prototype.list&parent_discoveryid='.self::RULEID.'&context=host'
-			: 'zabbix.php?action=item.list&filter_set=1&filter_hostids%5B0%5D='.self::HOSTID.'&context=host';
+			? 'zabbix.php?action=item.prototype.list&parent_discoveryid=' . self::RULEID . '&context=host'
+			: 'zabbix.php?action=item.list&filter_set=1&filter_hostids%5B0%5D=' . self::HOSTID . '&context=host';
 		$this->page->login()->open($link);
 
 		// Get item table.
-		$table = $this->query('xpath://form[@name='.
-				CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list').
-				']/table')->asTable()->one();
+		$table = $this->query('xpath://form[@name=' .
+			CXPathHelper::escapeQuotes($prototypes ? 'itemprototype' : 'item_list') .
+			']/table')->asTable()->one();
 		$table->findRows('Name', $data)->select();
 
 		// Open mass update form.

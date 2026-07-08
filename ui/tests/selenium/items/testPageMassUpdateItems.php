@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testMassUpdateItems.php';
+require_once __DIR__ . '/../common/testMassUpdateItems.php';
 
 /**
  * Test the mass update of items.
@@ -26,12 +26,14 @@ require_once __DIR__.'/../common/testMassUpdateItems.php';
  * TODO: remove ignoreBrowserErrors after DEV-4233
  * @ignoreBrowserErrors
  */
-class testPageMassUpdateItems extends testMassUpdateItems {
+class testPageMassUpdateItems extends testMassUpdateItems
+{
 
 	/**
 	 * Add items for mass updating.
 	 */
-	public function prepareItemData() {
+	public function prepareItemData()
+	{
 		CDataHelper::call('item.create', [
 			[
 				'hostid' => self::HOSTID,
@@ -174,7 +176,7 @@ class testPageMassUpdateItems extends testMassUpdateItems {
 				'type' => 15,
 				'value_type' => 0,
 				'delay' => '50s',
-				'params' => 'avg("Zabbix Server:zabbix[wcache,values]",600)',
+				'params' => 'avg("Advantal server:zabbix[wcache,values]",600)',
 				'tags' => [
 					[
 						'tag' => 'Item_tag_name',
@@ -189,7 +191,7 @@ class testPageMassUpdateItems extends testMassUpdateItems {
 				'type' => 15,
 				'value_type' => 0,
 				'delay' => '30s',
-				'params' => 'sum("Zabbix Server:zabbix[wcache,values]",900)',
+				'params' => 'sum("Advantal server:zabbix[wcache,values]",900)',
 				'tags' => [
 					[
 						'tag' => 'Item_tag_name_1',
@@ -227,7 +229,8 @@ class testPageMassUpdateItems extends testMassUpdateItems {
 	/**
 	 * Data for mass updating of items.
 	 */
-	public function getItemChangeData() {
+	public function getItemChangeData()
+	{
 		return [
 			// #58.
 			[
@@ -282,14 +285,16 @@ class testPageMassUpdateItems extends testMassUpdateItems {
 	 * @dataProvider getCommonChangeData
 	 * @dataProvider getItemChangeData
 	 */
-	public function testPageMassUpdateItems_ChangeItems($data) {
+	public function testPageMassUpdateItems_ChangeItems($data)
+	{
 		$this->executeItemsMassUpdate($data);
 	}
 
 	/**
 	 * Add items with preprocessing for mass updating.
 	 */
-	public function prepareItemTagsPreprocessingData() {
+	public function prepareItemTagsPreprocessingData()
+	{
 		CDataHelper::call('item.create', [
 			[
 				'hostid' => self::HOSTID,
@@ -457,21 +462,24 @@ class testPageMassUpdateItems extends testMassUpdateItems {
 		]);
 	}
 
-	public function testPageMassUpdateItems_Cancel() {
+	public function testPageMassUpdateItems_Cancel()
+	{
 		$this->executeMassUpdateCancel();
 	}
 
 	/**
 	 * @dataProvider getCommonTagsChangeData
 	 */
-	public function testPageMassUpdateItems_ChangeTags($data) {
+	public function testPageMassUpdateItems_ChangeTags($data)
+	{
 		$this->executeItemsTagsMassUpdate($data);
 	}
 
 	/**
 	 * @dataProvider getCommonPreprocessingChangeData
 	 */
-	public function testPageMassUpdateItems_ChangePreprocessing($data) {
+	public function testPageMassUpdateItems_ChangePreprocessing($data)
+	{
 		$this->executeItemsPreprocessingMassUpdate($data);
 	}
 }

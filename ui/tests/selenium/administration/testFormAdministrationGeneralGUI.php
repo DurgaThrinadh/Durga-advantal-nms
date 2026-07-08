@@ -14,14 +14,15 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormAdministrationGeneral.php';
+require_once __DIR__ . '/../common/testFormAdministrationGeneral.php';
 
 /**
  * @backup config
  *
  * @dataSource GlobalMacros
  */
-class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
+class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral
+{
 
 	public $config_link = 'zabbix.php?action=gui.edit';
 	public $form_selector = 'xpath://form[contains(@action, "gui.update")]';
@@ -33,7 +34,7 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 		'Limit for search and filter results' => '1000',
 		'Max number of columns and rows in overview tables' => '50',
 		'Max count of elements to show inside table cell' => '50',
-		'Show warning if Zabbix server is down' => true,
+		'Show warning if Advantal server is down' => true,
 		'Working time' => '1-5,09:00-18:00',
 		'Show technical errors' => false,
 		'Max history display period' => '24h',
@@ -62,7 +63,7 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 		'Limit for search and filter results' => '50',
 		'Max number of columns and rows in overview tables' => '25',
 		'Max count of elements to show inside table cell' => '100',
-		'Show warning if Zabbix server is down' => false,
+		'Show warning if Advantal server is down' => false,
 		'Working time' => '1-3,03:15-22:45',
 		'Show technical errors' => true,
 		'Max history display period' => '24h',
@@ -70,7 +71,8 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 		'Max period for time selector' => '2y'
 	];
 
-	public function testFormAdministrationGeneralGUI_CheckLayout() {
+	public function testFormAdministrationGeneralGUI_CheckLayout()
+	{
 		$this->page->login()->open('zabbix.php?action=gui.edit');
 		$this->page->assertTitle('Configuration of GUI');
 		$this->page->assertHeader('GUI');
@@ -90,7 +92,7 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 
 		$this->query('class:zi-i-warning')->one()->click();
 		$this->assertEquals(
-			'You are not able to choose some of the languages,'.
+			'You are not able to choose some of the languages,' .
 				' because locales for them are not installed on the web server.',
 			$this->query('class:hintbox-wrap')->one()->getText()
 		);
@@ -99,21 +101,24 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 	/**
 	 * Test for checking form update without changing any data.
 	 */
-	public function testFormAdministrationGeneralGUI_SimpleUpdate() {
+	public function testFormAdministrationGeneralGUI_SimpleUpdate()
+	{
 		$this->executeSimpleUpdate();
 	}
 
 	/**
 	 * Test for checking 'Reset defaults' button.
 	 */
-	public function testFormAdministrationGeneralGUI_ResetButton() {
+	public function testFormAdministrationGeneralGUI_ResetButton()
+	{
 		$this->executeResetButtonTest();
 	}
 
 	/**
 	 * Test data for GUI form.
 	 */
-	public function getCheckFormData() {
+	public function getCheckFormData()
+	{
 		return [
 			// #0 Minimal valid values. In period fields minimal valid time in seconds with 's'.
 			[
@@ -125,7 +130,7 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 						'Limit for search and filter results' => '1',
 						'Max number of columns and rows in overview tables' => '5',
 						'Max count of elements to show inside table cell' => '1',
-						'Show warning if Zabbix server is down' => false,
+						'Show warning if Advantal server is down' => false,
 						'Working time' => '1-1,00:00-00:01',
 						'Show technical errors' => true,
 						'Max history display period' => '86400s',
@@ -905,7 +910,8 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 	/**
 	 * @dataProvider getCheckFormData
 	 */
-	public function testFormAdministrationGeneralGUI_CheckForm($data) {
+	public function testFormAdministrationGeneralGUI_CheckForm($data)
+	{
 		$this->executeCheckForm($data);
 	}
 
@@ -913,7 +919,8 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 	/**
 	 * Test data for settings submit.
 	 */
-	public function getCheckSavedValuesData() {
+	public function getCheckSavedValuesData()
+	{
 		return [
 			[
 				[
@@ -982,7 +989,8 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 	/**
 	 * @dataProvider getCheckSavedValuesData
 	 */
-	public function testFormAdministrationGeneralGUI_CheckSavedValues($data) {
+	public function testFormAdministrationGeneralGUI_CheckSavedValues($data)
+	{
 		$this->page->login()->open('zabbix.php?action=gui.edit');
 		$form = $this->query($this->form_selector)->waitUntilReady()->asForm()->one();
 		// Reset form in case of previous test case.
@@ -998,7 +1006,7 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 		switch ((array_keys($data['field']))[0]) {
 			case 'Default theme':
 				$this->assertEquals($data['color'], $this->query('button:Import')->waitUntilPresent()
-						->one()->getCSSValue('background-color'));
+					->one()->getCSSValue('background-color'));
 				break;
 
 			case 'Limit for search and filter results':
@@ -1010,7 +1018,7 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 			case 'Max count of elements to show inside table cell':
 				$table = $this->query('class:list-table')->waitUntilPresent()->asTable()->one();
 				$element_count = $table->findRow('Name', 'Templates/Applications')->getColumn(3)
-						->query('xpath:.//a[contains(@class, "link-alt grey")]')->all()->count();
+					->query('xpath:.//a[contains(@class, "link-alt grey")]')->all()->count();
 				$this->assertEquals(CTestArrayHelper::get($data, 'element_count'), $element_count);
 				break;
 
@@ -1023,8 +1031,10 @@ class testFormAdministrationGeneralGUI extends testFormAdministrationGeneral {
 				$this->query('button:Apply')->one()->click();
 				// Days count for the case when current or past year is leap year.
 				$days_count = CDateTimeHelper::countDays();
-				$this->assertEquals('Maximum time period to display is '.$days_count.' days.',
-						$this->query('xpath://ul[@data-error-for="from"]')->waitUntilVisible()->one()->getText());
+				$this->assertEquals(
+					'Maximum time period to display is ' . $days_count . ' days.',
+					$this->query('xpath://ul[@data-error-for="from"]')->waitUntilVisible()->one()->getText()
+				);
 				break;
 		}
 	}

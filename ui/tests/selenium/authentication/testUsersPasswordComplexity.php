@@ -14,15 +14,16 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @onBefore prepareUserData
  *
  * @backup config, users
  */
-class testUsersPasswordComplexity extends CWebTest {
+class testUsersPasswordComplexity extends CWebTest
+{
 
 	const ACTION_UPDATE = true;
 	const OWN_PASSWORD  = true;
@@ -33,7 +34,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return ['class' => CMessageBehavior::class];
 	}
 
@@ -61,7 +63,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	/**
 	 * Add user for updating.
 	 */
-	public function prepareUserData() {
+	public function prepareUserData()
+	{
 		$response = CDataHelper::call('user.create', [
 			[
 				'username' => 'update-user',
@@ -81,7 +84,8 @@ class testUsersPasswordComplexity extends CWebTest {
 		self::$userid = $response['userids'][0];
 	}
 
-	public function getFormValidationData() {
+	public function getFormValidationData()
+	{
 		return [
 			[
 				[
@@ -146,7 +150,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	 *
 	 * @dataProvider getFormValidationData
 	 */
-	public function testUsersPasswordComplexity_FormValidation($data) {
+	public function testUsersPasswordComplexity_FormValidation($data)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash('SELECT * FROM config');
 		}
@@ -157,22 +162,25 @@ class testUsersPasswordComplexity extends CWebTest {
 		$form->submit();
 
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
-			$this->assertMessage(TEST_BAD, 'Cannot update authentication',
-					'Invalid parameter "/passwd_min_length": value must be one of 1-70.'
+			$this->assertMessage(
+				TEST_BAD,
+				'Cannot update authentication',
+				'Invalid parameter "/passwd_min_length": value must be one of 1-70.'
 			);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM config'));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, 'Authentication settings updated');
 			// Check length fields saved in db, other fields remained default.
 			$db_expected = ['passwd_min_length' => $data['db_passwd_min_length'], 'passwd_check_rules' => 8];
-			$this->assertEquals([$db_expected],
-					CDBHelper::getAll('SELECT passwd_min_length, passwd_check_rules FROM config')
+			$this->assertEquals(
+				[$db_expected],
+				CDBHelper::getAll('SELECT passwd_min_length, passwd_check_rules FROM config')
 			);
 		}
 	}
 
-	public function getCommonPasswordData() {
+	public function getCommonPasswordData()
+	{
 		return [
 			[
 				// Check default password complexity settings.
@@ -186,10 +194,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'iamrobot',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords"
 				]
 			],
 			[
@@ -216,12 +224,12 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 15,
 					'Password' => 'aA1!',
-					'hint' => "Password requirements:".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)".
-							"\nmust contain at least one digit (0-9)".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords"
+					'hint' => "Password requirements:" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords"
 				]
 			],
 			[
@@ -236,12 +244,12 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 15,
 					'Password' => '',
-					'hint' => "Password requirements:".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)".
-							"\nmust contain at least one digit (0-9)".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => 'Incorrect value for field "Password": cannot be empty.'
 				]
 			],
@@ -257,12 +265,12 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 15,
 					'Password' => 'a',
-					'hint' => "Password requirements:".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)".
-							"\nmust contain at least one digit (0-9)".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one lowercase and one uppercase Latin letter.'
 				]
 			],
@@ -292,9 +300,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 1,
 					'Password' => 'Tes',
-					'hint' => "Password requirements:".
-							"\nmust be at least 3 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 3 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)"
 				]
 			],
 			[
@@ -309,9 +317,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 1,
 					'Password' => 'Te',
-					'hint' => "Password requirements:".
-							"\nmust be at least 3 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 3 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)",
 					'error' => 'Incorrect value for field "/1/passwd": must be at least 3 characters long.'
 				]
 			],
@@ -327,9 +335,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 1,
 					'Password' => 'tes',
-					'hint' => "Password requirements:".
-							"\nmust be at least 2 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 2 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one lowercase and one uppercase Latin letter.'
 				]
 			],
@@ -344,8 +352,8 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 0,
 					'Password' => str_repeat('a', 70),
-					'hint' => "Password requirements:".
-							"\nmust be at least 70 characters long"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 70 characters long"
 				]
 			],
 			[
@@ -360,8 +368,8 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 0,
 					'Password' => str_repeat('a', 69),
-					'hint' => "Password requirements:".
-							"\nmust be at least 70 characters long",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 70 characters long",
 					'error' => 'Incorrect value for field "/1/passwd": must be at least 70 characters long.'
 				]
 			],
@@ -376,8 +384,8 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 0,
 					'Password' => str_repeat('a', 71),
-					'hint' => "Password requirements:".
-							"\nmust be at least 70 characters long"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 70 characters long"
 				]
 			],
 			[
@@ -390,10 +398,10 @@ class testUsersPasswordComplexity extends CWebTest {
 						'id:passwd_check_rules_simple' => false
 					],
 					'db_passwd_check_rules' => 1,
-					'Password' => str_repeat('a', 35).str_repeat('A', 36),
-					'hint' => "Password requirements:".
-							"\nmust be at least 70 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)"
+					'Password' => str_repeat('a', 35) . str_repeat('A', 36),
+					'hint' => "Password requirements:" .
+						"\nmust be at least 70 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)"
 				]
 			],
 			[
@@ -408,9 +416,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 1,
 					'Password' => str_repeat('a', 80),
-					'hint' => "Password requirements:".
-							"\nmust be at least 70 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 70 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one lowercase and one uppercase Latin letter.'
 				]
 			],
@@ -426,9 +434,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 2,
 					'Password' => 'secure_password',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one digit.'
 				]
 			],
@@ -444,10 +452,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 3,
 					'Password' => 'Secure_Password',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)".
-							"\nmust contain at least one digit (0-9)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)" .
+						"\nmust contain at least one digit (0-9)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one digit.'
 				]
 			],
@@ -462,10 +470,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 3,
 					'Password' => 'Secure_Password1',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)".
-							"\nmust contain at least one digit (0-9)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)" .
+						"\nmust contain at least one digit (0-9)"
 				]
 			],
 			[
@@ -479,9 +487,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 2,
 					'Password' => 'secure_password1',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)"
 				]
 			],
 			[
@@ -495,9 +503,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 2,
 					'Password' => '99009900',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)"
 				]
 			],
 			[
@@ -511,9 +519,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 2,
 					'Password' => '12345678',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)"
 				]
 			],
 			[
@@ -528,11 +536,11 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 10,
 					'Password' => '12345678',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => 'Incorrect value for field "/1/passwd": must not be one of common or context-specific passwords.'
 				]
 			],
@@ -547,10 +555,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 6,
 					'Password' => 'secure_password1#():}',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)"
 				]
 			],
 			[
@@ -565,10 +573,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 6,
 					'Password' => 'securepassword1',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one digit (0-9)".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one special character.'
 				]
 			],
@@ -584,10 +592,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 6,
 					'Password' => 'securepassword#',
-					'hint' => "Password requirements:".
-								"\nmust be at least 8 characters long".
-								"\nmust contain at least one digit (0-9)".
-								"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one digit (0-9)" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one digit.'
 				]
 			],
@@ -602,9 +610,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 4,
 					'Password' => 'securepassword#',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)"
 				]
 			],
 			[
@@ -619,9 +627,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 4,
 					'Password' => 'securepassword',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one special character.'
 				]
 			],
@@ -636,9 +644,9 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 4,
 					'Password' => "( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)",
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)"
 				]
 			],
 			[
@@ -653,11 +661,11 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 12,
 					'Password' => "zabbix",
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => 'Incorrect value for field "/1/passwd": must be at least 8 characters long.'
 				]
 			],
@@ -673,18 +681,19 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 12,
 					'Password' => "zabbix",
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust contain at least one special character ( !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => 'Incorrect value for field "/1/passwd": must contain at least one special character.'
 				]
 			]
 		];
 	}
 
-	public function getUserPasswordData() {
+	public function getUserPasswordData()
+	{
 		return [
 			[
 				[
@@ -698,10 +707,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => "zabbix",
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => 'Incorrect value for field "/1/passwd": must not be one of common or context-specific passwords.'
 				]
 			],
@@ -717,11 +726,11 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 9,
 					'Password' => 'Admin',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust contain at least one lowercase and one uppercase Latin letter (A-Z, a-z)" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not be one of common or context-specific passwords."
 				]
 			],
@@ -737,17 +746,18 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'admin',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not be one of common or context-specific passwords."
 				]
 			]
 		];
 	}
 
-	public function getAdminPasswordData() {
+	public function getAdminPasswordData()
+	{
 		return [
 			[
 				[
@@ -761,10 +771,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'Admin',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not contain user's name, surname or username."
 				]
 			],
@@ -780,10 +790,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'admin',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not contain user's name, surname or username."
 				]
 			],
@@ -799,10 +809,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'admin1',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not contain user's name, surname or username."
 				]
 			],
@@ -818,10 +828,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'admin',
-					'hint' => "Password requirements:".
-							"\nmust be at least 8 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 8 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must be at least 8 characters long."
 				]
 			],
@@ -837,10 +847,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'zabbix',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not contain user's name, surname or username."
 				]
 			],
@@ -856,10 +866,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'password',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not be one of common or context-specific passwords."
 				]
 			],
@@ -875,10 +885,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'password',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords",
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords",
 					'error' => "Incorrect value for field \"/1/passwd\": must not be one of common or context-specific passwords."
 				]
 			],
@@ -893,10 +903,10 @@ class testUsersPasswordComplexity extends CWebTest {
 					],
 					'db_passwd_check_rules' => 8,
 					'Password' => 'securepassword',
-					'hint' => "Password requirements:".
-							"\nmust be at least 4 characters long".
-							"\nmust not contain user's name, surname or username".
-							"\nmust not be one of common or context-specific passwords"
+					'hint' => "Password requirements:" .
+						"\nmust be at least 4 characters long" .
+						"\nmust not contain user's name, surname or username" .
+						"\nmust not be one of common or context-specific passwords"
 				]
 			]
 		];
@@ -908,7 +918,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	 * @dataProvider getCommonPasswordData
 	 * @dataProvider getUserPasswordData
 	 */
-	public function testUsersPasswordComplexity_CreateUserPassword($data) {
+	public function testUsersPasswordComplexity_CreateUserPassword($data)
+	{
 		$this->checkPasswordComplexity($data, self::$admin_password);
 	}
 
@@ -918,9 +929,15 @@ class testUsersPasswordComplexity extends CWebTest {
 	 * @dataProvider getCommonPasswordData
 	 * @dataProvider getUserPasswordData
 	 */
-	public function testUsersPasswordComplexity_ChangeOwnUserPassword($data) {
-		$this->checkPasswordComplexity($data, self::$admin_password, self::$userid, self::ACTION_UPDATE,
-				self::OWN_PASSWORD, self::$user_password
+	public function testUsersPasswordComplexity_ChangeOwnUserPassword($data)
+	{
+		$this->checkPasswordComplexity(
+			$data,
+			self::$admin_password,
+			self::$userid,
+			self::ACTION_UPDATE,
+			self::OWN_PASSWORD,
+			self::$user_password
 		);
 	}
 
@@ -930,7 +947,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	 * @dataProvider getCommonPasswordData
 	 * @dataProvider getAdminPasswordData
 	 */
-	public function testUsersPasswordComplexity_ChangeOwnAdminPassword($data) {
+	public function testUsersPasswordComplexity_ChangeOwnAdminPassword($data)
+	{
 		$this->checkPasswordComplexity($data, self::$admin_password, self::ADMIN_USERID, self::ACTION_UPDATE, self::OWN_PASSWORD);
 	}
 
@@ -940,7 +958,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	 * @dataProvider getCommonPasswordData
 	 * @dataProvider getUserPasswordData
 	 */
-	public function testUsersPasswordComplexity_UpdateUserPassword($data) {
+	public function testUsersPasswordComplexity_UpdateUserPassword($data)
+	{
 		$this->checkPasswordComplexity($data, self::$admin_password, self::$userid, self::ACTION_UPDATE);
 	}
 
@@ -950,7 +969,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	 * @dataProvider getCommonPasswordData
 	 * @dataProvider getAdminPasswordData
 	 */
-	public function testUsersPasswordComplexity_UpdateAdminPassword($data) {
+	public function testUsersPasswordComplexity_UpdateAdminPassword($data)
+	{
 		$this->checkPasswordComplexity($data, self::$admin_password, self::ADMIN_USERID, self::ACTION_UPDATE);
 	}
 
@@ -963,8 +983,14 @@ class testUsersPasswordComplexity extends CWebTest {
 	 * @param boolean   $update            false if create, true if update
 	 * @param $own      $own               true if user changes their password themselves
 	 */
-	private function checkPasswordComplexity($data, $admin_password, $userid = null, $update = false, $own = false,
-			$user_password = null) {
+	private function checkPasswordComplexity(
+		$data,
+		$admin_password,
+		$userid = null,
+		$update = false,
+		$own = false,
+		$user_password = null
+	) {
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash('SELECT * FROM users ORDER BY userid');
 		}
@@ -976,8 +1002,9 @@ class testUsersPasswordComplexity extends CWebTest {
 		$auth_form->submit();
 		$this->page->waitUntilReady();
 		$this->assertMessage(TEST_GOOD, 'Authentication settings updated');
-		$this->assertEquals($data['db_passwd_check_rules'],
-				CDBHelper::getValue('SELECT passwd_check_rules FROM config')
+		$this->assertEquals(
+			$data['db_passwd_check_rules'],
+			CDBHelper::getValue('SELECT passwd_check_rules FROM config')
 		);
 
 		if ($update) {
@@ -988,13 +1015,11 @@ class testUsersPasswordComplexity extends CWebTest {
 
 				$this->page->open('zabbix.php?action=userprofile.edit');
 				$this->clickChangePassword();
-			}
-			else {
-				$this->page->open('zabbix.php?action=user.edit&userid='.$userid);
+			} else {
+				$this->page->open('zabbix.php?action=user.edit&userid=' . $userid);
 				$this->clickChangePassword();
 			}
-		}
-		else {
+		} else {
 			$this->page->open('zabbix.php?action=user.edit');
 		}
 
@@ -1002,12 +1027,12 @@ class testUsersPasswordComplexity extends CWebTest {
 		$user_form = $this->query('name:user_form')->asForm()->waitUntilPresent()->one();
 		$username = ($userid === 1)
 			? 'Admin'
-			: ($update ? 'update-user' : 'username'.time());
+			: ($update ? 'update-user' : 'username' . time());
 
 		if ($update === false && $own === false) {
 			$user_form->fill([
 				'Username' => $username,
-				'Groups' => ['Zabbix administrators']
+				'Groups' => ['Advantal Administrators']
 			]);
 		}
 
@@ -1018,8 +1043,7 @@ class testUsersPasswordComplexity extends CWebTest {
 			$this->assertEquals($data['hint'], $hint->one()->getText());
 			$hint->one()->query('xpath:.//button[@class="btn-overlay-close"]')->one()->click();
 			$hint->waitUntilNotPresent();
-		}
-		else {
+		} else {
 			// If password can be 1 symbol long and doesn't have any complexity rules hint is not shown at all.
 			$this->assertFalse($user_form->getLabel('Password')->query('xpath:./button[@data-hintbox]')->exists());
 		}
@@ -1047,33 +1071,31 @@ class testUsersPasswordComplexity extends CWebTest {
 		$this->page->waitUntilReady();
 
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
-			$this->assertMessage(TEST_BAD, 'Cannot '.($update ? 'update' : 'add').' user', $data['error']);
+			$this->assertMessage(TEST_BAD, 'Cannot ' . ($update ? 'update' : 'add') . ' user', $data['error']);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM users ORDER BY userid'));
-		}
-		else {
+		} else {
 			if ($own || $userid === 1) {
 				// If user updates their own password they will be logged out, so check login screen.
 				$this->page->assertTitle('Zabbix');
 				$this->assertTrue($this->query('button:Sign in')->one()->isClickable());
-			}
-			else {
-				$this->assertMessage(TEST_GOOD, 'User '.($update ? 'updated' : 'added'));
+			} else {
+				$this->assertMessage(TEST_GOOD, 'User ' . ($update ? 'updated' : 'added'));
 			}
 
 			// Check user saved in db.
-			$this->assertEquals(1, CDBHelper::getCount('SELECT * FROM users WHERE username ='.zbx_dbstr($username)));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT * FROM users WHERE username =' . zbx_dbstr($username)));
 
 			// Check success login with new password.
 			$this->page->userLogin($username, $data['Password']);
-			$this->assertTrue($this->query('xpath://a[@title='.zbx_dbstr(($userid === 1) ? 'Admin (Zabbix Administrator)'
-					: $username).' and text()="User settings"]')->exists()
+			$this->assertTrue(
+				$this->query('xpath://a[@title=' . zbx_dbstr(($userid === 1) ? 'Admin (Advantal Administrator)'
+					: $username) . ' and text()="User settings"]')->exists()
 			);
 
 			// Write new password for next case.
 			if (($userid === 1) && ($own || $update)) {
 				self::$admin_password = $data['Password'];
-			}
-			elseif ($own) {
+			} elseif ($own) {
 				self::$user_password = $data['Password'];
 			}
 		}
@@ -1082,7 +1104,8 @@ class testUsersPasswordComplexity extends CWebTest {
 	/**
 	 * Click button "Change password" and wait until both password fields are editable.
 	 */
-	private function clickChangePassword() {
+	private function clickChangePassword()
+	{
 		$this->query('button:Change password')->waitUntilClickable()->one()->click();
 		$this->query('id:password1')->waitUntilPresent()->one();
 		$this->query('id:password2')->waitUntilPresent()->one();

@@ -14,20 +14,23 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormAuthentication.php';
+require_once __DIR__ . '/../common/testFormAuthentication.php';
 
 /**
  * @backup config
  */
-class testUsersAuthenticationSaml extends testFormAuthentication {
+class testUsersAuthenticationSaml extends testFormAuthentication
+{
 
-	protected function onBeforeTestSuite() {
+	protected function onBeforeTestSuite()
+	{
 		if (!defined('PHPUNIT_SAML_TESTS_ENABLED') || !PHPUNIT_SAML_TESTS_ENABLED) {
 			self::markTestSuiteSkipped();
 		}
 	}
 
-	public function testUsersAuthenticationSaml_Layout() {
+	public function testUsersAuthenticationSaml_Layout()
+	{
 		$saml_form = $this->openFormAndCheckBasics('SAML');
 
 		// Check SAML form default values.
@@ -38,8 +41,11 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 			'SLO service URL' => ['value' => '', 'visible' => true, 'maxlength' => 2048],
 			'Username attribute' => ['value' => '', 'visible' => true, 'maxlength' => 128],
 			'SP entity ID' => ['value' => '', 'visible' => true, 'maxlength' => 1024],
-			'SP name ID format' => ['value' => '', 'visible' => true, 'maxlength' => 2048,
-					'placeholder' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+			'SP name ID format' => [
+				'value' => '',
+				'visible' => true,
+				'maxlength' => 2048,
+				'placeholder' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
 			],
 			'id:sign_messages' => ['value' => false, 'visible' => true],
 			'id:sign_assertions' => ['value' => false, 'visible' => true],
@@ -76,8 +82,9 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 		}
 
 		// Check visible mandatory fields.
-		$this->assertEquals(['IdP entity ID', 'SSO service URL', 'Username attribute', 'SP entity ID'],
-				$saml_form->getRequiredLabels()
+		$this->assertEquals(
+			['IdP entity ID', 'SSO service URL', 'Username attribute', 'SP entity ID'],
+			$saml_form->getRequiredLabels()
 		);
 
 		// Check invisible mandatory field.
@@ -104,7 +111,7 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 		}
 
 		$hintboxes = [
-			'Media type mapping' => "Map user's SAML media attributes (e.g. email) to Zabbix user media for".
+			'Media type mapping' => "Map user's SAML media attributes (e.g. email) to Zabbix user media for" .
 				" sending notifications."
 		];
 
@@ -123,7 +130,8 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 		$this->checkFormHintsAndMapping($saml_form, $hintboxes, $mapping_tables, 'SAML');
 	}
 
-	public function getConfigureValidationData() {
+	public function getConfigureValidationData()
+	{
 		return [
 			// #0 Missing IdP entity ID.
 			[
@@ -250,7 +258,8 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 		];
 	}
 
-	public function getConfigureData() {
+	public function getConfigureData()
+	{
 		return [
 			// #0 Configure SAML with minimal fields.
 			[
@@ -305,7 +314,7 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 						'SP name ID format' => '!@#$%^&*()_+-=[]{};:"|,./<>?Ž©µÆ',
 						'Group name attribute' => '!@#$%^&*()_+-=[]{};:"|,./<>?Ž©µÆ',
 						'User name attribute' => '!@#$%^&*()_+-=[]{};:"|,./<>?Ž©µÆ',
-						'User last name attribute'=> '!@#$%^&*()_+-=[]{};:"|,./<>?Ž©µÆ',
+						'User last name attribute' => '!@#$%^&*()_+-=[]{};:"|,./<>?Ž©µÆ',
 						'Enable SCIM provisioning' => true
 					],
 					'User group mapping' => [
@@ -385,7 +394,7 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 						'Configure JIT provisioning' => true,
 						'Group name attribute' => '   leading.trailing   ',
 						'User name attribute' => '   leading.trailing   ',
-						'User last name attribute'=> '   leading.trailing   '
+						'User last name attribute' => '   leading.trailing   '
 					],
 					'User group mapping' => [
 						[
@@ -450,7 +459,7 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 						'Configure JIT provisioning' => true,
 						'Group name attribute' => STRING_255,
 						'User name attribute' => STRING_255,
-						'User last name attribute'=> STRING_255
+						'User last name attribute' => STRING_255
 					],
 					'User group mapping' => [
 						[
@@ -552,7 +561,8 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 	/**
 	 * @dataProvider getConfigureValidationData
 	 */
-	public function testUsersAuthenticationSaml_ConfigureValidation($data) {
+	public function testUsersAuthenticationSaml_ConfigureValidation($data)
+	{
 		$this->testSamlConfiguration($data);
 	}
 
@@ -561,11 +571,13 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 	 *
 	 * @dataProvider getConfigureData
 	 */
-	public function testUsersAuthenticationSaml_Configure($data) {
+	public function testUsersAuthenticationSaml_Configure($data)
+	{
 		$this->testSamlConfiguration($data);
 	}
 
-	private function testSamlConfiguration($data) {
+	private function testSamlConfiguration($data)
+	{
 		$old_hash = CDBHelper::getHash('SELECT * FROM config');
 		$this->page->login()->open('zabbix.php?action=authentication.edit');
 
@@ -576,8 +588,7 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$this->assertMessage(TEST_BAD, 'Cannot update authentication',  $data['error']);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM config'));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, 'Authentication settings updated');
 			$form = $this->query('id:authentication-form')->asForm()->one();
 			$form->selectTab('SAML settings');
@@ -596,14 +607,15 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 						$rows = array_map('trim', $row);
 					}
 
-					$sql = 'SELECT '.implode(",", array_keys($row)).' FROM '.$table.' LIMIT 1 OFFSET '.$i;
+					$sql = 'SELECT ' . implode(",", array_keys($row)) . ' FROM ' . $table . ' LIMIT 1 OFFSET ' . $i;
 					$this->assertEquals([$row], CDBHelper::getAll($sql));
 				}
 			}
 		}
 	}
 
-	public function testUsersAuthenticationSaml_CheckStatusChange() {
+	public function testUsersAuthenticationSaml_CheckStatusChange()
+	{
 		$settings = [
 			'fields' => [
 				'IdP entity ID' => 'IdP',
@@ -635,7 +647,8 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 		$this->assertTrue($this->query('link:Sign in with Single Sign-On (SAML)')->count() === 0, 'Link must not exist.');
 	}
 
-	public function getAuthenticationDetails() {
+	public function getAuthenticationDetails()
+	{
 		return [
 			// #0 Login as zabbix super admin - case insensitive login.
 			[
@@ -725,7 +738,8 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 	 *
 	 * @dataProvider getAuthenticationDetails
 	 */
-	public function testUsersAuthenticationSaml_Authenticate($data) {
+	public function testUsersAuthenticationSaml_Authenticate($data)
+	{
 		$this->page->login()->open('zabbix.php?action=authentication.edit');
 		$settings = [
 			'fields' => [
@@ -755,8 +769,7 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 			$this->page->open($data['url'])->waitUntilReady();
 			$this->query('button:Login')->one()->click();
 			$this->page->waitUntilReady();
-		}
-		else {
+		} else {
 			$this->page->open('index.php')->waitUntilReady();
 		}
 
@@ -765,13 +778,12 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 			$this->query('id:name')->waitUntilVisible()->one()->fill($data['username']);
 			$this->query('id:password')->one()->fill('zabbix');
 			$this->query('button:Sign in')->one()->click();
-		}
-		else {
+		} else {
 			$this->query('link:Sign in with Single Sign-On (SAML)')->one()->waitUntilClickable()->click();
 			$this->page->waitUntilReady();
 			$this->query('id:username')->one()->waitUntilVisible()->fill($data['username']);
 			$this->query('id:password')->one()->waitUntilVisible()->fill('zabbix');
-			$this->query('button:Login')-> one()->click()->waitUntilStalled();
+			$this->query('button:Login')->one()->click()->waitUntilStalled();
 		}
 
 		$this->page->waitUntilReady();
@@ -798,7 +810,8 @@ class testUsersAuthenticationSaml extends testFormAuthentication {
 	 *
 	 * @param array    $data    data provider
 	 */
-	private function configureSamlAuthentication($data) {
+	private function configureSamlAuthentication($data)
+	{
 		$form = $this->query('id:authentication-form')->asForm()->one();
 		$form->selectTab('SAML settings');
 		$form->getField('Enable SAML authentication')->check();

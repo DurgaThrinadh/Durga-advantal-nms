@@ -14,7 +14,8 @@
 **/
 
 
-class CJsonRpc {
+class CJsonRpc
+{
 
 	const VERSION = '2.0';
 
@@ -41,7 +42,8 @@ class CJsonRpc {
 	 * @param CApiClient $apiClient
 	 * @param string $data
 	 */
-	public function __construct(CApiClient $apiClient, $data) {
+	public function __construct(CApiClient $apiClient, $data)
+	{
 		$this->apiClient = $apiClient;
 
 		$this->initErrors();
@@ -57,7 +59,8 @@ class CJsonRpc {
 	 *
 	 * @return string JSON encoded value
 	 */
-	public function execute(CHttpRequest $request) {
+	public function execute(CHttpRequest $request)
+	{
 		if (json_last_error()) {
 			$this->jsonError([], '-32700', null, null, true);
 			return json_encode($this->_response[0], JSON_UNESCAPED_SLASHES);
@@ -86,8 +89,7 @@ class CJsonRpc {
 					'type' => self::AUTH_TYPE_HEADER,
 					'auth' => $header
 				];
-			}
-			elseif ($call['auth'] === null) {
+			} elseif ($call['auth'] === null) {
 				$session = new CEncryptedCookieSession();
 
 				$auth = [
@@ -105,8 +107,10 @@ class CJsonRpc {
 			return '';
 		}
 
-		if (is_array($this->_jsonDecoded)
-				&& array_keys($this->_jsonDecoded) === range(0, count($this->_jsonDecoded) - 1)) {
+		if (
+			is_array($this->_jsonDecoded)
+			&& array_keys($this->_jsonDecoded) === range(0, count($this->_jsonDecoded) - 1)
+		) {
 			// Return response as encoded batch if $this->_jsonDecoded is associative array.
 			return json_encode(array_values(array_filter($this->_response)), JSON_UNESCAPED_SLASHES);
 		}
@@ -114,7 +118,8 @@ class CJsonRpc {
 		return ($this->_response[0] !== null) ? json_encode($this->_response[0], JSON_UNESCAPED_SLASHES) : '';
 	}
 
-	public function validate(&$call) {
+	public function validate(&$call)
+	{
 		$api_input_rules = ['type' => API_OBJECT, 'fields' => [
 			'jsonrpc' =>	['type' => API_STRING_UTF8, 'flags' => API_REQUIRED, 'in' => self::VERSION],
 			'method' =>		['type' => API_STRING_UTF8, 'flags' => API_REQUIRED],
@@ -141,19 +146,19 @@ class CJsonRpc {
 		return true;
 	}
 
-	public function processResult(array $call, CApiClientResponse $response) {
+	public function processResult(array $call, CApiClientResponse $response)
+	{
 		if ($response->errorCode) {
 			$user_type = CUser::$userData === null ? USER_TYPE_ZABBIX_USER : CUser::$userData['type'];
 
 			if ($response->errorCode == ZBX_API_ERROR_DB && $user_type != USER_TYPE_SUPER_ADMIN) {
-				$response->errorMessage = _('System error occurred. Please contact Zabbix administrator.');
+				$response->errorMessage = _('System error occurred. Please contact Advantal Administrator.');
 			}
 
 			$errno = $this->_zbx2jsonErrors[$response->errorCode];
 
 			$this->jsonError($call, $errno, $response->errorMessage, $response->debug);
-		}
-		else {
+		} else {
 			// Notifications (request object without an "id" member) MUST NOT be answered.
 			$this->_response[] = array_key_exists('id', $call)
 				? [
@@ -165,7 +170,8 @@ class CJsonRpc {
 		}
 	}
 
-	private function jsonError(array $call, $errno, $data = null, $debug = null, $force_err = false) {
+	private function jsonError(array $call, $errno, $data = null, $debug = null, $force_err = false)
+	{
 		// Notifications MUST NOT be answered, but error MUST be generated on JSON parse error
 		if (!$force_err && !array_key_exists('id', $call)) {
 			$this->_response[] = null;
@@ -194,7 +200,8 @@ class CJsonRpc {
 		];
 	}
 
-	private function initErrors() {
+	private function initErrors()
+	{
 		$this->_error_list = [
 			'-32700' => [
 				'code' => -32700,

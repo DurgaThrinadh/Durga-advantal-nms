@@ -3,18 +3,18 @@ services:
   # =====================================================
   # PostgreSQL Database
   # =====================================================
-  zabbix-db:
+  advantal-db:
     image: postgres:16-alpine
-    container_name: zabbix-db
+    container_name: advantal-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: zabbix
       POSTGRES_PASSWORD: ZabbixNMS@2025Secure
       POSTGRES_DB: zabbix
     volumes:
-      - zabbix-db-data:/var/lib/postgresql/data
+      - advantal-db-data:/var/lib/postgresql/data
     networks:
-      - zabbix-net
+      - advantal-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U zabbix"]
       interval: 10s
@@ -22,11 +22,9 @@ services:
       retries: 5
 
   # =====================================================
-  # Zabbix Server (CUSTOM BUILD from src/)
-  # Uncomment below to build from source
-  # Comment it out and use official image for faster startup
+  # Advantal Server (CUSTOM BUILD from src/)
   # =====================================================
-  zabbix-server:
+  advantal-server:
     # --- Option A: Official image (fast, no backend changes) ---
     image: zabbix/zabbix-server-pgsql:ubuntu-7.0-latest
     # --- Option B: Custom build from source (when you modify src/) ---
@@ -34,81 +32,82 @@ services:
     #   context: .
     #   dockerfile: Dockerfile.server
     # image: advantal-nms-server:7.0
-    container_name: zabbix-server
+    container_name: advantal-server
     restart: unless-stopped
     depends_on:
-      zabbix-db:
+      advantal-db:
         condition: service_healthy
     environment:
-      DB_SERVER_HOST: zabbix-db
+      DB_SERVER_HOST: advantal-db
       POSTGRES_USER: zabbix
       POSTGRES_PASSWORD: ZabbixNMS@2025Secure
       POSTGRES_DB: zabbix
     ports:
       - "10051:10051"
     networks:
-      - zabbix-net
+      - advantal-net
 
   # =====================================================
-  # Zabbix Web Frontend (CUSTOM BUILD from ui/)
+  # Advantal Web Frontend (CUSTOM BUILD from ui/)
   # =====================================================
-  zabbix-web:
+  advantal-web:
     build:
       context: .
       dockerfile: Dockerfile.web
     image: advantal-nms-web:7.0
-    container_name: zabbix-web
+    container_name: advantal-web
     restart: unless-stopped
     depends_on:
-      - zabbix-server
-      - zabbix-db
+      - advantal-server
+      - advantal-db
     environment:
-      DB_SERVER_HOST: zabbix-db
+      DB_SERVER_HOST: advantal-db
       POSTGRES_USER: zabbix
       POSTGRES_PASSWORD: ZabbixNMS@2025Secure
       POSTGRES_DB: zabbix
-      ZBX_SERVER_HOST: zabbix-server
+      ZBX_SERVER_HOST: advantal-server
       ZBX_SERVER_NAME: ADVANTAL TECHNOLOGIES PVT LTD
       PHP_TZ: Asia/Kolkata
     ports:
       - "9090:8080"
     networks:
-      - zabbix-net
+      - advantal-net
 
   # =====================================================
-  # Zabbix Agent 2
+  # Advantal Agent 2
   # =====================================================
-  zabbix-agent:
+  advantal-agent:
     image: zabbix/zabbix-agent2:ubuntu-7.0-latest
-    container_name: zabbix-agent
+    container_name: advantal-agent
     restart: unless-stopped
     depends_on:
-      - zabbix-server
+      - advantal-server
     environment:
-      ZBX_HOSTNAME: "Zabbix server"
-      ZBX_SERVER_HOST: zabbix-server
+      ZBX_HOSTNAME: "Advantal server"
+      ZBX_SERVER_HOST: advantal-server
     privileged: true
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     networks:
-      - zabbix-net
+      - advantal-net
 
   # =====================================================
   # SNMP Traps Receiver
   # =====================================================
-  zabbix-snmptraps:
+  advantal-snmptraps:
     image: zabbix/zabbix-snmptraps:ubuntu-7.0-latest
-    container_name: zabbix-snmptraps
+    container_name: advantal-snmptraps
     restart: unless-stopped
     ports:
       - "162:1162/udp"
     networks:
-      - zabbix-net
+      - advantal-net
 
 volumes:
-  zabbix-db-data:
+  advantal-db-data:
+    name: advantal_nms-db-data
 
 networks:
-  zabbix-net:
+  advantal-net:
     driver: bridge

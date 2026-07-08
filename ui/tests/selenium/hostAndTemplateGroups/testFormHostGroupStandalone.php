@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormGroups.php';
+require_once __DIR__ . '/../common/testFormGroups.php';
 
 /**
  * @backup hosts
@@ -23,22 +23,26 @@ require_once __DIR__.'/../common/testFormGroups.php';
  *
  * @dataSource DiscoveredHosts, HostTemplateGroups
  */
-class testFormHostGroupStandalone extends testFormGroups {
+class testFormHostGroupStandalone extends testFormGroups
+{
 
 	protected $standalone = true;
 	protected $link = 'zabbix.php?action=hostgroup.edit&groupid=';
 	protected $object = 'host';
 	protected static $update_group = 'Group for Update test';
 
-	public function testFormHostGroupStandalone_Layout() {
-		$this->layout('Zabbix servers');
+	public function testFormHostGroupStandalone_Layout()
+	{
+		$this->layout('Advantal servers');
 	}
 
-	public function testFormHostGroupStandalone_DiscoveredLayout() {
+	public function testFormHostGroupStandalone_DiscoveredLayout()
+	{
 		$this->layout(self::DISCOVERED_GROUP, self::LLD);
 	}
 
-	public static function getHostValidationData() {
+	public static function getHostValidationData()
+	{
 		return [
 			[
 				[
@@ -46,21 +50,22 @@ class testFormHostGroupStandalone extends testFormGroups {
 					'fields' => [
 						'Group name' => self::DISCOVERED_GROUP
 					],
-					'error' => 'Host group "'.self::DISCOVERED_GROUP.'" already exists.'
+					'error' => 'Host group "' . self::DISCOVERED_GROUP . '" already exists.'
 				]
 			]
 		];
 	}
 
-	public static function getHostCreateData() {
+	public static function getHostCreateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Group name' => 'Zabbix servers'
+						'Group name' => 'Advantal servers'
 					],
-					'error' => 'Host group "Zabbix servers" already exists.'
+					'error' => 'Host group "Advantal servers" already exists.'
 				]
 			],
 			[
@@ -87,20 +92,22 @@ class testFormHostGroupStandalone extends testFormGroups {
 	 * @dataProvider getHostValidationData
 	 * @dataProvider getHostCreateData
 	 */
-	public function testFormHostGroupStandalone_Create($data) {
+	public function testFormHostGroupStandalone_Create($data)
+	{
 		$this->checkForm($data, 'create');
 	}
 
-	public static function getHostUpdateData() {
+	public static function getHostUpdateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Group name' => 'Zabbix servers',
+						'Group name' => 'Advantal servers',
 						'Apply permissions and tag filters to all subgroups' => true
 					],
-					'error' => 'Host group "Zabbix servers" already exists.'
+					'error' => 'Host group "Advantal servers" already exists.'
 				]
 			],
 			[
@@ -127,25 +134,28 @@ class testFormHostGroupStandalone extends testFormGroups {
 	 * @dataProvider getHostValidationData
 	 * @dataProvider getHostUpdateData
 	 */
-	public function testFormHostGroupStandalone_Update($data) {
+	public function testFormHostGroupStandalone_Update($data)
+	{
 		$this->checkForm($data, 'update');
 	}
 
 	/**
 	 * Test group simple update without changing data.
 	 */
-	public function testFormHostGroupStandalone_SimpleUpdate() {
+	public function testFormHostGroupStandalone_SimpleUpdate()
+	{
 		$this->simpleUpdate(self::DISCOVERED_GROUP, true);
 	}
 
-	public static function getHostCloneData() {
+	public static function getHostCloneData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_GOOD,
 					'name' => self::DISCOVERED_GROUP,
 					'fields' => [
-						'Group name' => self::DISCOVERED_GROUP.' cloned group'
+						'Group name' => self::DISCOVERED_GROUP . ' cloned group'
 					],
 					'discovered' => true
 				]
@@ -157,18 +167,21 @@ class testFormHostGroupStandalone extends testFormGroups {
 	 * @dataProvider getCloneData
 	 * @dataProvider getHostCloneData
 	 */
-	public function testFormHostGroupStandalone_Clone($data) {
+	public function testFormHostGroupStandalone_Clone($data)
+	{
 		$this->clone($data);
 	}
 
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testFormHostGroupStandalone_Cancel($data) {
+	public function testFormHostGroupStandalone_Cancel($data)
+	{
 		$this->cancel($data);
 	}
 
-	public static function getHostDeleteData() {
+	public static function getHostDeleteData()
+	{
 		return [
 			[
 				[
@@ -181,7 +194,7 @@ class testFormHostGroupStandalone extends testFormGroups {
 				[
 					'expected' => TEST_BAD,
 					'name' => 'Group for Maintenance',
-					'error' => 'Cannot delete host group "Group for Maintenance" because maintenance'.
+					'error' => 'Cannot delete host group "Group for Maintenance" because maintenance' .
 						' "Maintenance for host group testing" must contain at least one host or host group.'
 				]
 			],
@@ -220,7 +233,8 @@ class testFormHostGroupStandalone extends testFormGroups {
 	 * @dataProvider getDeleteData
 	 * @dataProvider getHostDeleteData
 	 */
-	public function testFormHostGroupStandalone_Delete($data) {
+	public function testFormHostGroupStandalone_Delete($data)
+	{
 		$this->delete($data);
 	}
 
@@ -228,7 +242,8 @@ class testFormHostGroupStandalone extends testFormGroups {
 	 * @onBeforeOnce prepareSubgroupData
 	 * @dataProvider getSubgroupsData
 	 */
-	public function testFormHostGroupStandalone_ApplyPermissionsToSubgroups($data) {
+	public function testFormHostGroupStandalone_ApplyPermissionsToSubgroups($data)
+	{
 		$this->checkSubgroupsPermissions($data);
 	}
 }

@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
 
 /**
  * @backup media_type
@@ -23,7 +23,8 @@ require_once __DIR__.'/../../include/CWebTest.php';
  *
  * @onBefore prepareActionData
  */
-class testPageAdministrationMediaTypes extends CWebTest {
+class testPageAdministrationMediaTypes extends CWebTest
+{
 
 	const ZABBIX_ADMIN_GROUPID = 7;
 	const EMAIL_MEDIATYPEID = 1;
@@ -34,7 +35,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			[
@@ -44,7 +46,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 		];
 	}
 
-	public static function prepareActionData() {
+	public static function prepareActionData()
+	{
 		CDataHelper::call('action.create', [
 			[
 				'name' => 'Action with email',
@@ -106,7 +109,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	/**
 	 * Check basic elements on page.
 	 */
-	public function testPageAdministrationMediaTypes_Layout() {
+	public function testPageAdministrationMediaTypes_Layout()
+	{
 		$this->page->login()->open('zabbix.php?action=mediatype.list')->waitUntilReady();
 
 		$this->page->assertTitle('Configuration of media types');
@@ -147,10 +151,10 @@ class testPageAdministrationMediaTypes extends CWebTest {
 
 		$filter->getLabel('Display actions')->query('xpath:./button[@data-hintbox]')->one()->click();
 		$popup = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->asOverlayDialog()->waitUntilPresent()->one();
-		$popup_text = "Filter actions by the scope of media type usage:\n".
-				"All - display all actions\n".
-				"All available - display only actions where All available media types are used in action operation\n".
-				"Specific - display only actions where specific media type is used in action operation";
+		$popup_text = "Filter actions by the scope of media type usage:\n" .
+			"All - display all actions\n" .
+			"All available - display only actions where All available media types are used in action operation\n" .
+			"Specific - display only actions where specific media type is used in action operation";
 
 		$this->assertEquals($popup_text, $popup->getText());
 		$popup->close();
@@ -170,7 +174,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @onAfterOnce resetFilter
 	 */
-	public function testPageAdministrationMediaTypes_Sort() {
+	public function testPageAdministrationMediaTypes_Sort()
+	{
 		$this->page->login()->open('zabbix.php?action=mediatype.list&sortorder=DESC');
 		$table = $this->query('class:list-table')->asTable()->one();
 
@@ -181,12 +186,12 @@ class testPageAdministrationMediaTypes extends CWebTest {
 			$values_desc = $values;
 
 			// Sort column contents ascending.
-			usort($values_asc, function($a, $b) {
+			usort($values_asc, function ($a, $b) {
 				return strnatcasecmp($a, $b);
 			});
 
 			// Sort column contents descending.
-			usort($values_desc, function($a, $b) {
+			usort($values_desc, function ($a, $b) {
 				return strnatcasecmp($b, $a);
 			});
 
@@ -199,7 +204,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 		}
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// Filter by name.
 			[
@@ -324,7 +330,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @onAfterOnce resetFilter
 	 */
-	public function testPageAdministrationMediaTypes_Filter($data) {
+	public function testPageAdministrationMediaTypes_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=mediatype.list');
 		$this->query('button:Reset')->waitUntilClickable()->one()->click();
 		$table = $this->query('class:list-table')->asTable()->one();
@@ -339,23 +346,24 @@ class testPageAdministrationMediaTypes extends CWebTest {
 				? MEDIA_TYPE_STATUS_ACTIVE
 				: MEDIA_TYPE_STATUS_DISABLED;
 
-			foreach (CDBHelper::getAll('SELECT name FROM media_type WHERE status='.$db_status.
-					' ORDER BY LOWER(name) ASC') as $name) {
+			foreach (
+				CDBHelper::getAll('SELECT name FROM media_type WHERE status=' . $db_status .
+					' ORDER BY LOWER(name) ASC') as $name
+			) {
 				$data['result'][] = ($name['name'] === 'Multiple spaces in   webhook   123')
-						? str_replace('  ', '', $name['name'])
-						: $name['name'];
+					? str_replace('  ', '', $name['name'])
+					: $name['name'];
 			}
 		}
 
 		if (array_key_exists('Display actions', $data['filter'])) {
 			// Get the list of expected actions from DB and compare it to the value in the "Used in actions" column.
-			$sql = 'SELECT name FROM actions WHERE actionid IN (SELECT DISTINCT actionid FROM operations WHERE'.
-					' operationid IN (SELECT operationid FROM opmessage'.$data['sql_part'].')) ORDER BY name';
+			$sql = 'SELECT name FROM actions WHERE actionid IN (SELECT DISTINCT actionid FROM operations WHERE' .
+				' operationid IN (SELECT operationid FROM opmessage' . $data['sql_part'] . ')) ORDER BY name';
 
 			$actions = $this->getTable()->findRow('Name', $data['filter']['Name'])->getColumn('Used in actions')->getText();
 			$this->assertEquals(CDBHelper::getColumn($sql, 'name'), explode(', ', $actions));
-		}
-		else {
+		} else {
 			$table->waitUntilReloaded();
 			$this->assertTableDataColumn(CTestArrayHelper::get($data, 'result', []));
 		}
@@ -364,7 +372,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	/**
 	 * Disable and enable media type by link in column Status.
 	 */
-	public function testPageAdministrationMediaTypes_StatusLink() {
+	public function testPageAdministrationMediaTypes_StatusLink()
+	{
 		$this->page->login()->open('zabbix.php?action=mediatype.list');
 
 		// Get row by column Name.
@@ -386,14 +395,13 @@ class testPageAdministrationMediaTypes extends CWebTest {
 			$this->page->waitUntilReady();
 
 			// Check result on frontend.
-			$this->assertMessage(TEST_GOOD, 'Media type '.lcfirst($new_status));
+			$this->assertMessage(TEST_GOOD, 'Media type ' . lcfirst($new_status));
 			CMessageElement::find()->one()->close();
 
 			if ($new_status === 'Enabled') {
 				$enabled = true;
 				$db_status = MEDIA_TYPE_STATUS_ACTIVE;
-			}
-			else {
+			} else {
 				$enabled = false;
 				$db_status = MEDIA_TYPE_STATUS_DISABLED;
 			}
@@ -402,13 +410,16 @@ class testPageAdministrationMediaTypes extends CWebTest {
 			$this->assertTrue($row->query('button:Test')->one()->isEnabled($enabled));
 
 			// Check result in DB.
-			$this->assertEquals($db_status, CDBHelper::getValue('SELECT status FROM media_type WHERE '.
-					'name='.zbx_dbstr(self::MEDIA_NAME))
+			$this->assertEquals(
+				$db_status,
+				CDBHelper::getValue('SELECT status FROM media_type WHERE ' .
+					'name=' . zbx_dbstr(self::MEDIA_NAME))
 			);
 		}
 	}
 
-	public static function getSelectedMediaTypeData() {
+	public static function getSelectedMediaTypeData()
+	{
 		return [
 			// Select one.
 			[
@@ -441,7 +452,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @dataProvider getSelectedMediaTypeData
 	 */
-	public function testPageAdministrationMediaTypes_Disable($data) {
+	public function testPageAdministrationMediaTypes_Disable($data)
+	{
 		$this->checkStatusChangeButton($data);
 	}
 
@@ -450,7 +462,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @dataProvider getSelectedMediaTypeData
 	 */
-	public function testPageAdministrationMediaTypes_Enable($data) {
+	public function testPageAdministrationMediaTypes_Enable($data)
+	{
 		$this->checkStatusChangeButton($data, 'enable');
 	}
 
@@ -460,18 +473,19 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 * @param array		$data		data provider
 	 * @param string	$action		action to be performed with the selected media types
 	 */
-	private function checkStatusChangeButton($data, $action = 'disable') {
+	private function checkStatusChangeButton($data, $action = 'disable')
+	{
 		$this->page->login()->open('zabbix.php?action=mediatype.list');
 		$this->selectTableRows(CTestArrayHelper::get($data, 'rows', []));
 
 		// Check number of all selected media types.
 		if (array_key_exists('select_all', $data)) {
-			$this->assertEquals(CDBHelper::getCount('SELECT NULL FROM media_type').' selected',
-					$this->query('id:selected_count')->one()->getText()
+			$this->assertEquals(
+				CDBHelper::getCount('SELECT NULL FROM media_type') . ' selected',
+				$this->query('id:selected_count')->one()->getText()
 			);
-		}
-		else {
-			$this->assertEquals(count($data['rows']).' selected', $this->query('id:selected_count')->one()->getText());
+		} else {
+			$this->assertEquals(count($data['rows']) . ' selected', $this->query('id:selected_count')->one()->getText());
 		}
 
 		$this->query('button', ucfirst($action))->one()->click();
@@ -480,24 +494,26 @@ class testPageAdministrationMediaTypes extends CWebTest {
 
 		// Check the results in frontend.
 		$message_title = (count(CTestArrayHelper::get($data, 'rows', [])) === 1)
-			? 'Media type '.$action.'d'
-			: 'Media types '.$action.'d';
+			? 'Media type ' . $action . 'd'
+			: 'Media types ' . $action . 'd';
 		$this->assertMessage(TEST_GOOD, $message_title);
 
 		// Check the results in DB.
 		$status = ($action === 'enable') ? MEDIA_TYPE_STATUS_ACTIVE : MEDIA_TYPE_STATUS_DISABLED;
 
 		if (array_key_exists('rows', $data)) {
-			$this->assertEquals(count($data['rows']), CDBHelper::getCount('SELECT NULL FROM media_type WHERE status='.
-					$status.' AND name IN ('.CDBHelper::escape($data['db_name']).')')
+			$this->assertEquals(
+				count($data['rows']),
+				CDBHelper::getCount('SELECT NULL FROM media_type WHERE status=' .
+					$status . ' AND name IN (' . CDBHelper::escape($data['db_name']) . ')')
 			);
-		}
-		else {
-			$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM media_type WHERE status<>'.$status));
+		} else {
+			$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM media_type WHERE status<>' . $status));
 		}
 	}
 
-	public static function getTestFormData() {
+	public static function getTestFormData()
+	{
 		return [
 			// Email validation.
 			[
@@ -569,12 +585,12 @@ class testPageAdministrationMediaTypes extends CWebTest {
 						'Send to' => 'zabbix@zabbix.com',
 						'Subject' => ''
 					],
-					'error' => "Connection to Zabbix server \"localhost:10051\" refused. Possible reasons:\n".
-							"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-							"2. Security environment (for example, SELinux) is blocking the connection;\n".
-							"3. Zabbix server daemon not running;\n".
-							"4. Firewall is blocking TCP connection.\n".
-							"Connection refused"
+					'error' => "Connection to Advantal server \"localhost:10051\" refused. Possible reasons:\n" .
+						"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+						"2. Security environment (for example, SELinux) is blocking the connection;\n" .
+						"3. Advantal server daemon not running;\n" .
+						"4. Firewall is blocking TCP connection.\n" .
+						"Connection refused"
 				]
 			],
 			// Message validation.
@@ -606,12 +622,12 @@ class testPageAdministrationMediaTypes extends CWebTest {
 						'Send to' => 'abcd',
 						'Message' => 'new message'
 					],
-					'error' => "Connection to Zabbix server \"localhost:10051\" refused. Possible reasons:\n".
-							"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-							"2. Security environment (for example, SELinux) is blocking the connection;\n".
-							"3. Zabbix server daemon not running;\n".
-							"4. Firewall is blocking TCP connection.\n".
-							"Connection refused"
+					'error' => "Connection to Advantal server \"localhost:10051\" refused. Possible reasons:\n" .
+						"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+						"2. Security environment (for example, SELinux) is blocking the connection;\n" .
+						"3. Advantal server daemon not running;\n" .
+						"4. Firewall is blocking TCP connection.\n" .
+						"Connection refused"
 				]
 			],
 			// 	Script media type.
@@ -621,12 +637,12 @@ class testPageAdministrationMediaTypes extends CWebTest {
 					'form' => [
 						'Script parameters' => '/../"'
 					],
-					'error' => "Connection to Zabbix server \"localhost:10051\" refused. Possible reasons:\n".
-							"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-							"2. Security environment (for example, SELinux) is blocking the connection;\n".
-							"3. Zabbix server daemon not running;\n".
-							"4. Firewall is blocking TCP connection.\n".
-							"Connection refused"
+					'error' => "Connection to Advantal server \"localhost:10051\" refused. Possible reasons:\n" .
+						"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+						"2. Security environment (for example, SELinux) is blocking the connection;\n" .
+						"3. Advantal server daemon not running;\n" .
+						"4. Firewall is blocking TCP connection.\n" .
+						"Connection refused"
 				]
 			],
 			// 	Webhook media type.
@@ -635,12 +651,12 @@ class testPageAdministrationMediaTypes extends CWebTest {
 					'name' => 'Reference webhook',
 					'webhook' => true,
 					'parameters' => ['HTTPProxy', 'Message', 'Subject', 'To', 'URL', 'Response'],
-					'error' => "Connection to Zabbix server \"localhost:10051\" refused. Possible reasons:\n".
-							"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-							"2. Security environment (for example, SELinux) is blocking the connection;\n".
-							"3. Zabbix server daemon not running;\n".
-							"4. Firewall is blocking TCP connection.\n".
-							"Connection refused"
+					'error' => "Connection to Advantal server \"localhost:10051\" refused. Possible reasons:\n" .
+						"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+						"2. Security environment (for example, SELinux) is blocking the connection;\n" .
+						"3. Advantal server daemon not running;\n" .
+						"4. Firewall is blocking TCP connection.\n" .
+						"Connection refused"
 				]
 			]
 		];
@@ -653,17 +669,18 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @depends testPageAdministrationMediaTypes_Enable
 	 */
-	public function testPageAdministrationMediaTypes_TestMediaType($data) {
+	public function testPageAdministrationMediaTypes_TestMediaType($data)
+	{
 		$this->page->login()->open('zabbix.php?action=mediatype.list');
 
 		// Get row by media Name and click on Test button.
 		$this->query('class:list-table')->asTable()->one()->findRow('Name', $data['name'])->query('button:Test')
-				->waitUntilClickable()->one()->click();
+			->waitUntilClickable()->one()->click();
 
 		$dialog = COverlayDialogElement::find()->waitUntilReady()->one();
 
 		if (CTestArrayHelper::get($data, 'check_title')) {
-			$this->assertEquals('Test media type "'.$data['name'].'"', $dialog->getTitle());
+			$this->assertEquals('Test media type "' . $data['name'] . '"', $dialog->getTitle());
 		}
 
 		$form = $dialog->asForm();
@@ -695,14 +712,16 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	/**
 	 * Function removes saved media_type filters in order to avoid dependencies between this class test cases.
 	 */
-	public function resetFilter() {
+	public function resetFilter()
+	{
 		DBexecute('DELETE FROM profiles WHERE idx LIKE \'%web.media_types%\'');
 	}
 
 	/**
 	 * Check Test form canceling functionality.
 	 */
-	public function testPageAdministrationMediaTypes_CancelTest() {
+	public function testPageAdministrationMediaTypes_CancelTest()
+	{
 		$fields = [
 			'Send to' => 'zabbix@zabbix.com',
 			'Subject' => 'new subject',
@@ -713,9 +732,9 @@ class testPageAdministrationMediaTypes extends CWebTest {
 
 		// Get row by media Name and click on Test button.
 		$this->query('class:list-table')->asTable()->one()->findRow('Name', self::MEDIA_NAME)
-				->query('button:Test')->waitUntilClickable()->one()->click();
+			->query('button:Test')->waitUntilClickable()->one()->click();
 		$dialog = COverlayDialogElement::find()->one()->waitUntilReady();
-		$this->assertEquals('Test media type "'.self::MEDIA_NAME.'"', $dialog->getTitle());
+		$this->assertEquals('Test media type "' . self::MEDIA_NAME . '"', $dialog->getTitle());
 		$dialog->asForm()->fill($fields);
 
 		$dialog->getFooter()->query('button:Cancel')->one()->click();
@@ -727,7 +746,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @dataProvider getSelectedMediaTypeData
 	 */
-	public function testPageAdministrationMediaTypes_Delete($data) {
+	public function testPageAdministrationMediaTypes_Delete($data)
+	{
 		if (array_key_exists('used_by_action', $data)) {
 			$sql = 'SELECT NULL FROM media_type';
 			$old_hash = CDBHelper::getHash($sql);
@@ -745,16 +765,17 @@ class testPageAdministrationMediaTypes extends CWebTest {
 			$message_title = (count(CTestArrayHelper::get($data, 'rows', [])) === 1)
 				? 'Cannot delete media type'
 				: 'Cannot delete media types';
-			$this->assertMessage(TEST_BAD, $message_title, 'Media type "Email" is used by action "'.$data['used_by_action']);
+			$this->assertMessage(TEST_BAD, $message_title, 'Media type "Email" is used by action "' . $data['used_by_action']);
 
 			$this->assertEquals($old_hash, CDBHelper::getHash($sql));
-		}
-		else {
+		} else {
 			$message_title = (count($data['rows']) === 1) ? 'Media type deleted' : 'Media types deleted';
 			$this->assertMessage(TEST_GOOD, $message_title);
 
-			$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM media_type WHERE name IN ('.
-					CDBHelper::escape($data['db_name']).')')
+			$this->assertEquals(
+				0,
+				CDBHelper::getCount('SELECT NULL FROM media_type WHERE name IN (' .
+					CDBHelper::escape($data['db_name']) . ')')
 			);
 		}
 	}
@@ -763,7 +784,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 * Function for getting the id of an Action and update it for changing all operations to one particular Media type,
 	 * in case if some action operations were set to -All- media types.
 	 */
-	protected function getIdAndUpdateAction() {
+	protected function getIdAndUpdateAction()
+	{
 		$update_info = [
 			[
 				'operationtype' => OPERATION_TYPE_MESSAGE,
@@ -772,9 +794,16 @@ class testPageAdministrationMediaTypes extends CWebTest {
 			]
 		];
 
-		foreach([EVENT_SOURCE_TRIGGERS, EVENT_SOURCE_DISCOVERY, EVENT_SOURCE_AUTOREGISTRATION, EVENT_SOURCE_INTERNAL,
-				EVENT_SOURCE_SERVICE] as $sourceid) {
-			$actionids = CDBHelper::getColumn('SELECT actionid FROM actions WHERE eventsource='.zbx_dbstr($sourceid), 'actionid');
+		foreach (
+			[
+				EVENT_SOURCE_TRIGGERS,
+				EVENT_SOURCE_DISCOVERY,
+				EVENT_SOURCE_AUTOREGISTRATION,
+				EVENT_SOURCE_INTERNAL,
+				EVENT_SOURCE_SERVICE
+			] as $sourceid
+		) {
+			$actionids = CDBHelper::getColumn('SELECT actionid FROM actions WHERE eventsource=' . zbx_dbstr($sourceid), 'actionid');
 
 			foreach ($actionids as $actionid) {
 				switch ($sourceid) {
@@ -809,7 +838,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 		}
 	}
 
-	public static function getActionsColumnData() {
+	public static function getActionsColumnData()
+	{
 		return [
 			// #0 Used in no action.
 			[
@@ -961,8 +991,8 @@ class testPageAdministrationMediaTypes extends CWebTest {
 							'mediatypeid' => 0
 						]
 					],
-					'expected' => 'Express.ms recovery operation action, MantisBT action operation, '.
-							'Opsgenie update operation action'
+					'expected' => 'Express.ms recovery operation action, MantisBT action operation, ' .
+						'Opsgenie update operation action'
 				]
 			]
 		];
@@ -973,13 +1003,16 @@ class testPageAdministrationMediaTypes extends CWebTest {
 	 *
 	 * @dataProvider getActionsColumnData
 	 */
-	public function testPageAdministrationMediaTypes_ActionsColumn($data) {
+	public function testPageAdministrationMediaTypes_ActionsColumn($data)
+	{
 		// Create actions with Media types assigned to operations.
 		if (array_key_exists('actions', $data)) {
 			$column_actions = [];
 			foreach ($data['actions'] as $action) {
-				$mediatypeid = CTestArrayHelper::get($action,'mediatypeid',
-						CDBHelper::getValue('SELECT mediatypeid FROM media_type WHERE name='.zbx_dbstr($data['name']))
+				$mediatypeid = CTestArrayHelper::get(
+					$action,
+					'mediatypeid',
+					CDBHelper::getValue('SELECT mediatypeid FROM media_type WHERE name=' . zbx_dbstr($data['name']))
 				);
 
 				CDataHelper::call('action.create', [
@@ -1005,8 +1038,7 @@ class testPageAdministrationMediaTypes extends CWebTest {
 			}
 
 			$expected = array_key_exists('expected', $data) ? $data['expected'] : implode(', ', $column_actions);
-		}
-		else {
+		} else {
 			$expected = $data['expected'];
 		}
 

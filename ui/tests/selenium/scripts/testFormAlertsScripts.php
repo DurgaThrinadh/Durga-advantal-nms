@@ -14,15 +14,16 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @backup scripts
  *
  * @onBefore prepareScriptData
  */
-class testFormAlertsScripts extends CWebTest {
+class testFormAlertsScripts extends CWebTest
+{
 
 	/**
 	 * Id of scripts that created for future cloning.
@@ -43,14 +44,16 @@ class testFormAlertsScripts extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
 	/**
 	 * Function used to create scripts.
 	 */
-	public function prepareScriptData() {
+	public function prepareScriptData()
+	{
 		$response = CDataHelper::call('script.create', [
 			[
 				'name' => 'Script for Clone',
@@ -153,7 +156,8 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Test data for Scripts form.
 	 */
-	public function getScriptsData() {
+	public function getScriptsData()
+	{
 		return [
 			[
 				[
@@ -708,7 +712,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Description' => 'Test description',
 						'User group' => 'Selenium user group',
 						'Host group' => 'Selected',
-						'xpath://div[@id="groupid"]/..' => 'Zabbix servers',
+						'xpath://div[@id="groupid"]/..' => 'Advantal servers',
 						'Required host permissions' => 'Write',
 						'Advanced configuration' => true,
 						'Enable confirmation' => true,
@@ -741,7 +745,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Timeout' => '60s',
 						'Description' => 'Test description',
 						'Host group' => 'Selected',
-						'xpath://div[@id="groupid"]/..' => 'Zabbix servers'
+						'xpath://div[@id="groupid"]/..' => 'Advantal servers'
 					],
 					'Parameters' => [
 						[
@@ -772,7 +776,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Description' => 'Test description',
 						'User group' => 'Selenium user group',
 						'Host group' => 'Selected',
-						'xpath://div[@id="groupid"]/..' => 'Zabbix servers',
+						'xpath://div[@id="groupid"]/..' => 'Advantal servers',
 						'Required host permissions' => 'Write',
 						'Advanced configuration' => true,
 						'Enable confirmation' => true,
@@ -1193,8 +1197,8 @@ class testFormAlertsScripts extends CWebTest {
 						'Open in a new window' => false,
 						'Description' => 'selected Url type',
 						'Host group' => 'Selected',
-						'User group' => 'Zabbix administrators',
-						'xpath://div[@id="groupid"]/..' => 'Zabbix servers',
+						'User group' => 'Advantal Administrators',
+						'xpath://div[@id="groupid"]/..' => 'Advantal servers',
 						'Required host permissions' => 'Write',
 						'Advanced configuration' => true,
 						'Enable confirmation' => true,
@@ -1253,7 +1257,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Name' => 'User input type - dropdown',
 						'Scope' => 'Manual host action',
 						'Type' => 'Script',
-						'Execute on' => 'Zabbix server',
+						'Execute on' => 'Advantal server',
 						'Commands' => 'test',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
@@ -1329,7 +1333,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => STRING_255,
 						'Input type' => 'Dropdown',
-						'Dropdown options' => STRING_128.','.STRING_64.','.str_repeat('tests', 12)
+						'Dropdown options' => STRING_128 . ',' . STRING_64 . ',' . str_repeat('tests', 12)
 					]
 				]
 			],
@@ -1359,7 +1363,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Name' => 'Ping count',
 						'Scope' => 'Manual host action',
 						'Type' => 'Script',
-						'Execute on' => 'Zabbix server',
+						'Execute on' => 'Advantal server',
 						'Commands' => 'ping -c {MANUALINPUT} {HOST.CONN};',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
@@ -1399,7 +1403,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Name' => 'Trim check for string input type',
 						'Scope' => 'Manual event action',
 						'Type' => 'Script',
-						'Execute on' => 'Zabbix server',
+						'Execute on' => 'Advantal server',
 						'Commands' => 'ping localhost;',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
@@ -1417,14 +1421,16 @@ class testFormAlertsScripts extends CWebTest {
 	 * @dataProvider getScriptsData
 	 * @backupOnce scripts
 	 */
-	public function testFormAlertsScripts_Create($data) {
+	public function testFormAlertsScripts_Create($data)
+	{
 		$this->checkScripts($data, false);
 	}
 
 	/**
 	 * @dataProvider getScriptsData
 	 */
-	public function testFormAlertsScripts_Update($data) {
+	public function testFormAlertsScripts_Update($data)
+	{
 		$this->checkScripts($data, true, self::$ids['Script for Update']);
 	}
 
@@ -1435,7 +1441,8 @@ class testFormAlertsScripts extends CWebTest {
 	 * @param boolean   $update   is it update case, or not
 	 * @param int		$id       id of the script in case of updating
 	 */
-	private function checkScripts($data, $update, $id = null) {
+	private function checkScripts($data, $update, $id = null)
+	{
 		if ($data['expected'] === TEST_BAD) {
 			$sql = 'SELECT * FROM scripts ORDER BY scriptid';
 			$old_hash = CDBHelper::getHash($sql);
@@ -1472,14 +1479,13 @@ class testFormAlertsScripts extends CWebTest {
 
 			// Check that DB hash is not changed.
 			$this->assertEquals($old_hash, CDBHelper::getHash($sql));
-		}
-		else {
+		} else {
 			$title = ($update) ? 'Script updated' : 'Script added';
 			$this->assertMessage(TEST_GOOD, $title);
-			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name='.zbx_dbstr($data['fields']['Name'])));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name=' . zbx_dbstr($data['fields']['Name'])));
 
 			// Check the results in form.
-			$id = CDBHelper::getValue('SELECT scriptid FROM scripts WHERE name='.zbx_dbstr($data['fields']['Name']));
+			$id = CDBHelper::getValue('SELECT scriptid FROM scripts WHERE name=' . zbx_dbstr($data['fields']['Name']));
 			$this->openScriptForm($id, false);
 
 			if (array_key_exists('Advanced configuration', $data['fields'])) {
@@ -1521,7 +1527,8 @@ class testFormAlertsScripts extends CWebTest {
 	 * @param array     $data    data provider
 	 * @param element   $form    script configuration form
 	 */
-	private function checkConfirmation($data, $form) {
+	private function checkConfirmation($data, $form)
+	{
 		if (CTestArrayHelper::get($data['fields'], 'Enable confirmation') === false) {
 			$this->assertFalse($form->query('id:confirmation')->one()->isEnabled());
 			$this->assertFalse($form->query('id:test_confirmation')->one()->isEnabled());
@@ -1530,8 +1537,9 @@ class testFormAlertsScripts extends CWebTest {
 		if (CTestArrayHelper::get($data['fields'], 'Confirmation text')) {
 			$this->query('button:Test confirmation')->waitUntilClickable()->one()->click();
 			$dialog = COverlayDialogElement::find()->waitUntilReady()->all()->last();
-			$this->assertEquals($data['fields']['Confirmation text'],
-					$dialog->query('xpath:.//span[@class="confirmation-msg"]')->waitUntilVisible()->one()->getText()
+			$this->assertEquals(
+				$data['fields']['Confirmation text'],
+				$dialog->query('xpath:.//span[@class="confirmation-msg"]')->waitUntilVisible()->one()->getText()
 			);
 			$dialog->query('class:btn-overlay-close')->waitUntilClickable()->one()->click();
 		}
@@ -1540,14 +1548,15 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Function for checking script form update cancelling.
 	 */
-	public function testFormAlertsScripts_CancelUpdate() {
+	public function testFormAlertsScripts_CancelUpdate()
+	{
 		$sql = 'SELECT * FROM scripts ORDER BY scriptid';
 		$old_hash = CDBHelper::getHash($sql);
 		$modal = $this->openScriptForm(self::$ids['Script for Update']);
 		$modal->asForm()->fill([
 			'Name' => 'Cancelled script',
 			'Type' => 'Script',
-			'Execute on' => 'Zabbix server',
+			'Execute on' => 'Advantal server',
 			'Commands' => 'Script command',
 			'Description' => 'Cancelled description',
 			'User group' => 'Disabled',
@@ -1572,7 +1581,8 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Function for checking script form update without any changes.
 	 */
-	public function testFormAlertsScripts_SimpleUpdate() {
+	public function testFormAlertsScripts_SimpleUpdate()
+	{
 		$sql = 'SELECT * FROM scripts ORDER BY scriptid';
 		$old_hash = CDBHelper::getHash($sql);
 		$modal = $this->openScriptForm(self::$ids['Script for Update']);
@@ -1585,7 +1595,8 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Function for checking script cloning with only changed name.
 	 */
-	public function testFormAlertsScripts_Clone() {
+	public function testFormAlertsScripts_Clone()
+	{
 		$this->page->login();
 
 		foreach (self::$clone_scriptids as $scriptid) {
@@ -1597,17 +1608,17 @@ class testFormAlertsScripts extends CWebTest {
 			$this->page->waitUntilReady();
 
 			$form->invalidate();
-			$form->fill(['Name' => 'Cloned_'.$script_name]);
+			$form->fill(['Name' => 'Cloned_' . $script_name]);
 			$form->submit();
 
 			$this->assertMessage(TEST_GOOD, 'Script added');
-			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name='.zbx_dbstr($script_name)));
-			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name='.zbx_dbstr('Cloned_'.$script_name)));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name=' . zbx_dbstr($script_name)));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM scripts WHERE name=' . zbx_dbstr('Cloned_' . $script_name)));
 
-			$id = CDBHelper::getValue('SELECT scriptid FROM scripts WHERE name='.zbx_dbstr('Cloned_'.$script_name));
+			$id = CDBHelper::getValue('SELECT scriptid FROM scripts WHERE name=' . zbx_dbstr('Cloned_' . $script_name));
 			$this->openScriptForm($id, false);
 			$cloned_values = $form->getFields()->asValues();
-			$this->assertEquals('Cloned_'.$script_name, $cloned_values['Name']);
+			$this->assertEquals('Cloned_' . $script_name, $cloned_values['Name']);
 
 			// Field Name removed from arrays.
 			unset($cloned_values['Name']);
@@ -1620,13 +1631,16 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Function for testing script delete from configuration form.
 	 */
-	public function testFormAlertsScripts_Delete() {
+	public function testFormAlertsScripts_Delete()
+	{
 		$modal = $this->openScriptForm(self::$ids['Script for Delete']);
 		$modal->query('button:Delete')->waitUntilClickable()->one()->click();
 		$this->page->acceptAlert();
 		$this->page->waitUntilReady();
 		$this->assertMessage(TEST_GOOD, 'Script deleted');
-		$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM scripts WHERE scriptid='.
+		$this->assertEquals(
+			0,
+			CDBHelper::getCount('SELECT NULL FROM scripts WHERE scriptid=' .
 				zbx_dbstr(self::$ids['Script for Delete']))
 		);
 	}
@@ -1634,13 +1648,22 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Check all fields default values, lengths, placeholders, element options and table headers.
 	 */
-	public function testFormAlertsScripts_Layout() {
+	public function testFormAlertsScripts_Layout()
+	{
 		$modal = $this->openScriptForm();
 		$form = $modal->asForm();
 
-		$default_values = ['Scope' => 'Action operation', 'Type' => 'Webhook', 'Host group' => 'All',
-			'User group' => 'All', 'Required host permissions' => 'Read', 'Enable confirmation' => false, 'Timeout' => '30s',
-			'Execute on' => 'Zabbix agent', 'Authentication method' => 'Password', 'Open in a new window' => true
+		$default_values = [
+			'Scope' => 'Action operation',
+			'Type' => 'Webhook',
+			'Host group' => 'All',
+			'User group' => 'All',
+			'Required host permissions' => 'Read',
+			'Enable confirmation' => false,
+			'Timeout' => '30s',
+			'Execute on' => 'Zabbix agent',
+			'Authentication method' => 'Password',
+			'Open in a new window' => true
 		];
 		$form->checkValue($default_values);
 
@@ -1693,7 +1716,7 @@ class testFormAlertsScripts extends CWebTest {
 		$segmented_elements = [
 			'Scope' => ['Action operation', 'Manual host action', 'Manual event action'],
 			'Type' => ['URL', 'Webhook', 'Script', 'SSH', 'Telnet', 'IPMI'],
-			'Execute on' => ['Zabbix agent', 'Zabbix proxy or server', 'Zabbix server'],
+			'Execute on' => ['Zabbix agent', 'Zabbix proxy or server', 'Advantal server'],
 			'Required host permissions' => ['Read', 'Write'],
 			'Input type' => ['String', 'Dropdown']
 		];
@@ -1735,34 +1758,39 @@ class testFormAlertsScripts extends CWebTest {
 		];
 		foreach ($scenarios as $scenario => $parameters) {
 			$form->fill($parameters);
-			$this->query('button:'.(($scenario === 'confirmation') ? 'Test confirmation' : 'Test user input'))
-					->waitUntilClickable()->one()->click();
+			$this->query('button:' . (($scenario === 'confirmation') ? 'Test confirmation' : 'Test user input'))
+				->waitUntilClickable()->one()->click();
 			$dialog = COverlayDialogElement::find()->waitUntilReady()->all()->last();
 			$this->assertEquals((($scenario === 'confirmation') ? 'Execution confirmation' : 'Manual input'), $dialog->getTitle());
 
 			if ($scenario === 'confirmation') {
-				$this->assertEquals($parameters['Confirmation text'], $dialog->query('class:confirmation-msg')
+				$this->assertEquals(
+					$parameters['Confirmation text'],
+					$dialog->query('class:confirmation-msg')
 						->one()->getText()
 				);
-			}
-			else {
+			} else {
 				$this->assertEquals($parameters['Input prompt'], $dialog->query('class:wordbreak')->one()->getText());
 			}
 
 			if ($scenario === 'input_dropdown') {
-				$this->assertEquals(['a', 'b', '', 'c'], $dialog->query('name:manualinput')->asDropdown()->one()
+				$this->assertEquals(
+					['a', 'b', '', 'c'],
+					$dialog->query('name:manualinput')->asDropdown()->one()
 						->getOptions()->asText()
 				);
 			}
 
 			if ($scenario === 'input_string') {
-				$this->assertEquals($parameters['Default input string'], $dialog->query('id:manualinput')
+				$this->assertEquals(
+					$parameters['Default input string'],
+					$dialog->query('id:manualinput')
 						->one()->getValue()
 				);
 				$this->assertTrue($dialog->query('button:Test')->one()->isEnabled());
-			}
-			else {
-				$this->assertFalse($dialog->query('button:'.(($scenario === 'confirmation') ? 'Execute' : 'Test'))
+			} else {
+				$this->assertFalse(
+					$dialog->query('button:' . (($scenario === 'confirmation') ? 'Execute' : 'Test'))
 						->one()->isEnabled()
 				);
 			}
@@ -1777,7 +1805,8 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Check the visible fields and their default values, and the required class based on the selected scope and type.
 	 */
-	public function testFormAlertsScripts_VisibleFields() {
+	public function testFormAlertsScripts_VisibleFields()
+	{
 		$common_all_scopes = [
 			'fields' => ['Name', 'Scope', 'Type', 'Description', 'Host group'],
 			'required' => ['Name'],
@@ -1785,15 +1814,33 @@ class testFormAlertsScripts extends CWebTest {
 		];
 		$common_manual_scope = [
 			'fields' => ['Menu path', 'User group', 'Required host permissions', 'Advanced configuration'],
-			'default' => ['User group' => 'All', 'Required host permissions' => 'Read', 'Enable user input' => false,
-				'Input prompt' => '', 'Input type' => 'String', 'Default input string' => '', 'Input validation rule' => '',
-				'Enable confirmation' => false, 'Confirmation text' => ''
+			'default' => [
+				'User group' => 'All',
+				'Required host permissions' => 'Read',
+				'Enable user input' => false,
+				'Input prompt' => '',
+				'Input type' => 'String',
+				'Default input string' => '',
+				'Input validation rule' => '',
+				'Enable confirmation' => false,
+				'Confirmation text' => ''
 			],
-			'advanced_fields' => ['Enable user input', 'Input prompt', 'Input type', 'Default input string', 'Input validation rule',
-				'Enable confirmation', 'Confirmation text'
+			'advanced_fields' => [
+				'Enable user input',
+				'Input prompt',
+				'Input type',
+				'Default input string',
+				'Input validation rule',
+				'Enable confirmation',
+				'Confirmation text'
 			],
-			'advanced_fields_dropdown' => ['Enable user input', 'Input prompt', 'Input type', 'Dropdown options',
-				'Enable confirmation', 'Confirmation text'
+			'advanced_fields_dropdown' => [
+				'Enable user input',
+				'Input prompt',
+				'Input type',
+				'Dropdown options',
+				'Enable confirmation',
+				'Confirmation text'
 			],
 			'input_string_required' => ['Input prompt', 'Input validation rule', 'Confirmation text'],
 			'input_dropdown_required' => ['Input prompt', 'Dropdown options', 'Confirmation text']
@@ -1813,8 +1860,14 @@ class testFormAlertsScripts extends CWebTest {
 				'fields' => ['Authentication method', 'Username', 'Password', 'Port', 'Commands'],
 				'required' => ['Username', 'Commands'],
 				'default' => ['Authentication method' => 'Password'],
-				'fields_public_key' => ['Authentication method', 'Username', 'Public key file', 'Private key file',
-					'Key passphrase', 'Port', 'Commands'
+				'fields_public_key' => [
+					'Authentication method',
+					'Username',
+					'Public key file',
+					'Private key file',
+					'Key passphrase',
+					'Port',
+					'Commands'
 				],
 				'required_public_key' => ['Username', 'Public key file', 'Private key file', 'Commands']
 			],
@@ -1845,15 +1898,18 @@ class testFormAlertsScripts extends CWebTest {
 				$scope_fields = $common_all_scopes['fields'];
 				$scope_default = $common_all_scopes['default'];
 				$scope_required = $common_all_scopes['required'];
-			}
-			else {
+			} else {
 				$form->fill(['Scope' => $scope]);
 
-				$scope_fields = array_merge($common_all_scopes['fields'], $common_manual_scope['fields'],
-						$common_manual_scope['advanced_fields']
+				$scope_fields = array_merge(
+					$common_all_scopes['fields'],
+					$common_manual_scope['fields'],
+					$common_manual_scope['advanced_fields']
 				);
-				$scope_fields_dropdown = array_merge($common_all_scopes['fields'], $common_manual_scope['fields'],
-						$common_manual_scope['advanced_fields_dropdown']
+				$scope_fields_dropdown = array_merge(
+					$common_all_scopes['fields'],
+					$common_manual_scope['fields'],
+					$common_manual_scope['advanced_fields_dropdown']
 				);
 				$scope_default = array_merge($common_all_scopes['default'], $common_manual_scope['default']);
 				$scope_required = array_merge($common_all_scopes['required'], $common_manual_scope['input_string_required']);
@@ -1881,8 +1937,9 @@ class testFormAlertsScripts extends CWebTest {
 				}
 
 				// Check visible fields.
-				$this->assertEqualsCanonicalizing(array_merge($scope_fields, $type_fields['fields']),
-						$form->getLabels(CElementFilter::VISIBLE)->asText()
+				$this->assertEqualsCanonicalizing(
+					array_merge($scope_fields, $type_fields['fields']),
+					$form->getLabels(CElementFilter::VISIBLE)->asText()
 				);
 
 				// Check default values.
@@ -1892,19 +1949,22 @@ class testFormAlertsScripts extends CWebTest {
 					$form->fill(['Enable user input' => true, 'Enable confirmation' => true]);
 				}
 
-				$this->assertEqualsCanonicalizing(array_merge($scope_required, $type_fields['required']),
-						$form->getRequiredLabels()
+				$this->assertEqualsCanonicalizing(
+					array_merge($scope_required, $type_fields['required']),
+					$form->getRequiredLabels()
 				);
 
 				if ($type === 'SSH') {
 					// Check fields with 'Public key' authentication method.
 					$form->fill(['Authentication method' => 'Public key']);
 
-					$this->assertEqualsCanonicalizing(array_merge($scope_fields, $type_fields['fields_public_key']),
-							$form->getLabels(CElementFilter::VISIBLE)->asText()
+					$this->assertEqualsCanonicalizing(
+						array_merge($scope_fields, $type_fields['fields_public_key']),
+						$form->getLabels(CElementFilter::VISIBLE)->asText()
 					);
-					$this->assertEqualsCanonicalizing(array_merge($scope_required, $type_fields['required_public_key']),
-							$form->getRequiredLabels()
+					$this->assertEqualsCanonicalizing(
+						array_merge($scope_required, $type_fields['required_public_key']),
+						$form->getRequiredLabels()
 					);
 
 					// Reset the value of the "Authentication method" field.
@@ -1916,25 +1976,28 @@ class testFormAlertsScripts extends CWebTest {
 					$form->fill(['Input type' => 'Dropdown']);
 
 
-					$this->assertEqualsCanonicalizing(array_merge($scope_fields_dropdown, $type_fields['fields']),
-							$form->getLabels(CElementFilter::VISIBLE)->asText()
+					$this->assertEqualsCanonicalizing(
+						array_merge($scope_fields_dropdown, $type_fields['fields']),
+						$form->getLabels(CElementFilter::VISIBLE)->asText()
 					);
 
 					if ($type === 'SSH') {
 						$form->fill(['Authentication method' => 'Public key']);
-						$this->assertEqualsCanonicalizing(array_merge($scope_fields_dropdown, $type_fields['fields_public_key']),
-								$form->getLabels(CElementFilter::VISIBLE)->asText()
+						$this->assertEqualsCanonicalizing(
+							array_merge($scope_fields_dropdown, $type_fields['fields_public_key']),
+							$form->getLabels(CElementFilter::VISIBLE)->asText()
 						);
-						$this->assertEqualsCanonicalizing(array_merge($scope_required_dropdown, $type_fields['required_public_key']),
-								$form->getRequiredLabels()
+						$this->assertEqualsCanonicalizing(
+							array_merge($scope_required_dropdown, $type_fields['required_public_key']),
+							$form->getRequiredLabels()
 						);
 
 						// Reset the value of the "Authentication method" field.
 						$form->fill(['Authentication method' => 'Password']);
-					}
-					else {
-						$this->assertEqualsCanonicalizing(array_merge($scope_required_dropdown, $type_fields['required']),
-								$form->getRequiredLabels()
+					} else {
+						$this->assertEqualsCanonicalizing(
+							array_merge($scope_required_dropdown, $type_fields['required']),
+							$form->getRequiredLabels()
 						);
 					}
 
@@ -1955,10 +2018,17 @@ class testFormAlertsScripts extends CWebTest {
 	/**
 	 * Modify the URI scheme validation rules and check the result for the URL type in script form.
 	 */
-	public function testFormAlertsScripts_UriScheme() {
+	public function testFormAlertsScripts_UriScheme()
+	{
 		$invalid_schemes = ['dns://zabbix.com', 'message://zabbix.com'];
-		$default_valid_schemes = ['http://zabbix.com', 'https://zabbix.com', 'ftp://zabbix.com', 'file://zabbix.com',
-			'mailto://zabbix.com', 'tel://zabbix.com', 'ssh://zabbix.com'
+		$default_valid_schemes = [
+			'http://zabbix.com',
+			'https://zabbix.com',
+			'ftp://zabbix.com',
+			'file://zabbix.com',
+			'mailto://zabbix.com',
+			'tel://zabbix.com',
+			'ssh://zabbix.com'
 		];
 
 		$modal = $this->openScriptForm(self::$ids['URI schemes']);
@@ -1999,7 +2069,8 @@ class testFormAlertsScripts extends CWebTest {
 	 * @param array $data			url field data
 	 * @param string $expected		expected result after script form submit, TEST_GOOD or TEST_BAD
 	 */
-	private function assertUriScheme($form, $data, $expected = TEST_GOOD) {
+	private function assertUriScheme($form, $data, $expected = TEST_GOOD)
+	{
 		foreach ($data as $scheme) {
 			$form->fill(['URL' => $scheme]);
 			$form->submit();
@@ -2007,15 +2078,15 @@ class testFormAlertsScripts extends CWebTest {
 			if ($expected === TEST_GOOD) {
 				$this->assertMessage(TEST_GOOD, 'Script updated');
 				$this->openScriptForm(self::$ids['URI schemes'], false);
-			}
-			else {
+			} else {
 				$this->assertMessage(TEST_BAD, 'Cannot update script', 'Invalid parameter "/1/url": unacceptable URL.');
 				CMessageElement::find()->one()->close();
 			}
 		}
 	}
 
-	public function getContextMenuData() {
+	public function getContextMenuData()
+	{
 		return [
 			// USER.* macros.
 			[
@@ -2029,7 +2100,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Enable confirmation' => true,
 						'Confirmation text' => '{USER.FULLNAME}, {USER.NAME}, {USER.SURNAME}, {USER.USERNAME}'
 					],
-					'resolved_macros' => 'Zabbix Administrator (Admin), Zabbix, Administrator, Admin',
+					'resolved_macros' => 'Advantal Administrator (Admin), Zabbix, Administrator, Admin',
 					'host' => 'ЗАББИКС Сервер',
 					'trigger' => 'Test trigger with tag'
 				]
@@ -2045,7 +2116,7 @@ class testFormAlertsScripts extends CWebTest {
 						'Enable confirmation' => true,
 						'Confirmation text' => '{USER.FULLNAME}, {USER.NAME}, {USER.SURNAME}, {USER.USERNAME}'
 					],
-					'resolved_macros' => 'Zabbix Administrator (Admin), Zabbix, Administrator, Admin',
+					'resolved_macros' => 'Advantal Administrator (Admin), Zabbix, Administrator, Admin',
 					'host' => 'ЗАББИКС Сервер',
 					'trigger' => 'Test trigger with tag'
 				]
@@ -2060,8 +2131,8 @@ class testFormAlertsScripts extends CWebTest {
 						'URL' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},{EVENT.STATUS},{EVENT.VALUE}',
 						'Advanced configuration' => true,
 						'Enable confirmation' => true,
-						'Confirmation text' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},'.
-								'{EVENT.STATUS},{EVENT.VALUE}'
+						'Confirmation text' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},' .
+							'{EVENT.STATUS},{EVENT.VALUE}'
 					],
 					'resolved_macros' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},{EVENT.STATUS},{EVENT.VALUE}',
 					'host' => 'ЗАББИКС Сервер',
@@ -2077,8 +2148,8 @@ class testFormAlertsScripts extends CWebTest {
 						'URL' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},{EVENT.STATUS},{EVENT.VALUE}',
 						'Advanced configuration' => true,
 						'Enable confirmation' => true,
-						'Confirmation text' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},'.
-								'{EVENT.STATUS},{EVENT.VALUE}'
+						'Confirmation text' => '{EVENT.ID},{EVENT.NAME},{EVENT.NSEVERITY},{EVENT.SEVERITY},' .
+							'{EVENT.STATUS},{EVENT.VALUE}'
 					],
 					'resolved_macros' => '93,Test trigger with tag,2,Warning,PROBLEM,1',
 					'host' => 'ЗАББИКС Сервер',
@@ -2126,7 +2197,8 @@ class testFormAlertsScripts extends CWebTest {
 	 *
 	 * @dataProvider getContextMenuData
 	 */
-	public function testFormAlertsScripts_ContextMenu($data) {
+	public function testFormAlertsScripts_ContextMenu($data)
+	{
 		$modal = $this->openScriptForm();
 		$form = $modal->asForm();
 
@@ -2149,14 +2221,18 @@ class testFormAlertsScripts extends CWebTest {
 		$this->assertEquals($data['resolved_macros'], $dialog->query('class:confirmation-msg')->one()->getText());
 
 		// Check if buttons present and clickable.
-		$this->assertEquals(['Cancel', 'Open URL'], $dialog->getFooter()->query('button')->all()
+		$this->assertEquals(
+			['Cancel', 'Open URL'],
+			$dialog->getFooter()->query('button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 		$dialog->close();
 
 		// Check that script link is not present in the context menu for other manual action.
 		$table->query('link', $without_script)->one()->click();
-		$this->assertEquals(0, CPopupMenuElement::find()->waitUntilVisible()->one()->getItems()
+		$this->assertEquals(
+			0,
+			CPopupMenuElement::find()->waitUntilVisible()->one()->getItems()
 				->filter(CElementFilter::TEXT_PRESENT, $data['fields']['Name'])->count()
 		);
 	}
@@ -2169,18 +2245,17 @@ class testFormAlertsScripts extends CWebTest {
 	 *
 	 * @return COverlayDialogElement
 	 */
-	protected function openScriptForm($id = null, $login = true) {
+	protected function openScriptForm($id = null, $login = true)
+	{
 		if ($login) {
 			$this->page->login()->open('zabbix.php?action=script.list');
-		}
-		else {
+		} else {
 			$this->page->open('zabbix.php?action=script.list');
 		}
 
 		if ($id) {
-			$this->query('xpath://a[@data-scriptid='.CXPathHelper::escapeQuotes($id).']')->waitUntilClickable()->one()->click();
-		}
-		else {
+			$this->query('xpath://a[@data-scriptid=' . CXPathHelper::escapeQuotes($id) . ']')->waitUntilClickable()->one()->click();
+		} else {
 			$this->query('button:Create script')->waitUntilClickable()->one()->click();
 		}
 

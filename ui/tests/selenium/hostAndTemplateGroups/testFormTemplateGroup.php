@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormGroups.php';
+require_once __DIR__ . '/../common/testFormGroups.php';
 
 /**
  * @backup hosts
@@ -23,23 +23,26 @@ require_once __DIR__.'/../common/testFormGroups.php';
  *
  * @dataSource HostTemplateGroups
  */
-class testFormTemplateGroup extends testFormGroups {
+class testFormTemplateGroup extends testFormGroups
+{
 
 	protected $link = 'zabbix.php?action=templategroup.list';
 	protected $object = 'template';
 	protected static $update_group = 'Group for Update test';
 
-	public function testFormTemplateGroup_Layout() {
+	public function testFormTemplateGroup_Layout()
+	{
 		$this->layout('Templates');
 	}
 
-	public static function getTemplateCreateData() {
+	public static function getTemplateCreateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_GOOD,
 					'fields' => [
-						'Group name' => 'Zabbix servers'
+						'Group name' => 'Advantal servers'
 					]
 				]
 			],
@@ -67,11 +70,13 @@ class testFormTemplateGroup extends testFormGroups {
 	 * @dataProvider getCreateData
 	 * @dataProvider getTemplateCreateData
 	 */
-	public function testFormTemplateGroup_Create($data) {
+	public function testFormTemplateGroup_Create($data)
+	{
 		$this->checkForm($data, 'create');
 	}
 
-	public static function getTemplateUpdateData() {
+	public static function getTemplateUpdateData()
+	{
 		return [
 			[
 				[
@@ -106,32 +111,37 @@ class testFormTemplateGroup extends testFormGroups {
 	 * @dataProvider getUpdateData
 	 * @dataProvider getTemplateUpdateData
 	 */
-	public function testFormTemplateGroup_Update($data) {
+	public function testFormTemplateGroup_Update($data)
+	{
 		$this->checkForm($data, 'update');
 	}
 
 	/**
 	 * Test group simple update without changing data.
 	 */
-	public function testFormTemplateGroup_SimpleUpdate() {
+	public function testFormTemplateGroup_SimpleUpdate()
+	{
 		$this->simpleUpdate('Templates');
 	}
 
 	/**
 	 * @dataProvider getCloneData
 	 */
-	public function testFormTemplateGroup_Clone($data) {
+	public function testFormTemplateGroup_Clone($data)
+	{
 		$this->clone($data);
 	}
 
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testFormTemplateGroup_Cancel($data) {
+	public function testFormTemplateGroup_Cancel($data)
+	{
 		$this->cancel($data);
 	}
 
-	public static function getTemplateDeleteData() {
+	public static function getTemplateDeleteData()
+	{
 		return [
 			[
 				[
@@ -147,7 +157,8 @@ class testFormTemplateGroup extends testFormGroups {
 	 * @dataProvider getDeleteData
 	 * @dataProvider getTemplateDeleteData
 	 */
-	public function testFormTemplateGroup_Delete($data) {
+	public function testFormTemplateGroup_Delete($data)
+	{
 		$this->delete($data);
 	}
 
@@ -155,7 +166,8 @@ class testFormTemplateGroup extends testFormGroups {
 	 * @onBeforeOnce prepareSubgroupData
 	 * @dataProvider getSubgroupsData
 	 */
-	public function testFormTemplateGroup_ApplyPermissionsToSubgroups($data) {
+	public function testFormTemplateGroup_ApplyPermissionsToSubgroups($data)
+	{
 		$this->checkSubgroupsPermissions($data);
 	}
 }

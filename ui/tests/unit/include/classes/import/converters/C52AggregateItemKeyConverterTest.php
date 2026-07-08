@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,11 +18,13 @@
 
 use PHPUnit\Framework\TestCase;
 
-class C52AggregateItemKeyConverterTest extends TestCase {
+class C52AggregateItemKeyConverterTest extends TestCase
+{
 
 	protected $converter;
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		$this->converter = new C52AggregateItemKeyConverter();
 	}
 
@@ -29,7 +33,8 @@ class C52AggregateItemKeyConverterTest extends TestCase {
 	 * but merely converts the given item key to the new format. So this does not mean input and output is actually a
 	 * valid key and formula. First array value is old format <=5.2 and second array value is >=5.4 format.
 	 */
-	public function dataProvider(): array {
+	public function dataProvider(): array
+	{
 		return [
 			// grpavg, avg/min/max/count/sum
 			[
@@ -128,8 +133,8 @@ class C52AggregateItemKeyConverterTest extends TestCase {
 				'sum(last_foreach(/*/vfs.fs.size[/,total]?[group="MySQL Servers"]))'
 			],
 			[
-				'grpsum[ "Zabbix servers" , trap1 , last, 30s ]',
-				'sum(last_foreach(/*/trap1?[group="Zabbix servers"]))'
+				'grpsum[ "Advantal servers" , trap1 , last, 30s ]',
+				'sum(last_foreach(/*/trap1?[group="Advantal servers"]))'
 			],
 			[
 				'grpsum["My, group","trap1",last,]',
@@ -253,7 +258,8 @@ class C52AggregateItemKeyConverterTest extends TestCase {
 	 * @param $key
 	 * @param $expected
 	 */
-	public function testConvert($key, $expected) {
+	public function testConvert($key, $expected)
+	{
 		$this->assertEquals($expected, $this->converter->convert($key));
 	}
 }

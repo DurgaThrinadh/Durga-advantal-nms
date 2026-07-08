@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testSystemInformation.php';
+require_once __DIR__ . '/../common/testSystemInformation.php';
 
 /**
  * @backup ha_node, profiles
@@ -23,7 +23,8 @@ require_once __DIR__.'/../common/testSystemInformation.php';
  *
  * @onBefore prepareDashboardData, prepareUsersData
  */
-class testDashboardSystemInformationWidget extends testSystemInformation {
+class testDashboardSystemInformationWidget extends testSystemInformation
+{
 
 	const URL = 'zabbix.php?action=dashboard.view&dashboardid=';
 
@@ -33,7 +34,8 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 	/**
 	 * Function creates dashboards with widgets for test and defines the corresponding dashboard IDs.
 	 */
-	public static function prepareDashboardData() {
+	public static function prepareDashboardData()
+	{
 		$response = CDataHelper::call('dashboard.create', [
 			[
 				'name' => 'Dashboard for Sysinfo + HA test',
@@ -108,18 +110,21 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 		self::$widgets_dashboardid = $response['dashboardids'][1];
 	}
 
-	public function testDashboardSystemInformationWidget_checkDisabledHA() {
-		$this->page->login()->open(self::URL.self::$dashboardid)->waitUntilReady();
+	public function testDashboardSystemInformationWidget_checkDisabledHA()
+	{
+		$this->page->login()->open(self::URL . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one()->waitUntilReady();
 
 		// Remove zabbix version due to unstable screenshot which depends on column width with different version length.
-		CElementQuery::getDriver()->executeScript("arguments[0].textContent = '';",
-				[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
+		CElementQuery::getDriver()->executeScript(
+			"arguments[0].textContent = '';",
+			[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
 		);
 		$this->assertScreenshot($dashboard, 'widget_without_ha');
 	}
 
-	public function testDashboardSystemInformationWidget_Create() {
+	public function testDashboardSystemInformationWidget_Create()
+	{
 		$widgets = [
 			[
 				'fields' => [
@@ -134,7 +139,8 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 		$this->executeWidgetAction($widgets, 'create');
 	}
 
-	public function testDashboardSystemInformationWidget_Update() {
+	public function testDashboardSystemInformationWidget_Update()
+	{
 		$widgets = [
 			[
 				'old_name' => 'System stats view',
@@ -157,7 +163,8 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 		$this->executeWidgetAction($widgets, 'update');
 	}
 
-	public static function getSystemInformationData() {
+	public static function getSystemInformationData()
+	{
 		return [
 			// #0 Verify user with super admin role. Check field that is not checked in screenshot with disabled HA.
 			[
@@ -165,7 +172,7 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'super_admin' => true,
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -179,12 +186,12 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'password' => 'z@$$ix!#%1',
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix server is running',
+							'Parameter' => 'Advantal server is running',
 							'Value' => 'No',
 							'Details' => ''
 						],
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -198,12 +205,12 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'password' => 'z@$$ix!#%2',
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix server is running',
+							'Parameter' => 'Advantal server is running',
 							'Value' => 'No',
 							'Details' => ''
 						],
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -216,12 +223,12 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'guest' => true,
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix server is running',
+							'Parameter' => 'Advantal server is running',
 							'Value' => 'No',
 							'Details' => ''
 						],
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -237,19 +244,22 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 	 *
 	 * @dataProvider getSystemInformationData
 	 */
-	public function testDashboardSystemInformationWidget_checkDataByRoleWithoutRunningServer($data) {
+	public function testDashboardSystemInformationWidget_checkDataByRoleWithoutRunningServer($data)
+	{
 		$this->assertAvailableDataByUserRole($data);
 	}
 
 	/**
 	 * @onBefore prepareHANodeData
 	 */
-	public function testDashboardSystemInformationWidget_checkEnabledHA() {
+	public function testDashboardSystemInformationWidget_checkEnabledHA()
+	{
 		$this->assertEnabledHACluster(self::$dashboardid);
 		$this->assertScreenshotExcept(CDashboardElement::find()->one(), self::$skip_fields, 'widgets_with_ha');
 	}
 
-	public static function getSystemInformationDataForRunningServer() {
+	public static function getSystemInformationDataForRunningServer()
+	{
 		/**
 		 * Note: Super admin role is checked within common class.
 		 */
@@ -261,12 +271,12 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'password' => 'z@$$ix!#%1',
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix server is running',
+							'Parameter' => 'Advantal server is running',
 							'Value' => 'Yes',
 							'Details' => ''
 						],
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -280,12 +290,12 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'password' => 'z@$$ix!#%2',
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix server is running',
+							'Parameter' => 'Advantal server is running',
 							'Value' => 'Yes',
 							'Details' => ''
 						],
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -298,12 +308,12 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 					'guest' => true,
 					'available_fields' => [
 						[
-							'Parameter' => 'Zabbix server is running',
+							'Parameter' => 'Advantal server is running',
 							'Value' => 'Yes',
 							'Details' => ''
 						],
 						[
-							'Parameter' => 'Zabbix frontend version',
+							'Parameter' => 'Advantal frontend version',
 							'Value' => ZABBIX_VERSION,
 							'Details' => ''
 						]
@@ -321,22 +331,25 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 	 *
 	 * @dataProvider getSystemInformationDataForRunningServer
 	 */
-	public function testDashboardSystemInformationWidget_checkDataByRoleWithRunningServer($data) {
+	public function testDashboardSystemInformationWidget_checkDataByRoleWithRunningServer($data)
+	{
 		$this->assertAvailableDataByUserRole($data);
 	}
 
 	/**
-	 * Function checks that Zabbix server status is updated after failover delay passes and frontend config is re-validated.
+	 * Function checks that Advantal server status is updated after failover delay passes and frontend config is re-validated.
 	 *
 	 * @depends testDashboardSystemInformationWidget_checkEnabledHA
 	 *
 	 * @onBefore changeFailoverDelay
 	 */
-	public function testDashboardSystemInformationWidget_checkServerStatus() {
+	public function testDashboardSystemInformationWidget_checkServerStatus()
+	{
 		$this->assertServerStatusAfterFailover(self::$dashboardid);
 	}
 
-	public function getUserData() {
+	public function getUserData()
+	{
 		return [
 			[
 				[
@@ -360,9 +373,10 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 	 *
 	 * @dataProvider getUserData
 	 */
-	public function testDashboardSystemInformationWidget_checkHAPermissions($data) {
+	public function testDashboardSystemInformationWidget_checkHAPermissions($data)
+	{
 		$this->page->userLogin($data['user'], $data['password']);
-		$this->page->open(self::URL.self::$dashboardid)->waitUntilReady();
+		$this->page->open(self::URL . self::$dashboardid)->waitUntilReady();
 
 		$dashboard = CDashboardElement::find()->waitUntilReady()->one();
 		$nodes_table = $dashboard->getWidget('High availability nodes view')->query('xpath:.//table')->asTable()->one();
@@ -381,23 +395,23 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 	 * @param array $widgets	widget related information
 	 * @param string $action	operation to be performed with the widget
 	 */
-	private function executeWidgetAction($widgets, $action) {
+	private function executeWidgetAction($widgets, $action)
+	{
 		$page_name = ($action === 'update') ? 'Page for updating widgets' : 'Page for creating widgets';
-		$this->page->login()->open(self::URL.self::$widgets_dashboardid);
+		$this->page->login()->open(self::URL . self::$widgets_dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$dashboard->waitUntilReady()->edit();
 
 		// Open the corresponding dashboard page in case of update.
 		if ($action === 'update') {
-			$this->query('xpath://span[@title='.zbx_dbstr($page_name).']')->one()->click();
+			$this->query('xpath://span[@title=' . zbx_dbstr($page_name) . ']')->one()->click();
 		}
 
 		// Execute the required operation for both widgets.
 		foreach ($widgets as $widget_data) {
 			if ($action === 'update') {
 				$form = $dashboard->getWidget($widget_data['old_name'])->edit()->asForm();
-			}
-			else {
+			} else {
 				$form = $dashboard->addWidget()->asForm();
 				$form->fill(['Type' => CFormElement::RELOADABLE_FILL('System information')]);
 			}
@@ -411,7 +425,7 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 		$dashboard->save();
 
 		if ($action === 'update') {
-			$this->query('xpath://span[@title='.CXPathHelper::escapeQuotes($page_name).']')->waitUntilClickable()->one()->click();
+			$this->query('xpath://span[@title=' . CXPathHelper::escapeQuotes($page_name) . ']')->waitUntilClickable()->one()->click();
 		}
 
 		$this->page->waitUntilReady();
@@ -419,10 +433,11 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 		$dashboard->waitUntilReady();
 
 		// Remove zabbix version due to unstable screenshot which depends on column width with different version length.
-		CElementQuery::getDriver()->executeScript("arguments[0].textContent = '';",
-				[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
+		CElementQuery::getDriver()->executeScript(
+			"arguments[0].textContent = '';",
+			[$this->query('xpath://table[@class="list-table sticky-header"]/tbody/tr[3]/td[1]')->one()]
 		);
-		$this->assertScreenshot(CDashboardElement::find()->one()->waitUntilReady(), $action.'_widgets');
+		$this->assertScreenshot(CDashboardElement::find()->one()->waitUntilReady(), $action . '_widgets');
 
 		foreach ($widgets as $widget_data) {
 			// Check widget refresh interval.
@@ -432,9 +447,9 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 			CPopupMenuElement::find()->one()->close();
 
 			// Check that widget with the corresponding name is present in DB.
-			$widget_sql = 'SELECT count(widgetid) FROM widget WHERE type='.zbx_dbstr('systeminfo').' AND dashboard_pageid IN'.
-					' (SELECT dashboard_pageid from dashboard_page WHERE name='.zbx_dbstr($page_name).')'.
-					' AND name='.zbx_dbstr(CTestArrayHelper::get($widget_data['fields'], 'Name', ''));
+			$widget_sql = 'SELECT count(widgetid) FROM widget WHERE type=' . zbx_dbstr('systeminfo') . ' AND dashboard_pageid IN' .
+				' (SELECT dashboard_pageid from dashboard_page WHERE name=' . zbx_dbstr($page_name) . ')' .
+				' AND name=' . zbx_dbstr(CTestArrayHelper::get($widget_data['fields'], 'Name', ''));
 			$this->assertEquals('1', CDBHelper::getValue($widget_sql));
 
 			// Check field values when opening widget config and exit edit mode.
@@ -453,7 +468,7 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 
 			// Reopen the corresponding Dashboard page if more updated widgets need to be checked.
 			if ($action === 'update' && CTestArrayHelper::get($widget_data, 'not_last')) {
-				$this->query('xpath://span[@title='.zbx_dbstr($page_name).']')->waitUntilClickable()->one()->click();
+				$this->query('xpath://span[@title=' . zbx_dbstr($page_name) . ']')->waitUntilClickable()->one()->click();
 			}
 		}
 	}
@@ -463,25 +478,23 @@ class testDashboardSystemInformationWidget extends testSystemInformation {
 	 *
 	 * @param array $data	widget available data
 	 */
-	protected function assertAvailableDataByUserRole($data) {
+	protected function assertAvailableDataByUserRole($data)
+	{
 		if (CTestArrayHelper::get($data, 'guest')) {
-			$this->page->open(self::URL.self::$dashboardid)->waitUntilReady();
+			$this->page->open(self::URL . self::$dashboardid)->waitUntilReady();
 			$this->query('button:Login')->one()->click();
 			$this->query('link:sign in as guest')->one()->click();
-		}
-		elseif (array_key_exists('user', $data)) {
-			$this->page->userLogin($data['user'], $data['password'])->open(self::URL.self::$dashboardid)->waitUntilReady();
-		}
-		else {
-			$this->page->login()->open(self::URL.self::$dashboardid)->waitUntilReady();
+		} elseif (array_key_exists('user', $data)) {
+			$this->page->userLogin($data['user'], $data['password'])->open(self::URL . self::$dashboardid)->waitUntilReady();
+		} else {
+			$this->page->login()->open(self::URL . self::$dashboardid)->waitUntilReady();
 		}
 
 		CDashboardElement::find()->one()->waitUntilReady();
 
 		if (CTestArrayHelper::get($data, 'super_admin')) {
 			$this->assertTableHasData($data['available_fields']);
-		}
-		else {
+		} else {
 			$this->assertTableData($data['available_fields']);
 		}
 	}

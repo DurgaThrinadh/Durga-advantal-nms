@@ -13,9 +13,9 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 use Facebook\WebDriver\WebDriverBy;
 
@@ -31,14 +31,16 @@ use Facebook\WebDriver\WebDriverBy;
  *
  * @backup maintenances
  */
-class testFormMaintenance extends CLegacyWebTest {
+class testFormMaintenance extends CLegacyWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -48,7 +50,8 @@ class testFormMaintenance extends CLegacyWebTest {
 	public $name = 'Test maintenance';
 	public $periods_table = 'id:timeperiods';
 
-	public function prepareMaintenanceData() {
+	public function prepareMaintenanceData()
+	{
 		CDataHelper::call('maintenance.create', [
 			[
 				'name' => 'Maintenance for update (data collection)',
@@ -56,7 +59,7 @@ class testFormMaintenance extends CLegacyWebTest {
 				'active_since' => 1534885200,
 				'active_till' => 1534971600,
 				'description' => 'Test description update',
-				'groups' => [['groupid' => 4]], // Zabbix servers.
+				'groups' => [['groupid' => 4]], // Advantal servers.
 				'tags_evaltype' => 2,
 				'tags' => [
 					['tag' => 'Tag1', 'operator' => MAINTENANCE_TAG_OPERATOR_LIKE, 'value' => 'A'],
@@ -76,7 +79,8 @@ class testFormMaintenance extends CLegacyWebTest {
 	/**
 	 * Create maintenance with periods and host group.
 	 */
-	public function testFormMaintenance_Create() {
+	public function testFormMaintenance_Create()
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->page->assertTitle('Configuration of maintenance periods');
 		$this->page->assertHeader('Maintenance periods');
@@ -84,7 +88,7 @@ class testFormMaintenance extends CLegacyWebTest {
 
 		// Type maintenance name.
 		$form = COverlayDialogElement::find()->waitUntilReady()->asForm()->one();
-		$form->fill(['Name' => $this->name, 'Host groups' => 'Zabbix servers', 'id:tags_evaltype' => 'Or']);
+		$form->fill(['Name' => $this->name, 'Host groups' => 'Advantal servers', 'id:tags_evaltype' => 'Or']);
 
 		$periods = [
 			[
@@ -149,14 +153,15 @@ class testFormMaintenance extends CLegacyWebTest {
 		$this->assertMessage(TEST_GOOD, 'Maintenance period created');
 		$this->assertTableHasData([['Name' => $this->name, 'Type' => 'With data collection']]);
 
-		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name='.zbx_dbstr($this->name)));
-		$this->assertEquals(3, CDBHelper::getCount('SELECT NULL FROM maintenance_tag WHERE value='.zbx_dbstr($value)));
+		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name=' . zbx_dbstr($this->name)));
+		$this->assertEquals(3, CDBHelper::getCount('SELECT NULL FROM maintenance_tag WHERE value=' . zbx_dbstr($value)));
 	}
 
 	/**
 	 * Check screenshots of period form.
 	 */
-	public function testFormMaintenance_CheckPeriodForm() {
+	public function testFormMaintenance_CheckPeriodForm()
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->query('button:Create maintenance period')->one()->waitUntilClickable()->click();
 
@@ -176,8 +181,7 @@ class testFormMaintenance extends CLegacyWebTest {
 		foreach ($periods as $period_type) {
 			if ($period_type === 'Monthly with Day of week period') {
 				$period_overlay->asForm()->fill(['Period type' => 'Monthly', 'Date' => 'Day of week']);
-			}
-			else {
+			} else {
 				$period_overlay->asForm()->fill(['Period type' => $period_type]);
 			}
 
@@ -187,17 +191,19 @@ class testFormMaintenance extends CLegacyWebTest {
 			// Remove Add and Cancel buttons edge curling from screenshots as their rendering is unstable.
 			$dialog_footer = $period_overlay->getFooter();
 			foreach (['Add', 'Cancel'] as $button) {
-				$this->page->getDriver()->executeScript('arguments[0].style.borderRadius=0;',
+				$this->page->getDriver()->executeScript(
+					'arguments[0].style.borderRadius=0;',
 					[$dialog_footer->query('button', $button)->one()]
 				);
 			}
 
 			if ($period_type === 'One time only') {
-				$this->assertScreenshotExcept($period_overlay, [$period_overlay->query('id:start_date')->one()],
-						$period_type
+				$this->assertScreenshotExcept(
+					$period_overlay,
+					[$period_overlay->query('id:start_date')->one()],
+					$period_type
 				);
-			}
-			else {
+			} else {
 				$this->assertScreenshot($period_overlay, $period_type);
 			}
 		}
@@ -210,7 +216,8 @@ class testFormMaintenance extends CLegacyWebTest {
 	 *
 	 * @depends testFormMaintenance_Create
 	 */
-	public function testFromMaintenance_Cancel() {
+	public function testFromMaintenance_Cancel()
+	{
 		$sql_hash = 'SELECT * FROM maintenances ORDER BY maintenanceid';
 		$old_hash = CDBHelper::getHash($sql_hash);
 
@@ -246,7 +253,8 @@ class testFormMaintenance extends CLegacyWebTest {
 	 *
 	 * @depends testFormMaintenance_Create
 	 */
-	public function testFormMaintenance_Update() {
+	public function testFormMaintenance_Update()
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->query('link', $this->name)->one()->waitUntilClickable()->click();
 		$form = COverlayDialogElement::find()->waitUntilReady()->asForm()->one();
@@ -298,10 +306,11 @@ class testFormMaintenance extends CLegacyWebTest {
 		$this->assertTableHasData([['Name' => $this->name, 'Type' => 'No data collection']]);
 
 		// Check the results in DB.
-		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name='.zbx_dbstr($this->name)));
+		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name=' . zbx_dbstr($this->name)));
 	}
 
-	public function testFormMaintenance_UpdateTags() {
+	public function testFormMaintenance_UpdateTags()
+	{
 		$maintenance = 'Maintenance for update (data collection)';
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->query('link', $maintenance)->one()->waitUntilClickable()->click();
@@ -332,7 +341,7 @@ class testFormMaintenance extends CLegacyWebTest {
 		COverlayDialogElement::ensureNotPresent();
 		$this->assertMessage(TEST_GOOD, 'Maintenance period updated');
 
-		$this->assertEquals(2, CDBHelper::getCount('SELECT NULL FROM maintenance_tag WHERE tag='.zbx_dbstr($tag)));
+		$this->assertEquals(2, CDBHelper::getCount('SELECT NULL FROM maintenance_tag WHERE tag=' . zbx_dbstr($tag)));
 		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenance_tag WHERE value=\'A1\' AND operator=0'));
 		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenance_tag WHERE value=\'B1\' AND operator=2'));
 	}
@@ -342,7 +351,8 @@ class testFormMaintenance extends CLegacyWebTest {
 	 *
 	 * @depends testFormMaintenance_Create
 	 */
-	public function testFormMaintenance_Clone() {
+	public function testFormMaintenance_Clone()
+	{
 		$suffix = ' (clone)';
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->query('link', $this->name)->one()->waitUntilClickable()->click();
@@ -351,16 +361,16 @@ class testFormMaintenance extends CLegacyWebTest {
 		// Clone maintenance, rename the clone and save it.
 		$this->query('button:Clone')->one()->click()->waitUntilNotVisible();
 		$form = COverlayDialogElement::find()->waitUntilReady()->asForm()->one();
-		$form->fill(['Name' => $this->name.$suffix]);
+		$form->fill(['Name' => $this->name . $suffix]);
 		$form->submit();
 		COverlayDialogElement::ensureNotPresent();
 
 		// Check the result in frontend.
 		$this->assertMessage(TEST_GOOD, 'Maintenance period created');
-		$this->assertTableHasData([['Name' => $this->name], ['Name' => $this->name.$suffix]]);
+		$this->assertTableHasData([['Name' => $this->name], ['Name' => $this->name . $suffix]]);
 
-		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name='.zbx_dbstr($this->name)));
-		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name='.zbx_dbstr($this->name.$suffix)));
+		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name=' . zbx_dbstr($this->name)));
+		$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name=' . zbx_dbstr($this->name . $suffix)));
 	}
 
 	/**
@@ -368,7 +378,8 @@ class testFormMaintenance extends CLegacyWebTest {
 	 *
 	 * @depends testFormMaintenance_Create
 	 */
-	public function testFormMaintenance_Delete() {
+	public function testFormMaintenance_Delete()
+	{
 		$this->page->login()->open('zabbix.php?action=maintenance.list')->waitUntilReady();
 		$this->query('link', $this->name)->one()->waitUntilClickable()->click();
 		$dialog = COverlayDialogElement::find()->waitUntilReady()->one();
@@ -379,6 +390,6 @@ class testFormMaintenance extends CLegacyWebTest {
 		COverlayDialogElement::ensureNotPresent();
 		$this->assertMessage(TEST_GOOD, 'Maintenance period deleted');
 
-		$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name='.zbx_dbstr($this->name)));
+		$this->assertEquals(0, CDBHelper::getCount('SELECT NULL FROM maintenances WHERE name=' . zbx_dbstr($this->name)));
 	}
 }

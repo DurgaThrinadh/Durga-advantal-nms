@@ -14,8 +14,8 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormApiTokens.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../common/testFormApiTokens.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
 
 /**
  * @backup token
@@ -23,14 +23,16 @@ require_once __DIR__.'/../../include/helpers/CDataHelper.php';
  * @onBefore prepareTokenData
  * @dataSource LoginUsers
  */
-class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
+class testFormApiTokensAdministrationGeneral extends testFormApiTokens
+{
 
 	public $url = 'zabbix.php?action=token.list';
 
 	/**
 	 * Function creates the given API tokens in the test branch.
 	 */
-	public static function prepareTokenData() {
+	public static function prepareTokenData()
+	{
 		$response = CDataHelper::call('token.create', [
 			[
 				'name' => 'Admin reference token',
@@ -70,7 +72,8 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 		self::$update_token = 'Admin reference token';
 	}
 
-	public function getTokenData() {
+	public function getTokenData()
+	{
 		return [
 			// Empty name.
 			[
@@ -196,7 +199,7 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 						'Set expiration date and time' => false,
 						'Enabled' => true
 					],
-					'full_name' => 'Admin (Zabbix Administrator)'
+					'full_name' => 'Admin (Advantal Administrator)'
 				]
 			],
 			// API token with expiry date in the past.
@@ -211,7 +214,7 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 						'Enabled' => true
 					],
 					'already_expired' => true,
-					'full_name' => 'Admin (Zabbix Administrator)'
+					'full_name' => 'Admin (Advantal Administrator)'
 				]
 			],
 			// API token with expiry date in the future.
@@ -225,7 +228,7 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 						'Expires at' => '2038-01-01 00:00:00',
 						'Enabled' => true
 					],
-					'full_name' => 'Admin (Zabbix Administrator)'
+					'full_name' => 'Admin (Advantal Administrator)'
 				]
 			],
 			// Disabled API token.
@@ -238,7 +241,7 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 						'Set expiration date and time' => false,
 						'Enabled' => false
 					],
-					'full_name' => 'Admin (Zabbix Administrator)'
+					'full_name' => 'Admin (Advantal Administrator)'
 				]
 			],
 			// API token for a different user.
@@ -256,11 +259,13 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 		];
 	}
 
-	public function testFormApiTokensAdministrationGeneral_Layout() {
+	public function testFormApiTokensAdministrationGeneral_Layout()
+	{
 		$this->checkTokensFormLayout('administration');
 	}
 
-	public function testFormApiTokensAdministrationGeneral_RegenerationFormLayout() {
+	public function testFormApiTokensAdministrationGeneral_RegenerationFormLayout()
+	{
 		$this->checkTokensRegenerateFormLayout('administration');
 	}
 
@@ -269,7 +274,8 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 	 *
 	 * @dataProvider getTokenData
 	 */
-	public function testFormApiTokensAdministrationGeneral_Create($data) {
+	public function testFormApiTokensAdministrationGeneral_Create($data)
+	{
 		$this->checkTokensAction($data, 'create');
 	}
 
@@ -278,7 +284,8 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 	 *
 	 * @dataProvider getTokenData
 	 */
-	public function testFormApiTokensAdministrationGeneral_Update($data) {
+	public function testFormApiTokensAdministrationGeneral_Update($data)
+	{
 		// Skip the case with user name change as this field is disabled in token edit mode.
 		if ($data['fields']['User'] !== 'Admin') {
 			return;
@@ -287,7 +294,8 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 		$this->checkTokensAction($data, 'update', self::$update_token);
 	}
 
-	public function testFormApiTokensAdministrationGeneral_UpdateOtherUserToken() {
+	public function testFormApiTokensAdministrationGeneral_UpdateOtherUserToken()
+	{
 		$data = [
 			'fields' => [
 				'Name' => 'Updated user-zabbix token',
@@ -301,27 +309,32 @@ class testFormApiTokensAdministrationGeneral extends testFormApiTokens {
 		$this->checkTokensAction($data, 'update', self::USER_ZABBIX_TOKEN);
 	}
 
-	public function testFormApiTokensAdministrationGeneral_SimpleUpdate() {
+	public function testFormApiTokensAdministrationGeneral_SimpleUpdate()
+	{
 		$this->checkTokenSimpleUpdate();
 	}
 
-	public function testFormApiTokensAdministrationGeneral_CancelCreate() {
+	public function testFormApiTokensAdministrationGeneral_CancelCreate()
+	{
 		$this->checkTokenCancel('create', 'Admin');
 	}
 
-	public function testFormApiTokensAdministrationGeneral_CancelUpdate() {
+	public function testFormApiTokensAdministrationGeneral_CancelUpdate()
+	{
 		$this->checkTokenCancel('update');
 	}
 
-	public function testFormApiTokensAdministrationGeneral_Delete() {
+	public function testFormApiTokensAdministrationGeneral_Delete()
+	{
 		$this->checkTokenDelete();
 	}
 
-	public function testFormApiTokensAdministrationGeneral_Regenerate() {
+	public function testFormApiTokensAdministrationGeneral_Regenerate()
+	{
 		$data = [
 			'fields' => [
 				'Name' => 'Token for cancel or simple update',
-				'User' => 'Admin (Zabbix Administrator)',
+				'User' => 'Admin (Advantal Administrator)',
 				'Description' => 'Token for testing cancelling',
 				'Set expiration date and time' => true,
 				'Expires at' => '2026-12-31 23:59:59',

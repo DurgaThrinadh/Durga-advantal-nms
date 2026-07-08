@@ -14,7 +14,8 @@
 **/
 
 
-function condition_operator2str($operator = null) {
+function condition_operator2str($operator = null)
+{
 	$operators = [
 		CONDITION_OPERATOR_EQUAL  => _('equals'),
 		CONDITION_OPERATOR_NOT_EQUAL  => _('does not equal'),
@@ -35,7 +36,8 @@ function condition_operator2str($operator = null) {
 		: $operators;
 }
 
-function condition_type2str($type = null) {
+function condition_type2str($type = null)
+{
 	$types = [
 		ZBX_CONDITION_TYPE_SUPPRESSED => _('Problem is suppressed'),
 		ZBX_CONDITION_TYPE_EVENT_NAME => _('Event name'),
@@ -70,7 +72,8 @@ function condition_type2str($type = null) {
 		: $types;
 }
 
-function discovery_object2str($object = null) {
+function discovery_object2str($object = null)
+{
 	$objects = [
 		EVENT_OBJECT_DHOST => _('Device'),
 		EVENT_OBJECT_DSERVICE => _('Service')
@@ -97,7 +100,8 @@ function discovery_object2str($object = null) {
  *
  * @return array  Returns an array of actions condition string values.
  */
-function actionConditionValueToString(array $actions): array {
+function actionConditionValueToString(array $actions): array
+{
 	$result = [];
 
 	$groupids = [];
@@ -120,8 +124,7 @@ function actionConditionValueToString(array $actions): array {
 				case ZBX_CONDITION_TYPE_HOST_GROUP:
 					if ($condition['value'] != 0) {
 						$groupids[$condition['value']] = $condition['value'];
-					}
-					else {
+					} else {
 						$result[$i][$j] = _('Deleted host group');
 					}
 					break;
@@ -129,8 +132,7 @@ function actionConditionValueToString(array $actions): array {
 				case ZBX_CONDITION_TYPE_TRIGGER:
 					if ($condition['value'] != 0) {
 						$triggerids[$condition['value']] = $condition['value'];
-					}
-					else {
+					} else {
 						$result[$i][$j] = _('Deleted trigger');
 					}
 					break;
@@ -138,8 +140,7 @@ function actionConditionValueToString(array $actions): array {
 				case ZBX_CONDITION_TYPE_HOST:
 					if ($condition['value'] != 0) {
 						$hostids[$condition['value']] = $condition['value'];
-					}
-					else {
+					} else {
 						$result[$i][$j] = _('Deleted host');
 					}
 					break;
@@ -297,7 +298,7 @@ function actionConditionValueToString(array $actions): array {
 					case ZBX_CONDITION_TYPE_TRIGGER:
 						if (array_key_exists($id, $triggers)) {
 							$host = reset($triggers[$id]['hosts']);
-							$result[$i][$j] = $host['name'].NAME_DELIMITER.$triggers[$id]['description'];
+							$result[$i][$j] = $host['name'] . NAME_DELIMITER . $triggers[$id]['description'];
 						}
 						break;
 
@@ -335,7 +336,7 @@ function actionConditionValueToString(array $actions): array {
 
 							$dcheck = discovery_check2str($type, $key_, $ports, $allow_redirect);
 
-							$result[$i][$j] = $drule['name'].NAME_DELIMITER.$dcheck;
+							$result[$i][$j] = $drule['name'] . NAME_DELIMITER . $dcheck;
 						}
 						break;
 
@@ -362,22 +363,20 @@ function actionConditionValueToString(array $actions): array {
  *
  * @return array|string
  */
-function getConditionDescription($condition_type, $operator, $value, $value2) {
+function getConditionDescription($condition_type, $operator, $value, $value2)
+{
 	if ($condition_type == ZBX_CONDITION_TYPE_EVENT_TAG_VALUE) {
 		$description = [_('Value of tag')];
 		$description[] = ' ';
 		$description[] = italic($value2);
 		$description[] = ' ';
-	}
-	elseif ($condition_type == ZBX_CONDITION_TYPE_SUPPRESSED) {
+	} elseif ($condition_type == ZBX_CONDITION_TYPE_SUPPRESSED) {
 		return ($operator == CONDITION_OPERATOR_YES)
 			? [_('Problem is suppressed')]
 			: [_('Problem is not suppressed')];
-	}
-	elseif ($condition_type == ZBX_CONDITION_TYPE_EVENT_ACKNOWLEDGED) {
+	} elseif ($condition_type == ZBX_CONDITION_TYPE_EVENT_ACKNOWLEDGED) {
 		return $value ? _('Event is acknowledged') : _('Event is not acknowledged');
-	}
-	else {
+	} else {
 		$description = [condition_type2str($condition_type)];
 		$description[] = ' ';
 	}
@@ -396,7 +395,8 @@ function getConditionDescription($condition_type, $operator, $value, $value2) {
  *
  * @return array  Returns an array of processed data.
  */
-function getActionOperationData(array $operations): array {
+function getActionOperationData(array $operations): array
+{
 	$result = [];
 	$data = [];
 
@@ -528,7 +528,8 @@ function getActionOperationData(array $operations): array {
  *
  * @return array  Returns an array of actions operation descriptions.
  */
-function getActionOperationDescriptions(array $operations, int $eventsource, array $operation_values): array {
+function getActionOperationDescriptions(array $operations, int $eventsource, array $operation_values): array
+{
 	$result = [];
 
 	$mediatypes = array_key_exists('mediatypes', $operation_values) ? $operation_values['mediatypes'] : [];
@@ -553,14 +554,14 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 					$user_names_list = [];
 
 					foreach ($operation['opmessage_usr'] as $user) {
-						if (array_key_exists($user['userid'], $users)){
+						if (array_key_exists($user['userid'], $users)) {
 							$user_names_list[] = $users[$user['userid']]['name'];
 						}
 					}
 
 					order_result($user_names_list);
 
-					$result[$i][] = bold(_('Send message to users').': ');
+					$result[$i][] = bold(_('Send message to users') . ': ');
 					$result[$i][] = [implode(', ', $user_names_list), ' ', _('via'), ' ', $mediatype];
 					$result[$i][] = BR();
 				}
@@ -576,7 +577,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 
 					order_result($user_groups_list);
 
-					$result[$i][] = bold(_('Send message to user groups').': ');
+					$result[$i][] = bold(_('Send message to user groups') . ': ');
 					$result[$i][] = [implode(', ', $user_groups_list), ' ', _('via'), ' ', $mediatype];
 					$result[$i][] = BR();
 				}
@@ -587,7 +588,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 
 				if ($eventsource == EVENT_SOURCE_SERVICE) {
 					$result[$i][] = [
-						bold(_s('Run script "%1$s" on Zabbix server', $scripts[$scriptid]['name'])),
+						bold(_s('Run script "%1$s" on Advantal server', $scripts[$scriptid]['name'])),
 						BR()
 					];
 
@@ -614,8 +615,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 								bold(_s('Run script "%1$s" on current host', $scripts[$scriptid]['name'])),
 								BR()
 							];
-						}
-						elseif (array_key_exists($host['hostid'], $hosts)) {
+						} elseif (array_key_exists($host['hostid'], $hosts)) {
 							$host_list[] = $hosts[$host['hostid']]['name'];
 						}
 					}
@@ -624,7 +624,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 						order_result($host_list);
 
 						$result[$i][] = bold(
-							_s('Run script "%1$s" on hosts', $scripts[$scriptid]['name']).': '
+							_s('Run script "%1$s" on hosts', $scripts[$scriptid]['name']) . ': '
 						);
 						$result[$i][] = [implode(', ', $host_list), BR()];
 					}
@@ -642,7 +642,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 					order_result($host_group_list);
 
 					$result[$i][] = bold(
-						_s('Run script "%1$s" on host groups', $scripts[$scriptid]['name']).': '
+						_s('Run script "%1$s" on host groups', $scripts[$scriptid]['name']) . ': '
 					);
 					$result[$i][] = [implode(', ', $host_group_list), BR()];
 				}
@@ -658,7 +658,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 
 			case OPERATION_TYPE_HOST_TAGS_ADD:
 			case OPERATION_TYPE_HOST_TAGS_REMOVE:
-				$operation_title = bold(_('Add host tags').': ');
+				$operation_title = bold(_('Add host tags') . ': ');
 				$tags = [];
 				if (array_key_exists('optag', $operation) && $operation['optag']) {
 					CArrayHelper::sort($operation['optag'], ['tag', 'value']);
@@ -674,7 +674,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 					}
 
 					if ($operation['operationtype'] == OPERATION_TYPE_HOST_TAGS_REMOVE) {
-						$operation_title = bold(_('Remove host tags').': ');
+						$operation_title = bold(_('Remove host tags') . ': ');
 					}
 				}
 
@@ -708,10 +708,9 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 					: italic(_('Deleted host group(s)'));
 
 				if ($operation['operationtype'] == OPERATION_TYPE_GROUP_ADD) {
-					$result[$i][] = bold(_('Add to host groups').': ');
-				}
-				else {
-					$result[$i][] = bold(_('Remove from host groups').': ');
+					$result[$i][] = bold(_('Add to host groups') . ': ');
+				} else {
+					$result[$i][] = bold(_('Remove from host groups') . ': ');
 				}
 
 				$result[$i][] = [$host_group_list, BR()];
@@ -730,10 +729,9 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 				order_result($template_list);
 
 				if ($operation['operationtype'] == OPERATION_TYPE_TEMPLATE_ADD) {
-					$result[$i][] = bold(_('Link templates').': ');
-				}
-				else {
-					$result[$i][] = bold(_('Unlink templates').': ');
+					$result[$i][] = bold(_('Link templates') . ': ');
+				} else {
+					$result[$i][] = bold(_('Unlink templates') . ': ');
 				}
 
 				$result[$i][] = [implode(', ', $template_list), BR()];
@@ -741,7 +739,7 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
 
 			case OPERATION_TYPE_HOST_INVENTORY:
 				$host_inventory_modes = getHostInventoryModes();
-				$result[$i][] = bold(operation_type2str(OPERATION_TYPE_HOST_INVENTORY).': ');
+				$result[$i][] = bold(operation_type2str(OPERATION_TYPE_HOST_INVENTORY) . ': ');
 				$result[$i][] = [$host_inventory_modes[$operation['opinventory']['inventory_mode']], BR()];
 				break;
 
@@ -760,7 +758,8 @@ function getActionOperationDescriptions(array $operations, int $eventsource, arr
  *
  * @param int|string $eventsource
  */
-function get_conditions_by_eventsource($eventsource): array {
+function get_conditions_by_eventsource($eventsource): array
+{
 	$conditions[EVENT_SOURCE_TRIGGERS] = [
 		ZBX_CONDITION_TYPE_EVENT_NAME,
 		ZBX_CONDITION_TYPE_TRIGGER,
@@ -817,7 +816,8 @@ function get_conditions_by_eventsource($eventsource): array {
  *
  * @param int $eventsource
  */
-function getAllowedOperations($eventsource): array {
+function getAllowedOperations($eventsource): array
+{
 	switch ($eventsource) {
 		case EVENT_SOURCE_TRIGGERS:
 		case EVENT_SOURCE_SERVICE:
@@ -880,7 +880,8 @@ function getAllowedOperations($eventsource): array {
  *
  * @return string|array
  */
-function operation_type2str($type) {
+function operation_type2str($type)
+{
 	$types = [
 		OPERATION_TYPE_MESSAGE => _('Send message'),
 		OPERATION_TYPE_COMMAND => _('Remote command'),
@@ -901,16 +902,15 @@ function operation_type2str($type) {
 
 	if (is_null($type)) {
 		return order_result($types);
-	}
-	elseif (array_key_exists($type, $types)) {
+	} elseif (array_key_exists($type, $types)) {
 		return $types[$type];
-	}
-	else {
+	} else {
 		return _('Unknown');
 	}
 }
 
-function sortOperations($eventsource, &$operations): void {
+function sortOperations($eventsource, &$operations): void
+{
 	if (in_array($eventsource, [EVENT_SOURCE_TRIGGERS, EVENT_SOURCE_INTERNAL, EVENT_SOURCE_SERVICE])) {
 		$esc_step_from = [];
 		$esc_step_to = [];
@@ -932,14 +932,22 @@ function sortOperations($eventsource, &$operations): void {
 
 			$operationTypes[$key] = $operation['operationtype'];
 		}
-		array_multisort($esc_step_from, SORT_ASC, $esc_step_to, SORT_ASC, $esc_period, SORT_ASC, $operationTypes,
-			SORT_ASC, $operations
+		array_multisort(
+			$esc_step_from,
+			SORT_ASC,
+			$esc_step_to,
+			SORT_ASC,
+			$esc_period,
+			SORT_ASC,
+			$operationTypes,
+			SORT_ASC,
+			$operations
 		);
-	}
-	else {
+	} else {
 		$order = getAllowedOperations($eventsource)[ACTION_OPERATION];
 
-		usort($operations,
+		usort(
+			$operations,
 			static fn($a, $b) => array_search($a['operationtype'], $order) - array_search($b['operationtype'], $order)
 		);
 	}
@@ -950,7 +958,8 @@ function sortOperations($eventsource, &$operations): void {
  *
  * @param int $conditiontype
  */
-function get_operators_by_conditiontype($conditiontype): array {
+function get_operators_by_conditiontype($conditiontype): array
+{
 	switch ($conditiontype) {
 		case ZBX_CONDITION_TYPE_DCHECK:
 		case ZBX_CONDITION_TYPE_DHOST_IP:
@@ -1042,7 +1051,8 @@ function get_operators_by_conditiontype($conditiontype): array {
 	}
 }
 
-function count_operations_delay($operations, $def_period): array {
+function count_operations_delay($operations, $def_period): array
+{
 	$delays = [1 => 0];
 	$periods = [];
 	$max_step = 0;
@@ -1050,7 +1060,8 @@ function count_operations_delay($operations, $def_period): array {
 	$simple_interval_parser = new CSimpleIntervalParser();
 
 	$def_period = CMacrosResolverHelper::resolveTimeUnitMacros(
-		[['def_period' => $def_period]], ['def_period']
+		[['def_period' => $def_period]],
+		['def_period']
 	)[0]['def_period'];
 
 	$def_period = ($simple_interval_parser->parse($def_period) == CParser::PARSE_SUCCESS)
@@ -1096,7 +1107,8 @@ function count_operations_delay($operations, $def_period): array {
  *
  * @return array|string
  */
-function eventType($type = null) {
+function eventType($type = null)
+{
 	$types = [
 		EVENT_TYPE_ITEM_NOTSUPPORTED => _('Item in "not supported" state'),
 		EVENT_TYPE_LLDRULE_NOTSUPPORTED => _('Low-level discovery rule in "not supported" state'),
@@ -1116,7 +1128,8 @@ function eventType($type = null) {
  * @param array $events    Array with event objects with acknowledges.
  * @param array $triggers  Array of triggers.
  */
-function getEventsActionsIconsData(array $events, array $triggers): array {
+function getEventsActionsIconsData(array $events, array $triggers): array
+{
 	$suppressions = getEventsSuppressions($events);
 	$messages = getEventsMessages($events);
 	$severities = getEventsSeverityChanges($events, $triggers);
@@ -1144,7 +1157,8 @@ function getEventsActionsIconsData(array $events, array $triggers): array {
  *        string $events[]['acknowledges'][]['clock']           Time when manual suppression was made.
  *        string $events[]['acknowledges'][]['userid']          Author's userid.
  */
-function getEventsSuppressions(array $events): array {
+function getEventsSuppressions(array $events): array
+{
 	$suppressions = [];
 	$userids = [];
 
@@ -1161,8 +1175,7 @@ function getEventsSuppressions(array $events): array {
 				];
 
 				$userids[$ack['userid']] = true;
-			}
-			elseif (($ack['action'] & ZBX_PROBLEM_UPDATE_UNSUPPRESS) == ZBX_PROBLEM_UPDATE_UNSUPPRESS) {
+			} elseif (($ack['action'] & ZBX_PROBLEM_UPDATE_UNSUPPRESS) == ZBX_PROBLEM_UPDATE_UNSUPPRESS) {
 				$event_suppressions[] = [
 					'userid' => $ack['userid'],
 					'clock' => $ack['clock']
@@ -1195,7 +1208,8 @@ function getEventsSuppressions(array $events): array {
  *        string $events[]['acknowledges'][]['clock']    Time when message was added.
  *        string $events[]['acknowledges'][]['userid']   Author's userid.
  */
-function getEventsMessages(array $events): array {
+function getEventsMessages(array $events): array
+{
 	$messages = [];
 	$userids = [];
 
@@ -1243,7 +1257,8 @@ function getEventsMessages(array $events): array {
  * @param array  $triggers                                    Related trigger data.
  *        string $triggers[]['priority']                      Severity of trigger.
  */
-function getEventsSeverityChanges(array $events, array $triggers): array {
+function getEventsSeverityChanges(array $events, array $triggers): array
+{
 	$severities = [];
 	$userids = [];
 
@@ -1287,7 +1302,8 @@ function getEventsSeverityChanges(array $events, array $triggers): array {
  *
  * @return array  List indexed by eventid containing overview on event alerts.
  */
-function getEventsAlertsOverview(array $events): array {
+function getEventsAlertsOverview(array $events): array
+{
 	$alert_eventids = [];
 	$actions = [];
 	$event_alert_state = [];
@@ -1369,7 +1385,8 @@ function getEventsAlertsOverview(array $events): array {
  *        string $event['eventid']    Problem event ID.
  *        string $event['r_eventid']  OK event ID.
  */
-function getEventDetailsActions(array $event): array {
+function getEventDetailsActions(array $event): array
+{
 	$r_events = [];
 
 	// Select eventids for alert retrieval.
@@ -1389,8 +1406,21 @@ function getEventDetailsActions(array $event): array {
 
 	// Get automatic actions (alerts).
 	$alerts = API::Alert()->get([
-		'output' => ['alerttype', 'clock', 'error', 'eventid', 'esc_step', 'mediatypeid', 'message', 'retries',
-			'sendto', 'status', 'subject', 'userid', 'p_eventid', 'acknowledgeid'
+		'output' => [
+			'alerttype',
+			'clock',
+			'error',
+			'eventid',
+			'esc_step',
+			'mediatypeid',
+			'message',
+			'retries',
+			'sendto',
+			'status',
+			'subject',
+			'userid',
+			'p_eventid',
+			'acknowledgeid'
 		],
 		'eventids' => $alert_eventids,
 		'limit' => $search_limit
@@ -1424,7 +1454,8 @@ function getEventDetailsActions(array $event): array {
  *        string $alerts[]['status']                 Alert status.
  *        string $alerts[]['userid']                 ID of alert recipient.
  */
-function getSingleEventActions(array $event, array $r_events, array $alerts): array {
+function getSingleEventActions(array $event, array $r_events, array $alerts): array
+{
 	$action_count = 0;
 	$has_uncomplete_action = false;
 	$has_failed_action = false;
@@ -1460,8 +1491,10 @@ function getSingleEventActions(array $event, array $r_events, array $alerts): ar
 	// Add alerts.
 	foreach ($alerts as $alert) {
 		// Add only alerts, related to current event.
-		if (bccomp($alert['eventid'], $event['eventid']) == 0
-				|| bccomp($alert['eventid'], $event['r_eventid']) == 0) {
+		if (
+			bccomp($alert['eventid'], $event['eventid']) == 0
+			|| bccomp($alert['eventid'], $event['r_eventid']) == 0
+		) {
 			$alert['action_type'] = ZBX_EVENT_HISTORY_ALERT;
 			$actions[] = $alert;
 
@@ -1479,8 +1512,7 @@ function getSingleEventActions(array $event, array $r_events, array $alerts): ar
 
 			if ($alert['status'] == ALERT_STATUS_NEW || $alert['status'] == ALERT_STATUS_NOT_SENT) {
 				$has_uncomplete_action = true;
-			}
-			elseif ($alert['status'] == ALERT_STATUS_FAILED) {
+			} elseif ($alert['status'] == ALERT_STATUS_FAILED) {
 				$has_failed_action = true;
 			}
 		}
@@ -1519,7 +1551,8 @@ function getSingleEventActions(array $event, array $r_events, array $alerts): ar
  *
  * @return CCol|string
  */
-function makeEventActionsIcons($eventid, array $actions, array $users, bool $is_acknowledged) {
+function makeEventActionsIcons($eventid, array $actions, array $users, bool $is_acknowledged)
+{
 	$suppression_icon = makeEventSuppressionsProblemIcon($actions['suppressions'][$eventid], $users);
 	$messages_icon = makeEventMessagesIcon($actions['messages'][$eventid], $users);
 	$severities_icon = makeEventSeverityChangesIcon($actions['severities'][$eventid], $users);
@@ -1561,7 +1594,8 @@ function makeEventActionsIcons($eventid, array $actions, array $users, bool $is_
  *
  * @throws Exception
  */
-function makeEventSuppressionsProblemIcon(array $data, array $users): ?CButtonIcon {
+function makeEventSuppressionsProblemIcon(array $data, array $users): ?CButtonIcon
+{
 	if ($data['count'] == 0) {
 		return null;
 	}
@@ -1579,15 +1613,13 @@ function makeEventSuppressionsProblemIcon(array $data, array $users): ?CButtonIc
 
 			if ($suppression['suppress_until'] == ZBX_PROBLEM_SUPPRESS_TIME_INDEFINITE) {
 				$suppress_until = _s('Indefinitely');
-			}
-			else {
+			} else {
 				$suppress_until = $suppression['suppress_until'] < strtotime('tomorrow')
-						&& $suppression['suppress_until'] > strtotime('today')
+					&& $suppression['suppress_until'] > strtotime('today')
 					? zbx_date2str(TIME_FORMAT, $suppression['suppress_until'])
 					: zbx_date2str(DATE_TIME_FORMAT, $suppression['suppress_until']);
 			}
-		}
-		else {
+		} else {
 			$icon = new CIcon(ZBX_ICON_EYE, _('Unsuppressed'));
 			$suppress_until = '';
 		}
@@ -1607,9 +1639,10 @@ function makeEventSuppressionsProblemIcon(array $data, array $users): ?CButtonIc
 		);
 	}
 
-	return (new CButtonIcon(array_key_exists('suppress_until', $data['suppress_until'][0])
-		? ZBX_ICON_EYE_OFF
-		: ZBX_ICON_EYE
+	return (new CButtonIcon(
+		array_key_exists('suppress_until', $data['suppress_until'][0])
+			? ZBX_ICON_EYE_OFF
+			: ZBX_ICON_EYE
 	))
 		->addClass(ZBX_STYLE_COLOR_ICON)
 		->setHint($table, ZBX_STYLE_HINTBOX_WRAP_HORIZONTAL);
@@ -1627,7 +1660,8 @@ function makeEventSuppressionsProblemIcon(array $data, array $users): ?CButtonIc
  *
  * @throws Exception
  */
-function makeEventMessagesIcon(array $data, array $users): ?CButtonIcon {
+function makeEventMessagesIcon(array $data, array $users): ?CButtonIcon
+{
 	if ($data['count'] == 0) {
 		return null;
 	}
@@ -1656,7 +1690,8 @@ function makeEventMessagesIcon(array $data, array $users): ?CButtonIcon {
 
 	return (new CButtonIcon(ZBX_ICON_ALERT_WITH_CONTENT))
 		->setAttribute('data-content', $data['count'])
-		->setAttribute('aria-label',
+		->setAttribute(
+			'aria-label',
 			_xn('%1$s message', '%1$s messages', $data['count'], 'screen reader', $data['count'])
 		)
 		->setHint($table, ZBX_STYLE_HINTBOX_WRAP_HORIZONTAL);
@@ -1677,7 +1712,8 @@ function makeEventMessagesIcon(array $data, array $users): ?CButtonIcon {
  *
  * @throws Exception
  */
-function makeEventSeverityChangesIcon(array $data, array $users): ?CButtonIcon {
+function makeEventSeverityChangesIcon(array $data, array $users): ?CButtonIcon
+{
 	if ($data['count'] == 0) {
 		return null;
 	}
@@ -1712,13 +1748,11 @@ function makeEventSeverityChangesIcon(array $data, array $users): ?CButtonIcon {
 		$button = (new CButtonIcon(ZBX_ICON_ARROW_DOWN_SMALL))
 			->addClass(ZBX_STYLE_COLOR_POSITIVE)
 			->setAttribute('aria-label', _x('Severity decreased', 'screen reader'));
-	}
-	elseif ($data['original_severity'] < $data['current_severity']) {
+	} elseif ($data['original_severity'] < $data['current_severity']) {
 		$button = (new CButtonIcon(ZBX_ICON_ARROW_UP_SMALL))
 			->addClass(ZBX_STYLE_COLOR_NEGATIVE)
 			->setAttribute('aria-label', _x('Severity increased', 'screen reader'));
-	}
-	else {
+	} else {
 		$button = (new CButtonIcon(ZBX_ICON_ARROWS_TOP_BOTTOM))
 			->addClass(ZBX_STYLE_COLOR_ICON)
 			->setAttribute('aria-label', _x('Severity changed', 'screen reader'));
@@ -1743,26 +1777,32 @@ function makeEventSeverityChangesIcon(array $data, array $users): ?CButtonIcon {
  *
  * @throws Exception
  */
-function makeEventActionsTable(array $actions, array $users, array $mediatypes): CTableInfo {
+function makeEventActionsTable(array $actions, array $users, array $mediatypes): CTableInfo
+{
 	$action_count = count($actions);
 
 	$table = (new CTableInfo())->setHeader([
-		_('Time'), _('User/Recipient'), _('Action'), _('Message/Command'), _('Status'), _('Info')
+		_('Time'),
+		_('User/Recipient'),
+		_('Action'),
+		_('Message/Command'),
+		_('Status'),
+		_('Info')
 	]);
 
 	for ($i = 0; $i < $action_count && $i < ZBX_WIDGET_ROWS; $i++) {
 		$action = $actions[$i];
 
 		$message = '';
-		if ($action['action_type'] == ZBX_EVENT_HISTORY_MANUAL_UPDATE
-				&& ($action['action'] & ZBX_PROBLEM_UPDATE_MESSAGE) == ZBX_PROBLEM_UPDATE_MESSAGE) {
+		if (
+			$action['action_type'] == ZBX_EVENT_HISTORY_MANUAL_UPDATE
+			&& ($action['action'] & ZBX_PROBLEM_UPDATE_MESSAGE) == ZBX_PROBLEM_UPDATE_MESSAGE
+		) {
 			$message = zbx_nl2br($action['message']);
-		}
-		elseif ($action['action_type'] == ZBX_EVENT_HISTORY_ALERT) {
+		} elseif ($action['action_type'] == ZBX_EVENT_HISTORY_ALERT) {
 			if ($action['alerttype'] == ALERT_TYPE_COMMAND) {
 				$message = _('Remote command');
-			}
-			elseif ($action['alerttype'] == ALERT_TYPE_MESSAGE) {
+			} elseif ($action['alerttype'] == ALERT_TYPE_MESSAGE) {
 				$message = array_key_exists($action['mediatypeid'], $mediatypes)
 					? $mediatypes[$action['mediatypeid']]['name']
 					: '';
@@ -1791,7 +1831,8 @@ function makeEventActionsTable(array $actions, array $users, array $mediatypes):
  *        bool   $data['has_failed_action']      Does the event have at least one failed alert action.
  * @param string $eventid
  */
-function makeEventActionsIcon(array $data, $eventid): ?CButtonIcon {
+function makeEventActionsIcon(array $data, $eventid): ?CButtonIcon
+{
 	if ($data['count'] == 0) {
 		return null;
 	}
@@ -1800,14 +1841,14 @@ function makeEventActionsIcon(array $data, $eventid): ?CButtonIcon {
 
 	if ($data['has_failed_action']) {
 		$button->addClass(ZBX_STYLE_COLOR_NEGATIVE);
-	}
-	elseif ($data['has_uncomplete_action']) {
+	} elseif ($data['has_uncomplete_action']) {
 		$button->addClass(ZBX_STYLE_COLOR_WARNING);
 	}
 
 	return $button
 		->setAttribute('data-content', $data['count'])
-		->setAttribute('aria-label',
+		->setAttribute(
+			'aria-label',
 			_xn('%1$s action', '%1$s actions', $data['count'], 'screen reader', $data['count'])
 		)
 		->setAjaxHint([
@@ -1832,16 +1873,25 @@ function makeEventActionsIcon(array $data, $eventid): ?CButtonIcon {
  * @param array  $users                               User name, surname and username.
  * @param array  $mediatypes                          Mediatypes with maxattempts value.
  */
-function makeEventDetailsActionsTable(array $data, array $users, array $mediatypes): CTableInfo {
+function makeEventDetailsActionsTable(array $data, array $users, array $mediatypes): CTableInfo
+{
 	$table = (new CTableInfo())->setHeader([
-		_('Step'), _('Time'), _('User/Recipient'), _('Action'), _('Message/Command'), _('Status'), _('Info')
+		_('Step'),
+		_('Time'),
+		_('User/Recipient'),
+		_('Action'),
+		_('Message/Command'),
+		_('Status'),
+		_('Info')
 	]);
 
 	foreach ($data['actions'] as $action) {
 		$esc_step = '';
 
-		if ($action['action_type'] == ZBX_EVENT_HISTORY_ALERT && $action['p_eventid'] == 0
-				&& $action['acknowledgeid'] == 0) {
+		if (
+			$action['action_type'] == ZBX_EVENT_HISTORY_ALERT && $action['p_eventid'] == 0
+			&& $action['acknowledgeid'] == 0
+		) {
 			/*
 			 * Escalation step should be displayed, only if alert is caused by problem event.
 			 * Escalation step should not be displayed, if alert is caused by resolve event, or by problem update.
@@ -1859,7 +1909,7 @@ function makeEventDetailsActionsTable(array $data, array $users, array $mediatyp
 						break;
 
 					case ALERT_TYPE_COMMAND:
-						$message = [bold(_('Command').':'), BR(), zbx_nl2br($action['message'])];
+						$message = [bold(_('Command') . ':'), BR(), zbx_nl2br($action['message'])];
 						break;
 				}
 				break;
@@ -1891,7 +1941,8 @@ function makeEventDetailsActionsTable(array $data, array $users, array $mediatyp
  *        string $actions[]['message']  Message sent by alert, or written by manual update, or remote command text.
  * @param array  $users                 User name, surname and username.
  */
-function makeEventHistoryTable(array $actions, array $users): CTable {
+function makeEventHistoryTable(array $actions, array $users): CTable
+{
 	$table = (new CTable())
 		->addStyle('width: 100%;')
 		->setHeader([_('Time'), _('User'), _('User action'), _('Message')]);
@@ -1920,14 +1971,15 @@ function makeEventHistoryTable(array $actions, array $users): CTable {
  *        string $action['userid']       ID of message author, or alert receiver.
  * @param array  $users                  Array with user data - username, name, surname.
  */
-function makeActionTableUser(array $action, array $users): string {
+function makeActionTableUser(array $action, array $users): string
+{
 	if (($action['action_type'] == ZBX_EVENT_HISTORY_ALERT && $action['alerttype'] == ALERT_TYPE_MESSAGE)
-			|| $action['action_type'] == ZBX_EVENT_HISTORY_MANUAL_UPDATE) {
+		|| $action['action_type'] == ZBX_EVENT_HISTORY_MANUAL_UPDATE
+	) {
 		return array_key_exists($action['userid'], $users)
 			? getUserFullname($users[$action['userid']])
 			: _('Inaccessible user');
-	}
-	else {
+	} else {
 		return '';
 	}
 }
@@ -1944,18 +1996,17 @@ function makeActionTableUser(array $action, array $users): string {
  *
  * @return array|string
  */
-function makeEventDetailsTableUser(array $action, array $users) {
+function makeEventDetailsTableUser(array $action, array $users)
+{
 	if ($action['action_type'] == ZBX_EVENT_HISTORY_ALERT && $action['alerttype'] == ALERT_TYPE_MESSAGE) {
 		return array_key_exists($action['userid'], $users)
 			? [getUserFullname($users[$action['userid']]), BR(), italic(zbx_nl2br($action['sendto']))]
 			: _('Inaccessible user');
-	}
-	elseif ($action['action_type'] == ZBX_EVENT_HISTORY_MANUAL_UPDATE) {
+	} elseif ($action['action_type'] == ZBX_EVENT_HISTORY_MANUAL_UPDATE) {
 		return array_key_exists($action['userid'], $users)
 			? getUserFullname($users[$action['userid']])
 			: _('Inaccessible user');
-	}
-	else {
+	} else {
 		return '';
 	}
 }
@@ -1970,7 +2021,8 @@ function makeEventDetailsTableUser(array $action, array $users) {
  *        int   $action['new_severity']  Severity after problem update (only for ZBX_EVENT_HISTORY_MANUAL_UPDATE).
  *        int   $action['alerttype']     Type of alert (only for ZBX_EVENT_HISTORY_ALERT).
  */
-function makeActionTableIcon(array $action): ?CTag {
+function makeActionTableIcon(array $action): ?CTag
+{
 	switch ($action['action_type']) {
 		case ZBX_EVENT_HISTORY_PROBLEM_EVENT:
 			return new CIcon(ZBX_ICON_CALENDAR_WARNING, _('Problem created'));
@@ -2004,10 +2056,9 @@ function makeActionTableIcon(array $action): ?CTag {
 			if (($action['action'] & ZBX_PROBLEM_UPDATE_SUPPRESS) == ZBX_PROBLEM_UPDATE_SUPPRESS) {
 				if ($action['suppress_until'] == ZBX_PROBLEM_SUPPRESS_TIME_INDEFINITE) {
 					$suppress_until = _s('Indefinitely');
-				}
-				else {
+				} else {
 					$suppress_until = $action['suppress_until'] < strtotime('tomorrow')
-							&& $action['suppress_until'] > strtotime('today')
+						&& $action['suppress_until'] > strtotime('today')
 						? zbx_date2str(TIME_FORMAT, $action['suppress_until'])
 						: zbx_date2str(DATE_TIME_FORMAT, $action['suppress_until']);
 				}
@@ -2034,7 +2085,8 @@ function makeActionTableIcon(array $action): ?CTag {
 				$new_severity_name = CSeverityHelper::getName((int) $action['new_severity']);
 
 				$action_icons[] = $button->setHint(
-					[$old_severity_name, NBSP(), RARR(), NBSP(), $new_severity_name], ZBX_STYLE_HINTBOX_WRAP_HORIZONTAL
+					[$old_severity_name, NBSP(), RARR(), NBSP(), $new_severity_name],
+					ZBX_STYLE_HINTBOX_WRAP_HORIZONTAL
 				);
 			}
 
@@ -2060,7 +2112,8 @@ function makeActionTableIcon(array $action): ?CTag {
  *
  * @return CSpan|string
  */
-function makeActionTableStatus(array $action) {
+function makeActionTableStatus(array $action)
+{
 	if ($action['action_type'] != ZBX_EVENT_HISTORY_ALERT) {
 		return '';
 	}
@@ -2102,26 +2155,30 @@ function makeActionTableStatus(array $action) {
  *
  * @return CDiv|string
  */
-function makeActionTableInfo(array $action, array $mediatypes) {
+function makeActionTableInfo(array $action, array $mediatypes)
+{
 	if ($action['action_type'] == ZBX_EVENT_HISTORY_ALERT) {
 		$info_icons = [];
 
-		if ($action['alerttype'] == ALERT_TYPE_MESSAGE
-				&& ($action['status'] == ALERT_STATUS_NEW || $action['status'] == ALERT_STATUS_NOT_SENT)) {
-			$info_icons[] = makeWarningIcon(array_key_exists($action['mediatypeid'], $mediatypes)
-				? _n('%1$s retry left', '%1$s retries left',
-					$mediatypes[$action['mediatypeid']]['maxattempts'] - $action['retries']
-				)
-				: ''
+		if (
+			$action['alerttype'] == ALERT_TYPE_MESSAGE
+			&& ($action['status'] == ALERT_STATUS_NEW || $action['status'] == ALERT_STATUS_NOT_SENT)
+		) {
+			$info_icons[] = makeWarningIcon(
+				array_key_exists($action['mediatypeid'], $mediatypes)
+					? _n(
+						'%1$s retry left',
+						'%1$s retries left',
+						$mediatypes[$action['mediatypeid']]['maxattempts'] - $action['retries']
+					)
+					: ''
 			);
-		}
-		elseif ($action['error'] !== '') {
+		} elseif ($action['error'] !== '') {
 			$info_icons[] = makeErrorIcon($action['error']);
 		}
 
 		return makeInformationList($info_icons);
-	}
-	else {
+	} else {
 		return '';
 	}
 }

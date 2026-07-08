@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 define('ACTION_GOOD', 0);
 define('ACTION_BAD', 1);
@@ -26,7 +26,8 @@ define('ACTION_BAD', 1);
  *
  * @dataSource Actions
  */
-class testFormAction extends CLegacyWebTest {
+class testFormAction extends CLegacyWebTest
+{
 
 	protected $event_sources = [
 		EVENT_SOURCE_TRIGGERS => 'Trigger actions',
@@ -43,11 +44,13 @@ class testFormAction extends CLegacyWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return ['class' => CMessageBehavior::class];
 	}
 
-	public static function layout() {
+	public static function layout()
+	{
 		return [
 			[
 				[
@@ -313,10 +316,11 @@ class testFormAction extends CLegacyWebTest {
 	/**
 	 * @dataProvider layout
 	 */
-	public function testFormAction_CheckLayout($data) {
+	public function testFormAction_CheckLayout($data)
+	{
 		$eventsource = $data['eventsource'];
 
-		$this->zbxTestLogin('zabbix.php?action=action.list&eventsource='.$eventsource.'');
+		$this->zbxTestLogin('zabbix.php?action=action.list&eventsource=' . $eventsource . '');
 		$this->zbxTestCheckTitle('Configuration of actions');
 		$this->zbxTestClickButtonText('Create action');
 		$this->zbxTestLaunchOverlayDialog('New action');
@@ -356,10 +360,10 @@ class testFormAction extends CLegacyWebTest {
 			$this->zbxTestTextPresent('Type of calculation');
 			$this->zbxTestAssertElementPresentId('evaltype');
 			$this->zbxTestDropdownHasOptions('evaltype', [
-					'And/Or',
-					'And',
-					'Or',
-					'Custom expression'
+				'And/Or',
+				'And',
+				'Or',
+				'Custom expression'
 			]);
 			$this->zbxTestDropdownAssertSelected('evaltype', $evaltype);
 			switch ($evaltype) {
@@ -371,15 +375,16 @@ class testFormAction extends CLegacyWebTest {
 					$this->zbxTestTextPresent('A or B');
 					break;
 			}
-		}
-		else {
+		} else {
 			$this->zbxTestTextNotVisible('Type of calculation');
 			$this->zbxTestAssertNotVisibleId('evaltype');
 		}
 
 		$this->zbxTestTextPresent([
-				'Conditions',
-				'Label', 'Name', 'Action'
+			'Conditions',
+			'Label',
+			'Name',
+			'Action'
 		]);
 
 		if ($eventsource == EVENT_SOURCE_TRIGGERS && array_key_exists('evaltype', $data)) {
@@ -387,8 +392,7 @@ class testFormAction extends CLegacyWebTest {
 			$this->zbxTestAssertElementText('//tr[@data-row_index="1"]//td[@class="wordwrap"]', 'Event name contains TEST2');
 			$this->zbxTestAssertElementPresentXpath('//tr[@data-row_index="0"]//button[@type="button" and text()="Remove"]');
 			$this->zbxTestAssertElementPresentXpath('//tr[@data-row_index="1"]//button[@type="button" and text()="Remove"]');
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementNotPresentXpath('//tr[@id="conditions_0"]');
 			$this->zbxTestAssertElementNotPresentXpath('//button[@name="remove" and @onclick="removeCondition(0);"]');
 			$this->zbxTestAssertElementNotPresentXpath('//button[@name="remove" and @onclick="removeCondition(1);"]');
@@ -409,55 +413,55 @@ class testFormAction extends CLegacyWebTest {
 		switch ($eventsource) {
 			case EVENT_SOURCE_TRIGGERS:
 				$this->zbxTestDropdownHasOptions('condition_type', [
-						'Tag name',
-						'Tag value',
-						'Host group',
-						'Template',
-						'Host',
-						'Trigger',
-						'Event name',
-						'Trigger severity',
-						'Time period',
-						'Problem is suppressed'
+					'Tag name',
+					'Tag value',
+					'Host group',
+					'Template',
+					'Host',
+					'Trigger',
+					'Event name',
+					'Trigger severity',
+					'Time period',
+					'Problem is suppressed'
 				]);
 				break;
 			case EVENT_SOURCE_SERVICE:
 				$this->zbxTestDropdownHasOptions('condition_type', [
-						'Service',
-						'Service name',
-						'Service tag name',
-						'Service tag value'
+					'Service',
+					'Service name',
+					'Service tag name',
+					'Service tag value'
 				]);
 				break;
 			case EVENT_SOURCE_DISCOVERY:
 				$this->zbxTestDropdownHasOptions('condition_type', [
-						'Host IP',
-						'Service type',
-						'Service port',
-						'Discovery rule',
-						'Discovery check',
-						'Discovery object',
-						'Discovery status',
-						'Uptime/Downtime',
-						'Received value',
-						'Proxy'
+					'Host IP',
+					'Service type',
+					'Service port',
+					'Discovery rule',
+					'Discovery check',
+					'Discovery object',
+					'Discovery status',
+					'Uptime/Downtime',
+					'Received value',
+					'Proxy'
 				]);
 				break;
 			case EVENT_SOURCE_AUTOREGISTRATION:
 				$this->zbxTestDropdownHasOptions('condition_type', [
-						'Host name',
-						'Proxy',
-						'Host metadata'
+					'Host name',
+					'Proxy',
+					'Host metadata'
 				]);
 				break;
 			case EVENT_SOURCE_INTERNAL:
 				$this->zbxTestDropdownHasOptions('condition_type', [
-						'Tag name',
-						'Tag value',
-						'Event type',
-						'Host group',
-						'Template',
-						'Host'
+					'Tag name',
+					'Tag value',
+					'Event type',
+					'Host group',
+					'Template',
+					'Host'
 				]);
 				break;
 		}
@@ -505,9 +509,9 @@ class testFormAction extends CLegacyWebTest {
 			case 'Trigger severity':
 				$this->zbxTestTextPresent([
 					'equals',
-						'does not equal',
-						'is greater than or equals',
-						'is less than or equals'
+					'does not equal',
+					'is greater than or equals',
+					'is less than or equals'
 				]);
 				break;
 			case 'Trigger value':
@@ -530,18 +534,18 @@ class testFormAction extends CLegacyWebTest {
 				break;
 			case 'Uptime/Downtime':
 				$this->zbxTestTextPresent([
-						'is greater than or equals',
-						'is less than or equals'
+					'is greater than or equals',
+					'is less than or equals'
 				]);
 				break;
 			case 'Received value':
 				$this->zbxTestDropdownHasOptions('operator', [
-						'equals',
-						'does not equal',
-						'is greater than or equals',
-						'is less than or equals',
-						'contains',
-						'does not contain'
+					'equals',
+					'does not equal',
+					'is greater than or equals',
+					'is less than or equals',
+					'contains',
+					'does not contain'
 				]);
 				break;
 		}
@@ -649,59 +653,59 @@ class testFormAction extends CLegacyWebTest {
 		switch ($new_condition_conditiontype) {
 			case 'Trigger severity':
 				$this->zbxTestTextPresent([
-						'Not classified',
-						'Information',
-						'Warning',
-						'Average',
-						'High',
-						'Disaster'
+					'Not classified',
+					'Information',
+					'Warning',
+					'Average',
+					'High',
+					'Disaster'
 				]);
 				break;
 			case 'Trigger value':
 				$this->zbxTestDropdownHasOptions('new_condition_value', [
-						'OK',
-						'PROBLEM'
+					'OK',
+					'PROBLEM'
 				]);
 				break;
 			case 'Service type':
 				$this->zbxTestDropdownHasOptions('value', [
-						'SSH',
-						'LDAP',
-						'SMTP',
-						'FTP',
-						'HTTP',
-						'HTTPS',
-						'POP',
-						'NNTP',
-						'IMAP',
-						'TCP',
-						'Zabbix agent',
-						'SNMPv1 agent',
-						'SNMPv2 agent',
-						'SNMPv3 agent',
-						'ICMP ping',
-						'Telnet'
+					'SSH',
+					'LDAP',
+					'SMTP',
+					'FTP',
+					'HTTP',
+					'HTTPS',
+					'POP',
+					'NNTP',
+					'IMAP',
+					'TCP',
+					'Zabbix agent',
+					'SNMPv1 agent',
+					'SNMPv2 agent',
+					'SNMPv3 agent',
+					'ICMP ping',
+					'Telnet'
 				]);
 				break;
 			case 'Discovery object':
 				$this->zbxTestTextPresent([
-						'Device',
-						'Service'
+					'Device',
+					'Service'
 				]);
 				break;
 			case 'Discovery status':
 				$this->zbxTestTextPresent([
-						'Up',
-						'Down',
-						'Discovered',
-						'Lost'
+					'Up',
+					'Down',
+					'Discovered',
+					'Lost'
 				]);
 				break;
 			case 'Event type':
 				$this->zbxTestDropdownHasOptions('value', [
-						'Item in "not supported" state',
-						'Low-level discovery rule in "not supported" state',
-						'Trigger in "unknown" state'
+					'Item in "not supported" state',
+					'Low-level discovery rule in "not supported" state',
+					'Trigger in "unknown" state'
 				]);
 				break;
 		}
@@ -755,8 +759,7 @@ class testFormAction extends CLegacyWebTest {
 				foreach ($checkboxes as $label => $locator) {
 					if ($eventsource === EVENT_SOURCE_TRIGGERS) {
 						$this->assertTrue($form->getField($label)->getValue());
-					}
-					else {
+					} else {
 						$this->assertFalse($form->query($locator)->one(false)->isValid());
 					}
 				}
@@ -769,8 +772,13 @@ class testFormAction extends CLegacyWebTest {
 
 			case EVENT_SOURCE_DISCOVERY:
 			case EVENT_SOURCE_AUTOREGISTRATION:
-				$this->zbxTestTextNotPresent(['Default operation step duration', 'Pause operations for suppressed problems',
-					'Notify about canceled escalations', 'Recovery operations', 'Update operations']);
+				$this->zbxTestTextNotPresent([
+					'Default operation step duration',
+					'Pause operations for suppressed problems',
+					'Notify about canceled escalations',
+					'Recovery operations',
+					'Update operations'
+				]);
 				$this->zbxTestAssertElementNotPresentId('esc_period');
 				$this->zbxTestAssertElementNotPresentId('pause_suppressed');
 				break;
@@ -783,8 +791,12 @@ class testFormAction extends CLegacyWebTest {
 				$this->assertEquals($operations_field->getHeadersText(), ['Steps', 'Details', 'Start in', 'Duration', 'Action']);
 				$recovery_field = $form->getField('Recovery operations')->asTable();
 				$this->assertEquals($recovery_field->getHeadersText(), ['Details', 'Action']);
-				$this->zbxTestTextNotPresent(['Pause operations for suppressed problems', 'Notify about canceled escalations',
-					'Update operations']
+				$this->zbxTestTextNotPresent(
+					[
+						'Pause operations for suppressed problems',
+						'Notify about canceled escalations',
+						'Update operations'
+					]
 				);
 				$this->zbxTestAssertElementNotPresentId('pause_suppressed');
 				break;
@@ -797,36 +809,31 @@ class testFormAction extends CLegacyWebTest {
 
 			if ($eventsource === EVENT_SOURCE_INTERNAL) {
 				$this->zbxTestTextPresent('Send message');
-			}
-			else {
+			} else {
 				$this->query('id:operationtype')->waitUntilPresent()->one();
 				$this->zbxTestDropdownSelectWait('operation-type-select', $new_operation_operationtype);
 				COverlayDialogElement::find()->one()->waitUntilReady();
 			}
-		}
-		else {
+		} else {
 			$new_operation_operationtype = null;
 		}
 
 		if (isset($data['new_operation_opmessage_custom_msg'])) {
 			$new_operation_opmessage_custom_msg = $data['new_operation_opmessage_custom_msg'];
 			$this->assertFalse($this->zbxTestCheckboxSelected('operation_opmessage_default_msg'));
-		}
-		elseif ($new_operation_operationtype == 'Send message') {
+		} elseif ($new_operation_operationtype == 'Send message') {
 			$new_operation_opmessage_custom_msg = 'checked';
 			$this->zbxTestCheckboxSelect('operation_opmessage_default_msg');
-		}
-		else {
+		} else {
 			$new_operation_opmessage_custom_msg = null;
 		}
 
 		if (isset($data['add_opcondition'])) {
 			$this->query('class:operation-condition-list-footer')->one()->click(true);
 			$this->page->query('xpath://div[contains(@class, "overlay-dialogue modal")][2]')
-					->asOverlayDialog()->waitUntilReady();
+				->asOverlayDialog()->waitUntilReady();
 			$add_opcondition = $data['add_opcondition'];
-		}
-		else {
+		} else {
 			$add_opcondition = null;
 		}
 
@@ -834,8 +841,10 @@ class testFormAction extends CLegacyWebTest {
 			$this->assertFalse($this->query('id:operation-condition-list')->one(false)->isValid());
 		}
 
-		if ($new_operation_operationtype != null
-				&& in_array($eventsource, [EVENT_SOURCE_TRIGGERS, EVENT_SOURCE_SERVICE, EVENT_SOURCE_INTERNAL])) {
+		if (
+			$new_operation_operationtype != null
+			&& in_array($eventsource, [EVENT_SOURCE_TRIGGERS, EVENT_SOURCE_SERVICE, EVENT_SOURCE_INTERNAL])
+		) {
 			switch ($new_operation_operationtype) {
 				case 'Send message':
 				case 'Reboot':
@@ -855,27 +864,24 @@ class testFormAction extends CLegacyWebTest {
 					$this->zbxTestAssertAttribute('//input[@id=\'operation_esc_period\']', 'maxlength', 255);
 					$this->zbxTestAssertAttribute('//input[@id=\'operation_esc_period\']', 'value', 0);
 					break;
-				}
 			}
-			else {
-				$this->zbxTestAssertElementNotPresentId('operation_esc_step_from');
-				$this->zbxTestAssertElementNotPresentId('operation_esc_step_to');
-				$this->zbxTestAssertElementNotPresentId('operation_esc_period');
-			}
+		} else {
+			$this->zbxTestAssertElementNotPresentId('operation_esc_step_from');
+			$this->zbxTestAssertElementNotPresentId('operation_esc_step_to');
+			$this->zbxTestAssertElementNotPresentId('operation_esc_period');
+		}
 
 		if (isset($data['new_operation_operationtype']) && $eventsource != EVENT_SOURCE_INTERNAL) {
 			$this->zbxTestTextPresent('Operations');
 			$this->zbxTestAssertVisibleXpath('//z-select[@id=\'operation-type-select\']');
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementNotPresentXpath('//z-select[@id=\'operation-type-select\']');
 		}
 
 		if (isset($data['check_operationtype']) && $eventsource === EVENT_SOURCE_INTERNAL) {
 			$this->assertFalse($form->query('id:operation-opmessage-subject')->one(false)->isValid());
 			$this->zbxTestAssertVisibleXpath('//div[contains(@id, "operation-type")]/label[text()="Send message"]');
-		}
-		elseif (isset($data['check_operationtype'])) {
+		} elseif (isset($data['check_operationtype'])) {
 			$options = $this->query('id:operation-type-select')->asDropdown()->one();
 			switch ($eventsource) {
 				case EVENT_SOURCE_TRIGGERS:
@@ -886,20 +892,20 @@ class testFormAction extends CLegacyWebTest {
 				case EVENT_SOURCE_DISCOVERY:
 				case EVENT_SOURCE_AUTOREGISTRATION:
 					$this->assertEquals($options->getOptions()->asText(), [
-							'Send message',
-							'Add host',
-							'Remove host',
-							'Add to host group',
-							'Remove from host group',
-							'Link template',
-							'Unlink template',
-							'Add host tags',
-							'Remove host tags',
-							'Enable host',
-							'Disable host',
-							'Set host inventory mode',
-							'Reboot',
-							'Selenium script'
+						'Send message',
+						'Add host',
+						'Remove host',
+						'Add to host group',
+						'Remove from host group',
+						'Link template',
+						'Unlink template',
+						'Add host tags',
+						'Remove host tags',
+						'Enable host',
+						'Disable host',
+						'Set host inventory mode',
+						'Reboot',
+						'Selenium script'
 					]);
 					break;
 			}
@@ -911,8 +917,7 @@ class testFormAction extends CLegacyWebTest {
 			$operation_details = $this->query('id:popup-operation')->asForm()->one();
 			$this->assertTrue($operation_details->query('id:operation_opcommand_hst__hostid')->one()->isVisible());
 			$this->assertTrue($operation_details->query('id:operation_opcommand_grp__groupid')->one()->isVisible());
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementNotPresentId('opCmdList');
 			$this->zbxTestAssertElementNotPresentXpath('//li[@id="operation-command-targets"]//label[text()="Target list"]');
 			$this->zbxTestAssertElementNotPresentXpath('//li[@id="operation-command-script-target"]//label[text()="Execute on"]');
@@ -920,7 +925,9 @@ class testFormAction extends CLegacyWebTest {
 
 		if ($new_operation_operationtype == 'Send message') {
 			$this->zbxTestTextPresent([
-				'Send to user groups', 'User group', 'Action',
+				'Send to user groups',
+				'User group',
+				'Action',
 				'Send to users'
 			]);
 			$this->zbxTestAssertVisibleXpath('//div[@id="operation-message-user-groups"]//button');
@@ -932,9 +939,9 @@ class testFormAction extends CLegacyWebTest {
 			$this->zbxTestAssertVisibleId('operation-message-mediatype-only-label');
 			$this->zbxTestDropdownAssertSelected('operation[opmessage][mediatypeid]', 'All available');
 			$this->zbxTestDropdownHasOptions('operation[opmessage][mediatypeid]', [
-					'All available',
-					'Email',
-					'SMS'
+				'All available',
+				'Email',
+				'SMS'
 			]);
 
 			$this->zbxTestTextPresent('Custom message');
@@ -942,12 +949,10 @@ class testFormAction extends CLegacyWebTest {
 			$this->zbxTestAssertElementPresentXpath('//input[@type=\'checkbox\' and @id=\'operation_opmessage_default_msg\']');
 			if ($new_operation_opmessage_custom_msg == 'checked') {
 				$this->assertTrue($this->zbxTestCheckboxSelected('operation_opmessage_default_msg'));
-			}
-			else {
+			} else {
 				$this->assertFalse($this->zbxTestCheckboxSelected('operation_opmessage_default_msg'));
 			}
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementNotPresentId('addusrgrpbtn');
 			$this->zbxTestAssertElementNotPresentId('adduserbtn');
 		}
@@ -979,26 +984,24 @@ class testFormAction extends CLegacyWebTest {
 
 			if ($add_opcondition == null) {
 				$this->zbxTestAssertVisibleXpath('//button[@class="js-add"]');
-			}
-			else {
+			} else {
 				$this->zbxTestTextPresent('New condition');
-				$this->query('xpath://div[contains(@class, "overlay-dialogue modal")][2]'.
-						'//button[text()="Cancel"]')->one()->waitUntilVisible();
+				$this->query('xpath://div[contains(@class, "overlay-dialogue modal")][2]' .
+					'//button[text()="Cancel"]')->one()->waitUntilVisible();
 
 				$this->zbxTestAssertVisibleXpath('//z-select[@id="condition-type"]');
 				$this->zbxTestDropdownAssertSelected('condition_type', 'Event acknowledged');
 				$this->zbxTestDropdownHasOptions('condition_type', ['Event acknowledged']);
 
-				$this->zbxTestAssertVisibleXpath('//div[contains(@class, "overlay-dialogue modal")]'.
-						'//label[text()="equals"]');
-				$this->zbxTestAssertVisibleXpath('//div[contains(@class, "overlay-dialogue modal")]'.
-						'//ul[@id="value" and @class="radio-list-control"]');
+				$this->zbxTestAssertVisibleXpath('//div[contains(@class, "overlay-dialogue modal")]' .
+					'//label[text()="equals"]');
+				$this->zbxTestAssertVisibleXpath('//div[contains(@class, "overlay-dialogue modal")]' .
+					'//ul[@id="value" and @class="radio-list-control"]');
 				$this->zbxTestAssertElementPresentXpath('//label[text()="No"]/../input[@checked]');
-				$this->query('xpath://div[@data-dialogueid="operation-condition"]//'.
-						'button[contains(@type,"button") and (text()="Add")]')->one()->click()->waitUntilNotVisible();
+				$this->query('xpath://div[@data-dialogueid="operation-condition"]//' .
+					'button[contains(@type,"button") and (text()="Add")]')->one()->click()->waitUntilNotVisible();
 			}
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementNotPresentXpath('//li[@id="operation-condition-list"]');
 			$this->zbxTestAssertElementNotPresentXpath('//tr[@id="operation-condition-list-footer"]');
 		}
@@ -1023,8 +1026,7 @@ class testFormAction extends CLegacyWebTest {
 		if ($new_operation_operationtype != null) {
 			$this->zbxTestAssertVisibleXpath('//div[@class="overlay-dialogue-footer"]//button[text()="Add"]');
 			$this->zbxTestAssertVisibleXpath('//div[@class="overlay-dialogue-footer"]//button[text()="Cancel"]');
-		}
-		else {
+		} else {
 			$this->zbxTestAssertElementNotPresentXpath('//div[@id="operationTab"]//button[contains(@onclick,"add_operation")]');
 			$this->zbxTestAssertElementNotPresentXpath('//div[@id="operationTab"]//button[contains(@onclick,"cancel_new_operation")]');
 		}
@@ -1046,7 +1048,8 @@ class testFormAction extends CLegacyWebTest {
 	/*
 	 * Function that checks possible operation types and custom message related fields for recovery and update operations.
 	 */
-	private function checkRecoveryUpdateOperations($operation_field, $eventsource) {
+	private function checkRecoveryUpdateOperations($operation_field, $eventsource)
+	{
 		$operation_field->query('button:Add')->one()->click();
 		COverlayDialogElement::find()->waitUntilReady()->one();
 		$operation_details = $this->query('id:popup-operation')->asForm()->one();
@@ -1055,12 +1058,12 @@ class testFormAction extends CLegacyWebTest {
 			? ['Send message', 'Notify all involved']
 			: ['Send message', 'Notify all involved', 'Reboot', 'Selenium script'];
 		$this->assertEquals($message_types, $operation_details->query('id:operation-type-select')
-				->asDropdown()->one()->getOptions()->asText());
+			->asDropdown()->one()->getOptions()->asText());
 		$this->assertEquals('Send message', $operation_details->getField('Operation')->getValue());
 
 		// Make sure that Custom message is unchecked and that message related fields are not visible.
 		$this->assertFalse($operation_details->getField('Custom message')->getValue());
-		$this->zbxTestTextNotVisible(['Subject','Message']);
+		$this->zbxTestTextNotVisible(['Subject', 'Message']);
 
 		// Set the Custom message option and check Subject and Message fields.
 		$operation_details->getField('Custom message')->set(true);
@@ -1069,16 +1072,18 @@ class testFormAction extends CLegacyWebTest {
 		$this->zbxTestClickXpath("//div[@class='overlay-dialogue modal modal-popup modal-popup-medium']//button[@title='Close']");
 	}
 
-	public static function update() {
+	public static function update()
+	{
 		return CDBHelper::getDataProvider('SELECT name, eventsource FROM actions');
 	}
 
-	public static function updateServiceAction() {
+	public static function updateServiceAction()
+	{
 		return [
 			[
 				[
-						'name' => self::SERVICE_ACTION,
-						'eventsource' => '4'
+					'name' => self::SERVICE_ACTION,
+					'eventsource' => '4'
 				]
 			]
 		];
@@ -1088,34 +1093,35 @@ class testFormAction extends CLegacyWebTest {
 	 * @dataProvider update
 	 * @dataProvider updateServiceAction
 	 */
-	public function testFormAction_SimpleUpdate($data) {
+	public function testFormAction_SimpleUpdate($data)
+	{
 		$name = $data['name'];
 		$eventsource = $data['eventsource'];
 
 		if ($name == 'Auto discovery. Linux servers.') {
 			$sqlActions = 'SELECT actionid, name, eventsource, evaltype, status FROM actions ORDER BY actionid';
-		}
-		else {
+		} else {
 			$sqlActions = 'SELECT * FROM actions ORDER BY actionid';
 		}
 		$oldHashActions = CDBHelper::getHash($sqlActions);
 
-		$this->page->login()->open('zabbix.php?action=action.list&eventsource='.$eventsource);
+		$this->page->login()->open('zabbix.php?action=action.list&eventsource=' . $eventsource);
 		$this->zbxTestClickLinkTextWait($name);
 		$this->zbxTestClickButtonText('Update');
 		$this->zbxTestCheckTitle('Configuration of actions');
 		$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Action updated');
 		$this->zbxTestCheckHeader($this->event_sources[$data['eventsource']]);
 		$this->zbxTestTextPresent([
-				'Action updated',
-				'Actions',
-				$name
+			'Action updated',
+			'Actions',
+			$name
 		]);
 
 		$this->assertEquals($oldHashActions, CDBHelper::getHash($sqlActions));
 	}
 
-	public static function create() {
+	public static function create()
+	{
 		return [
 			[
 				[
@@ -1218,7 +1224,7 @@ class testFormAction extends CLegacyWebTest {
 						],
 						[
 							'Type' => CFormElement::RELOADABLE_FILL('Host metadata'),
-							'Operator'=> 'does not contain',
+							'Operator' => 'does not contain',
 							'Value' => 'Zabbix'
 						]
 					],
@@ -1275,7 +1281,7 @@ class testFormAction extends CLegacyWebTest {
 						]
 					],
 					'expected operations' => [
-						'Send message to users: Admin (Zabbix Administrator) via Email'
+						'Send message to users: Admin (Advantal Administrator) via Email'
 					]
 				]
 			],
@@ -1335,7 +1341,7 @@ class testFormAction extends CLegacyWebTest {
 					],
 					'expected operations' => [
 						'Send message to user groups: Selenium user group via all media',
-						'Run script "Reboot" on Zabbix server'
+						'Run script "Reboot" on Advantal server'
 					]
 				]
 			],
@@ -1368,8 +1374,9 @@ class testFormAction extends CLegacyWebTest {
 	/**
 	 * @dataProvider create
 	 */
-	public function testFormAction_SimpleCreate($data) {
-		$this->page->login()->open('zabbix.php?action=action.list&eventsource='.$data['eventsource']);
+	public function testFormAction_SimpleCreate($data)
+	{
+		$this->page->login()->open('zabbix.php?action=action.list&eventsource=' . $data['eventsource']);
 		$this->zbxTestCheckTitle('Configuration of actions');
 		$this->zbxTestCheckHeader($this->event_sources[$data['eventsource']]);
 		$this->zbxTestClickButtonText('Create action');
@@ -1405,16 +1412,14 @@ class testFormAction extends CLegacyWebTest {
 					if (array_key_exists('user_group', $operation)) {
 						$field = 'Send to user groups';
 						$value = $operation['user_group'];
-					}
-					else {
+					} else {
 						$field = 'Send to users';
 						$value = 'Admin';
 					}
 					$operation_form->getField($field)->query('button:Select')->one()->click();
 					$list = COverlayDialogElement::find()->all()->last();
 					$list->query('link', $value)->waitUntilClickable()->one()->click();
-				}
-				elseif ($data['eventsource'] !== EVENT_SOURCE_SERVICE) {
+				} elseif ($data['eventsource'] !== EVENT_SOURCE_SERVICE) {
 					$operation_form->query('id:operation-command-chst')->asCheckbox()->waitUntilVisible()->one()->check();
 				}
 
@@ -1426,7 +1431,7 @@ class testFormAction extends CLegacyWebTest {
 				$operation_form->waitUntilNotVisible();
 				// Wait until new operation row is visible.
 				$operations_table = $this->query('id:op-table')->waitUntilVisible()->asTable()->one();
-				$operations_table->query('xpath:./tbody/tr['.($i + 1).']')->waitUntilVisible();
+				$operations_table->query('xpath:./tbody/tr[' . ($i + 1) . ']')->waitUntilVisible();
 			}
 
 			if (array_key_exists('esc_period', $data)) {
@@ -1435,7 +1440,7 @@ class testFormAction extends CLegacyWebTest {
 		}
 
 		$action_form->submit();
-		$sql = 'SELECT actionid FROM actions WHERE name='.zbx_dbstr($data['name']);
+		$sql = 'SELECT actionid FROM actions WHERE name=' . zbx_dbstr($data['name']);
 		if ($data['expected'] === ACTION_GOOD) {
 			$this->page->waitUntilReady();
 			$this->assertMessage(TEST_GOOD, 'Action added');
@@ -1447,14 +1452,14 @@ class testFormAction extends CLegacyWebTest {
 			if (array_key_exists('conditions', $data)) {
 				$condition_table = $this->query('id:conditionTable')->waitUntilVisible()->asTable()->one();
 
-				foreach($data['expected conditions'] as $label => $result) {
+				foreach ($data['expected conditions'] as $label => $result) {
 					$this->assertEquals($result, $condition_table->findRow('Label', $label)->getColumn('Name')->getText());
 				}
 			}
 
 			if (array_key_exists('operations', $data)) {
 				$expected_operations = [
-					'Send message to users: Admin (Zabbix Administrator) via Email',
+					'Send message to users: Admin (Advantal Administrator) via Email',
 					'Run script "Reboot" on current host'
 				];
 				if (array_key_exists('expected operations', $data)) {
@@ -1473,8 +1478,7 @@ class testFormAction extends CLegacyWebTest {
 				$action_form->submit();
 				$this->query('xpath://button[@class="btn-overlay-close"]')->waitUntilVisible()->one()->click();
 			}
-		}
-		else {
+		} else {
 			$title = CTestArrayHelper::get($data, 'error_title', 'Cannot add action');
 			$this->assertMessage(TEST_BAD, $title, $data['errors']);
 			$this->query('xpath://output[@aria-label="Error message"]//button[@title="Close"]')->one()->click();
@@ -1483,7 +1487,8 @@ class testFormAction extends CLegacyWebTest {
 		}
 	}
 
-	public function testFormAction_Create() {
+	public function testFormAction_Create()
+	{
 		$this->zbxTestLogin('zabbix.php?action=action.list&eventsource=0');
 		$this->zbxTestCheckTitle('Configuration of actions');
 		$this->query('button:Create action')->one()->click()->waitUntilReady();
@@ -1534,9 +1539,11 @@ class testFormAction extends CLegacyWebTest {
 		$operation_form = $this->query('id:popup-operation')->asForm()->one();
 		$operation_form->getField('Send to media type')->select('SMS');
 		$operation_form->submit();
-		$this->zbxTestAssertElementText("//tr[@id='operations_0']//td[@class='wordbreak']",
-			"Send message to users: Admin (Zabbix Administrator) via SMS ".
-			"Send message to user groups: Enabled debug mode, Zabbix administrators via SMS");
+		$this->zbxTestAssertElementText(
+			"//tr[@id='operations_0']//td[@class='wordbreak']",
+			"Send message to users: Admin (Advantal Administrator) via SMS " .
+				"Send message to user groups: Enabled debug mode, Advantal Administrators via SMS"
+		);
 
 		$this->zbxTestClickXpathWait('//table[@id="op-table"]//button[text()="Add"]');
 		$this->query('xpath://div[@class="overlay-dialogue-footer"]//button[text()="Add"]')->waitUntilVisible()->one();
@@ -1545,33 +1552,37 @@ class testFormAction extends CLegacyWebTest {
 		// add target current host
 		$this->zbxTestCheckboxSelect('operation-command-chst');
 
-		// add target host Zabbix server
+		// add target host Advantal server
 		$this->zbxTestClickButtonMultiselect('operation_opcommand_hst__hostid');
 		$this->zbxTestLaunchOverlayDialog('Hosts');
 		$this->zbxTestClickButtonMultiselect('popup_host_group');
 		$this->zbxTestLaunchOverlayDialog('Host groups');
-		$this->query('link:Zabbix servers')->one()->waitUntilClickable()->click();
+		$this->query('link:Advantal servers')->one()->waitUntilClickable()->click();
 
 		$this->zbxTestClickLinkTextWait('Simple form test host');
-		// add target group Zabbix servers
+		// add target group Advantal servers
 		$this->zbxTestClickButtonMultiselect('operation_opcommand_grp__groupid');
 		$this->zbxTestLaunchOverlayDialog('Host groups');
-		$this->zbxTestClickLinkTextWait('Zabbix servers');
+		$this->zbxTestClickLinkTextWait('Advantal servers');
 
 		$operation_form->submit();
 
 		foreach (['operations_0', 'operations_1'] as $row) {
-			$this->query('xpath://tr[@id="'.$row.'"]')->waitUntilVisible();
+			$this->query('xpath://tr[@id="' . $row . '"]')->waitUntilVisible();
 		}
 
 		$this->query('class:js-add')->waitUntilClickable()->one();
-		$this->zbxTestAssertElementText("//tr[@id='operations_0']//td[@class='wordbreak']",
-			"Send message to users: Admin (Zabbix Administrator) via SMS ".
-			"Send message to user groups: Enabled debug mode, Zabbix administrators via SMS");
-		$this->zbxTestAssertElementText("//tr[@id='operations_1']//td[@class='wordbreak']",
-			"Run script \"Reboot\" on current host ".
-			"Run script \"Reboot\" on hosts: Simple form test host ".
-			"Run script \"Reboot\" on host groups: Zabbix servers");
+		$this->zbxTestAssertElementText(
+			"//tr[@id='operations_0']//td[@class='wordbreak']",
+			"Send message to users: Admin (Advantal Administrator) via SMS " .
+				"Send message to user groups: Enabled debug mode, Advantal Administrators via SMS"
+		);
+		$this->zbxTestAssertElementText(
+			"//tr[@id='operations_1']//td[@class='wordbreak']",
+			"Run script \"Reboot\" on current host " .
+				"Run script \"Reboot\" on hosts: Simple form test host " .
+				"Run script \"Reboot\" on host groups: Advantal servers"
+		);
 
 		$this->zbxTestClickXpathWait('//table[@id="op-table"]//button[text()="Add"]');
 		$this->query('xpath://div[@class="overlay-dialogue-footer"]//button[text()="Add"]')->waitUntilVisible()->one();
@@ -1581,21 +1592,28 @@ class testFormAction extends CLegacyWebTest {
 
 		$operation_form->submit();
 		$this->query('xpath://tr[@id="operations_2"]')->waitUntilVisible();
-		$this->zbxTestAssertElementText("//tr[@id='operations_0']//td[@class='wordbreak']",
-			"Send message to users: Admin (Zabbix Administrator) via SMS ".
-			"Send message to user groups: Enabled debug mode, Zabbix administrators via SMS");
-		$this->zbxTestAssertElementText("//tr[@id='operations_1']//td[@class='wordbreak']",
-			"Run script \"Reboot\" on current host ".
-			"Run script \"Reboot\" on hosts: Simple form test host ".
-			"Run script \"Reboot\" on host groups: Zabbix servers");
-		$this->zbxTestAssertElementText("//tr[@id='operations_2']//td[@class='wordbreak']",
-			"Run script \"Reboot\" on current host");
+		$this->zbxTestAssertElementText(
+			"//tr[@id='operations_0']//td[@class='wordbreak']",
+			"Send message to users: Admin (Advantal Administrator) via SMS " .
+				"Send message to user groups: Enabled debug mode, Advantal Administrators via SMS"
+		);
+		$this->zbxTestAssertElementText(
+			"//tr[@id='operations_1']//td[@class='wordbreak']",
+			"Run script \"Reboot\" on current host " .
+				"Run script \"Reboot\" on hosts: Simple form test host " .
+				"Run script \"Reboot\" on host groups: Advantal servers"
+		);
+		$this->zbxTestAssertElementText(
+			"//tr[@id='operations_2']//td[@class='wordbreak']",
+			"Run script \"Reboot\" on current host"
+		);
 		$this->zbxTestAssertElementText("//tr[@id='operations_2']//td", '1 - 2');
 		$form->getField('id:esc_period')->fill('123');
 
 		// Fire onchange event.
-		$this->webDriver->executeScript('var event = document.createEvent("HTMLEvents");'.
-				'event.initEvent("change", false, true);'.
+		$this->webDriver->executeScript(
+			'var event = document.createEvent("HTMLEvents");' .
+				'event.initEvent("change", false, true);' .
 				'document.getElementById("esc_period").dispatchEvent(event);'
 		);
 
@@ -1607,15 +1625,16 @@ class testFormAction extends CLegacyWebTest {
 		$this->assertEquals(1, CDBHelper::getCount($sql), 'Action has not been created in the DB.');
 	}
 
-	public function testFormAction_Clone() {
+	public function testFormAction_Clone()
+	{
 		$id = CDataHelper::get('Actions.Service action');
-		$sql = 'SELECT a.eventsource, a.evaltype, a.status, a.esc_period, a.formula, a.pause_suppressed, '.
-				'c.conditiontype, c.operator, c.value, c.value2, '.
-				'o.operationtype, o.esc_period, o.esc_step_from, o.esc_step_to, o.evaltype, o.recovery '.
-				'FROM actions a '.
-				'INNER JOIN conditions c ON c.actionid = a.actionid '.
-				'INNER JOIN operations o on o.actionid = c.actionid '.
-				'WHERE a.actionid='.zbx_dbstr($id).' ORDER BY o.operationid';
+		$sql = 'SELECT a.eventsource, a.evaltype, a.status, a.esc_period, a.formula, a.pause_suppressed, ' .
+			'c.conditiontype, c.operator, c.value, c.value2, ' .
+			'o.operationtype, o.esc_period, o.esc_step_from, o.esc_step_to, o.evaltype, o.recovery ' .
+			'FROM actions a ' .
+			'INNER JOIN conditions c ON c.actionid = a.actionid ' .
+			'INNER JOIN operations o on o.actionid = c.actionid ' .
+			'WHERE a.actionid=' . zbx_dbstr($id) . ' ORDER BY o.operationid';
 
 		$original_hash = CDBHelper::getHash($sql);
 
@@ -1624,7 +1643,7 @@ class testFormAction extends CLegacyWebTest {
 		$this->zbxTestClickXpathWait('//div[@data-dialogueid="action-edit"]//button[text()="Clone"]');
 		$dialog = $this->query('class:overlay-dialogue-body')->asOverlayDialog()->one()->waitUntilReady();
 		$form = $dialog->asForm();
-		$form->getField('id:name')->fill(self::SERVICE_ACTION.' Clone');
+		$form->getField('id:name')->fill(self::SERVICE_ACTION . ' Clone');
 		$form->submit();
 		$this->assertMessage(TEST_GOOD, 'Action added');
 		$this->assertEquals($original_hash, CDBHelper::getHash($sql));

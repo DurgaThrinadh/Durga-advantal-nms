@@ -14,20 +14,22 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * Base class for Administration General configuration function tests.
  */
-class testFormAdministrationGeneral extends CWebTest {
+class testFormAdministrationGeneral extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class
 		];
@@ -44,7 +46,8 @@ class testFormAdministrationGeneral extends CWebTest {
 	 *
 	 * @param boolean    $trigger_disp   If it is Trigger displaying options form
 	 */
-	public function executeSimpleUpdate($trigger_disp = false) {
+	public function executeSimpleUpdate($trigger_disp = false)
+	{
 		$config = CDBHelper::getRow('SELECT * FROM config ORDER BY configid');
 		$this->page->login()->open($this->config_link);
 		$form = $this->query($this->form_selector)->waitUntilVisible()->asForm()->one();
@@ -71,7 +74,8 @@ class testFormAdministrationGeneral extends CWebTest {
 	 *
 	 * @param boolean    $other			 If it is Other configuration parameters form
 	 */
-	public function executeResetButtonTest($other = false) {
+	public function executeResetButtonTest($other = false)
+	{
 		$this->page->login()->open($this->config_link);
 		$form = $this->query($this->form_selector)->waitUntilVisible()->asForm()->one();
 		// Reset form in case of some previous scenario.
@@ -105,7 +109,8 @@ class testFormAdministrationGeneral extends CWebTest {
 	 * @param boolean  $other		 Is this Other parameters form or not
 	 * @param array    $custom		 Custom values for filling into settings form
 	 */
-	public function resetConfiguration($form, $default, $action, $other = false, $custom = null) {
+	public function resetConfiguration($form, $default, $action, $other = false, $custom = null)
+	{
 		if (CTestArrayHelper::get($default, 'Default time zone')) {
 			$default['Default time zone'] = CDateTimeHelper::getTimeZoneFormat($default['Default time zone']);
 		}
@@ -124,7 +129,7 @@ class testFormAdministrationGeneral extends CWebTest {
 					$form->fill(
 						[
 							'Group for discovered hosts' => 'Empty group',
-							'User group for database down message' => 'Zabbix administrators'
+							'User group for database down message' => 'Advantal Administrators'
 						]
 					);
 				}
@@ -150,15 +155,15 @@ class testFormAdministrationGeneral extends CWebTest {
 	 * @param boolean    $other       true if Other configuration parameters form
 	 * @param boolean    $timeouts    true if Timeouts configuration form
 	 */
-	public function executeCheckForm($data, $other = false, $timeouts = false) {
+	public function executeCheckForm($data, $other = false, $timeouts = false)
+	{
 		$expected = CTestArrayHelper::get($data, 'expected', TEST_GOOD);
 
 		if ($expected === TEST_GOOD) {
 			$message = 'Configuration updated';
 			$values = $data['fields'];
 			$db = CTestArrayHelper::get($data, 'db', []);
-		}
-		else {
+		} else {
 			$message = 'Cannot update configuration';
 			$values = $this->default_values;
 			$db = $this->db_default_values;

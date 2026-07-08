@@ -23,7 +23,8 @@ require_once __DIR__ . '/../../include/CWebTest.php';
  *
  * @onBefore prepareData
  */
-class testFormUser extends CWebTest {
+class testFormUser extends CWebTest
+{
 
 	const SQL = 'SELECT * FROM users';
 	const ZABBIX_LDAP_USER = 'John Zabbix';
@@ -35,11 +36,13 @@ class testFormUser extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return ['class' => CMessageBehavior::class];
 	}
 
-	public function prepareData() {
+	public function prepareData()
+	{
 		// Create LDAP server.
 		CDataHelper::call('userdirectory.create', [
 			[
@@ -94,7 +97,8 @@ class testFormUser extends CWebTest {
 		]);
 	}
 
-	public function getLayoutData() {
+	public function getLayoutData()
+	{
 		return [
 			[
 				[
@@ -120,8 +124,8 @@ class testFormUser extends CWebTest {
 					'disabled' => ['id:autologout'],
 					'enabled_buttons' => ['Add', 'Cancel', 'Select'],
 					'hintbox_warning' => [
-						'Language' => 'You are not able to choose some of the languages,'.
-								' because locales for them are not installed on the web server.'
+						'Language' => 'You are not able to choose some of the languages,' .
+							' because locales for them are not installed on the web server.'
 					]
 				]
 			],
@@ -160,7 +164,7 @@ class testFormUser extends CWebTest {
 						'Username' => 'Admin',
 						'Name' => 'Zabbix',
 						'Last name' => 'Administrator',
-						'Groups' => ['Internal', 'Zabbix administrators'],
+						'Groups' => ['Internal', 'Advantal Administrators'],
 						'Current password' => '',
 						'Password' => '',
 						'Password (once again)' => '',
@@ -177,8 +181,8 @@ class testFormUser extends CWebTest {
 					'disabled' => ['id:autologout'],
 					'enabled_buttons' => ['Update', 'Cancel', 'Select'],
 					'hintbox_warning' => [
-						'Language' => 'You are not able to choose some of the languages,'.
-								' because locales for them are not installed on the web server.'
+						'Language' => 'You are not able to choose some of the languages,' .
+							' because locales for them are not installed on the web server.'
 					]
 				]
 			]
@@ -188,14 +192,14 @@ class testFormUser extends CWebTest {
 	/**
 	 * @dataProvider getLayoutData
 	 */
-	public function testFormUser_Layout($data) {
+	public function testFormUser_Layout($data)
+	{
 		$this->page->login()->open('zabbix.php?action=user.list');
 		$user = CTestArrayHelper::get($data, 'user', 'new');
 
 		if ($user === 'new') {
 			$this->query('button:Create user')->one()->click();
-		}
-		else {
+		} else {
 			$this->query('link', $user)->waitUntilVisible()->one()->click();
 		}
 
@@ -235,8 +239,7 @@ class testFormUser extends CWebTest {
 			foreach ($data['disabled_values'] as $element => $value) {
 				$this->assertEquals($value, $form->query($element)->one()->getText());
 			}
-		}
-		else {
+		} else {
 			$inputs = [
 				'Username' => [
 					'maxlength' => '100'
@@ -276,16 +279,18 @@ class testFormUser extends CWebTest {
 
 			$form->getLabel('Password')->query('xpath:.//button[@data-hintbox]')->one()->click();
 			$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->waitUntilReady();
-			$help_message = "Password requirements:\n".
-					"must be at least 8 characters long\n".
-					"must not contain user's name, surname or username\n".
-					"must not be one of common or context-specific passwords";
+			$help_message = "Password requirements:\n" .
+				"must be at least 8 characters long\n" .
+				"must not contain user's name, surname or username\n" .
+				"must not be one of common or context-specific passwords";
 			$this->assertEquals($help_message, $hint->one()->getText());
 			$hint->query('class:btn-overlay-close')->one()->click();
 
 			$info_message = 'Password is not mandatory for non internal authentication type.';
-			$this->assertEquals($info_message, $form->query('xpath:.//div[contains(text(), '.
-					CXPathHelper::escapeQuotes($info_message).')]')->one()->getText()
+			$this->assertEquals(
+				$info_message,
+				$form->query('xpath:.//div[contains(text(), ' .
+					CXPathHelper::escapeQuotes($info_message) . ')]')->one()->getText()
 			);
 		}
 
@@ -301,7 +306,9 @@ class testFormUser extends CWebTest {
 		$this->assertEquals($data['required'], $form->getRequiredLabels());
 
 		// Check that buttons are present and clickable.
-		$this->assertEquals(count($data['enabled_buttons']), $form->query('button', $data['enabled_buttons'])->all()
+		$this->assertEquals(
+			count($data['enabled_buttons']),
+			$form->query('button', $data['enabled_buttons'])->all()
 				->filter(CElementFilter::CLICKABLE)->count()
 		);
 
@@ -311,8 +318,9 @@ class testFormUser extends CWebTest {
 		$media_tab = $form->query('id:mediaTab')->one();
 		$media_table = $media_tab->asTable();
 
-		$this->assertEquals(['Type', 'Send to', 'When active', 'Use if severity', 'Status', 'Action'],
-				$media_table->getHeadersText()
+		$this->assertEquals(
+			['Type', 'Send to', 'When active', 'Use if severity', 'Status', 'Action'],
+			$media_table->getHeadersText()
 		);
 
 		$add_button = $media_tab->query('button:Add')->one();
@@ -321,14 +329,14 @@ class testFormUser extends CWebTest {
 		// Check that Media tab buttons are present.
 		if ($user === 'Admin') {
 			$buttons = ['Update', 'Cancel'];
-		}
-		elseif ($user === 'guest') {
+		} elseif ($user === 'guest') {
 			$buttons = ['Update', 'Delete', 'Cancel'];
-		}
-		else {
+		} else {
 			$buttons = ['Add', 'Cancel'];
 		}
-		$this->assertEquals(count($buttons), $this->query('class:tfoot-buttons')->one()->query('button', $buttons)->all()
+		$this->assertEquals(
+			count($buttons),
+			$this->query('class:tfoot-buttons')->one()->query('button', $buttons)->all()
 				->filter(CElementFilter::CLICKABLE)->count()
 		);
 
@@ -355,7 +363,9 @@ class testFormUser extends CWebTest {
 		];
 		$this->assertEquals($modal_form['fields'], array_values($dialog_form->getLabels(CElementFilter::VISIBLE)->asText()));
 		$dialog_form->checkValue($modal_form['default']);
-		$this->assertEquals(2, $dialog->getFooter()->query('button', $modal_form['buttons'])->all()
+		$this->assertEquals(
+			2,
+			$dialog->getFooter()->query('button', $modal_form['buttons'])->all()
 				->filter(CElementFilter::CLICKABLE)->count()
 		);
 		$this->assertEquals(['Send to', 'When active'], $dialog_form->getRequiredLabels());
@@ -368,8 +378,7 @@ class testFormUser extends CWebTest {
 		if ($user === 'Admin') {
 			$this->assertFalse($form->getField('Role')->asMultiselect()->isEnabled());
 			$this->assertFalse($form->isRequired('Role'));
-		}
-		else {
+		} else {
 			$this->assertTrue($form->getField('Role')->isEnabled());
 			$this->assertTrue($form->isRequired('Role'));
 		}
@@ -379,7 +388,8 @@ class testFormUser extends CWebTest {
 		}
 	}
 
-	public function getCreateData() {
+	public function getCreateData()
+	{
 		return [
 			// Username is already taken by another user.
 			[
@@ -387,7 +397,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Admin',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -402,7 +412,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => '',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'zabbix',
 						'Password (once again)' => 'zabbix'
 					],
@@ -417,7 +427,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => '   ',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -432,7 +442,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test1',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -460,7 +470,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test2',
-						'Groups' => 'Zabbix administrators'
+						'Groups' => 'Advantal Administrators'
 					],
 					'role' => 'Super admin role',
 					'error_title' => 'Cannot add user',
@@ -473,7 +483,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test3',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678'
 					],
 					'role' => 'Super admin role',
@@ -487,7 +497,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test4',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password (once again)' => 'test5678'
 					],
 					'role' => 'Super admin role',
@@ -501,7 +511,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test5',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'tEST5678'
 					],
@@ -516,7 +526,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test6',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => ''
@@ -532,7 +542,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test7',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => '123abc'
@@ -548,7 +558,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test8',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => '3601'
@@ -563,7 +573,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test_2h',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => '2h'
@@ -578,7 +588,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test_61m',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => '61m'
@@ -594,7 +604,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test9',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => '00000000000001'
@@ -610,7 +620,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test10',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Rows per page' => '0'
@@ -626,7 +636,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test11',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Rows per page' => 'abc123'
@@ -642,7 +652,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test12',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -660,7 +670,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test12_1m',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -679,7 +689,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test13',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -697,7 +707,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test13_1441m',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -715,7 +725,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test13_25h',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -734,7 +744,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test14',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -753,7 +763,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test15',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678'
 					],
@@ -772,7 +782,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test16',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'URL (after login)' => 'javascript:alert(123);'
@@ -788,7 +798,7 @@ class testFormUser extends CWebTest {
 					'expected' => TEST_BAD,
 					'fields' => [
 						'Username' => 'Negative_Test19',
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'URL (after login)' => 'snmp://zabbix.com'
@@ -819,7 +829,7 @@ class testFormUser extends CWebTest {
 						'Username' => 'Оверлорд',
 						'Name' => 'Антон Антонович',
 						'Last name' => 'Антонов',
-						'Groups' => ['Zabbix administrators'],
+						'Groups' => ['Advantal Administrators'],
 						'Password' => 'абвгдеЁж',
 						'Password (once again)' => 'абвгдеЁж',
 						'Theme' => 'High-contrast dark',
@@ -842,7 +852,7 @@ class testFormUser extends CWebTest {
 						'Last name' => 'Bunny',
 						'Groups' => [
 							'Selenium user group in configuration',
-							'Zabbix administrators'
+							'Advantal Administrators'
 						],
 						'Password' => '!@#$%^&*()_+',
 						'Password (once again)' => '!@#$%^&*()_+',
@@ -902,7 +912,8 @@ class testFormUser extends CWebTest {
 	/**
 	 * @dataProvider getCreateData
 	 */
-	public function testFormUser_Create($data) {
+	public function testFormUser_Create($data)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 
 		$this->page->login()->open('zabbix.php?action=user.edit');
@@ -925,10 +936,9 @@ class testFormUser extends CWebTest {
 		if ($data['expected'] === TEST_BAD) {
 			$this->assertMessage(TEST_BAD, $data['error_title'], $data['error_details']);
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, 'User added');
-			$this->assertEquals(1, CDBHelper::getCount('SELECT userid FROM users WHERE username='.zbx_dbstr($data['fields']['Username'])));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT userid FROM users WHERE username=' . zbx_dbstr($data['fields']['Username'])));
 		}
 
 		if (CTestArrayHelper::get($data, 'check_form', false)) {
@@ -943,9 +953,10 @@ class testFormUser extends CWebTest {
 	/**
 	 * Check the field values after creating or updating user.
 	 */
-	private function assertFormFields($data) {
-		$userid = CDBHelper::getValue('SELECT userid FROM users WHERE username='.zbx_dbstr($data['fields']['Username']));
-		$this->page->open('zabbix.php?action=user.edit&userid='.$userid);
+	private function assertFormFields($data)
+	{
+		$userid = CDBHelper::getValue('SELECT userid FROM users WHERE username=' . zbx_dbstr($data['fields']['Username']));
+		$this->page->open('zabbix.php?action=user.edit&userid=' . $userid);
 		$form_update = $this->query('name:user_form')->asForm()->waitUntilVisible()->one();
 
 		// Verify that fields are updated.
@@ -960,8 +971,7 @@ class testFormUser extends CWebTest {
 
 		if (CTestArrayHelper::get($data, 'auto_logout.checked', false)) {
 			$this->assertTrue($form_update->getField('Auto-login')->isChecked(false));
-		}
-		else {
+		} else {
 			$this->assertTrue($form_update->getField('Auto-login')->isChecked($data['fields']['Auto-login']));
 		}
 
@@ -974,7 +984,8 @@ class testFormUser extends CWebTest {
 	/**
 	 * Login as user and check user profile parameters in UI.
 	 */
-	private function assertUserParameters($data) {
+	private function assertUserParameters($data)
+	{
 		try {
 			$this->page->logout();
 			// Log in with the created or updated user.
@@ -987,7 +998,7 @@ class testFormUser extends CWebTest {
 			$this->assertEquals($data['fields']['Rows per page'], $rows->count());
 
 			// Verification of default theme.
-			$db_theme = CDBHelper::getValue('SELECT theme FROM users WHERE username='.zbx_dbstr($data['fields']['Username']));
+			$db_theme = CDBHelper::getValue('SELECT theme FROM users WHERE username=' . zbx_dbstr($data['fields']['Username']));
 			$color = $this->query('tag:body')->one()->getCSSValue('background-color');
 			$stylesheet = $this->query('xpath://link[@rel="stylesheet"]')->one();
 			$parts = explode('/', $stylesheet->getAttribute('href'));
@@ -998,22 +1009,21 @@ class testFormUser extends CWebTest {
 				$this->assertEquals('dark-theme', $db_theme);
 				$this->assertEquals('dark-theme.css', $file);
 				$this->assertEquals('rgba(14, 16, 18, 1)', $color);
-			}
-			else if ($data['fields']['Theme'] === 'High-contrast light') {
+			} else if ($data['fields']['Theme'] === 'High-contrast light') {
 				$this->assertEquals('hc-light', $db_theme);
 				$this->assertEquals('hc-light.css', $file);
 				$this->assertEquals('rgba(255, 255, 255, 1)', $color);
 			}
 
 			$this->page->logout();
-		}
-		catch (Exception $e) {
+		} catch (Exception $e) {
 			$this->page->logout();
 			throw $e;
 		}
 	}
 
-	public function getUpdateData() {
+	public function getUpdateData()
+	{
 		return [
 			// #0 Incorrect current password.
 			[
@@ -1142,7 +1152,7 @@ class testFormUser extends CWebTest {
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'teST5678'
 					],
@@ -1155,7 +1165,7 @@ class testFormUser extends CWebTest {
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Groups' => 'Zabbix administrators',
+						'Groups' => 'Advantal Administrators',
 						'Password' => 'test5678',
 						'Password (once again)' => 'test5678',
 						'Refresh' => ''
@@ -1429,7 +1439,8 @@ class testFormUser extends CWebTest {
 	/**
 	 * @dataProvider getUpdateData
 	 */
-	public function testFormUser_Update($data) {
+	public function testFormUser_Update($data)
+	{
 		$update_user = CTestArrayHelper::get($data, 'user_to_update', self::UPDATE_USER);
 
 		if ($data['expected'] === TEST_BAD) {
@@ -1449,15 +1460,16 @@ class testFormUser extends CWebTest {
 		if ($update_user === 'LDAP change password button check') {
 			$this->assertFalse($form->query('button:Change password')->one()->isClickable());
 			$hintbox = 'Password can only be changed for users using the internal Zabbix authentication.';
-			$this->assertEquals($hintbox, $this->query('xpath://button[contains(@data-hintbox-contents, '.
-					CXPathHelper::escapeQuotes($hintbox).')]')->one()->getAttribute('data-hintbox-contents')
+			$this->assertEquals(
+				$hintbox,
+				$this->query('xpath://button[contains(@data-hintbox-contents, ' .
+					CXPathHelper::escapeQuotes($hintbox) . ')]')->one()->getAttribute('data-hintbox-contents')
 			);
 		}
 
 		if ($update_user === 'Admin') {
 			$this->assertTrue($form->query('id:current_password')->one()->isVisible());
-		}
-		else {
+		} else {
 			$this->assertFalse($form->query('id:current_password')->one(false)->isValid());
 		}
 
@@ -1472,10 +1484,10 @@ class testFormUser extends CWebTest {
 		if (array_key_exists('Password', $data['fields']) && array_key_exists('Password (once again)', $data['fields'])) {
 			if ($update_user === 'LDAP user' || $update_user === 'no-access-to-the-frontend' || $update_user === self::ZABBIX_LDAP_USER) {
 				$this->assertFalse($this->page->isAlertPresent());
-			}
-			else {
+			} else {
 				$this->assertTrue($this->page->isAlertPresent());
-				$this->assertEquals('In case of successful password change user will be logged out of all active sessions. Continue?',
+				$this->assertEquals(
+					'In case of successful password change user will be logged out of all active sessions. Continue?',
 					$this->page->getAlertText()
 				);
 				$this->page->acceptAlert();
@@ -1488,10 +1500,9 @@ class testFormUser extends CWebTest {
 		if ($data['expected'] === TEST_BAD) {
 			$this->assertMessage(TEST_BAD, $data['error_title'], $data['error_details']);
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, 'User updated');
-			$this->assertEquals(1, CDBHelper::getCount('SELECT userid FROM users WHERE username='.zbx_dbstr($data['fields']['Username'])));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT userid FROM users WHERE username=' . zbx_dbstr($data['fields']['Username'])));
 		}
 
 		if (CTestArrayHelper::get($data, 'check_form', false)) {
@@ -1506,7 +1517,8 @@ class testFormUser extends CWebTest {
 	/**
 	 * Test update without any modification of user data.
 	 */
-	public function testFormUser_SimpleUpdate() {
+	public function testFormUser_SimpleUpdate()
+	{
 		$sql_hash = 'SELECT * FROM users ORDER BY userid';
 		$old_hash = CDBHelper::getHash($sql_hash);
 
@@ -1523,7 +1535,8 @@ class testFormUser extends CWebTest {
 		$this->assertEquals($old_hash, CDBHelper::getHash($sql_hash));
 	}
 
-	public function getPasswordUpdateData() {
+	public function getPasswordUpdateData()
+	{
 		return [
 			[
 				[
@@ -1551,7 +1564,8 @@ class testFormUser extends CWebTest {
 	 *
 	 * Test user password change and sign in with new password.
 	 */
-	public function testFormUser_PasswordUpdate($data) {
+	public function testFormUser_PasswordUpdate($data)
+	{
 		$update_user = CTestArrayHelper::get($data, 'username', 'Admin');
 		$this->page->login()->open('zabbix.php?action=user.list');
 		$this->query('link', $update_user)->waitUntilVisible()->one()->click();
@@ -1570,8 +1584,9 @@ class testFormUser extends CWebTest {
 		$form_update->submit();
 
 		$this->assertTrue($this->page->isAlertPresent());
-		$this->assertEquals('In case of successful password change user will be logged out of all active sessions. Continue?',
-				$this->page->getAlertText()
+		$this->assertEquals(
+			'In case of successful password change user will be logged out of all active sessions. Continue?',
+			$this->page->getAlertText()
 		);
 		$this->page->acceptAlert();
 
@@ -1588,15 +1603,15 @@ class testFormUser extends CWebTest {
 			$attempt_message = CMessageElement::find()->one();
 			$this->assertTrue($attempt_message->hasLine($data['attempt_message']));
 			$this->page->logout();
-		}
-		catch (\Exception $e) {
+		} catch (\Exception $e) {
 			// Logout to execute remaining tests.
 			$this->page->logout();
 			throw $e;
 		}
 	}
 
-	public function getDeleteData() {
+	public function getDeleteData()
+	{
 		return [
 			[
 				[
@@ -1649,24 +1664,24 @@ class testFormUser extends CWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testFormUser_Delete($data) {
+	public function testFormUser_Delete($data)
+	{
 		// Defined required variables.
 		if (array_key_exists('username', $data)) {
 			$username = $data['username'];
-		}
-		else {
+		} else {
 			$username = $data['fields']['Username'];
 		}
 
 		$this->page->login()->open('zabbix.php?action=user.list');
 		$this->query('link', $username)->one()->click();
-		$userid = CDBHelper::getValue('SELECT userid FROM users WHERE username='.zbx_dbstr($username));
+		$userid = CDBHelper::getValue('SELECT userid FROM users WHERE username=' . zbx_dbstr($username));
 
 		// Link user with map, action to validate user deletion.
 		if (array_key_exists('parameters', $data)) {
 			DBexecute(
-					'UPDATE '.$data['parameters']['DB_table'].' SET userid ='.zbx_dbstr($userid).
-					' WHERE '.$data['parameters']['column'].'='.zbx_dbstr($data['parameters']['value'])
+				'UPDATE ' . $data['parameters']['DB_table'] . ' SET userid =' . zbx_dbstr($userid) .
+					' WHERE ' . $data['parameters']['column'] . '=' . zbx_dbstr($data['parameters']['value'])
 			);
 		}
 
@@ -1678,23 +1693,24 @@ class testFormUser extends CWebTest {
 		// Validate if the user was deleted.
 		if ($data['expected'] === TEST_BAD) {
 			$this->assertMessage(TEST_BAD, 'Cannot delete user', $data['error_details']);
-			$this->assertEquals(1, CDBHelper::getCount('SELECT userid FROM users WHERE username='.zbx_dbstr($username)));
-		}
-		else {
+			$this->assertEquals(1, CDBHelper::getCount('SELECT userid FROM users WHERE username=' . zbx_dbstr($username)));
+		} else {
 			$this->assertMessage(TEST_GOOD, 'User deleted');
-			$this->assertEquals(0, CDBHelper::getCount('SELECT userid FROM users WHERE username='.zbx_dbstr($data['fields']['Username'])));
+			$this->assertEquals(0, CDBHelper::getCount('SELECT userid FROM users WHERE username=' . zbx_dbstr($data['fields']['Username'])));
 		}
 	}
 
 	/**
 	 * Check that user can't delete oneself.
 	 */
-	public function testFormUser_SelfDeletion() {
+	public function testFormUser_SelfDeletion()
+	{
 		$this->page->login()->open('zabbix.php?action=user.edit&userid=1');
 		$this->assertTrue($this->query('button:Delete')->waitUntilVisible()->one()->isEnabled(false));
 	}
 
-	public function testFormUser_Cancel() {
+	public function testFormUser_Cancel()
+	{
 		$data = [
 			'Username' => 'user-cancel',
 			'Password' => 'zabbix',
@@ -1720,7 +1736,8 @@ class testFormUser extends CWebTest {
 		$this->assertEquals($user_hash, CDBHelper::getHash($sql_users));
 	}
 
-	private function setAutoLogout($data) {
+	private function setAutoLogout($data)
+	{
 		$form = $this->query('name:user_form')->asForm()->one();
 		$auto_logout = $form->getFieldContainer('Auto-logout');
 		$auto_logout->query('id:autologout_visible')->asCheckbox()->one()->set($data['checked']);

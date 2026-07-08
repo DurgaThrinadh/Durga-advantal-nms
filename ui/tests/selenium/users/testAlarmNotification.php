@@ -21,14 +21,16 @@ require_once __DIR__ . '/../../include/CWebTest.php';
  *
  * @onBefore prepareAlarmData
  */
-class testAlarmNotification extends CWebTest {
+class testAlarmNotification extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior, CTableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CTableBehavior::class,
 			CMessageBehavior::class
@@ -54,11 +56,12 @@ class testAlarmNotification extends CWebTest {
 
 	const HOST_NAME = 'Host for alarm item';
 
-	public static function prepareAlarmData() {
+	public static function prepareAlarmData()
+	{
 		$response = CDataHelper::createHosts([
 			[
 				'host' => self::HOST_NAME,
-				'groups' => [['groupid' => 4]], // Zabbix server
+				'groups' => [['groupid' => 4]], // Advantal server
 				'items' => [
 					[
 						'name' => 'Not classified',
@@ -106,7 +109,7 @@ class testAlarmNotification extends CWebTest {
 			],
 			[
 				'host' => 'Host for maintenance alarm',
-				'groups' => [['groupid' => 4]], // Zabbix server
+				'groups' => [['groupid' => 4]], // Advantal server
 				'items' => [
 					[
 						'name' => 'Suppressed item',
@@ -191,10 +194,10 @@ class testAlarmNotification extends CWebTest {
 		]);
 
 		// Enable Alarm Notification display for user.
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, source, type)'.
-				' VALUES (555,1,'.zbx_dbstr('web.messages').',1,'.zbx_dbstr('enabled').',3)');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, source, type)'.
-				' VALUES (556,1,'.zbx_dbstr('web.messages').',180,'.zbx_dbstr('timeout').',3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, source, type)' .
+			' VALUES (555,1,' . zbx_dbstr('web.messages') . ',1,' . zbx_dbstr('enabled') . ',3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, source, type)' .
+			' VALUES (556,1,' . zbx_dbstr('web.messages') . ',180,' . zbx_dbstr('timeout') . ',3)');
 
 		// Create Maintenance and host in maintenance.
 		$maintenance = CDataHelper::call('maintenance.create', [
@@ -208,9 +211,10 @@ class testAlarmNotification extends CWebTest {
 		]);
 		self::$maintenanceid = $maintenance['maintenanceids'][0];
 
-		DBexecute('UPDATE hosts SET maintenanceid='.zbx_dbstr(self::$maintenanceid).
-			', maintenance_status='.HOST_MAINTENANCE_STATUS_ON.', maintenance_type='.MAINTENANCE_TYPE_NORMAL.', maintenance_from='.zbx_dbstr(time()-1000).
-			' WHERE hostid='.zbx_dbstr(self::$hostid['Host for maintenance alarm'])
+		DBexecute(
+			'UPDATE hosts SET maintenanceid=' . zbx_dbstr(self::$maintenanceid) .
+				', maintenance_status=' . HOST_MAINTENANCE_STATUS_ON . ', maintenance_type=' . MAINTENANCE_TYPE_NORMAL . ', maintenance_from=' . zbx_dbstr(time() - 1000) .
+				' WHERE hostid=' . zbx_dbstr(self::$hostid['Host for maintenance alarm'])
 		);
 	}
 
@@ -220,7 +224,8 @@ class testAlarmNotification extends CWebTest {
 	 * @onAfter closeAndAcknowledgeEvents
 	 * @onAfter openResetedPage
 	 */
-	public function testAlarmNotification_Layout() {
+	public function testAlarmNotification_Layout()
+	{
 		// Trigger problem.
 		$time = time();
 		$event_time = date('Y-m-d H:i:s', $time);
@@ -245,7 +250,7 @@ class testAlarmNotification extends CWebTest {
 			$form = $this->query('name:zbx_filter')->asForm()->one();
 
 			if ($field === 'Triggers') {
-				$name = 'Host for alarm item: '.$name;
+				$name = 'Host for alarm item: ' . $name;
 			}
 
 			$form->checkValue([$field => $name]);
@@ -264,7 +269,7 @@ class testAlarmNotification extends CWebTest {
 
 		// Check displayed icons.
 		foreach (['Mute for Admin' => 'btn-icon zi-speaker', 'Snooze for Admin' => 'btn-icon zi-bell'] as $button => $class) {
-			$selector = 'xpath:.//button[@title='.CXPathHelper::escapeQuotes($button).']';
+			$selector = 'xpath:.//button[@title=' . CXPathHelper::escapeQuotes($button) . ']';
 
 			// Check that buttons exists and class says that button is ON.
 			$this->assertTrue($alarm_dialog->query($selector)->exists());
@@ -274,22 +279,23 @@ class testAlarmNotification extends CWebTest {
 				// After clicking on button it changes status to off and become Unmute.
 				$alarm_dialog->query($selector)->one()->click();
 				$alarm_dialog->query('xpath:.//button[@title="Unmute for Admin"]')->waitUntilVisible()->one();
-				$this->assertEquals($class.'-off', $alarm_dialog->query('xpath:.//button[@title="Unmute for Admin"]')
-					->one()->getAttribute('class')
+				$this->assertEquals(
+					$class . '-off',
+					$alarm_dialog->query('xpath:.//button[@title="Unmute for Admin"]')
+						->one()->getAttribute('class')
 				);
 
 				// Check that after clicking on Unmute button, Mute icon changed back.
 				$alarm_dialog->query('xpath:.//button[@title="Unmute for Admin"]')->one()->click();
 				$alarm_dialog->query($selector)->waitUntilVisible()->one();
 				$this->assertEquals($class, $alarm_dialog->query($selector)->one()->getAttribute('class'));
-			}
-			else {
+			} else {
 				// Check that after clicking second time on already Snoozed button, it doesn't change status.
-				for ($i = 0; $i <=1; $i++) {
+				for ($i = 0; $i <= 1; $i++) {
 					$alarm_dialog->query($selector)->one()->click();
 					$this->page->refresh()->waitUntilReady();
 					$this->assertTrue($alarm_dialog->query($selector)->exists());
-					$this->assertEquals($class.'-off', $alarm_dialog->query($selector)->one()->getAttribute('class'));
+					$this->assertEquals($class . '-off', $alarm_dialog->query($selector)->one()->getAttribute('class'));
 				}
 			}
 		}
@@ -305,7 +311,9 @@ class testAlarmNotification extends CWebTest {
 
 		// Check that problem resolved and problem color is green now.
 		$this->assertEquals('Resolved Host for alarm item', $alarm_dialog->query('xpath:.//h4')->one()->getText());
-		$this->assertEquals('rgba(89, 219, 143, 1)', $alarm_dialog->query('class:notif-indic')
+		$this->assertEquals(
+			'rgba(89, 219, 143, 1)',
+			$alarm_dialog->query('class:notif-indic')
 				->one()->getCSSValue('background-color')
 		);
 
@@ -319,7 +327,8 @@ class testAlarmNotification extends CWebTest {
 	 * @onAfter closeAndAcknowledgeEvents
 	 * @onAfter deleteEvents
 	 */
-	public function testAlarmNotification_CheckColorChange() {
+	public function testAlarmNotification_CheckColorChange()
+	{
 		// Trigger problem.
 		self::$eventids = CDBHelper::setTriggerProblem(self::ALL_TRIGGERS);
 
@@ -340,7 +349,7 @@ class testAlarmNotification extends CWebTest {
 		$default_colors = [];
 		foreach ($severity_names as $severity_name => $hexa_color) {
 			$field = $form->getField($severity_name);
-			$default_colors[] = $field->query(self::DEFAULT_COLORPICKER.'/button')->one()->getCSSValue('background-color');
+			$default_colors[] = $field->query(self::DEFAULT_COLORPICKER . '/button')->one()->getCSSValue('background-color');
 		}
 
 		// Compare colors in alarm and in form.
@@ -360,7 +369,7 @@ class testAlarmNotification extends CWebTest {
 		$changed_colors = [];
 		foreach ($severity_names as $severity_name => $color) {
 			$field = $form->getField($severity_name);
-			$changed_colors[] = $field->query(self::DEFAULT_COLORPICKER.'/button')->one()->getCSSValue('background-color');
+			$changed_colors[] = $field->query(self::DEFAULT_COLORPICKER . '/button')->one()->getCSSValue('background-color');
 		}
 
 		// Compare colors in alarm and in form after change.
@@ -372,7 +381,8 @@ class testAlarmNotification extends CWebTest {
 		$alarm_dialog->query('xpath:.//button[@title="Close"]')->one()->click()->waitUntilNotVisible();
 	}
 
-	public static function getDisplayedProblemsData() {
+	public static function getDisplayedProblemsData()
+	{
 		return [
 			// #0 Not classified.
 			[
@@ -450,13 +460,14 @@ class testAlarmNotification extends CWebTest {
 	 *
 	 * @dataProvider getDisplayedProblemsData
 	 */
-	public function testAlarmNotification_DisplayedProblems($data) {
+	public function testAlarmNotification_DisplayedProblems($data)
+	{
 		// Trigger problem.
 		self::$eventids = CDBHelper::setTriggerProblem($data['trigger_name']);
 
 		// Open problem page and filter with correct host.
-		$this->page->login()->open('zabbix.php?action=problem.view&acknowledgement_status=1&sort=name&sortorder=ASC&hostids%5B%5D='.
-				self::$hostid[self::HOST_NAME])->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=problem.view&acknowledgement_status=1&sort=name&sortorder=ASC&hostids%5B%5D=' .
+			self::$hostid[self::HOST_NAME])->waitUntilReady();
 
 		// Check that problems displayed in table.
 		$this->assertTableDataColumn($data['trigger_name'], 'Problem');
@@ -464,7 +475,7 @@ class testAlarmNotification extends CWebTest {
 		// Find appeared Alarm notification overlay dialog and check triggered problems by trigger name.
 		$alarm_dialog = $this->getAlarmOverlay();
 		$triggered_alarms = $alarm_dialog->query('xpath:.//ul[@class="notif-body"]/li//a[contains(@href, "triggerids")]')
-				->all()->asText();
+			->all()->asText();
 		sort($triggered_alarms);
 		$this->assertEquals($data['trigger_name'], $triggered_alarms);
 
@@ -472,7 +483,8 @@ class testAlarmNotification extends CWebTest {
 		$alarm_dialog->query('xpath:.//button[@title="Close"]')->one()->click()->waitUntilNotVisible();
 	}
 
-	public static function getNotificationSettingsData() {
+	public static function getNotificationSettingsData()
+	{
 		return [
 			// #0 Not classified turned off.
 			[
@@ -616,7 +628,8 @@ class testAlarmNotification extends CWebTest {
 	 *
 	 * @dataProvider getNotificationSettingsData
 	 */
-	public function testAlarmNotification_NotificationSettings($data) {
+	public function testAlarmNotification_NotificationSettings($data)
+	{
 		// Set checked trigger severity in messaging settings.
 		$this->page->login()->open('zabbix.php?action=userprofile.edit')->waitUntilReady();
 		$form = $this->query('id:user-form')->asForm()->one();
@@ -628,19 +641,18 @@ class testAlarmNotification extends CWebTest {
 		// Trigger problem.
 		if (array_key_exists('suppressed_problem', $data)) {
 			self::$eventids = CDBHelper::setTriggerProblem($data['suppressed_problem']);
-			$time = time()+10000;
+			$time = time() + 10000;
 
 			// To check that suppressed notification can be visible after profile settings change.
-			DBexecute('INSERT INTO event_suppress (event_suppressid, eventid, maintenanceid, suppress_until) VALUES '.
-					'('.zbx_dbstr(self::$eventids[0]).', '.zbx_dbstr(self::$eventids[0]).', '.
-					zbx_dbstr(self::$maintenanceid).', '.zbx_dbstr($time).')');
-		}
-		else {
+			DBexecute('INSERT INTO event_suppress (event_suppressid, eventid, maintenanceid, suppress_until) VALUES ' .
+				'(' . zbx_dbstr(self::$eventids[0]) . ', ' . zbx_dbstr(self::$eventids[0]) . ', ' .
+				zbx_dbstr(self::$maintenanceid) . ', ' . zbx_dbstr($time) . ')');
+		} else {
 			self::$eventids = CDBHelper::setTriggerProblem(self::ALL_TRIGGERS);
 		}
 
-		$this->page->open('zabbix.php?action=problem.view&acknowledgement_status=1&show_suppressed=1&sort=name&sortorder=ASC&hostids%5B%5D='.
-				self::$hostid[self::HOST_NAME].'&hostids%5B%5D='.self::$hostid['Host for maintenance alarm'])->waitUntilReady();
+		$this->page->open('zabbix.php?action=problem.view&acknowledgement_status=1&show_suppressed=1&sort=name&sortorder=ASC&hostids%5B%5D=' .
+			self::$hostid[self::HOST_NAME] . '&hostids%5B%5D=' . self::$hostid['Host for maintenance alarm'])->waitUntilReady();
 
 		// Check that problems displayed in table.
 		$triggered_problems = (array_key_exists('suppressed_problem', $data)) ? $data['suppressed_problem'] : self::ALL_TRIGGERS;
@@ -648,12 +660,11 @@ class testAlarmNotification extends CWebTest {
 
 		if ($data['trigger_name'] === '') {
 			$this->assertFalse($this->query('xpath://div[@class="overlay-dialogue notif ui-draggable"]')->one()->isDisplayed());
-		}
-		else {
+		} else {
 			// Find appeared Alarm notification overlay dialog and check triggered problems by trigger name.
 			$alarm_dialog = $this->getAlarmOverlay();
 			$triggered_alarms = $alarm_dialog->query('xpath:.//ul[@class="notif-body"]/li//a[contains(@href, "triggerids")]')
-					->waitUntilVisible()->all()->asText();
+				->waitUntilVisible()->all()->asText();
 			sort($triggered_alarms);
 			$this->assertEquals($data['trigger_name'], $triggered_alarms);
 
@@ -665,22 +676,25 @@ class testAlarmNotification extends CWebTest {
 	/**
 	 * Delete the events so they don't appear in the next test case.
 	 */
-	protected function deleteEvents() {
+	protected function deleteEvents()
+	{
 		DB::delete('events', ['eventid' => self::$eventids]);
 	}
 
 	/**
 	 * Update Frontend notifications settings, set all severities checkboxes => true.
 	 */
-	protected function resetTriggerSeverities() {
+	protected function resetTriggerSeverities()
+	{
 		// Delete old setting whatever it was.
-		DBexecute('DELETE FROM profiles WHERE source='.zbx_dbstr('triggers.severities').' AND userid=1');
+		DBexecute('DELETE FROM profiles WHERE source=' . zbx_dbstr('triggers.severities') . ' AND userid=1');
 
 		// Insert new row where value_str field means that all severities are checked.
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, value_str, source, type)'.
-				' VALUES (9950, 1, '.zbx_dbstr('web.messages').', '.
-				zbx_dbstr('a:6:{i:0;s:1:"1";i:1;s:1:"1";i:2;s:1:"1";i:3;s:1:"1";i:4;s:1:"1";i:5;s:1:"1";}').', '.
-				zbx_dbstr('triggers.severities').', 3)'
+		DBexecute(
+			'INSERT INTO profiles (profileid, userid, idx, value_str, source, type)' .
+				' VALUES (9950, 1, ' . zbx_dbstr('web.messages') . ', ' .
+				zbx_dbstr('a:6:{i:0;s:1:"1";i:1;s:1:"1";i:2;s:1:"1";i:3;s:1:"1";i:4;s:1:"1";i:5;s:1:"1";}') . ', ' .
+				zbx_dbstr('triggers.severities') . ', 3)'
 		);
 	}
 
@@ -689,7 +703,8 @@ class testAlarmNotification extends CWebTest {
 	 *
 	 * @return array
 	 */
-	protected function getAlarmColors() {
+	protected function getAlarmColors()
+	{
 		$notification_color_class = ['disaster-bg', 'high-bg', 'average-bg', 'warning-bg', 'info-bg', 'na-bg'];
 
 		// Find appeared Alarm notification overlay dialog.
@@ -705,14 +720,16 @@ class testAlarmNotification extends CWebTest {
 		return $alarm_colors;
 	}
 
-	protected function getAlarmOverlay() {
-		return $this->query('xpath://div['.CXPathHelper::fromClass('overlay-dialogue notif').']')->waitUntilVisible()->one();
+	protected function getAlarmOverlay()
+	{
+		return $this->query('xpath://div[' . CXPathHelper::fromClass('overlay-dialogue notif') . ']')->waitUntilVisible()->one();
 	}
 
 	/**
 	 * Acknowledge and close triggered problem.
 	 */
-	protected function closeAndAcknowledgeEvents() {
+	protected function closeAndAcknowledgeEvents()
+	{
 		CDataHelper::call('event.acknowledge', [
 			'eventids' => self::$eventids,
 			'action' => 3
@@ -722,7 +739,8 @@ class testAlarmNotification extends CWebTest {
 	/**
 	 * Open problem page with filter reset.
 	 */
-	protected function openResetedPage() {
+	protected function openResetedPage()
+	{
 		$this->page->login()->open('zabbix.php?action=problem.view&filter_reset=1')->waitUntilReady();
 	}
 }

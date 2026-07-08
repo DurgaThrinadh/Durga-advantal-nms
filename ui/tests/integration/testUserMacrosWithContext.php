@@ -13,8 +13,8 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
-require_once dirname(__FILE__).'/../include/CAPITest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CAPITest.php';
 
 /**
  * Test suite for macros with context. It tests the most basic use case from the documentation page.
@@ -58,7 +58,8 @@ require_once dirname(__FILE__).'/../include/CAPITest.php';
  *
  * @onAfter clearData
  */
-class testUserMacrosWithContext extends CIntegrationTest {
+class testUserMacrosWithContext extends CIntegrationTest
+{
 	const HOSTNAME = 'host_user_macros_with_context';
 	const TRAPPER_ITEMS_COUNT = 6;
 	const AGENT_ITEMS_COUNT = 6;
@@ -71,7 +72,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 	/**
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		// Create host
 		$response = $this->call('host.create', [
 			[
@@ -82,9 +84,9 @@ class testUserMacrosWithContext extends CIntegrationTest {
 					'useip' => 1,
 					'ip' => '127.0.0.1',
 					'dns' => '',
-					'port' => PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX
+					'port' => PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX
 				],
-				'groups' => [['groupid' => 4]], // Zabbix servers
+				'groups' => [['groupid' => 4]], // Advantal servers
 				'status' => HOST_STATUS_MONITORED
 			]
 		]);
@@ -110,8 +112,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 		for ($i = 0; $i < self::TRAPPER_ITEMS_COUNT; $i++) {
 			$trapperItems[] = [
 				'hostid' => self::$hostId,
-				'name' => sprintf("trapper item %d", $i+1),
-				'key_' => sprintf("trap%d", $i+1),
+				'name' => sprintf("trapper item %d", $i + 1),
+				'key_' => sprintf("trap%d", $i + 1),
 				'type' => ITEM_TYPE_TRAPPER,
 				'value_type' => ITEM_VALUE_TYPE_UINT64
 			];
@@ -155,18 +157,18 @@ class testUserMacrosWithContext extends CIntegrationTest {
 
 		// Create triggers, one trigger for each trapper item
 		$triggerExpressions = [
-			'last(/'.self::HOSTNAME.'/trap1)={$LOW_SPACE_LIMIT}',
-			'last(/'.self::HOSTNAME.'/trap2)={$LOW_SPACE_LIMIT:/home}',
-			'last(/'.self::HOSTNAME.'/trap3)={$LOW_SPACE_LIMIT:/etc}',
-			'last(/'.self::HOSTNAME.'/trap4)={$LOW_SPACE_LIMIT:/tmp}',
-			'last(/'.self::HOSTNAME.'/trap5)={$LOW_SPACE_LIMIT:/var}',
-			'last(/'.self::HOSTNAME.'/trap6)={$LOW_SPACE_LIMIT:404}'
+			'last(/' . self::HOSTNAME . '/trap1)={$LOW_SPACE_LIMIT}',
+			'last(/' . self::HOSTNAME . '/trap2)={$LOW_SPACE_LIMIT:/home}',
+			'last(/' . self::HOSTNAME . '/trap3)={$LOW_SPACE_LIMIT:/etc}',
+			'last(/' . self::HOSTNAME . '/trap4)={$LOW_SPACE_LIMIT:/tmp}',
+			'last(/' . self::HOSTNAME . '/trap5)={$LOW_SPACE_LIMIT:/var}',
+			'last(/' . self::HOSTNAME . '/trap6)={$LOW_SPACE_LIMIT:404}'
 		];
 		$triggers = [];
 		for ($i = 0; $i < self::TRAPPER_ITEMS_COUNT; $i++) {
 			$triggers[] = [
 				'expression' => $triggerExpressions[$i],
-				'event_name' => sprintf("event%d", $i+1),
+				'event_name' => sprintf("event%d", $i + 1),
 				'description' => 'description'
 				// 'description' => sprintf("description %d", $i+1)
 			];
@@ -214,7 +216,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 	 * However, starting agent when server is started is the easiest way to ensure that agent items configured for
 	 * other test cases do not become unavailable after failing with network errors.
 	 */
-	public function testUserMacrosWithContext_inTriggerExpressions() {
+	public function testUserMacrosWithContext_inTriggerExpressions()
+	{
 		$senderValues = [
 			['host' => self::HOSTNAME, 'key' => 'trap1', 'value' => 10],
 			['host' => self::HOSTNAME, 'key' => 'trap2', 'value' => 20],
@@ -253,7 +256,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function agentConfigurationProvider() {
+	public function agentConfigurationProvider()
+	{
 		return [
 			self::COMPONENT_AGENT => [
 				'Hostname' => self::HOSTNAME,
@@ -267,7 +271,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 	 * @required-components server, agent
 	 * @configurationDataProvider agentConfigurationProvider
 	 */
-	public function testUserMacrosWithContext_inAgentItemKeys() {
+	public function testUserMacrosWithContext_inAgentItemKeys()
+	{
 		$wait_iterations = 10;
 		$wait_iteration_delay = 2;
 
@@ -295,7 +300,7 @@ class testUserMacrosWithContext extends CIntegrationTest {
 			sleep($wait_iteration_delay);
 		}
 
-		$lastValues =[];
+		$lastValues = [];
 		foreach (self::$agentItemIds as $itemId) {
 			$this->assertArrayHasKey('lastvalue', $response['result'][$itemId]);
 			$lastValues[] = $response['result'][$itemId]['lastvalue'];
@@ -313,7 +318,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 	 * Test macro resolution in item names by API.
 	 * It helps to test consistency in macro resolution between server and API.
 	 */
-	public function testUserMacrosWithContext_inItemNamesResolutionByAPI() {
+	public function testUserMacrosWithContext_inItemNamesResolutionByAPI()
+	{
 		$response = $this->call('item.get', [
 			'output' => ['name_resolved'],
 			'itemids' => self::$agentItemIds,
@@ -321,7 +327,7 @@ class testUserMacrosWithContext extends CIntegrationTest {
 		]);
 		$this->assertArrayHasKey('result', $response);
 
-		$namesResolved =[];
+		$namesResolved = [];
 		foreach (self::$agentItemIds as $itemId) {
 			$this->assertArrayHasKey('name_resolved', $response['result'][$itemId]);
 			$namesResolved[] = $response['result'][$itemId]['name_resolved'];
@@ -339,7 +345,8 @@ class testUserMacrosWithContext extends CIntegrationTest {
 	 * Delete data objects created for this test suite
 	 *
 	 */
-	public static function clearData(): void {
+	public static function clearData(): void
+	{
 		// Triggers, items, and user macros should be cascade deleted.
 		CDataHelper::call('host.delete', [self::$hostId]);
 	}

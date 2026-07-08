@@ -14,16 +14,17 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
 
 /**
  * @dataSource ScheduledReports, LoginUsers
  *
  * @backup report
  */
-class testFormScheduledReport extends CWebTest {
+class testFormScheduledReport extends CWebTest
+{
 
 	const USER = 'user';
 	const USER_GROUP = 'user group';
@@ -35,15 +36,17 @@ class testFormScheduledReport extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
-	public static function getHash() {
-		return CDBHelper::getHash('SELECT * FROM report r ORDER by r.reportid').
-				CDBHelper::getHash('SELECT * FROM report_param rp ORDER by rp.reportparamid').
-				CDBHelper::getHash('SELECT * FROM report_user ru ORDER by ru.reportuserid').
-				CDBHelper::getHash('SELECT * FROM report_usrgrp rg ORDER by rg.reportusrgrpid');
+	public static function getHash()
+	{
+		return CDBHelper::getHash('SELECT * FROM report r ORDER by r.reportid') .
+			CDBHelper::getHash('SELECT * FROM report_param rp ORDER by rp.reportparamid') .
+			CDBHelper::getHash('SELECT * FROM report_user ru ORDER by ru.reportuserid') .
+			CDBHelper::getHash('SELECT * FROM report_usrgrp rg ORDER by rg.reportusrgrpid');
 	}
 
 	/**
@@ -53,20 +56,21 @@ class testFormScheduledReport extends CWebTest {
 	 */
 	private $default_values = [
 		'fields' => [
-			'Owner' => 'Admin (Zabbix Administrator)',
+			'Owner' => 'Admin (Advantal Administrator)',
 			'Period' => 'Previous day',
 			'Cycle' => 'Daily',
 			'Enabled' => true
 		],
 		'Start time' => '00:00',
 		'Subscriptions' => [
-			'Recipient' => 'Admin (Zabbix Administrator)',
+			'Recipient' => 'Admin (Advantal Administrator)',
 			'Generate report by' => 'Current user',
 			'Status' => 'Include'
 		]
 	];
 
-	public function testFormScheduledReport_Layout() {
+	public function testFormScheduledReport_Layout()
+	{
 		$this->page->login()->open('zabbix.php?action=scheduledreport.list');
 		$this->query('button:Create report')->waitUntilClickable()->one()->click();
 		$form = $this->query('id:scheduledreport-form')->waitUntilVisible()->asForm()->one();
@@ -74,7 +78,8 @@ class testFormScheduledReport extends CWebTest {
 		$this->checkFormLayout($form);
 	}
 
-	public function testFormScheduledReport_DashboardLayout() {
+	public function testFormScheduledReport_DashboardLayout()
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=2');
 		$this->page->waitUntilReady();
 		$this->query('id:dashboard-actions')->one()->waitUntilClickable()->click();
@@ -83,7 +88,7 @@ class testFormScheduledReport extends CWebTest {
 		$form = $overlay->query('id:scheduledreport-form')->waitUntilVisible()->asForm()->one();
 		$this->assertFalse($form->query('button:Test')->one(false)->isValid());
 
-		$this->checkFormLayout($form, 'Zabbix server health');
+		$this->checkFormLayout($form, 'Advantal server health');
 	}
 
 	/**
@@ -92,12 +97,18 @@ class testFormScheduledReport extends CWebTest {
 	 * @param CElement	$form			form element to be checked
 	 * @param string	$dashboard		dashboard name
 	 */
-	private function checkFormLayout($form, $dashboard = null) {
+	private function checkFormLayout($form, $dashboard = null)
+	{
 		$subscription_container = $form->getField('Subscriptions')->asTable();
 
 		// Report form fields maxlength attribute.
-		$maxlength_fields = ['Name' => 255, 'id:active_since' => 255, 'id:active_till' => 255, 'Subject' => 255,
-			'Message' => 65535, 'Description' => 2048
+		$maxlength_fields = [
+			'Name' => 255,
+			'id:active_since' => 255,
+			'id:active_till' => 255,
+			'Subject' => 255,
+			'Message' => 65535,
+			'Description' => 2048
 		];
 		foreach ($maxlength_fields as $field => $maxlength) {
 			$this->assertEquals($maxlength, $form->getField($field)->getAttribute('maxlength'));
@@ -129,9 +140,8 @@ class testFormScheduledReport extends CWebTest {
 		foreach ([$this->default_values['Subscriptions'], self::USER, self::USER_GROUP] as $type) {
 			if (is_array($type)) {
 				$subscription_container->findRow('Recipient', $type['Recipient'])->query('tag:a')->one()->click();
-			}
-			else {
-				$subscription_container->query('button', 'Add '.$type)->one()->click();
+			} else {
+				$subscription_container->query('button', 'Add ' . $type)->one()->click();
 			}
 
 			$subscription_overlay = COverlayDialogElement::find()->all()->last()->waitUntilReady();
@@ -183,7 +193,8 @@ class testFormScheduledReport extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public static function getCommonValidationData() {
+	public static function getCommonValidationData()
+	{
 		return [
 			// Empty fields.
 			[
@@ -447,7 +458,8 @@ class testFormScheduledReport extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public static function getCommonCreateData() {
+	public static function getCommonCreateData()
+	{
 		return [
 			[
 				[
@@ -466,7 +478,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Admin (Zabbix Administrator)'
+								'Recipient' => 'Admin (Advantal Administrator)'
 							]
 						]
 					],
@@ -527,7 +539,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Admin (Zabbix Administrator)'
+								'Recipient' => 'Admin (Advantal Administrator)'
 							]
 						],
 						[
@@ -573,7 +585,7 @@ class testFormScheduledReport extends CWebTest {
 					'fields' => [
 						'Owner' => 'admin-zabbix',
 						'Name' => 'Fill all fields',
-						'Dashboard' => 'Zabbix server health',
+						'Dashboard' => 'Advantal server health',
 						'Period' => 'Previous week',
 						'Cycle' => 'Weekly',
 						'Repeat on' => ['Tuesday', 'Thursday', 'Sunday'],
@@ -664,7 +676,8 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * Data for creating a report on the page.
 	 */
-	public function getCreateData() {
+	public function getCreateData()
+	{
 		$data = [];
 		$common_data = array_merge($this->getCommonValidationData(), $this->getCommonCreateData());
 
@@ -674,8 +687,8 @@ class testFormScheduledReport extends CWebTest {
 				$report[0]['fields']['Dashboard'] = 'Global view';
 			}
 			if ($report[0]['expected'] === TEST_BAD) {
-				$report[0]['message_header'] = 'Cannot '.CTestArrayHelper::get($report[0], 'error_message_part', 'create').
-						' scheduled report';
+				$report[0]['message_header'] = 'Cannot ' . CTestArrayHelper::get($report[0], 'error_message_part', 'create') .
+					' scheduled report';
 			}
 
 			$data[] = $report;
@@ -707,7 +720,8 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getCreateData
 	 */
-	public function testFormScheduledReport_Create($data) {
+	public function testFormScheduledReport_Create($data)
+	{
 		$this->page->login()->open('zabbix.php?action=scheduledreport.edit');
 		$this->executeAction($data, 'add', 'Scheduled report added');
 	}
@@ -715,14 +729,15 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * Data for creating a report from the dashboard.
 	 */
-	public function getDashboardCreateData() {
+	public function getDashboardCreateData()
+	{
 		$data = [];
 		$common_data = array_merge($this->getCommonValidationData(), $this->getCommonCreateData());
 
 		foreach ($common_data as $report) {
 			// Add prefix to the report name in the common data so that the names do not match with create data on page.
 			if (array_key_exists('Name', $report[0]['fields']) && $report[0]['fields']['Name'] !== 'Report for delete') {
-				$report[0]['fields']['Name'] = 'From dashboard - '.$report[0]['fields']['Name'];
+				$report[0]['fields']['Name'] = 'From dashboard - ' . $report[0]['fields']['Name'];
 			}
 			// Reports in dashboard do not have an error message header.
 			if ($report[0]['expected'] === TEST_BAD) {
@@ -741,7 +756,8 @@ class testFormScheduledReport extends CWebTest {
 						'Dashboard' => ''
 					],
 					'message_header' => null,
-					'message_details' => ['Field "userid" is mandatory.',
+					'message_details' => [
+						'Field "userid" is mandatory.',
 						'Incorrect value for field "name": cannot be empty.',
 						'Field "dashboardid" is mandatory.'
 					]
@@ -763,7 +779,8 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getDashboardCreateData
 	 */
-	public function testFormScheduledReport_CreateInDashboard($data) {
+	public function testFormScheduledReport_CreateInDashboard($data)
+	{
 		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=1')->waitUntilReady();
 		$this->query('id:dashboard-actions')->one()->waitUntilClickable()->hoverMouse()->click();
 		CPopupMenuElement::find()->waitUntilVisible()->one()->select('Create new report');
@@ -771,7 +788,8 @@ class testFormScheduledReport extends CWebTest {
 		$this->executeAction($data, 'dashboard', 'Scheduled report created');
 	}
 
-	public function testFormScheduledReport_SimpleUpdate() {
+	public function testFormScheduledReport_SimpleUpdate()
+	{
 		$old_hash = $this->getHash();
 		$name = CDBHelper::getRandom('SELECT name FROM report', 1);
 		$this->page->login()->open('zabbix.php?action=scheduledreport.list');
@@ -781,7 +799,8 @@ class testFormScheduledReport extends CWebTest {
 		$this->assertEquals($old_hash, $this->getHash());
 	}
 
-	public function getUpdateData() {
+	public function getUpdateData()
+	{
 		$data = [];
 
 		foreach ($this->getCommonValidationData() as $report) {
@@ -838,7 +857,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Admin (Zabbix Administrator)'
+								'Recipient' => 'Admin (Advantal Administrator)'
 							]
 						],
 						[
@@ -850,7 +869,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Zabbix administrators'
+								'Recipient' => 'Advantal Administrators'
 							]
 						]
 					],
@@ -869,13 +888,13 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Admin (Zabbix Administrator)'
+								'Recipient' => 'Admin (Advantal Administrator)'
 							]
 						],
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Zabbix administrators'
+								'Recipient' => 'Advantal Administrators'
 							]
 						]
 					],
@@ -901,7 +920,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Zabbix administrators'
+								'Recipient' => 'Advantal Administrators'
 							]
 						]
 					],
@@ -929,7 +948,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Admin (Zabbix Administrator)'
+								'Recipient' => 'Admin (Advantal Administrator)'
 							]
 						],
 						[
@@ -989,7 +1008,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Zabbix administrators'
+								'Recipient' => 'Advantal Administrators'
 							]
 						],
 						[
@@ -1049,20 +1068,22 @@ class testFormScheduledReport extends CWebTest {
 	 *
 	 * @backupOnce report
 	 */
-	public function testFormScheduledReport_Update($data) {
-		$update_reportid = CDataHelper::get('ScheduledReports.reportids.'.
-				CTestArrayHelper::get($data, 'report', self::UPDATE_REPORT_NAME));
-		$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid='.$update_reportid);
+	public function testFormScheduledReport_Update($data)
+	{
+		$update_reportid = CDataHelper::get('ScheduledReports.reportids.' .
+			CTestArrayHelper::get($data, 'report', self::UPDATE_REPORT_NAME));
+		$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid=' . $update_reportid);
 
 		$this->executeAction($data, 'update', 'Scheduled report updated');
 	}
 
-	public static function getCloneData() {
+	public static function getCloneData()
+	{
 		return [
 			[
 				[
 					'fields' => [
-						'Name' => microtime().' clone without changes'
+						'Name' => microtime() . ' clone without changes'
 					]
 				]
 			],
@@ -1070,7 +1091,7 @@ class testFormScheduledReport extends CWebTest {
 				[
 					'fields' => [
 						'Owner' => 'user-zabbix',
-						'Name' => microtime().' clone with changes',
+						'Name' => microtime() . ' clone with changes',
 						'Period' => 'Previous month',
 						'Cycle' => 'Daily',
 						'Start date' => '2021-07-19',
@@ -1081,7 +1102,7 @@ class testFormScheduledReport extends CWebTest {
 						[
 							'action' => USER_ACTION_REMOVE,
 							'fields' => [
-								'Recipient' => 'Admin (Zabbix Administrator)'
+								'Recipient' => 'Admin (Advantal Administrator)'
 							]
 						],
 						[
@@ -1115,9 +1136,10 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getCloneData
 	 */
-	public function testFormScheduledReport_Clone($data) {
-		$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid='.
-				CDataHelper::get('ScheduledReports.reportids.'.self::TEST_REPORT_NAME));
+	public function testFormScheduledReport_Clone($data)
+	{
+		$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid=' .
+			CDataHelper::get('ScheduledReports.reportids.' . self::TEST_REPORT_NAME));
 		$form = $this->query('id:scheduledreport-form')->waitUntilVisible()->asForm()->one();
 
 		// Get field values from form.
@@ -1150,8 +1172,8 @@ class testFormScheduledReport extends CWebTest {
 		$form->submit();
 		$this->assertMessage(TEST_GOOD, 'Scheduled report added');
 
-		$this->assertEquals(2, CDBHelper::getCount('SELECT NULL FROM report WHERE name IN ('.
-				zbx_dbstr($data['fields']['Name']).', '.zbx_dbstr(self::TEST_REPORT_NAME).')'));
+		$this->assertEquals(2, CDBHelper::getCount('SELECT NULL FROM report WHERE name IN (' .
+			zbx_dbstr($data['fields']['Name']) . ', ' . zbx_dbstr(self::TEST_REPORT_NAME) . ')'));
 		$this->query('link', $data['fields']['Name'])->waitUntilClickable()->one()->click();
 		$form->invalidate();
 
@@ -1167,7 +1189,8 @@ class testFormScheduledReport extends CWebTest {
 		$this->assertEquals($expected_subscriptions, $actual_subscriptions);
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			[
 				[
@@ -1200,15 +1223,16 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testFormScheduledReport_Cancel($data) {
+	public function testFormScheduledReport_Cancel($data)
+	{
 		$old_hash = $this->getHash();
-		$new_name = microtime(true).' Cancel '.self::TEST_REPORT_NAME;
+		$new_name = microtime(true) . ' Cancel ' . self::TEST_REPORT_NAME;
 		$subscriptions = [
 			'Subscriptions' => [
 				[
 					'action' => USER_ACTION_REMOVE,
 					'fields' => [
-						'Recipient' => 'Admin (Zabbix Administrator)'
+						'Recipient' => 'Admin (Advantal Administrator)'
 					]
 				],
 				[
@@ -1222,16 +1246,14 @@ class testFormScheduledReport extends CWebTest {
 
 		if ($data['action'] === 'Add') {
 			$this->page->login()->open('zabbix.php?action=scheduledreport.edit');
-		}
-		elseif ($data['action'] === 'Dashboard') {
+		} elseif ($data['action'] === 'Dashboard') {
 			$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=1');
 			$this->page->waitUntilReady();
 			$this->query('id:dashboard-actions')->one()->waitUntilClickable()->click();
 			CPopupMenuElement::find()->waitUntilVisible()->one()->select('Create new report');
-		}
-		else {
-			$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid='.
-					CDataHelper::get('ScheduledReports.reportids.'.self::TEST_REPORT_NAME));
+		} else {
+			$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid=' .
+				CDataHelper::get('ScheduledReports.reportids.' . self::TEST_REPORT_NAME));
 		}
 
 		// Change report data to make sure that the changes are not saved to the database after cancellation.
@@ -1256,18 +1278,18 @@ class testFormScheduledReport extends CWebTest {
 
 		if ($data['action'] === 'Dashboard') {
 			COverlayDialogElement::ensureNotPresent();
-		}
-		else {
+		} else {
 			$this->page->waitUntilReady();
-			$this->assertEquals(PHPUNIT_URL.'zabbix.php?action=scheduledreport.list', $this->page->getCurrentUrl());
+			$this->assertEquals(PHPUNIT_URL . 'zabbix.php?action=scheduledreport.list', $this->page->getCurrentUrl());
 		}
 
 		// Check invariability of report data in the database.
 		$this->assertEquals($old_hash, $this->getHash());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM report WHERE name='.zbx_dbstr($new_name)));
+		$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM report WHERE name=' . zbx_dbstr($new_name)));
 	}
 
-	public static function getTestData() {
+	public static function getTestData()
+	{
 		return [
 			[
 				[
@@ -1325,12 +1347,12 @@ class testFormScheduledReport extends CWebTest {
 	/**
 	 * @dataProvider getTestData
 	 */
-	public function testFormScheduledReport_TestOption($data) {
+	public function testFormScheduledReport_TestOption($data)
+	{
 		if (array_key_exists('report', $data)) {
-			$url = 'zabbix.php?action=scheduledreport.edit&reportid='.
-					CDataHelper::get('ScheduledReports.reportids.'.$data['report']);
-		}
-		else {
+			$url = 'zabbix.php?action=scheduledreport.edit&reportid=' .
+				CDataHelper::get('ScheduledReports.reportids.' . $data['report']);
+		} else {
 			$url = 'zabbix.php?action=scheduledreport.edit';
 		}
 		$this->page->login()->open($url);
@@ -1341,15 +1363,15 @@ class testFormScheduledReport extends CWebTest {
 
 		if ($data['expected'] === TEST_GOOD) {
 			$this->assertMessage(TEST_BAD, 'Report generating test failed.');
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_BAD, null, $data['error']);
 		}
 	}
 
-	public function testFormScheduledReport_Delete() {
+	public function testFormScheduledReport_Delete()
+	{
 		$reportid = CDataHelper::get('ScheduledReports.reportids.Report for delete');
-		$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid='.$reportid);
+		$this->page->login()->open('zabbix.php?action=scheduledreport.edit&reportid=' . $reportid);
 		$this->query('button:Delete')->waitUntilClickable()->one()->click();
 		$this->page->acceptAlert();
 
@@ -1357,7 +1379,7 @@ class testFormScheduledReport extends CWebTest {
 		// Check if all report records have been deleted.
 		$tables = ['report', 'report_param', 'report_user', 'report_usrgrp'];
 		foreach ($tables as $table) {
-			$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM '.$table.' WHERE reportid='.$reportid));
+			$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM ' . $table . ' WHERE reportid=' . $reportid));
 		}
 	}
 
@@ -1368,7 +1390,8 @@ class testFormScheduledReport extends CWebTest {
 	 * @param string $action			add report on dashboard, add on page or update action
 	 * @param string $success_message	success message text
 	 */
-	private function executeAction($data, $action, $success_message) {
+	private function executeAction($data, $action, $success_message)
+	{
 		if ($data['expected'] === TEST_BAD) {
 			$old_hash = $this->getHash();
 		}
@@ -1376,9 +1399,11 @@ class testFormScheduledReport extends CWebTest {
 		$form = $this->query('id:scheduledreport-form')->waitUntilVisible()->asForm()->one();
 
 		// Make Name field unique in update scenario.
-		if ($action === 'update' && CTestArrayHelper::get($data['fields'], 'Name', '') !== ''
-				&& CTestArrayHelper::get($data, 'unique', true)) {
-			$data['fields']['Name'] = $data['fields']['Name'].microtime();
+		if (
+			$action === 'update' && CTestArrayHelper::get($data['fields'], 'Name', '') !== ''
+			&& CTestArrayHelper::get($data, 'unique', true)
+		) {
+			$data['fields']['Name'] = $data['fields']['Name'] . microtime();
 		}
 
 		if (CTestArrayHelper::get($data, 'Start time', false)) {
@@ -1423,7 +1448,7 @@ class testFormScheduledReport extends CWebTest {
 			}
 			$name = CTestArrayHelper::get($data, 'fields.Name', self::UPDATE_REPORT_NAME);
 			$this->assertMessage(TEST_GOOD, $success_message);
-			$this->assertEquals(1, CDBHelper::getCount('SELECT null FROM report WHERE name='.zbx_dbstr($name)));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT null FROM report WHERE name=' . zbx_dbstr($name)));
 
 			// Trim spaces in the middle of a name after DB check; spaces in links are trimmed.
 			$name = CTestArrayHelper::get($data, 'trim', false) ? preg_replace('/\s+/', ' ', $name) : $name;
@@ -1443,9 +1468,8 @@ class testFormScheduledReport extends CWebTest {
 				$this->query('id:dashboard-actions')->one()->waitUntilClickable()->click();
 				CPopupMenuElement::find()->waitUntilVisible()->one()->select('View related reports');
 				COverlayDialogElement::find()->waitUntilReady()->one()
-						->query('link', $name)->waitUntilClickable()->one()->click();
-			}
-			else {
+					->query('link', $name)->waitUntilClickable()->one()->click();
+			} else {
 				$this->query('link', $name)->waitUntilClickable()->one()->click();
 			}
 			$this->page->waitUntilReady();
@@ -1470,7 +1494,8 @@ class testFormScheduledReport extends CWebTest {
 	 *
 	 * @param array $data
 	 */
-	private function fillSubscriptions($data) {
+	private function fillSubscriptions($data)
+	{
 		foreach (CTestArrayHelper::get($data, 'Subscriptions', []) as $i => $subscriber) {
 			$report_form = $this->query('id:scheduledreport-form')->waitUntilVisible()->asForm()->one();
 			$container = $report_form->getField('Subscriptions')->asTable();
@@ -1480,13 +1505,11 @@ class testFormScheduledReport extends CWebTest {
 
 			if ($action === USER_ACTION_REMOVE) {
 				$container->findRow('Recipient', $subscriber['fields']['Recipient'])
-						->query('button:Remove')->one()->click()->waitUntilNotPresent();
-			}
-			else {
+					->query('button:Remove')->one()->click()->waitUntilNotPresent();
+			} else {
 				if ($action === USER_ACTION_ADD) {
-					$container->query('button', 'Add '.$subscriber['type'])->one()->click();
-				}
-				else {
+					$container->query('button', 'Add ' . $subscriber['type'])->one()->click();
+				} else {
 					$container->getRow($subscriber['index'])->getColumn('Recipient')->query('tag:a')->one()->click();
 					unset($subscriber['index']);
 				}
@@ -1504,12 +1527,14 @@ class testFormScheduledReport extends CWebTest {
 					if ($i === count($data['Subscriptions'])) {
 						$this->assertMessage(TEST_BAD, null, $data['subscription_error']);
 					}
-				}
-				else {
+				} else {
 					$overlay->waitUntilNotVisible();
 					// Wait for the subscriber to be added to the subscription table.
-					$user = CTestArrayHelper::get($subscriber,
-							'fields.Recipient', $this->default_values['Subscriptions']['Recipient']);
+					$user = CTestArrayHelper::get(
+						$subscriber,
+						'fields.Recipient',
+						$this->default_values['Subscriptions']['Recipient']
+					);
 					$container->query('link', $user)->waitUntilVisible();
 				}
 			}
@@ -1521,7 +1546,8 @@ class testFormScheduledReport extends CWebTest {
 	 *
 	 * @param array $subscriptions
 	 */
-	private function checkSubscriptions($subscriptions) {
+	private function checkSubscriptions($subscriptions)
+	{
 		foreach ($subscriptions as $i => $subscriber) {
 			$report_form = $this->query('id:scheduledreport-form')->waitUntilVisible()->asForm()->one();
 			$table = $report_form->getField('Subscriptions')->asTable();
@@ -1529,23 +1555,26 @@ class testFormScheduledReport extends CWebTest {
 			$action = CTestArrayHelper::get($subscriber, 'action', USER_ACTION_ADD);
 			unset($subscriber['action']);
 
-			if ($action === USER_ACTION_REMOVE){
+			if ($action === USER_ACTION_REMOVE) {
 				$this->assertFalse($table->findRow('Recipient', $subscriber['fields']['Recipient'])->isValid());
-			}
-			else {
+			} else {
 				// Check that subscriber was added to the Subscription table.
-				$user = CTestArrayHelper::get($subscriber,
-						'fields.Recipient', $this->default_values['Subscriptions']['Recipient']);
+				$user = CTestArrayHelper::get(
+					$subscriber,
+					'fields.Recipient',
+					$this->default_values['Subscriptions']['Recipient']
+				);
 				$row = $table->findRow('Recipient', $user);
 
 				$report_by = (CTestArrayHelper::get($subscriber, 'fields.Generate report by', 'Current user') === 'Current user')
-						? 'Admin (Zabbix Administrator)'
-						: 'Recipient';
+					? 'Admin (Advantal Administrator)'
+					: 'Recipient';
 				$this->assertEquals($report_by, $row->getColumn('Generate report by')->getText());
 
 				$status = ($subscriber['type'] === self::USER) ? 'Include' : '';
-				$this->assertEquals(CTestArrayHelper::get($subscriber, 'fields.Status', $status),
-						$row->getColumn('Status')->getText()
+				$this->assertEquals(
+					CTestArrayHelper::get($subscriber, 'fields.Status', $status),
+					$row->getColumn('Status')->getText()
 				);
 			}
 		}

@@ -14,7 +14,7 @@
 **/
 
 
-require_once dirname(__FILE__).'/config.inc.php';
+require_once dirname(__FILE__) . '/config.inc.php';
 
 // if we include footer in some function
 if (!isset($page)) {
@@ -43,8 +43,10 @@ if ($page['type'] == PAGE_TYPE_HTML) {
 	makeServerStatusOutput()->show();
 
 	if (in_array($page['type'], [PAGE_TYPE_HTML_BLOCK, PAGE_TYPE_HTML])) {
-		if (!is_null(CWebUser::$data) && isset(CWebUser::$data['debug_mode'])
-				&& CWebUser::$data['debug_mode'] == GROUP_DEBUG_MODE_ENABLED) {
+		if (
+			!is_null(CWebUser::$data) && isset(CWebUser::$data['debug_mode'])
+			&& CWebUser::$data['debug_mode'] == GROUP_DEBUG_MODE_ENABLED
+		) {
 			CProfiler::getInstance()->stop();
 			CProfiler::getInstance()->show();
 

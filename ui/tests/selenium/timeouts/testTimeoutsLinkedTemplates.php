@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testTimeoutsDisplay.php';
+require_once __DIR__ . '/../common/testTimeoutsDisplay.php';
 
 /**
  * @onBefore prepareTimeoutsData
@@ -24,12 +24,14 @@ require_once __DIR__.'/../common/testTimeoutsDisplay.php';
  * TODO: remove ignoreBrowserErrors after DEV-4233
  * @ignoreBrowserErrors
  */
-class testTimeoutsLinkedTemplates extends testTimeoutsDisplay {
+class testTimeoutsLinkedTemplates extends testTimeoutsDisplay
+{
 
 	protected static $templateid;
 	protected static $hostids;
 
-	public static function prepareTimeoutsData() {
+	public static function prepareTimeoutsData()
+	{
 		CDataHelper::call('proxy.create', [
 			[
 				'name' => 'Proxy assigned to host',
@@ -303,12 +305,12 @@ class testTimeoutsLinkedTemplates extends testTimeoutsDisplay {
 				'host' => 'Host for linked timeout check with proxy',
 				'groups' => [
 					[
-						'groupid' => 4 // Zabbix servers
+						'groupid' => 4 // Advantal servers
 					]
 				],
 				'interfaces' => [
 					[
-						'type'=> INTERFACE_TYPE_AGENT,
+						'type' => INTERFACE_TYPE_AGENT,
 						'main' => INTERFACE_PRIMARY,
 						'useip' => INTERFACE_USE_DNS,
 						'ip' => '',
@@ -316,7 +318,7 @@ class testTimeoutsLinkedTemplates extends testTimeoutsDisplay {
 						'port' => '1'
 					],
 					[
-						'type'=> INTERFACE_TYPE_SNMP,
+						'type' => INTERFACE_TYPE_SNMP,
 						'main' => INTERFACE_PRIMARY,
 						'useip' => INTERFACE_USE_DNS,
 						'ip' => '',
@@ -338,12 +340,12 @@ class testTimeoutsLinkedTemplates extends testTimeoutsDisplay {
 				'host' => 'Host for linked timeout check',
 				'groups' => [
 					[
-						'groupid' => 4 // Zabbix servers
+						'groupid' => 4 // Advantal servers
 					]
 				],
 				'interfaces' => [
 					[
-						'type'=> INTERFACE_TYPE_AGENT,
+						'type' => INTERFACE_TYPE_AGENT,
 						'main' => INTERFACE_PRIMARY,
 						'useip' => INTERFACE_USE_DNS,
 						'ip' => '',
@@ -351,7 +353,7 @@ class testTimeoutsLinkedTemplates extends testTimeoutsDisplay {
 						'port' => '1'
 					],
 					[
-						'type'=> INTERFACE_TYPE_SNMP,
+						'type' => INTERFACE_TYPE_SNMP,
 						'main' => INTERFACE_PRIMARY,
 						'useip' => INTERFACE_USE_DNS,
 						'ip' => '',
@@ -380,156 +382,183 @@ class testTimeoutsLinkedTemplates extends testTimeoutsDisplay {
 		self::$templateid = $response['templateids'][0];
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplateItemsMacros() {
-		$link = 'zabbix.php?action=item.list&filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplateItemsMacros()
+	{
+		$link = 'zabbix.php?action=item.list&filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_macros', $link, 'name:item_list', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplateDiscoveryMacros() {
-		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplateDiscoveryMacros()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_macros', $link, 'name:discovery', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplatePrototypeMacros() {
-		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplatePrototypeMacros()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_macros', $link, 'name:itemprototype', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplateItemsCustom() {
-		$link = 'zabbix.php?action=item.list&filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplateItemsCustom()
+	{
+		$link = 'zabbix.php?action=item.list&filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_custom', $link, 'name:item_list', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplateDiscoveryCustom() {
-		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplateDiscoveryCustom()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_custom', $link, 'name:discovery', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplatePrototypeCustom() {
-		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplatePrototypeCustom()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_custom', $link, 'name:itemprototype', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplateItemsDefault() {
-		$link = 'zabbix.php?action=item.list&filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplateItemsDefault()
+	{
+		$link = 'zabbix.php?action=item.list&filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_default', $link, 'name:item_list', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplateDiscoveryDefault() {
-		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplateDiscoveryDefault()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_default', $link, 'name:discovery', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckTemplatePrototypeDefault() {
-		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D='.self::$templateid;
+	public function testTimeoutsLinkedTemplates_CheckTemplatePrototypeDefault()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=template&filter_hostids%5B0%5D=' . self::$templateid;
 		$this->checkGlobal('global_default', $link, 'name:itemprototype', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostItemsMacros() {
-		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostItemsMacros()
+	{
+		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_macros', $link, 'name:item_list', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostDiscoveryMacros() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostDiscoveryMacros()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_macros', $link, 'name:discovery', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostPrototypeMacros() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostPrototypeMacros()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_macros', $link, 'name:itemprototype', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostItemsCustom() {
-		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostItemsCustom()
+	{
+		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_custom', $link, 'name:item_list', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostDiscoveryCustom() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostDiscoveryCustom()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_custom', $link, 'name:discovery', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostPrototypeCustom() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostPrototypeCustom()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_custom', $link, 'name:itemprototype', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostItemsDefault() {
-		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostItemsDefault()
+	{
+		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_default', $link, 'name:item_list', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostDiscoveryDefault() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostDiscoveryDefault()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_default', $link, 'name:discovery', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckHostPrototypeDefault() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check'];
+	public function testTimeoutsLinkedTemplates_CheckHostPrototypeDefault()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check'];
 		$this->checkGlobal('global_default', $link, 'name:itemprototype', false, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostItemsMacros() {
-		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostItemsMacros()
+	{
+		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('proxy_macros', $link, 'name:item_list', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostDiscoveryMacros() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostDiscoveryMacros()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('proxy_macros', $link, 'name:discovery', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostPrototypeMacros() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostPrototypeMacros()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('proxy_macros', $link, 'name:itemprototype', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostItemsCustom() {
-		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostItemsCustom()
+	{
+		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('proxy_custom', $link, 'name:item_list', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostDiscoveryCustom() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostDiscoveryCustom()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('proxy_custom', $link, 'name:discovery', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostPrototypeCustom() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostPrototypeCustom()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('proxy_custom', $link, 'name:itemprototype', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostItemsDefault() {
-		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostItemsDefault()
+	{
+		$link = 'zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('global_default', $link, 'name:item_list', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostDiscoveryDefault() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostDiscoveryDefault()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('global_default', $link, 'name:discovery', true, true);
 	}
 
-	public function testTimeoutsLinkedTemplates_CheckProxyHostPrototypeDefault() {
-		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D='.
-				self::$hostids['Host for linked timeout check with proxy'];
+	public function testTimeoutsLinkedTemplates_CheckProxyHostPrototypeDefault()
+	{
+		$link = 'host_discovery.php?filter_set=1&context=host&filter_hostids%5B0%5D=' .
+			self::$hostids['Host for linked timeout check with proxy'];
 		$this->checkGlobal('global_default', $link, 'name:itemprototype', true, true);
 	}
 }

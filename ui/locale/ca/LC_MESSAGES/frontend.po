@@ -3759,12 +3759,12 @@ msgstr "No es pot pas llegir el YAML: %1$s."
 
 #: include/classes/server/CZabbixServer.php:502
 #, c-format
-msgid "Cannot read response from Zabbix server \"%1$s\"."
+msgid "Cannot read response from Advantal server \"%1$s\"."
 msgstr "No es pot llegir la resposta del servidor Zabbix \"%1$s\"."
 
 #: include/classes/server/CZabbixServer.php:567
 #, c-format
-msgid "Cannot read the response, check connection with the Zabbix server \"%1$s\"."
+msgid "Cannot read the response, check connection with the Advantal server \"%1$s\"."
 msgstr "No es pot llegir la resposta; comproveu la connexió amb el servidor Zabbix \"%1$s\"."
 
 #: app/controllers/CControllerPopupMassupdateHost.php:363
@@ -3795,7 +3795,7 @@ msgstr "No es pot desar el giny \"%1$s\"."
 
 #: include/classes/server/CZabbixServer.php:508
 #, c-format
-msgid "Cannot send command, check connection with Zabbix server \"%1$s\"."
+msgid "Cannot send command, check connection with Advantal server \"%1$s\"."
 msgstr "No es pot pas enviar la comanda; comproveu la connexió amb el servidor Zabbix \"%1$s\"."
 
 #: app/controllers/CControllerItemMassCheckNow.php:124
@@ -5017,13 +5017,13 @@ msgstr "Seguretat de la connexió"
 
 #: include/classes/server/CZabbixServer.php:521
 #, c-format
-msgid "Connection timeout of %1$s seconds exceeded when connecting to Zabbix server \"%2$s\"."
+msgid "Connection timeout of %1$s seconds exceeded when connecting to Advantal server \"%2$s\"."
 msgstr "S'ha superat el temps d'espera de connexió de %1$s segons en connectar-vos al servidor Zabbix \"%2$s\"."
 
 #: include/classes/server/CZabbixServer.php:634
 #, c-format
 msgid ""
-"Connection to Zabbix server \"%1$s\" failed. Possible reasons:\n"
+"Connection to Advantal server \"%1$s\" failed. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Incorrect DNS server configuration.\n"
 msgstr ""
@@ -5034,10 +5034,10 @@ msgstr ""
 #: include/classes/server/CZabbixServer.php:622
 #, c-format
 msgid ""
-"Connection to Zabbix server \"%1$s\" refused. Possible reasons:\n"
+"Connection to Advantal server \"%1$s\" refused. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Security environment (for example, SELinux) is blocking the connection;\n"
-"3. Zabbix server daemon not running;\n"
+"3. Advantal server daemon not running;\n"
 "4. Firewall is blocking TCP connection.\n"
 msgstr ""
 "Connexió al servidor Zabbix \"%1$s\" rebutjada. Raons possibles:\n"
@@ -5049,7 +5049,7 @@ msgstr ""
 #: include/classes/server/CZabbixServer.php:630
 #, c-format
 msgid ""
-"Connection to Zabbix server \"%1$s\" timed out. Possible reasons:\n"
+"Connection to Advantal server \"%1$s\" timed out. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Firewall is blocking TCP connection.\n"
 msgstr ""
@@ -5058,7 +5058,7 @@ msgstr ""
 "2. El tallafocs és blocant la connexió TCP.\n"
 
 #: include/classes/server/CZabbixServer.php:614
-msgid "Connection to Zabbix server failed. Incorrect configuration."
+msgid "Connection to Advantal server failed. Incorrect configuration."
 msgstr "Ha fallat la connexió amb el servidor Zabbix. Configuració incorrecta."
 
 #: include/classes/setup/CSetupWizard.php:647
@@ -8010,7 +8010,7 @@ msgstr "Missatge d'error"
 #: app/partials/administration.system.info.php:148
 #: app/partials/administration.system.info.php:160
 #: app/partials/administration.system.info.php:173
-msgid "Error! Unable to start Zabbix server."
+msgid "Error! Unable to start Advantal server."
 msgstr "Error! No es pot pas engegar el servidor Zabbix."
 
 #: include/classes/screens/CScreenHttpTestDetails.php:111
@@ -8893,11 +8893,11 @@ msgstr "L'expressió regular global \"%1$s\" no existeix."
 #: app/views/administration.script.edit.php:122
 #: app/views/popup.operation.edit.php:63
 #: include/classes/api/services/CScript.php:950
-msgid "Global script execution on Zabbix server is disabled by server configuration."
+msgid "Global script execution on Advantal server is disabled by server configuration."
 msgstr "L'execució global d'scripts al servidor Zabbix és desactivada per la configuració del servidor."
 
 #: app/partials/administration.system.info.php:138
-msgid "Global scripts on Zabbix server"
+msgid "Global scripts on Advantal server"
 msgstr "Scripts globals al servidor Zabbix"
 
 #: app/views/popup.proxy.edit.php:199
@@ -10824,7 +10824,7 @@ msgstr "Expressió regular \"%1$s\" incorrecta: \"%2$s\""
 #: include/classes/server/CZabbixServer.php:575
 #: include/classes/server/CZabbixServer.php:582
 #, c-format
-msgid "Incorrect response received from Zabbix server \"%1$s\"."
+msgid "Incorrect response received from Advantal server \"%1$s\"."
 msgstr "Resposta incorrecta rebuda des del servidor Zabbix \"%1$s\"."
 
 #: app/controllers/CControllerSlaCreateUpdate.php:34
@@ -15173,7 +15173,7 @@ msgstr "Nombre d'elements de la cua que s'endarrereixen per segon, inclosos."
 
 #: include/classes/data/CItemData.php:2615
 #: include/classes/data/CItemData.php:2778
-msgid "Number of items in the queue which are delayed in Zabbix server or proxy by \"from\" till \"to\" seconds, inclusive."
+msgid "Number of items in the queue which are delayed in Advantal server or proxy by \"from\" till \"to\" seconds, inclusive."
 msgstr "Nombre d'elements de la cua que s'endarrereixen al servidor Zabbix o al servidor intermediari per \"de\" fins \"a\" segons, inclosos."
 
 #: include/classes/data/CItemData.php:2687
@@ -17606,7 +17606,7 @@ msgid "Required host permissions"
 msgstr "Permisos d'equip necessaris"
 
 #: include/classes/data/CItemData.php:2771
-msgid "Required performance of the Zabbix server, in new values per second expected."
+msgid "Required performance of the Advantal server, in new values per second expected."
 msgstr "Rendiment requerit del servidor Zabbix, en nous valors per segon esperats."
 
 #: app/partials/administration.system.info.php:101
@@ -17729,7 +17729,7 @@ msgstr "Hora de resposta"
 
 #: include/classes/server/CZabbixServer.php:498
 #, c-format
-msgid "Response timeout of %1$s exceeded when connecting to Zabbix server \"%2$s\"."
+msgid "Response timeout of %1$s exceeded when connecting to Advantal server \"%2$s\"."
 msgstr "S'ha superat el temps d'espera de resposta de %1$s en connectar al servidor Zabbix \"%2$s\"."
 
 #: app/controllers/CControllerMediatypeTestSend.php:182
@@ -17826,7 +17826,7 @@ msgstr "Retorna una matriu JSON que descriu les interfícies de xarxa de l'equip
 
 #: include/classes/data/CItemData.php:2623
 #: include/classes/data/CItemData.php:2785
-msgid "Returns a JSON object containing Zabbix server or proxy internal metrics."
+msgid "Returns a JSON object containing Advantal server or proxy internal metrics."
 msgstr "Retorna un objecte JSON que conté mètriques internes del servidor Zabbix o del servidor intermediari."
 
 #: include/classes/data/CItemData.php:2673
@@ -17923,7 +17923,7 @@ msgstr "Normes"
 
 #: include/actions.inc.php:578
 #, c-format
-msgid "Run script \"%1$s\" on Zabbix server"
+msgid "Run script \"%1$s\" on Advantal server"
 msgstr "Executeu l'script \"%1$s\" al servidor Zabbix"
 
 #: include/actions.inc.php:591
@@ -19209,7 +19209,7 @@ msgid "Show value"
 msgstr "Mostra el valor"
 
 #: app/views/administration.gui.edit.php:110
-msgid "Show warning if Zabbix server is down"
+msgid "Show warning if Advantal server is down"
 msgstr "Mostra un avís si el servidor Zabbix ha caigut"
 
 #: include/views/configuration.graph.edit.php:126
@@ -19354,7 +19354,7 @@ msgstr "Mida"
 
 #: include/classes/server/CZabbixServer.php:554
 #, c-format
-msgid "Size of the response received from Zabbix server \"%1$s\" exceeds the allowed size of %2$s bytes. This value can be increased in the ZBX_SOCKET_BYTES_LIMIT constant in include/defines.inc.php."
+msgid "Size of the response received from Advantal server \"%1$s\" exceeds the allowed size of %2$s bytes. This value can be increased in the ZBX_SOCKET_BYTES_LIMIT constant in include/defines.inc.php."
 msgstr "La mida de la resposta rebuda del servidor Zabbix \"%1$s\" supera la mida permesa de %2$s octets. Aquest valor es pot augmentar a la constant ZBX_SOCKET_BYTES_LIMIT, que és a include/defines.inc.php."
 
 #: include/locales.inc.php:61
@@ -19531,7 +19531,7 @@ msgid "Starting TLS failed."
 msgstr "No s'ha pogut iniciar TLS."
 
 #: include/classes/data/CItemData.php:2631
-msgid "Startup time of Zabbix server, Unix timestamp."
+msgid "Startup time of Advantal server, Unix timestamp."
 msgstr "Hora d'inici del servidor Zabbix, marca de temps Unix."
 
 #: app/partials/configuration.filter.items.php:180
@@ -19932,7 +19932,7 @@ msgid "System default"
 msgstr "Sistema predeterminat"
 
 #: include/func.inc.php:1848
-msgid "System error occurred. Please contact Zabbix administrator."
+msgid "System error occurred. Please contact Advantal Administrator."
 msgstr "S'ha produït un error del sistema. Poseu-vos en contacte amb l'administrador de Zabbix."
 
 #: include/classes/core/CJsonRpc.php:230
@@ -22114,7 +22114,7 @@ msgid "Uptime"
 msgstr "Temps d'activitat"
 
 #: include/classes/data/CItemData.php:2806
-msgid "Uptime of Zabbix server process in seconds."
+msgid "Uptime of Advantal server process in seconds."
 msgstr "Temps d'activitat del procés del servidor Zabbix, en segons."
 
 #: include/actions.inc.php:61
@@ -23228,7 +23228,7 @@ msgid "Version of Zabbix agent. Returns string"
 msgstr "Versió de l'agent de Zabbix. Retorna una cadena"
 
 #: include/classes/data/CItemData.php:2827
-msgid "Version of Zabbix server or proxy"
+msgid "Version of Advantal server or proxy"
 msgstr "Versió del servidor o servidor intermediari Zabbix"
 
 #: widgets/hostavail/includes/WidgetForm.php:57
@@ -23904,7 +23904,7 @@ msgid "Zabbix agent (passive checks)"
 msgstr "Agent de Zabbix (validacions passives)"
 
 #: app/partials/administration.system.info.php:45
-msgid "Zabbix frontend version"
+msgid "Advantal frontend version"
 msgstr "Versió de la interfície de Zabbix"
 
 #: include/validate.inc.php:387
@@ -23928,13 +23928,13 @@ msgid "Zabbix proxy or server"
 msgstr "Proxy o servidor Zabbix"
 
 #: app/views/administration.script.edit.php:116
-msgid "Zabbix server"
+msgid "Advantal server"
 msgstr "Servidor Zabbix"
 
 #: include/classes/server/CZabbixServer.php:626
 #, c-format
 msgid ""
-"Zabbix server \"%1$s\" cannot be reached. Possible reasons:\n"
+"Advantal server \"%1$s\" cannot be reached. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Incorrect network configuration.\n"
 msgstr ""
@@ -23943,24 +23943,24 @@ msgstr ""
 "2. Configuració de xarxa incorrecta.\n"
 
 #: app/views/administration.script.edit.php:115
-msgid "Zabbix server (proxy)"
+msgid "Advantal server (proxy)"
 msgstr "Servidor Zabbix (servidor intermediari)"
 
 #: jsrpc.php:91
-msgid "Zabbix server is not running: the information displayed may not be current."
+msgid "Advantal server is not running: the information displayed may not be current."
 msgstr "El servidor Zabbix no s'està executant: és possible que la informació mostrada no sigui l'actual."
 
 #: app/partials/administration.system.info.php:34
-msgid "Zabbix server is running"
+msgid "Advantal server is running"
 msgstr "Servidor Zabbix en marxa"
 
 #: include/classes/setup/CSetupWizard.php:711
 #: include/classes/setup/CSetupWizard.php:870
-msgid "Zabbix server name"
+msgid "Advantal server name"
 msgstr "Nom del servidor Zabbix"
 
 #: app/partials/administration.system.info.php:40
-msgid "Zabbix server version"
+msgid "Advantal server version"
 msgstr "Versió del servidor Zabbix"
 
 #: include/items.inc.php:92
@@ -24950,7 +24950,7 @@ msgid "fourth"
 msgstr "quart"
 
 #: app/controllers/CControllerPopupTriggerExpr.php:645
-msgid "fuzzytime() - Difference between item value (as timestamp) and Zabbix server timestamp is less than or equal to T seconds (1 - true, 0 - false)"
+msgid "fuzzytime() - Difference between item value (as timestamp) and Advantal server timestamp is less than or equal to T seconds (1 - true, 0 - false)"
 msgstr "fuzzytime() - La diferència entre el valor de l'element (com a marca de temps) i la marca de temps del servidor Zabbix és menor o igual a T segons (1 - cert, 0 - fals)"
 
 #: include/classes/validators/CApiInputValidator.php:3317
@@ -24966,7 +24966,7 @@ msgid "global housekeeping settings"
 msgstr "configuració global de neteja"
 
 #: include/classes/api/services/CScript.php:726
-msgid "global script execution on Zabbix server is disabled by server configuration"
+msgid "global script execution on Advantal server is disabled by server configuration"
 msgstr "l'execució global d'scripts al servidor Zabbix és desactivada per la configuració del servidor"
 
 #: include/html.inc.php:795 include/html.inc.php:800 include/html.inc.php:805

@@ -14,22 +14,24 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @backup sysmaps
  *
  * @onBefore prepareMapsData
  */
-class testFormMapProperties extends CWebTest {
+class testFormMapProperties extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -47,7 +49,8 @@ class testFormMapProperties extends CWebTest {
 
 	protected static $map_update = 'Map for update test';
 
-	public function prepareMapsData() {
+	public function prepareMapsData()
+	{
 		$mapping_id = CDataHelper::call('iconmap.create', [
 			[
 				'name' => self::ICON_MAPPING,
@@ -71,9 +74,9 @@ class testFormMapProperties extends CWebTest {
 			[
 				'name' => self::BACKGROUND_IMAGE,
 				'imagetype' => IMAGE_TYPE_BACKGROUND,
-				'image' => 'iVBORw0KGgoAAAANSUhEUgAAAGkAAAA6CAIAAAA8+uA0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJ'.
-					'cEhZcwAAEnQAABJ0Ad5mH3gAAACPSURBVHhe7dChDQAwDMCwft7Xy4emYBsGZpZq3sA37zrvOu867zrvOu867zrvOu867zr'.
-					'vOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867z'.
+				'image' => 'iVBORw0KGgoAAAANSUhEUgAAAGkAAAA6CAIAAAA8+uA0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJ' .
+					'cEhZcwAAEnQAABJ0Ad5mH3gAAACPSURBVHhe7dChDQAwDMCwft7Xy4emYBsGZpZq3sA37zrvOu867zrvOu867zrvOu867zr' .
+					'vOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867zrvOu867z' .
 					'rvOu867zrvOu867zrvOu867zrvugNJxGmwt/UO4QAAAABJRU5ErkJggg=='
 			]
 		])['imageids'][0];
@@ -192,7 +195,8 @@ class testFormMapProperties extends CWebTest {
 		]);
 	}
 
-	public function testFormMapProperties_Layout() {
+	public function testFormMapProperties_Layout()
+	{
 		$this->page->login()->open('sysmaps.php?form=Create+map')->waitUntilReady();
 		$this->page->assertTitle('Configuration of network maps');
 		$this->page->assertHeader('Network maps');
@@ -203,14 +207,39 @@ class testFormMapProperties extends CWebTest {
 		$this->assertEquals('Map', $form->getSelectedTab());
 
 		// Check that correct labels are visible.
-		$hidden_map_labels = ['Host group label type', '', 'Host label type', '', 'Trigger label type', '',
-			'Map label type', '', 'Image label type', '', 'Type', 'List of user group shares', 'List of user shares'
+		$hidden_map_labels = [
+			'Host group label type',
+			'',
+			'Host label type',
+			'',
+			'Trigger label type',
+			'',
+			'Map label type',
+			'',
+			'Image label type',
+			'',
+			'Type',
+			'List of user group shares',
+			'List of user shares'
 		];
 		$sharing_labels = ['Type', 'List of user group shares', 'List of user shares'];
-		$map_labels = ['Owner', 'Name', 'Width', 'Height', 'Background image', 'Automatic icon mapping',
-			'Icon highlight', 'Mark elements on trigger status change', 'Display problems', 'Advanced labels',
-			'Map element label type', 'Map element label location', 'Problem display', 'Minimum severity',
-			'Show suppressed problems', 'URLs'
+		$map_labels = [
+			'Owner',
+			'Name',
+			'Width',
+			'Height',
+			'Background image',
+			'Automatic icon mapping',
+			'Icon highlight',
+			'Mark elements on trigger status change',
+			'Display problems',
+			'Advanced labels',
+			'Map element label type',
+			'Map element label location',
+			'Problem display',
+			'Minimum severity',
+			'Show suppressed problems',
+			'URLs'
 		];
 		$this->assertEquals($map_labels, array_values($form->getLabels(CElementFilter::VISIBLE)->asText()));
 		$this->assertEquals($hidden_map_labels, array_values($form->getLabels(CElementFilter::NOT_VISIBLE)->asText()));
@@ -220,7 +249,7 @@ class testFormMapProperties extends CWebTest {
 
 		// Check the default values of the fields.
 		$default_values = [
-			'Owner' => 'Admin (Zabbix Administrator)',
+			'Owner' => 'Admin (Advantal Administrator)',
 			'Name' => '',
 			'Width' => '800',
 			'Height' => '600',
@@ -272,9 +301,15 @@ class testFormMapProperties extends CWebTest {
 		// Check dropdown values.
 		$dropdowns = [
 			'Background image' => ['No image', self::BACKGROUND_IMAGE],
-			'Automatic icon mapping' => ['<manual>', self::ICON_MAPPING, 'Icon mapping for update', 'Icon mapping one',
-				'Icon mapping testForm update expression', 'Icon mapping to check clone functionality',
-				'Icon mapping to check delete functionality', 'used_by_map'
+			'Automatic icon mapping' => [
+				'<manual>',
+				self::ICON_MAPPING,
+				'Icon mapping for update',
+				'Icon mapping one',
+				'Icon mapping testForm update expression',
+				'Icon mapping to check clone functionality',
+				'Icon mapping to check delete functionality',
+				'used_by_map'
 			],
 			'Map element label type' => ['Label', 'IP address', 'Element name', 'Status only', 'Nothing'],
 			'Map element label location' => ['Bottom', 'Left', 'Right', 'Top'],
@@ -303,7 +338,7 @@ class testFormMapProperties extends CWebTest {
 		$form->fill([
 			'Host group label type' => 'Custom label',
 			'Host label type' => 'Custom label',
-			'Trigger label type'=> 'Custom label',
+			'Trigger label type' => 'Custom label',
 			'Map label type' => 'Custom label',
 			'Image label type' => 'Custom label'
 		]);
@@ -326,7 +361,9 @@ class testFormMapProperties extends CWebTest {
 
 		// Check radio buttons.
 		$radiobuttons = [
-			'Display problems' => ['Expand single problem', 'Number of problems',
+			'Display problems' => [
+				'Expand single problem',
+				'Number of problems',
 				'Number of problems and expand most critical one'
 			],
 			'Minimum severity' => ['Not classified', 'Information', 'Warning', 'Average', 'High', 'Disaster']
@@ -391,7 +428,8 @@ class testFormMapProperties extends CWebTest {
 		}
 	}
 
-	public function getMapCommonData() {
+	public function getMapCommonData()
+	{
 		return [
 			// #0 Missing mandatory parameter - Name.
 			[
@@ -422,7 +460,7 @@ class testFormMapProperties extends CWebTest {
 					'map_properties' => [
 						'Name' => self::MAP_CLONE
 					],
-					'error_details' => 'Map "'.self::MAP_CLONE.'" already exists.'
+					'error_details' => 'Map "' . self::MAP_CLONE . '" already exists.'
 				]
 			],
 			// #3 Missing mandatory parameter - Owner.
@@ -535,8 +573,8 @@ class testFormMapProperties extends CWebTest {
 						'Advanced labels' => true,
 						'Host group label type' => 'Custom label'
 					],
-					'error_details' => 'Custom label for map "Empty custom label" elements of type "host group"'.
-							' may not be empty.'
+					'error_details' => 'Custom label for map "Empty custom label" elements of type "host group"' .
+						' may not be empty.'
 				]
 			],
 			// #13 Empty custom label - Host.
@@ -548,8 +586,8 @@ class testFormMapProperties extends CWebTest {
 						'Advanced labels' => true,
 						'Host label type' => 'Custom label'
 					],
-					'error_details' => 'Custom label for map "Empty custom label" elements of type "host"'.
-							' may not be empty.'
+					'error_details' => 'Custom label for map "Empty custom label" elements of type "host"' .
+						' may not be empty.'
 				]
 			],
 			// #14 Empty custom label - Trigger.
@@ -561,8 +599,8 @@ class testFormMapProperties extends CWebTest {
 						'Advanced labels' => true,
 						'Trigger label type' => 'Custom label'
 					],
-					'error_details' => 'Custom label for map "Empty custom label" elements of type "trigger"'.
-							' may not be empty.'
+					'error_details' => 'Custom label for map "Empty custom label" elements of type "trigger"' .
+						' may not be empty.'
 				]
 			],
 			// #15 Empty custom label - Map.
@@ -574,8 +612,8 @@ class testFormMapProperties extends CWebTest {
 						'Advanced labels' => true,
 						'Map label type' => 'Custom label'
 					],
-					'error_details' => 'Custom label for map "Empty custom label" elements of type "map"'.
-							' may not be empty.'
+					'error_details' => 'Custom label for map "Empty custom label" elements of type "map"' .
+						' may not be empty.'
 				]
 			],
 			// #16 Empty custom label - Image.
@@ -587,8 +625,8 @@ class testFormMapProperties extends CWebTest {
 						'Advanced labels' => true,
 						'Image label type' => 'Custom label'
 					],
-					'error_details' => 'Custom label for map "Empty custom label" elements of type "image"'.
-							' may not be empty.'
+					'error_details' => 'Custom label for map "Empty custom label" elements of type "image"' .
+						' may not be empty.'
 				]
 			],
 			// #17 Empty URL field.
@@ -755,7 +793,7 @@ class testFormMapProperties extends CWebTest {
 				[
 					'expected' => TEST_GOOD,
 					'map_properties' => [
-						'Name' => self::XSS_EXAMPLE.' update',
+						'Name' => self::XSS_EXAMPLE . ' update',
 						'Width' => '1000',
 						'Height' => '1000',
 						'Advanced labels' => true,
@@ -958,7 +996,7 @@ class testFormMapProperties extends CWebTest {
 				[
 					'expected' => TEST_GOOD,
 					'map_properties' => [
-						'Name' => 'Sysmap with multiple URLs'.microtime()
+						'Name' => 'Sysmap with multiple URLs' . microtime()
 					],
 					'urls' => [
 						[
@@ -1029,7 +1067,7 @@ class testFormMapProperties extends CWebTest {
 					'expected' => TEST_GOOD,
 					'update_map' => self::MAP_URL_ADD,
 					'map_properties' => [
-						'Name' => 'URL sorting'.microtime()
+						'Name' => 'URL sorting' . microtime()
 					],
 					'urls' => [
 						[
@@ -1113,7 +1151,8 @@ class testFormMapProperties extends CWebTest {
 		];
 	}
 
-	public function testFormMapProperties_SimpleUpdate() {
+	public function testFormMapProperties_SimpleUpdate()
+	{
 		$old_hash = CDBHelper::getHash(self::HASH_SQL);
 		$this->page->login()->open('sysmaps.php')->waitUntilReady();
 		$table = $this->query('class:list-table')->asTable()->one();
@@ -1128,18 +1167,21 @@ class testFormMapProperties extends CWebTest {
 	 * @dataProvider getMapCommonData
 	 * @dataProvider getMapUpdateData
 	 */
-	public function testFormMapProperties_Update($data) {
+	public function testFormMapProperties_Update($data)
+	{
 		$this->checkSysmapForm($data, true);
 	}
 
 	/**
 	 * @dataProvider getMapCommonData
 	 */
-	public function testFormMapProperties_Create($data) {
+	public function testFormMapProperties_Create($data)
+	{
 		$this->checkSysmapForm($data);
 	}
 
-	public function getMapUpdateData() {
+	public function getMapUpdateData()
+	{
 		return [
 			// #35 Update - delete URLs and change other possible fields.
 			[
@@ -1185,7 +1227,8 @@ class testFormMapProperties extends CWebTest {
 		];
 	}
 
-	public function testFormMapProperties_CancelCreate() {
+	public function testFormMapProperties_CancelCreate()
+	{
 		$old_hash = CDBHelper::getHash(self::HASH_SQL);
 		$this->page->login()->open('sysmaps.php')->waitUntilReady();
 		$this->query('button:Create map')->waitUntilClickable()->one()->click();
@@ -1199,10 +1242,11 @@ class testFormMapProperties extends CWebTest {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::HASH_SQL));
 	}
 
-	public function testFormMapProperties_Clone() {
+	public function testFormMapProperties_Clone()
+	{
 		// Expected parameters of the cloned map.
 		$data = [
-			'Owner' => ['Admin (Zabbix Administrator)'],
+			'Owner' => ['Admin (Advantal Administrator)'],
 			'Name' => self::CLONED_MAP,
 			'Width' => '1000',
 			'Height' => '1000',
@@ -1267,10 +1311,11 @@ class testFormMapProperties extends CWebTest {
 		$form->checkValue($data);
 
 		// Check that cloned map is present in the database.
-		$this->assertEquals(1, CDBHelper::getCount('SELECT sysmapid FROM sysmaps WHERE name='.zbx_dbstr(self::CLONED_MAP)));
+		$this->assertEquals(1, CDBHelper::getCount('SELECT sysmapid FROM sysmaps WHERE name=' . zbx_dbstr(self::CLONED_MAP)));
 	}
 
-	public function testFormMapProperties_Delete() {
+	public function testFormMapProperties_Delete()
+	{
 		$this->page->login()->open('sysmaps.php')->waitUntilReady();
 		$table = $this->query('class:list-table')->asTable()->one();
 		$table->findRow('Name', self::MAP_CLONE)->query('link:Properties')->one()->click();
@@ -1281,7 +1326,7 @@ class testFormMapProperties extends CWebTest {
 
 		// Check the presence of the map in the list and database.
 		$this->assertFalse($table->findRow('Name', self::MAP_CLONE, true)->isPresent());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT sysmapid FROM sysmaps WHERE name='.zbx_dbstr(self::MAP_CLONE)));
+		$this->assertEquals(0, CDBHelper::getCount('SELECT sysmapid FROM sysmaps WHERE name=' . zbx_dbstr(self::MAP_CLONE)));
 	}
 
 	/**
@@ -1289,7 +1334,8 @@ class testFormMapProperties extends CWebTest {
 	 *
 	 * @param boolean $update	updating is performed
 	 */
-	protected function checkSysmapForm($data, $update = false) {
+	protected function checkSysmapForm($data, $update = false)
+	{
 		if ($data['expected'] === TEST_BAD) {
 			$old_hash = CDBHelper::getHash(self::HASH_SQL);
 		}
@@ -1300,8 +1346,7 @@ class testFormMapProperties extends CWebTest {
 		if ($update) {
 			$update_map = CTestArrayHelper::get($data, 'update_map', self::$map_update);
 			$table->findRow('Name', $update_map)->query('link:Properties')->one()->click();
-		}
-		else {
+		} else {
 			$this->query('button:Create map')->one()->click();
 		}
 
@@ -1317,16 +1362,17 @@ class testFormMapProperties extends CWebTest {
 		$form->submit()->waitUntilStalled();
 
 		if ($data['expected'] === TEST_BAD) {
-			$this->assertMessage(TEST_BAD, (CTestArrayHelper::get($data, 'incorrect_data')
+			$this->assertMessage(
+				TEST_BAD,
+				(CTestArrayHelper::get($data, 'incorrect_data')
 					? 'Page received incorrect data'
 					: (($update) ? 'Cannot update network map' : 'Cannot add network map')),
-					$data['error_details']
+				$data['error_details']
 			);
 
 			// Check that DB hash is not changed.
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::HASH_SQL));
-		}
-		else {
+		} else {
 			$this->page->waitUntilReady();
 			$this->assertMessage(TEST_GOOD, $update ? 'Network map updated' : 'Network map added');
 

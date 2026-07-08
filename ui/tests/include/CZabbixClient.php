@@ -15,21 +15,25 @@
 
 require_once 'vendor/autoload.php';
 
-require_once dirname(__FILE__).'/../../include/defines.inc.php';
-require_once dirname(__FILE__).'/../../include/classes/server/CZabbixServer.php';
+require_once dirname(__FILE__) . '/../../include/defines.inc.php';
+require_once dirname(__FILE__) . '/../../include/classes/server/CZabbixServer.php';
 
 /**
- * Client for Zabbix Server/Proxy protocol.
+ * Client for Advantal server/Proxy protocol.
  */
-class CZabbixClient extends CZabbixServer {
+class CZabbixClient extends CZabbixServer
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	protected function normalizeResponse(array &$response) {
+	protected function normalizeResponse(array &$response)
+	{
 		// Response for item data requests contain success status without data.
-		if (array_key_exists('response', $response) && $response['response'] === self::RESPONSE_SUCCESS
-				&& !array_key_exists('data', $response) && array_key_exists('info', $response)) {
+		if (
+			array_key_exists('response', $response) && $response['response'] === self::RESPONSE_SUCCESS
+			&& !array_key_exists('data', $response) && array_key_exists('info', $response)
+		) {
 			$response['data'] = $response['info'];
 			unset($response['info']);
 		}
@@ -46,9 +50,10 @@ class CZabbixClient extends CZabbixServer {
 	 *
 	 * @return array|false    array with result data or false otherwise
 	 */
-	public function sendDataValues($type, $values, $time = null) {
+	public function sendDataValues($type, $values, $time = null)
+	{
 		$response = parent::request([
-			'request' => $type.' data',
+			'request' => $type . ' data',
 			'data' => $values,
 			'clock' => $time ?? time(),
 			'ns' => 0
@@ -86,8 +91,13 @@ class CZabbixClient extends CZabbixServer {
 	 *
 	 * @return array|bool    array with result data, true for proxy data on success, or false otherwise
 	 */
-	public function sendAgentDataValues(array $data, string $session, string $host, string $version = ZABBIX_VERSION,
-			$proxy = null) {
+	public function sendAgentDataValues(
+		array $data,
+		string $session,
+		string $host,
+		string $version = ZABBIX_VERSION,
+		$proxy = null
+	) {
 		$id = 1;
 		foreach ($data as &$item) {
 			$item['id'] = $id++;
@@ -146,7 +156,8 @@ class CZabbixClient extends CZabbixServer {
 	 *
 	 * @return array|false    array with active checks or false otherwise
 	 */
-	public function getActiveChecks($host) {
+	public function getActiveChecks($host)
+	{
 		return parent::request([
 			'request' => 'active checks',
 			'host' => $host

@@ -13,9 +13,9 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @backup config, widget
@@ -24,7 +24,8 @@ require_once __DIR__.'/../behaviors/CMessageBehavior.php';
  *
  * @onBefore prepareDashboardData
  */
-class testDashboardGeomapWidget extends CWebTest {
+class testDashboardGeomapWidget extends CWebTest
+{
 
 	/**
 	 * Id of the dashboard where geomap widget is created and updated.
@@ -40,7 +41,8 @@ class testDashboardGeomapWidget extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
@@ -48,15 +50,16 @@ class testDashboardGeomapWidget extends CWebTest {
 	 * SQL query to get widget and widget_field tables to compare hash values, but without widget_fieldid
 	 * because it can change.
 	 */
-	private $sql = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,'.
-			' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,'.
-			' w.width, w.height'.
-			' FROM widget_field wf'.
-			' INNER JOIN widget w'.
-			' ON w.widgetid=wf.widgetid ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid,'.
-			' wf.value_itemid, wf.value_graphid, wf.value_hostid';
+	private $sql = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,' .
+		' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,' .
+		' w.width, w.height' .
+		' FROM widget_field wf' .
+		' INNER JOIN widget w' .
+		' ON w.widgetid=wf.widgetid ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid,' .
+		' wf.value_itemid, wf.value_graphid, wf.value_hostid';
 
-	public function prepareDashboardData() {
+	public function prepareDashboardData()
+	{
 		$response = CDataHelper::call('dashboard.create', [
 			'name' => 'Geomap widget dashboard',
 			'auto_start' => 0,
@@ -134,16 +137,18 @@ class testDashboardGeomapWidget extends CWebTest {
 		self::$dashboardid = $response['dashboardids'][0];
 	}
 
-	public function testDashboardGeomapWidget_Layout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardGeomapWidget_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$form = CDashboardElement::find()->one()->edit()->addWidget()->asForm();
 
 		$dialog = COverlayDialogElement::find()->waitUntilReady()->one();
 		$this->assertEquals('Add widget', $dialog->getTitle());
 		$form->fill(['Type' => 'Geomap']);
 		$dialog->waitUntilReady();
-		$this->assertEquals(['Type', 'Show header', 'Name', 'Refresh interval', 'Host groups', 'Hosts', 'Tags', 'Initial view'],
-				$form->getLabels()->asText()
+		$this->assertEquals(
+			['Type', 'Show header', 'Name', 'Refresh interval', 'Host groups', 'Hosts', 'Tags', 'Initial view'],
+			$form->getLabels()->asText()
 		);
 		$form->checkValue(['id:show_header' => true, 'Refresh interval' => 'Default (1 minute)']);
 
@@ -159,20 +164,28 @@ class testDashboardGeomapWidget extends CWebTest {
 		// Check tags table initial values.
 		$form->checkValue(['id:evaltype' => 'And/Or']);
 		$form->query('id:tags_table_tags')->asMultifieldTable()->one()
-				->checkValue([['tag' => '', 'operator' => 'Contains', 'value' => '']]);
+			->checkValue([['tag' => '', 'operator' => 'Contains', 'value' => '']]);
 
 		// Check operator's dropdown options presence.
-		$this->assertEquals(['Exists', 'Equals', 'Contains', 'Does not exist', 'Does not equal',
-				'Does not contain'], $form->getField('id:tags_0_operator')->asDropdown()->getOptions()->asText()
+		$this->assertEquals(
+			[
+				'Exists',
+				'Equals',
+				'Contains',
+				'Does not exist',
+				'Does not equal',
+				'Does not contain'
+			],
+			$form->getField('id:tags_0_operator')->asDropdown()->getOptions()->asText()
 		);
 
-		$hint_text = "Comma separated center coordinates and zoom level to display when the widget is initially loaded.".
-				"\nSupported formats:".
-				"\n<lat>,<lng>,<zoom>".
-				"\n<lat>,<lng>".
-				"\n".
-				"\nThe maximum zoom level is \"0\".".
-				"\nInitial view is ignored if the default view is set.";
+		$hint_text = "Comma separated center coordinates and zoom level to display when the widget is initially loaded." .
+			"\nSupported formats:" .
+			"\n<lat>,<lng>,<zoom>" .
+			"\n<lat>,<lng>" .
+			"\n" .
+			"\nThe maximum zoom level is \"0\"." .
+			"\nInitial view is ignored if the default view is set.";
 
 		$form->getLabel('Initial view')->query('xpath:./button[@data-hintbox]')->one()->click();
 		$hint = $this->query('xpath://div[@data-hintboxid]')->waitUntilPresent();
@@ -183,7 +196,8 @@ class testDashboardGeomapWidget extends CWebTest {
 		$dialog->close();
 	}
 
-	public static function getWidgetCreateData() {
+	public static function getWidgetCreateData()
+	{
 		return [
 			[
 				[
@@ -195,7 +209,8 @@ class testDashboardGeomapWidget extends CWebTest {
 		];
 	}
 
-	public static function getWidgetCommonData() {
+	public static function getWidgetCommonData()
+	{
 		return [
 			[
 				[
@@ -203,8 +218,8 @@ class testDashboardGeomapWidget extends CWebTest {
 					'fields' => [
 						'Initial view' => '1'
 					],
-					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of '.
-							'comma separated latitude and longitude) are expected.'
+					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of ' .
+						'comma separated latitude and longitude) are expected.'
 				]
 			],
 			[
@@ -224,8 +239,8 @@ class testDashboardGeomapWidget extends CWebTest {
 						'Name' => 'Text in coordinates',
 						'Initial view' => 'test'
 					],
-					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of '.
-							'comma separated latitude and longitude) are expected.'
+					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of ' .
+						'comma separated latitude and longitude) are expected.'
 				]
 			],
 			[
@@ -235,8 +250,8 @@ class testDashboardGeomapWidget extends CWebTest {
 						'Name' => 'Space before zoom in coordinates',
 						'Initial view' => '56.95008,24.11509, 25'
 					],
-					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of '.
-							'comma separated latitude and longitude) are expected.'
+					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of ' .
+						'comma separated latitude and longitude) are expected.'
 				]
 			],
 			[
@@ -246,8 +261,8 @@ class testDashboardGeomapWidget extends CWebTest {
 						'Name' => 'Space before zoom in long coordinates',
 						'Initial view' => '51.5537236445998, -0.43871069125537776, 25'
 					],
-					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of '.
-							'comma separated latitude and longitude) are expected.'
+					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of ' .
+						'comma separated latitude and longitude) are expected.'
 				]
 			],
 			[
@@ -257,8 +272,8 @@ class testDashboardGeomapWidget extends CWebTest {
 						'Name' => 'Negative zoom in coordinates',
 						'Initial view' => '56.95008,24.11509,-25'
 					],
-					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of '.
-							'comma separated latitude and longitude) are expected.'
+					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of ' .
+						'comma separated latitude and longitude) are expected.'
 				]
 			],
 			[
@@ -268,8 +283,8 @@ class testDashboardGeomapWidget extends CWebTest {
 						'Name' => 'Negative number in coordinates',
 						'Initial view' => '-5'
 					],
-					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of '.
-							'comma separated latitude and longitude) are expected.'
+					'error' => 'Invalid parameter "Initial view": geographical coordinates (values of ' .
+						'comma separated latitude and longitude) are expected.'
 				]
 			],
 			[
@@ -319,7 +334,7 @@ class testDashboardGeomapWidget extends CWebTest {
 					'fields' => [
 						'Name' => 'New geomap widget with tags and long coordinates',
 						'Refresh interval' => '2 minutes',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => ['Test item host', 'ЗАББИКС Сервер'],
 						'Initial view' => '51.5537236445998, -0.43871069125537776'
 					],
@@ -367,7 +382,8 @@ class testDashboardGeomapWidget extends CWebTest {
 		];
 	}
 
-	public static function getWidgetUpdateData() {
+	public static function getWidgetUpdateData()
+	{
 		return [
 			[
 				[
@@ -389,7 +405,8 @@ class testDashboardGeomapWidget extends CWebTest {
 	 * @dataProvider getWidgetCreateData
 	 * @dataProvider getWidgetCommonData
 	 */
-	public function testDashboardGeomapWidget_Create($data) {
+	public function testDashboardGeomapWidget_Create($data)
+	{
 		$this->checkFormGeomapWidget($data);
 	}
 
@@ -397,7 +414,8 @@ class testDashboardGeomapWidget extends CWebTest {
 	 * @dataProvider getWidgetCommonData
 	 * @dataProvider getWidgetUpdateData
 	 */
-	public function testDashboardGeomapWidget_Update($data) {
+	public function testDashboardGeomapWidget_Update($data)
+	{
 		$this->checkFormGeomapWidget($data, true);
 	}
 
@@ -407,12 +425,13 @@ class testDashboardGeomapWidget extends CWebTest {
 	 * @param array      $data      data provider
 	 * @param boolean    $update    true if update scenario, false if create
 	 */
-	public function checkFormGeomapWidget($data, $update = false) {
+	public function checkFormGeomapWidget($data, $update = false)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash($this->sql);
 		}
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -433,8 +452,7 @@ class testDashboardGeomapWidget extends CWebTest {
 
 			if (empty($data['Tags'])) {
 				$tags_table->clear();
-			}
-			else {
+			} else {
 				$form->getField('id:evaltype')->fill(CTestArrayHelper::get($data['Tags'], 'evaluation', 'And/Or'));
 				$form->getField('id:tags_table_tags')->asMultifieldTable()->fill(CTestArrayHelper::get($data['Tags'], 'tags'));
 			}
@@ -448,8 +466,7 @@ class testDashboardGeomapWidget extends CWebTest {
 
 			// Check that DB hash is not changed.
 			$this->assertEquals($old_hash, CDBHelper::getHash($this->sql));
-		}
-		else {
+		} else {
 			COverlayDialogElement::ensureNotPresent();
 
 			/**
@@ -461,8 +478,7 @@ class testDashboardGeomapWidget extends CWebTest {
 				$header = ($data['fields']['Name'] === '')
 					? 'Geomap'
 					: $data['fields']['Name'];
-			}
-			else {
+			} else {
 				$header = $update ? self::$update_geomap : 'Geomap';
 			}
 
@@ -486,15 +502,18 @@ class testDashboardGeomapWidget extends CWebTest {
 			}
 
 			// Check that widget is saved in DB.
-			$this->assertEquals(1,
-					CDBHelper::getCount('SELECT * FROM widget w'.
-						' WHERE EXISTS ('.
-							'SELECT NULL'.
-							' FROM dashboard_page dp'.
-							' WHERE w.dashboard_pageid=dp.dashboard_pageid'.
-								' AND dp.dashboardid='.self::$dashboardid.
-								' AND w.name ='.zbx_dbstr(CTestArrayHelper::get($data['fields'], 'Name', '')).')'
-			));
+			$this->assertEquals(
+				1,
+				CDBHelper::getCount(
+					'SELECT * FROM widget w' .
+						' WHERE EXISTS (' .
+						'SELECT NULL' .
+						' FROM dashboard_page dp' .
+						' WHERE w.dashboard_pageid=dp.dashboard_pageid' .
+						' AND dp.dashboardid=' . self::$dashboardid .
+						' AND w.name =' . zbx_dbstr(CTestArrayHelper::get($data['fields'], 'Name', '')) . ')'
+				)
+			);
 
 			// Write new name to updated widget name.
 			if ($update) {
@@ -505,11 +524,13 @@ class testDashboardGeomapWidget extends CWebTest {
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public function testDashboardGeomapWidget_SimpleUpdate() {
+	public function testDashboardGeomapWidget_SimpleUpdate()
+	{
 		$this->checkNoChanges();
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			// Cancel creating widget with saving the dashboard.
 			[
@@ -549,7 +570,8 @@ class testDashboardGeomapWidget extends CWebTest {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testDashboardGeomapWidget_Cancel($data) {
+	public function testDashboardGeomapWidget_Cancel($data)
+	{
 		$this->checkNoChanges($data['cancel_form'], $data['create_widget'], $data['save_dashboard']);
 	}
 
@@ -560,10 +582,11 @@ class testDashboardGeomapWidget extends CWebTest {
 	 * @param boolean $create            true if create scenario, false if update
 	 * @param boolean $save_dashboard    true if dashboard will be saved, false if not
 	 */
-	private function checkNoChanges($cancel = false, $create = false, $save_dashboard = true) {
+	private function checkNoChanges($cancel = false, $create = false, $save_dashboard = true)
+	{
 		$old_hash = CDBHelper::getHash($this->sql);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -575,37 +598,35 @@ class testDashboardGeomapWidget extends CWebTest {
 
 		if (!$create) {
 			$values = $form->getFields()->asValues();
-		}
-		else {
+		} else {
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Geomap')]);
 		}
 
 		if ($cancel || !$save_dashboard) {
 			$form->fill(
-					[
-						'Name' => 'new name',
-						'Refresh interval' => '10 minutes',
-						'Host groups' => 'Group for Host availability widget',
-						'Hosts' => 'Available host',
-						'Initial view' => '56.95090, 24.115,7'
-					]
+				[
+					'Name' => 'new name',
+					'Refresh interval' => '10 minutes',
+					'Host groups' => 'Group for Host availability widget',
+					'Hosts' => 'Available host',
+					'Initial view' => '56.95090, 24.115,7'
+				]
 			);
 			$form->getField('id:evaltype')->fill('Or');
 			$form->getField('id:tags_table_tags')->asMultifieldTable()->fill([
-					[
-						'action' => USER_ACTION_UPDATE,
-						'index' => 0,
-						'tag' => 'new tag',
-						'operator' => 'Does not equal',
-						'value' => 'new value'
-					]
+				[
+					'action' => USER_ACTION_UPDATE,
+					'index' => 0,
+					'tag' => 'new tag',
+					'operator' => 'Does not equal',
+					'value' => 'new value'
+				]
 			]);
 		}
 
 		if ($cancel) {
 			$dialog->query('button:Cancel')->one()->click();
-		}
-		else {
+		} else {
 			$form->submit();
 		}
 
@@ -618,8 +639,7 @@ class testDashboardGeomapWidget extends CWebTest {
 		if ($save_dashboard) {
 			$dashboard->save();
 			$this->assertMessage(TEST_GOOD, 'Dashboard updated');
-		}
-		else {
+		} else {
 			$dashboard->cancelEditing();
 		}
 
@@ -635,10 +655,11 @@ class testDashboardGeomapWidget extends CWebTest {
 		$this->assertEquals($old_hash, CDBHelper::getHash($this->sql));
 	}
 
-	public function testDashboardGeomapWidget_Delete() {
+	public function testDashboardGeomapWidget_Delete()
+	{
 		$name = 'Geomap for delete';
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$this->assertTrue($dashboard->edit()->getWidget($name)->isEditable());
 		$dashboard->deleteWidget($name);
@@ -648,10 +669,11 @@ class testDashboardGeomapWidget extends CWebTest {
 
 		// Check that widget is not present on dashboard and in DB.
 		$this->assertFalse($dashboard->getWidget($name, false)->isValid());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM widget_field wf'.
-				' LEFT JOIN widget w'.
-					' ON w.widgetid=wf.widgetid'.
-					' WHERE w.name='.zbx_dbstr($name)
+		$this->assertEquals(0, CDBHelper::getCount(
+			'SELECT * FROM widget_field wf' .
+				' LEFT JOIN widget w' .
+				' ON w.widgetid=wf.widgetid' .
+				' WHERE w.name=' . zbx_dbstr($name)
 		));
 	}
 }

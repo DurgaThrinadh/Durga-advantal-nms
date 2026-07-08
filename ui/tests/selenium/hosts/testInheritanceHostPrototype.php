@@ -14,26 +14,29 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
-require_once __DIR__.'/../behaviors/CMacrosBehavior.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../behaviors/CMacrosBehavior.php';
 
 /**
  * Test the creation of inheritance of new objects on a previously linked template.
  *
  * @backup hosts
  */
-class testInheritanceHostPrototype extends CLegacyWebTest {
+class testInheritanceHostPrototype extends CLegacyWebTest
+{
 
 	/**
 	 * Attach MacrosBehavior and CMessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMacrosBehavior::class, CMessageBehavior::class];
 	}
 
-	public static function getLayoutData() {
+	public static function getLayoutData()
+	{
 		return [
 			[
 				[
@@ -47,36 +50,40 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	/**
 	 * @dataProvider getLayoutData
 	 */
-	public function testInheritanceHostPrototype_CheckLayout($data) {
+	public function testInheritanceHostPrototype_CheckLayout($data)
+	{
 		$this->selectHostPrototypeForUpdate('host', $data);
 		$this->zbxTestWaitForPageToLoad();
 
 		// Get hostid and discoveryid to check href to template.
-		$host_prototype = CDBHelper::getValue('SELECT hostid FROM hosts WHERE templateid IS NULL AND host='.
+		$host_prototype = CDBHelper::getValue(
+			'SELECT hostid FROM hosts WHERE templateid IS NULL AND host=' .
 				zbx_dbstr($data['host_prototype'])
 		);
-		$discovery_id = CDBHelper::getValue('SELECT itemid FROM items WHERE templateid IS NULL AND name='.
+		$discovery_id = CDBHelper::getValue(
+			'SELECT itemid FROM items WHERE templateid IS NULL AND name=' .
 				zbx_dbstr($data['discovery'])
 		);
 
 		// Check layout at Host tab.
-		$this->zbxTestAssertElementPresentXpath('//label[text()="Parent discovery rules"]/../..//'.
-				'a[contains(@href, "&hostid='.$host_prototype.'") and contains(@href, "&parent_discoveryid='.$discovery_id.'")]');
+		$this->zbxTestAssertElementPresentXpath('//label[text()="Parent discovery rules"]/../..//' .
+			'a[contains(@href, "&hostid=' . $host_prototype . '") and contains(@href, "&parent_discoveryid=' . $discovery_id . '")]');
 		$this->zbxTestAssertElementPresentXpath('//input[@id="name"][@readonly]');
 		$this->zbxTestAssertElementPresentXpath('//input[@id="host"][@readonly]');
 		$this->zbxTestAssertElementPresentXpath('//div[contains(@class,"interface-cell-ip")]/input[@readonly]');
 		$this->zbxTestAssertElementPresentXpath('//div[contains(@class,"interface-cell-dns")]/input[@readonly]');
-		$interface = CDBHelper::getValue('SELECT interfaceid'.
-				' FROM interface'.
-				' WHERE hostid IN ('.
-						'SELECT hostid'.
-						' FROM items'.
-						' WHERE templateid IS NOT NULL'.
-						' AND name='.zbx_dbstr($data['discovery']).
+		$interface = CDBHelper::getValue(
+			'SELECT interfaceid' .
+				' FROM interface' .
+				' WHERE hostid IN (' .
+				'SELECT hostid' .
+				' FROM items' .
+				' WHERE templateid IS NOT NULL' .
+				' AND name=' . zbx_dbstr($data['discovery']) .
 				')'
 		);
-		$this->zbxTestAssertElementPresentXpath('//ul[@id="interfaces_'.$interface.'_useip"]//input[@value="0"][@readonly]');
-		$this->zbxTestAssertElementPresentXpath('//ul[@id="interfaces_'.$interface.'_useip"]//input[@value="1"][@readonly]');
+		$this->zbxTestAssertElementPresentXpath('//ul[@id="interfaces_' . $interface . '_useip"]//input[@value="0"][@readonly]');
+		$this->zbxTestAssertElementPresentXpath('//ul[@id="interfaces_' . $interface . '_useip"]//input[@value="1"][@readonly]');
 		$this->zbxTestAssertElementPresentXpath('//div[contains(@class,"interface-cell-port")]/input[@type="text"][@readonly]');
 
 		$monitored_by = $this->query('id:monitored_by')->asSegmentedRadio()->one();
@@ -143,25 +150,26 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		// Check layout at Host Inventory tab.
 		$this->zbxTestTabSwitch('Inventory');
 		for ($i = 0; $i < 3; $i++) {
-			$this->zbxTestAssertElementPresentXpath('//input[@id="inventory_mode_'.$i.'"][@readonly]');
+			$this->zbxTestAssertElementPresentXpath('//input[@id="inventory_mode_' . $i . '"][@readonly]');
 		}
 
 		// Check layout at Encryption tab.
 		$this->zbxTestTabSwitch('Encryption');
 		foreach (['tls_connect_0', 'tls_connect_1', 'tls_connect_2', 'tls_in_none', 'tls_in_cert', 'tls_in_psk'] as $id) {
-			$this->zbxTestAssertElementPresentXpath('//input[@id="'.$id.'"][@readonly]');
+			$this->zbxTestAssertElementPresentXpath('//input[@id="' . $id . '"][@readonly]');
 		}
 
 		$this->zbxTestAssertAttribute('//button[@id="delete"]', 'disabled');
 	}
 
-	public static function getCreateData() {
+	public static function getCreateData()
+	{
 		return [
 			[
 				[
 					'fields' => [
 						'Host name' => 'test Inheritance host prototype',
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'interfaces' => [
 						[
@@ -178,13 +186,14 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	/**
 	 * @dataProvider getCreateData
 	 */
-	public function testInheritanceHostPrototype_CreateHostLinkTemplate($data) {
+	public function testInheritanceHostPrototype_CreateHostLinkTemplate($data)
+	{
 		$this->zbxTestLogin('zabbix.php?action=host.edit');
 		$form = $this->query('id:host-form')->asForm()->one()->waitUntilVisible();
 		$form->fill($data['fields']);
 
 		$form->getFieldContainer('Interfaces')->asHostInterfaceElement(['names' => ['1' => 'default']])
-				->fill($data['interfaces']);
+			->fill($data['interfaces']);
 		$form->getFieldContainer('Templates')->asMultiselect()->fill($data['template']);
 		$form->submit();
 		$this->page->waitUntilReady();
@@ -192,18 +201,18 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Host added');
 
 		// DB check.
-		$hosts_templates = 'SELECT NULL'.
-				' FROM hosts_templates'.
-				' WHERE hostid IN ('.
-					'SELECT hostid'.
-					' FROM hosts'.
-					' WHERE host='.zbx_dbstr($data['fields']['Host name']).
-				')'.
-				' AND templateid IN ('.
-					'SELECT hostid'.
-					' FROM hosts'.
-					' WHERE host='.zbx_dbstr($data['template']).
-				')';
+		$hosts_templates = 'SELECT NULL' .
+			' FROM hosts_templates' .
+			' WHERE hostid IN (' .
+			'SELECT hostid' .
+			' FROM hosts' .
+			' WHERE host=' . zbx_dbstr($data['fields']['Host name']) .
+			')' .
+			' AND templateid IN (' .
+			'SELECT hostid' .
+			' FROM hosts' .
+			' WHERE host=' . zbx_dbstr($data['template']) .
+			')';
 
 		$this->assertEquals(1, CDBHelper::getCount($hosts_templates));
 
@@ -218,31 +227,33 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	 *
 	 * @param array $data	test case data from data provider
 	 */
-	private function sqlForHostPrototypeCompare($data) {
-		$sql = 'SELECT host, status, name, ipmi_authtype,'.
-						' ipmi_privilege, ipmi_username, ipmi_password,'.
-						' description, tls_connect, tls_accept, tls_issuer, tls_subject,'.
-						' tls_psk_identity, tls_psk, flags'.
-						' FROM hosts'.
-						' WHERE flags=2 AND hostid IN ('.
-							'SELECT hostid'.
-							' FROM host_discovery'.
-							' WHERE parent_itemid IN ('.
-								'SELECT itemid'.
-								' FROM items'.
-								' WHERE hostid in ('.
-									'SELECT hostid'.
-									' FROM hosts'.
-									' WHERE host='.zbx_dbstr($data).
-								')'.
-							')'.
-						')'.
-						' ORDER BY host, name';
+	private function sqlForHostPrototypeCompare($data)
+	{
+		$sql = 'SELECT host, status, name, ipmi_authtype,' .
+			' ipmi_privilege, ipmi_username, ipmi_password,' .
+			' description, tls_connect, tls_accept, tls_issuer, tls_subject,' .
+			' tls_psk_identity, tls_psk, flags' .
+			' FROM hosts' .
+			' WHERE flags=2 AND hostid IN (' .
+			'SELECT hostid' .
+			' FROM host_discovery' .
+			' WHERE parent_itemid IN (' .
+			'SELECT itemid' .
+			' FROM items' .
+			' WHERE hostid in (' .
+			'SELECT hostid' .
+			' FROM hosts' .
+			' WHERE host=' . zbx_dbstr($data) .
+			')' .
+			')' .
+			')' .
+			' ORDER BY host, name';
 
 		return CDBHelper::getHash($sql);
 	}
 
-	public static function getSimpleUpdateData() {
+	public static function getSimpleUpdateData()
+	{
 		return [
 			[
 				[
@@ -266,12 +277,12 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	 *
 	 * @dataProvider getSimpleUpdateData
 	 */
-	public function testInheritanceHostPrototype_SimpleUpdate($data) {
+	public function testInheritanceHostPrototype_SimpleUpdate($data)
+	{
 		if ($data['update'] === 'host') {
-			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NOT NULL AND host='.zbx_dbstr($data['host_prototype']);
-		}
-		elseif ($data['update'] === 'template') {
-			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NULL AND host='.zbx_dbstr($data['host_prototype']);
+			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NOT NULL AND host=' . zbx_dbstr($data['host_prototype']);
+		} elseif ($data['update'] === 'template') {
+			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NULL AND host=' . zbx_dbstr($data['host_prototype']);
 		}
 
 		$old_host = CDBHelper::getHash($sql);
@@ -282,7 +293,8 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		$this->assertEquals($old_host, CDBHelper::getHash($sql));
 	}
 
-	public static function getUpdateTemplateData() {
+	public static function getUpdateTemplateData()
+	{
 		return [
 			[
 				[
@@ -311,7 +323,8 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	 *
 	 * @dataProvider getUpdateTemplateData
 	 */
-	public function testInheritanceHostPrototype_Update($data) {
+	public function testInheritanceHostPrototype_Update($data)
+	{
 		$this->selectHostPrototypeForUpdate('template', $data);
 
 		// Host tab.
@@ -331,7 +344,7 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 			foreach ($data['groups'] as $group) {
 				$this->zbxTestClickButtonMultiselect('group_links_');
 				$this->zbxTestLaunchOverlayDialog('Host groups');
-				$this->zbxTestClickXpath('//div[contains(@class, "overlay-dialogue modal")]//a[text()="'.$group.'"]');
+				$this->zbxTestClickXpath('//div[contains(@class, "overlay-dialogue modal")]//a[text()="' . $group . '"]');
 			}
 		}
 
@@ -353,7 +366,7 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		// Host inventory tab.
 		$this->zbxTestTabSwitch('Inventory');
 		if (array_key_exists('host_inventory', $data)) {
-			$this->zbxTestClickXpathWait('//label[text()="'.$data['host_inventory'].'"]');
+			$this->zbxTestClickXpathWait('//label[text()="' . $data['host_inventory'] . '"]');
 		}
 
 		$this->zbxTestClick('update');
@@ -368,7 +381,8 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		$this->assertEquals($prototype_on_template, $prototype_on_host);
 	}
 
-	public static function getCloneData() {
+	public static function getCloneData()
+	{
 		return [
 			[
 				[
@@ -430,7 +444,8 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	 *
 	 * @dataProvider getCloneData
 	 */
-	public function testInheritanceHostPrototype_Clone($data) {
+	public function testInheritanceHostPrototype_Clone($data)
+	{
 		$this->selectHostPrototypeForUpdate('host', $data);
 		$this->query('button:Clone')->waitUntilVisible()->one()->click()->waitUntilNotVisible();
 
@@ -447,7 +462,7 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		// Change groups.
 		if (array_key_exists('hostgroup', $data) || array_key_exists('group_prototype', $data)) {
 			if (array_key_exists('hostgroup', $data)) {
-				$this->zbxTestClickXpathWait('//span['.CXPathHelper::fromClass('zi-remove-smaller').']');
+				$this->zbxTestClickXpathWait('//span[' . CXPathHelper::fromClass('zi-remove-smaller') . ']');
 				$this->zbxTestMultiselectClear('group_links_');
 				$this->zbxTestClickButtonMultiselect('group_links_');
 				$this->zbxTestLaunchOverlayDialog('Host groups');
@@ -469,7 +484,7 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		// Change inventory mode.
 		if (array_key_exists('inventory', $data)) {
 			$this->zbxTestTabSwitch('Inventory');
-			$this->zbxTestClickXpathWait('//label[text()="'.$data['inventory'].'"]');
+			$this->zbxTestClickXpathWait('//label[text()="' . $data['inventory'] . '"]');
 		}
 
 		$this->zbxTestClick('add');
@@ -477,20 +492,18 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		if (array_key_exists('error', $data)) {
 			$this->zbxTestWaitUntilMessageTextPresent('msg-bad', $data['error']);
 			$this->zbxTestTextPresent($data['error_detail']);
-		}
-		else {
+		} else {
 			$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Host prototype added');
 
 			$this->zbxTestTextPresent($data['host_prototype']);
 			if (array_key_exists('cloned_visible_name', $data)) {
 				$this->zbxTestTextPresent($data['cloned_visible_name']);
-			}
-			else {
+			} else {
 				$this->zbxTestTextPresent($data['cloned_name']);
 			}
 
-			$this->assertEquals(2, CDBHelper::getCount('SELECT NULL FROM hosts WHERE host = '.zbx_dbstr($data['host_prototype'])));
-			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM hosts WHERE host = '.zbx_dbstr($data['cloned_name'])));
+			$this->assertEquals(2, CDBHelper::getCount('SELECT NULL FROM hosts WHERE host = ' . zbx_dbstr($data['host_prototype'])));
+			$this->assertEquals(1, CDBHelper::getCount('SELECT NULL FROM hosts WHERE host = ' . zbx_dbstr($data['cloned_name'])));
 
 			if (array_key_exists('check_form', $data)) {
 				$this->zbxTestClickLinkTextWait($data['cloned_visible_name']);
@@ -498,10 +511,10 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 				$this->zbxTestAssertElementValue('name', $data['cloned_visible_name']);
 				$this->zbxTestCheckboxSelected('status');
 				$this->zbxTestMultiselectAssertSelected('group_links_', $data['hostgroup']);
-				$this->zbxTestAssertAttribute('//*[@name="group_prototypes[0][name]"]', 'value' , $data['group_prototype']);
+				$this->zbxTestAssertAttribute('//*[@name="group_prototypes[0][name]"]', 'value', $data['group_prototype']);
 				$this->query('link', $data['template']);
 				$this->zbxTestTabSwitch('Inventory');
-				$this->zbxTestAssertAttribute('//label[text()="'.$data['inventory'].'"]/../input', 'checked');
+				$this->zbxTestAssertAttribute('//label[text()="' . $data['inventory'] . '"]/../input', 'checked');
 			}
 		}
 	}
@@ -511,30 +524,36 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	 *
 	 * @param array $data	test case data from data provider
 	 */
-	private function selectHostPrototypeForUpdate($action, $data) {
+	private function selectHostPrototypeForUpdate($action, $data)
+	{
 		if ($action === 'host') {
-			$host_prototype = CDBHelper::getValue('SELECT hostid FROM hosts WHERE templateid IS NOT NULL AND host='.
+			$host_prototype = CDBHelper::getValue(
+				'SELECT hostid FROM hosts WHERE templateid IS NOT NULL AND host=' .
 					zbx_dbstr($data['host_prototype'])
 			);
-			$discovery_id = CDBHelper::getValue('SELECT itemid FROM items WHERE templateid IS NOT NULL AND name='.
+			$discovery_id = CDBHelper::getValue(
+				'SELECT itemid FROM items WHERE templateid IS NOT NULL AND name=' .
 					zbx_dbstr($data['discovery'])
 			);
-		}
-		elseif ($action === 'template') {
-			$host_prototype = CDBHelper::getValue('SELECT hostid FROM hosts WHERE templateid IS NULL AND host='.
+		} elseif ($action === 'template') {
+			$host_prototype = CDBHelper::getValue(
+				'SELECT hostid FROM hosts WHERE templateid IS NULL AND host=' .
 					zbx_dbstr($data['host_prototype'])
 			);
-			$discovery_id = CDBHelper::getValue('SELECT itemid FROM items WHERE templateid IS NULL AND name='.
+			$discovery_id = CDBHelper::getValue(
+				'SELECT itemid FROM items WHERE templateid IS NULL AND name=' .
 					zbx_dbstr($data['discovery'])
 			);
 		}
 
-		$this->zbxTestLogin('host_prototypes.php?form=update&context=host&parent_discoveryid='.$discovery_id.'&hostid='.
+		$this->zbxTestLogin(
+			'host_prototypes.php?form=update&context=host&parent_discoveryid=' . $discovery_id . '&hostid=' .
 				$host_prototype
 		);
 	}
 
-	public function testInheritanceHostPrototype_AddMacroToTemplatedPrototype() {
+	public function testInheritanceHostPrototype_AddMacroToTemplatedPrototype()
+	{
 		// Template: Inheritance test template with host prototype.
 		$template_lld_id = 99083;		// Discovery rule for host prototype test.
 		$template_prototype_id = 99007;	// Host prototype for update {#TEST}.
@@ -559,7 +578,7 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 		];
 		// Edit host prototype on template and add macros.
 		$this->page->login()->open('host_prototypes.php?form=update&context=host&parent_discoveryid='
-			.$template_lld_id.'&hostid='.$template_prototype_id);
+			. $template_lld_id . '&hostid=' . $template_prototype_id);
 
 		$form = $this->query('name:hostPrototypeForm')->waitUntilPresent()->asForm()->one();
 		$form->selectTab('Macros');
@@ -569,25 +588,27 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 
 		// Open host prototype inherited from template on host and check inherited macros.
 		$this->page->open('host_prototypes.php?form=update&context=host&parent_discoveryid='
-			.$host_lld_id.'&hostid='.$host_prototype_id)->waituntilReady();
+			. $host_lld_id . '&hostid=' . $host_prototype_id)->waituntilReady();
 		$form->selectTab('Macros');
 		$this->assertMacros($macros);
 
 		// Check that inherited macros field are not editable.
 		$fields = $this->getMacros();
 		foreach ($fields as $i => $field) {
-			$this->assertFalse($this->query('id:macros_'.$i.'_macro')->one()->isEnabled());
-			$this->assertFalse($this->query('id:macros_'.$i.'_value')->one()->isEnabled());
-			$this->assertFalse($this->query('id:macros_'.$i.'_description')->one()->isEnabled());
+			$this->assertFalse($this->query('id:macros_' . $i . '_macro')->one()->isEnabled());
+			$this->assertFalse($this->query('id:macros_' . $i . '_value')->one()->isEnabled());
+			$this->assertFalse($this->query('id:macros_' . $i . '_description')->one()->isEnabled());
 		}
 
 		$sql = 'SELECT macro,type,value,description FROM hostmacro WHERE hostid=%d ORDER BY hostmacroid';
-		$this->assertSame(CDBHelper::getHash(vsprintf($sql, [$template_prototype_id])),
+		$this->assertSame(
+			CDBHelper::getHash(vsprintf($sql, [$template_prototype_id])),
 			CDBHelper::getHash(vsprintf($sql, [$host_prototype_id]))
 		);
 	}
 
-	public static function getDeleteData() {
+	public static function getDeleteData()
+	{
 		return [
 			[
 				[
@@ -608,24 +629,25 @@ class testInheritanceHostPrototype extends CLegacyWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testInheritanceHostPrototype_Delete($data) {
-		$discovery_id = CDBHelper::getValue('SELECT itemid FROM items WHERE templateid IS '.
-				(array_key_exists('error', $data) ? ' NOT' : '').' NULL AND name='.zbx_dbstr($data['discovery'])
+	public function testInheritanceHostPrototype_Delete($data)
+	{
+		$discovery_id = CDBHelper::getValue(
+			'SELECT itemid FROM items WHERE templateid IS ' .
+				(array_key_exists('error', $data) ? ' NOT' : '') . ' NULL AND name=' . zbx_dbstr($data['discovery'])
 		);
 
-		$this->zbxTestLogin('host_prototypes.php?context=host&parent_discoveryid='.$discovery_id);
+		$this->zbxTestLogin('host_prototypes.php?context=host&parent_discoveryid=' . $discovery_id);
 		$this->zbxTestCheckboxSelect('all_hosts');
 		$this->zbxTestClickButtonText('Delete');
 		$this->zbxTestAcceptAlert();
 		$this->zbxTestCheckTitle('Configuration of host prototypes');
 		if (array_key_exists('error', $data)) {
 			$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'Cannot delete host prototypes');
-			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NOT NULL AND host='.zbx_dbstr($data['host_prototype']);
+			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NOT NULL AND host=' . zbx_dbstr($data['host_prototype']);
 			$this->assertEquals(1, CDBHelper::getCount($sql));
-		}
-		else {
+		} else {
 			$this->zbxTestWaitUntilMessageTextPresent('msg-good', 'Host prototypes deleted');
-			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NULL AND host='.zbx_dbstr($data['host_prototype']);
+			$sql = 'SELECT hostid FROM hosts WHERE templateid IS NULL AND host=' . zbx_dbstr($data['host_prototype']);
 			$this->assertEquals(0, CDBHelper::getCount($sql));
 		}
 	}

@@ -13,7 +13,7 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
 
 /**
  * Test suite for discovery rules
@@ -22,7 +22,8 @@ require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
  *
  * @onAfter deleteData
  */
-class testDiscoveryRules extends CIntegrationTest {
+class testDiscoveryRules extends CIntegrationTest
+{
 	const DRULE_NAME = 'Test discovery rule';
 	const DRULE_NAME_ERR = 'Test discovery rule with error';
 	const DISCOVERY_ACTION_NAME = 'Test discovery action';
@@ -64,7 +65,8 @@ class testDiscoveryRules extends CIntegrationTest {
 	private static $discoveryActions = array();
 	private static $proxies = array();
 
-	private static function snmpsimStart(): void {
+	private static function snmpsimStart(): void
+	{
 		$datadir = realpath(dirname(__FILE__)) . '/' . self::SNMPSIM_DATA_DIR_REL_PATH;
 
 		$cmd = 'snmpsimd';
@@ -81,11 +83,13 @@ class testDiscoveryRules extends CIntegrationTest {
 		shell_exec($cmd);
 	}
 
-	private static function snmpsimStop(): void {
+	private static function snmpsimStop(): void
+	{
 		shell_exec('pkill snmpsimd > /dev/null 2>&1 &');
 	}
 
-	private function waitForDiscoveryWithTags($expectedTags, $notExpectedTags = []): string {
+	private function waitForDiscoveryWithTags($expectedTags, $notExpectedTags = []): string
+	{
 		for ($i = 0; $i < self::MAX_ATTEMPTS_DISCOVERY; $i++) {
 			try {
 				$response = $this->call('host.get', [
@@ -102,11 +106,11 @@ class testDiscoveryRules extends CIntegrationTest {
 				$tags = $discoveredHost['tags'];
 				$this->assertCount(count($expectedTags), $tags, 'Unexpected tags count was detected');
 
-				foreach($expectedTags as $expectedTag) {
+				foreach ($expectedTags as $expectedTag) {
 					$this->assertContains($expectedTag, $tags, 'Expected tag was not found after discovery');
 				}
 
-				foreach($notExpectedTags as $notExpectedTag) {
+				foreach ($notExpectedTags as $notExpectedTag) {
 					$this->assertNotContains($notExpectedTag, $tags, 'Unexpected tag was found after discovery');
 				}
 
@@ -120,12 +124,11 @@ class testDiscoveryRules extends CIntegrationTest {
 		}
 	}
 
-	private function waitForDiscovery($expected_hostname): string {
+	private function waitForDiscovery($expected_hostname): string
+	{
 		for ($i = 0; $i < self::MAX_ATTEMPTS_DISCOVERY; $i++) {
 			try {
-				$response = $this->call('host.get', [
-
-				]);
+				$response = $this->call('host.get', []);
 
 				$this->assertArrayHasKey('result', $response, 'Failed to discover host before timeout');
 				$this->assertCount(1, $response['result'], 'Failed to discover host before timeout');
@@ -146,7 +149,8 @@ class testDiscoveryRules extends CIntegrationTest {
 		return $discoveredHost['hostid'];
 	}
 
-	private function waitForDiscoveryErr($errStr): void {
+	private function waitForDiscoveryErr($errStr): void
+	{
 		for ($i = 0; $i < self::MAX_ATTEMPTS_DISCOVERY; $i++) {
 			try {
 				$response = $this->call('drule.get', [
@@ -172,22 +176,24 @@ class testDiscoveryRules extends CIntegrationTest {
 		}
 	}
 
-	private static function deleteAllActions(): void {
+	private static function deleteAllActions(): void
+	{
 		if (count(self::$discoveryActions) > 0) {
 			CDataHelper::call('action.delete', self::$discoveryActions);
 			self::$discoveryActions = array();
 		}
-
 	}
 
-	private static function deleteAllDrules(): void {
+	private static function deleteAllDrules(): void
+	{
 		if (count(self::$drules) > 0) {
 			CDataHelper::call('drule.delete', self::$drules);
 			self::$drules = array();
 		}
 	}
 
-	private function createDruleSnmpv2($name, $iprange, $oid, $proxyId): string {
+	private function createDruleSnmpv2($name, $iprange, $oid, $proxyId): string
+	{
 		$drule = [
 			'name' => $name,
 			'delay' => '1s',
@@ -218,7 +224,8 @@ class testDiscoveryRules extends CIntegrationTest {
 		return $response['result']['druleids'][0];
 	}
 
-	private function createDruleSnmpv3($name, $proxyId): string {
+	private function createDruleSnmpv3($name, $proxyId): string
+	{
 		$drule = [
 			'iprange' => self::SNMPSIM_DRULE_IP_RANGE,
 			'name' => $name,
@@ -258,7 +265,8 @@ class testDiscoveryRules extends CIntegrationTest {
 		return $response['result']['druleids'][0];
 	}
 
-	private function createActionHostAdd($druleId, $actionName): string {
+	private function createActionHostAdd($druleId, $actionName): string
+	{
 		$response = $this->call('action.create', [
 			'name' => $actionName,
 			'eventsource' => EVENT_SOURCE_DISCOVERY,
@@ -293,13 +301,14 @@ class testDiscoveryRules extends CIntegrationTest {
 		return $response['result']['actionids'][0];
 	}
 
-	private function createProxy(): void {
+	private function createProxy(): void
+	{
 		$response = $this->call('proxy.create', [
 			'name' => self::PROXY_NAME,
 			'operating_mode' => PROXY_OPERATING_MODE_PASSIVE,
 			'hosts' => [],
 			'address' => '127.0.0.1',
-			'port' => PHPUNIT_PORT_PREFIX.self::PROXY_PORT_SUFFIX
+			'port' => PHPUNIT_PORT_PREFIX . self::PROXY_PORT_SUFFIX
 		]);
 
 		$this->assertArrayHasKey('result', $response, 'Failed to create proxy');
@@ -309,14 +318,16 @@ class testDiscoveryRules extends CIntegrationTest {
 		array_push(self::$proxies, $response['result']['proxyids'][0]);
 	}
 
-	private static function deleteProxy(): void {
+	private static function deleteProxy(): void
+	{
 		if (count(self::$proxies) > 0) {
 			CDataHelper::call('proxy.delete', self::$proxies);
 			self::$proxies = array();
 		}
 	}
 
-	private function deleteAllHosts(): void {
+	private function deleteAllHosts(): void
+	{
 		$response = $this->call('host.get', []);
 
 		$hostids = array();
@@ -342,7 +353,7 @@ class testDiscoveryRules extends CIntegrationTest {
 			self::COMPONENT_PROXY => [
 				'ProxyMode' => PROXY_OPERATING_MODE_PASSIVE,
 				'Hostname' => self::PROXY_NAME,
-				'ListenPort' => PHPUNIT_PORT_PREFIX.self::PROXY_PORT_SUFFIX,
+				'ListenPort' => PHPUNIT_PORT_PREFIX . self::PROXY_PORT_SUFFIX,
 				'ProxyBufferMode' => 'disk',
 				'ProxyMemoryBufferSize' => 0
 			]
@@ -360,7 +371,7 @@ class testDiscoveryRules extends CIntegrationTest {
 			self::COMPONENT_PROXY => [
 				'ProxyMode' => PROXY_OPERATING_MODE_PASSIVE,
 				'Hostname' => self::PROXY_NAME,
-				'ListenPort' => PHPUNIT_PORT_PREFIX.self::PROXY_PORT_SUFFIX,
+				'ListenPort' => PHPUNIT_PORT_PREFIX . self::PROXY_PORT_SUFFIX,
 				'ProxyBufferMode' => 'memory',
 				'ProxyMemoryBufferSize' => '128K'
 			]
@@ -378,7 +389,7 @@ class testDiscoveryRules extends CIntegrationTest {
 			self::COMPONENT_PROXY => [
 				'ProxyMode' => PROXY_OPERATING_MODE_PASSIVE,
 				'Hostname' => self::PROXY_NAME,
-				'ListenPort' => PHPUNIT_PORT_PREFIX.self::PROXY_PORT_SUFFIX,
+				'ListenPort' => PHPUNIT_PORT_PREFIX . self::PROXY_PORT_SUFFIX,
 				'ProxyBufferMode' => 'hybrid',
 				'ProxyMemoryBufferSize' => '128K'
 			]
@@ -388,7 +399,8 @@ class testDiscoveryRules extends CIntegrationTest {
 	/**
 	 * @inheritdoc
 	 */
-	public function prepareData(): void {
+	public function prepareData(): void
+	{
 		$this->deleteAllHosts();
 		self::snmpsimStart();
 	}
@@ -436,7 +448,7 @@ class testDiscoveryRules extends CIntegrationTest {
 			],
 			'operations' => [
 				/* OPERATION_TYPE_HOST_ADD is intentionally missing. It is expected to be run by */
-				/* Zabbix server, because OPERATION_TYPE_HOST_TAGS_ADD is present.               */
+				/* Advantal server, because OPERATION_TYPE_HOST_TAGS_ADD is present.               */
 				[
 					'operationtype' => OPERATION_TYPE_HOST_TAGS_ADD,
 					'optag' => [
@@ -522,21 +534,24 @@ class testDiscoveryRules extends CIntegrationTest {
 			]
 		]);
 
-		$this->waitForDiscoveryWithTags([
-			['tag' => 'add_tag1', 'value' => 'add_value1'],
-			['tag' => 'add_tag2', 'value' => 'add_value2']
-		],
-		[
-			['tag' => 'del_tag3', 'value' => 'del_value3'],
-			['tag' => 'del_tag4', 'value' => 'del_value4']
-		]);
+		$this->waitForDiscoveryWithTags(
+			[
+				['tag' => 'add_tag1', 'value' => 'add_value1'],
+				['tag' => 'add_tag2', 'value' => 'add_value2']
+			],
+			[
+				['tag' => 'del_tag3', 'value' => 'del_value3'],
+				['tag' => 'del_tag4', 'value' => 'del_value4']
+			]
+		);
 	}
 
 	/**
 	 * @depends testDiscoveryRules_opDelHostTags
 	 * @required-components server
 	 */
-	public function testDiscoveryRules_snmpErrorViaServer(): void  {
+	public function testDiscoveryRules_snmpErrorViaServer(): void
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
 
 		self::deleteAllActions();
@@ -554,7 +569,8 @@ class testDiscoveryRules extends CIntegrationTest {
 		$this->waitForDiscovery(self::SNMPSIM_HOST_IP);
 	}
 
-	private function proxyTest(): void {
+	private function proxyTest(): void
+	{
 		$this->stopComponent(self::COMPONENT_SERVER);
 		$this->stopComponent(self::COMPONENT_PROXY);
 
@@ -583,7 +599,8 @@ class testDiscoveryRules extends CIntegrationTest {
 	 * @required-components server,proxy
 	 * @configurationDataProvider proxyDBModeconfigurationProvider
 	 */
-	public function testDiscoveryRules_snmpErrorViaProxyDBMode(): void {
+	public function testDiscoveryRules_snmpErrorViaProxyDBMode(): void
+	{
 		$this->proxyTest();
 	}
 
@@ -592,7 +609,8 @@ class testDiscoveryRules extends CIntegrationTest {
 	 * @required-components server,proxy
 	 * @configurationDataProvider proxyMemoryModeconfigurationProvider
 	 */
-	public function testDiscoveryRules_snmpErrorViaProxyMemoryMode(): void {
+	public function testDiscoveryRules_snmpErrorViaProxyMemoryMode(): void
+	{
 		$this->proxyTest();
 	}
 
@@ -601,14 +619,16 @@ class testDiscoveryRules extends CIntegrationTest {
 	 * @required-components server,proxy
 	 * @configurationDataProvider proxyHybridModeconfigurationProvider
 	 */
-	public function testDiscoveryRules_snmpErrorViaProxyHybridMode(): void {
+	public function testDiscoveryRules_snmpErrorViaProxyHybridMode(): void
+	{
 		$this->proxyTest();
 	}
 
 	/**
 	 * Delete data objects created for this test suite
 	 */
-	public static function deleteData(): void {
+	public static function deleteData(): void
+	{
 		self::snmpsimStop();
 		self::deleteAllActions();
 		self::deleteAllDrules();

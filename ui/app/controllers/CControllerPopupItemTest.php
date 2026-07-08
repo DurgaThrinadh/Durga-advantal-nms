@@ -17,7 +17,8 @@
 /**
  * Class shares common properties, constants and methods for different controllers used for item tests.
  */
-abstract class CControllerPopupItemTest extends CController {
+abstract class CControllerPopupItemTest extends CController
+{
 	/**
 	 * Types of preprocessing tests, depending on type of item.
 	 */
@@ -37,9 +38,20 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @var array
 	 */
-	private static $testable_item_types = [ITEM_TYPE_ZABBIX, ITEM_TYPE_SIMPLE, ITEM_TYPE_INTERNAL, ITEM_TYPE_EXTERNAL,
-		ITEM_TYPE_DB_MONITOR, ITEM_TYPE_HTTPAGENT, ITEM_TYPE_SSH, ITEM_TYPE_TELNET, ITEM_TYPE_JMX,
-		ITEM_TYPE_CALCULATED, ITEM_TYPE_SNMP, ITEM_TYPE_SCRIPT, ITEM_TYPE_BROWSER
+	private static $testable_item_types = [
+		ITEM_TYPE_ZABBIX,
+		ITEM_TYPE_SIMPLE,
+		ITEM_TYPE_INTERNAL,
+		ITEM_TYPE_EXTERNAL,
+		ITEM_TYPE_DB_MONITOR,
+		ITEM_TYPE_HTTPAGENT,
+		ITEM_TYPE_SSH,
+		ITEM_TYPE_TELNET,
+		ITEM_TYPE_JMX,
+		ITEM_TYPE_CALCULATED,
+		ITEM_TYPE_SNMP,
+		ITEM_TYPE_SCRIPT,
+		ITEM_TYPE_BROWSER
 	];
 
 	/**
@@ -87,9 +99,20 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @var array
 	 */
-	protected $items_support_proxy = [ITEM_TYPE_ZABBIX, ITEM_TYPE_SIMPLE, ITEM_TYPE_INTERNAL, ITEM_TYPE_EXTERNAL,
-		ITEM_TYPE_DB_MONITOR, ITEM_TYPE_HTTPAGENT, ITEM_TYPE_IPMI, ITEM_TYPE_SSH, ITEM_TYPE_TELNET, ITEM_TYPE_JMX,
-		ITEM_TYPE_SNMP, ITEM_TYPE_SCRIPT, ITEM_TYPE_BROWSER
+	protected $items_support_proxy = [
+		ITEM_TYPE_ZABBIX,
+		ITEM_TYPE_SIMPLE,
+		ITEM_TYPE_INTERNAL,
+		ITEM_TYPE_EXTERNAL,
+		ITEM_TYPE_DB_MONITOR,
+		ITEM_TYPE_HTTPAGENT,
+		ITEM_TYPE_IPMI,
+		ITEM_TYPE_SSH,
+		ITEM_TYPE_TELNET,
+		ITEM_TYPE_JMX,
+		ITEM_TYPE_SNMP,
+		ITEM_TYPE_SCRIPT,
+		ITEM_TYPE_BROWSER
 	];
 
 	/**
@@ -97,9 +120,18 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @var array
 	 */
-	protected $item_types_has_key_mandatory = [ITEM_TYPE_ZABBIX, ITEM_TYPE_SIMPLE, ITEM_TYPE_INTERNAL,
-		ITEM_TYPE_EXTERNAL, ITEM_TYPE_DB_MONITOR, ITEM_TYPE_HTTPAGENT, ITEM_TYPE_IPMI,
-		ITEM_TYPE_SSH, ITEM_TYPE_TELNET, ITEM_TYPE_JMX, ITEM_TYPE_CALCULATED
+	protected $item_types_has_key_mandatory = [
+		ITEM_TYPE_ZABBIX,
+		ITEM_TYPE_SIMPLE,
+		ITEM_TYPE_INTERNAL,
+		ITEM_TYPE_EXTERNAL,
+		ITEM_TYPE_DB_MONITOR,
+		ITEM_TYPE_HTTPAGENT,
+		ITEM_TYPE_IPMI,
+		ITEM_TYPE_SSH,
+		ITEM_TYPE_TELNET,
+		ITEM_TYPE_JMX,
+		ITEM_TYPE_CALCULATED
 	];
 
 	/**
@@ -182,30 +214,89 @@ abstract class CControllerPopupItemTest extends CController {
 		'parameters' => [
 			'host' => ['{HOSTNAME}', '{HOST.HOST}', '{HOST.NAME}'],
 			'interface' => ['{HOST.IP}', '{IPADDRESS}', '{HOST.DNS}', '{HOST.CONN}'],
-			'inventory' => ['{INVENTORY.ALIAS}', '{INVENTORY.ASSET.TAG}', '{INVENTORY.CHASSIS}', '{INVENTORY.CONTACT}',
-				'{PROFILE.CONTACT}', '{INVENTORY.CONTRACT.NUMBER}', '{INVENTORY.DEPLOYMENT.STATUS}',
-				'{INVENTORY.HARDWARE}', '{PROFILE.HARDWARE}', '{INVENTORY.HARDWARE.FULL}', '{INVENTORY.HOST.NETMASK}',
-				'{INVENTORY.HOST.NETWORKS}', '{INVENTORY.HOST.ROUTER}', '{INVENTORY.HW.ARCH}',
-				'{INVENTORY.HW.DATE.DECOMM}', '{INVENTORY.HW.DATE.EXPIRY}', '{INVENTORY.HW.DATE.INSTALL}',
-				'{INVENTORY.HW.DATE.PURCHASE}', '{INVENTORY.INSTALLER.NAME}', '{INVENTORY.LOCATION}',
-				'{PROFILE.LOCATION}', '{INVENTORY.LOCATION.LAT}', '{INVENTORY.LOCATION.LON}',
-				'{INVENTORY.MACADDRESS.A}', '{PROFILE.MACADDRESS}', '{INVENTORY.MACADDRESS.B}', '{INVENTORY.MODEL}',
-				'{INVENTORY.NAME}', '{PROFILE.NAME}', '{INVENTORY.NOTES}', '{PROFILE.NOTES}', '{INVENTORY.OOB.IP}',
-				'{INVENTORY.OOB.NETMASK}', '{INVENTORY.OOB.ROUTER}', '{INVENTORY.OS}', '{PROFILE.OS}',
-				'{INVENTORY.OS.FULL}', '{INVENTORY.OS.SHORT}', '{INVENTORY.POC.PRIMARY.CELL}',
-				'{INVENTORY.POC.PRIMARY.EMAIL}', '{INVENTORY.POC.PRIMARY.NAME}', '{INVENTORY.POC.PRIMARY.NOTES}',
-				'{INVENTORY.POC.PRIMARY.PHONE.A}', '{INVENTORY.POC.PRIMARY.PHONE.B}', '{INVENTORY.POC.PRIMARY.SCREEN}',
-				'{INVENTORY.POC.SECONDARY.CELL}', '{INVENTORY.POC.SECONDARY.EMAIL}', '{INVENTORY.POC.SECONDARY.NAME}',
-				'{INVENTORY.POC.SECONDARY.NOTES}', '{INVENTORY.POC.SECONDARY.PHONE.A}',
-				'{INVENTORY.POC.SECONDARY.PHONE.B}', '{INVENTORY.POC.SECONDARY.SCREEN}', '{INVENTORY.SERIALNO.A}',
-				'{PROFILE.SERIALNO}', '{INVENTORY.SERIALNO.B}', '{INVENTORY.SITE.ADDRESS.A}',
-				'{INVENTORY.SITE.ADDRESS.B}', '{INVENTORY.SITE.ADDRESS.C}', '{INVENTORY.SITE.CITY}',
-				'{INVENTORY.SITE.COUNTRY}', '{INVENTORY.SITE.NOTES}', '{INVENTORY.SITE.RACK}', '{INVENTORY.SITE.STATE}',
-				'{INVENTORY.SITE.ZIP}', '{INVENTORY.SOFTWARE}', '{PROFILE.SOFTWARE}', '{INVENTORY.SOFTWARE.APP.A}',
-				'{INVENTORY.SOFTWARE.APP.B}', '{INVENTORY.SOFTWARE.APP.C}', '{INVENTORY.SOFTWARE.APP.D}',
-				'{INVENTORY.SOFTWARE.APP.E}', '{INVENTORY.SOFTWARE.FULL}', '{INVENTORY.TAG}', '{PROFILE.TAG}',
-				'{INVENTORY.TYPE}', '{PROFILE.DEVICETYPE}', '{INVENTORY.TYPE.FULL}', '{INVENTORY.URL.A}',
-				'{INVENTORY.URL.B}', '{INVENTORY.URL.C}', '{INVENTORY.VENDOR}'],
+			'inventory' => [
+				'{INVENTORY.ALIAS}',
+				'{INVENTORY.ASSET.TAG}',
+				'{INVENTORY.CHASSIS}',
+				'{INVENTORY.CONTACT}',
+				'{PROFILE.CONTACT}',
+				'{INVENTORY.CONTRACT.NUMBER}',
+				'{INVENTORY.DEPLOYMENT.STATUS}',
+				'{INVENTORY.HARDWARE}',
+				'{PROFILE.HARDWARE}',
+				'{INVENTORY.HARDWARE.FULL}',
+				'{INVENTORY.HOST.NETMASK}',
+				'{INVENTORY.HOST.NETWORKS}',
+				'{INVENTORY.HOST.ROUTER}',
+				'{INVENTORY.HW.ARCH}',
+				'{INVENTORY.HW.DATE.DECOMM}',
+				'{INVENTORY.HW.DATE.EXPIRY}',
+				'{INVENTORY.HW.DATE.INSTALL}',
+				'{INVENTORY.HW.DATE.PURCHASE}',
+				'{INVENTORY.INSTALLER.NAME}',
+				'{INVENTORY.LOCATION}',
+				'{PROFILE.LOCATION}',
+				'{INVENTORY.LOCATION.LAT}',
+				'{INVENTORY.LOCATION.LON}',
+				'{INVENTORY.MACADDRESS.A}',
+				'{PROFILE.MACADDRESS}',
+				'{INVENTORY.MACADDRESS.B}',
+				'{INVENTORY.MODEL}',
+				'{INVENTORY.NAME}',
+				'{PROFILE.NAME}',
+				'{INVENTORY.NOTES}',
+				'{PROFILE.NOTES}',
+				'{INVENTORY.OOB.IP}',
+				'{INVENTORY.OOB.NETMASK}',
+				'{INVENTORY.OOB.ROUTER}',
+				'{INVENTORY.OS}',
+				'{PROFILE.OS}',
+				'{INVENTORY.OS.FULL}',
+				'{INVENTORY.OS.SHORT}',
+				'{INVENTORY.POC.PRIMARY.CELL}',
+				'{INVENTORY.POC.PRIMARY.EMAIL}',
+				'{INVENTORY.POC.PRIMARY.NAME}',
+				'{INVENTORY.POC.PRIMARY.NOTES}',
+				'{INVENTORY.POC.PRIMARY.PHONE.A}',
+				'{INVENTORY.POC.PRIMARY.PHONE.B}',
+				'{INVENTORY.POC.PRIMARY.SCREEN}',
+				'{INVENTORY.POC.SECONDARY.CELL}',
+				'{INVENTORY.POC.SECONDARY.EMAIL}',
+				'{INVENTORY.POC.SECONDARY.NAME}',
+				'{INVENTORY.POC.SECONDARY.NOTES}',
+				'{INVENTORY.POC.SECONDARY.PHONE.A}',
+				'{INVENTORY.POC.SECONDARY.PHONE.B}',
+				'{INVENTORY.POC.SECONDARY.SCREEN}',
+				'{INVENTORY.SERIALNO.A}',
+				'{PROFILE.SERIALNO}',
+				'{INVENTORY.SERIALNO.B}',
+				'{INVENTORY.SITE.ADDRESS.A}',
+				'{INVENTORY.SITE.ADDRESS.B}',
+				'{INVENTORY.SITE.ADDRESS.C}',
+				'{INVENTORY.SITE.CITY}',
+				'{INVENTORY.SITE.COUNTRY}',
+				'{INVENTORY.SITE.NOTES}',
+				'{INVENTORY.SITE.RACK}',
+				'{INVENTORY.SITE.STATE}',
+				'{INVENTORY.SITE.ZIP}',
+				'{INVENTORY.SOFTWARE}',
+				'{PROFILE.SOFTWARE}',
+				'{INVENTORY.SOFTWARE.APP.A}',
+				'{INVENTORY.SOFTWARE.APP.B}',
+				'{INVENTORY.SOFTWARE.APP.C}',
+				'{INVENTORY.SOFTWARE.APP.D}',
+				'{INVENTORY.SOFTWARE.APP.E}',
+				'{INVENTORY.SOFTWARE.FULL}',
+				'{INVENTORY.TAG}',
+				'{PROFILE.TAG}',
+				'{INVENTORY.TYPE}',
+				'{PROFILE.DEVICETYPE}',
+				'{INVENTORY.TYPE.FULL}',
+				'{INVENTORY.URL.A}',
+				'{INVENTORY.URL.B}',
+				'{INVENTORY.URL.C}',
+				'{INVENTORY.VENDOR}'
+			],
 			'item' => ['{ITEM.ID}', '{ITEM.KEY.ORIG}', '{ITEM.KEY}'],
 			'support_user_macros' => true,
 			'support_lld_macros' => true
@@ -282,8 +373,11 @@ abstract class CControllerPopupItemTest extends CController {
 	/**
 	 * @var array
 	 */
-	protected static $preproc_steps_using_prev_value = [ZBX_PREPROC_DELTA_VALUE, ZBX_PREPROC_DELTA_SPEED,
-		ZBX_PREPROC_THROTTLE_VALUE, ZBX_PREPROC_THROTTLE_TIMED_VALUE
+	protected static $preproc_steps_using_prev_value = [
+		ZBX_PREPROC_DELTA_VALUE,
+		ZBX_PREPROC_DELTA_SPEED,
+		ZBX_PREPROC_THROTTLE_VALUE,
+		ZBX_PREPROC_THROTTLE_TIMED_VALUE
 	];
 
 	/**
@@ -298,7 +392,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return array
 	 */
-	public static function getTestableItemTypes(string $hostid = '0'): array {
+	public static function getTestableItemTypes(string $hostid = '0'): array
+	{
 		if ($hostid != 0 && self::isItemTypeTestable($hostid)) {
 			self::$testable_item_types[] = ITEM_TYPE_IPMI;
 		}
@@ -313,7 +408,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return bool
 	 */
-	protected static function isItemTypeTestable(string $hostid): bool {
+	protected static function isItemTypeTestable(string $hostid): bool
+	{
 		$ret = (bool) API::Template()->get([
 			'countOutput' => true,
 			'templateids' => [$hostid]
@@ -322,7 +418,8 @@ abstract class CControllerPopupItemTest extends CController {
 		return !$ret;
 	}
 
-	protected function checkPermissions() {
+	protected function checkPermissions()
+	{
 		$ret = ($this->getUserType() >= USER_TYPE_ZABBIX_ADMIN);
 
 		/*
@@ -333,9 +430,23 @@ abstract class CControllerPopupItemTest extends CController {
 
 		if ($ret && $hostid != 0) {
 			$hosts = API::Host()->get([
-				'output' => ['hostid', 'host', 'name', 'monitored_by', 'proxyid', 'assigned_proxyid', 'status',
-					'maintenance_status', 'maintenance_type', 'ipmi_authtype', 'ipmi_privilege', 'ipmi_username',
-					'ipmi_password', 'tls_subject', 'tls_issuer', 'tls_connect'
+				'output' => [
+					'hostid',
+					'host',
+					'name',
+					'monitored_by',
+					'proxyid',
+					'assigned_proxyid',
+					'status',
+					'maintenance_status',
+					'maintenance_type',
+					'ipmi_authtype',
+					'ipmi_privilege',
+					'ipmi_username',
+					'ipmi_password',
+					'tls_subject',
+					'tls_issuer',
+					'tls_connect'
 				],
 				'selectInventory' => in_array($this->item_type, [ITEM_TYPE_SCRIPT, ITEM_TYPE_BROWSER])
 					? array_column(getHostInventories(), 'db_field')
@@ -350,8 +461,7 @@ abstract class CControllerPopupItemTest extends CController {
 				}
 
 				unset($hosts[0]['monitored_by'], $hosts[0]['assigned_proxyid']);
-			}
-			else {
+			} else {
 				$hosts = API::Template()->get([
 					'output' => ['templateid', 'host', 'name', 'status'],
 					'templateids' => [$hostid],
@@ -374,11 +484,12 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @param array $input       Stored user input used to overwrite values retrieved from database.
 	 * @param bool  $for_server  Whether need to add to result additional properties used only for connection with
-	 *                           Zabbix server.
+	 *                           Advantal server.
 	 *
 	 * @return array
 	 */
-	protected function getItemTestProperties(array $input, bool $for_server = false): array {
+	protected function getItemTestProperties(array $input, bool $for_server = false): array
+	{
 		$data_host = [];
 		$data_item = [
 			'value_type' => (int) $input['value_type']
@@ -400,7 +511,8 @@ abstract class CControllerPopupItemTest extends CController {
 				$data_host += $this->getInterface($input, ['useip', 'interfaceid', 'ip', 'dns']);
 
 				if ($this->host['status'] != HOST_STATUS_TEMPLATE) {
-					$data_host += CArrayHelper::getByKeysStrict($this->host,
+					$data_host += CArrayHelper::getByKeysStrict(
+						$this->host,
 						['tls_issuer', 'tls_connect', 'tls_subject']
 					);
 
@@ -422,8 +534,7 @@ abstract class CControllerPopupItemTest extends CController {
 			case ITEM_TYPE_SNMP:
 				if (array_key_exists('flags', $input)) {
 					$item_flag = $input['flags'];
-				}
-				else {
+				} else {
 					$items = array_key_exists('itemid', $input)
 						? API::Item()->get([
 							'output' => ['flags'],
@@ -433,8 +544,7 @@ abstract class CControllerPopupItemTest extends CController {
 
 					if ($items) {
 						$item_flag = $items[0]['flags'];
-					}
-					else {
+					} else {
 						$item_flags = [
 							self::ZBX_TEST_TYPE_ITEM => ZBX_FLAG_DISCOVERY_NORMAL,
 							self::ZBX_TEST_TYPE_ITEM_PROTOTYPE => ZBX_FLAG_DISCOVERY_PROTOTYPE,
@@ -454,7 +564,8 @@ abstract class CControllerPopupItemTest extends CController {
 				$data_host['hostid'] = $this->host['hostid'];
 
 				if ($this->host['status'] != HOST_STATUS_TEMPLATE) {
-					$data_host += CArrayHelper::getByKeysStrict($this->host,
+					$data_host += CArrayHelper::getByKeysStrict(
+						$this->host,
 						['maintenance_status', 'maintenance_type']
 					);
 				}
@@ -469,10 +580,26 @@ abstract class CControllerPopupItemTest extends CController {
 				break;
 
 			case ITEM_TYPE_HTTPAGENT:
-				$data_item += CArrayHelper::getByKeys($input, ['key', 'http_authtype', 'follow_redirects', 'headers',
-					'http_proxy', 'output_format', 'posts', 'post_type', 'query_fields', 'request_method',
-					'retrieve_mode', 'ssl_cert_file', 'ssl_key_file', 'ssl_key_password', 'status_codes', 'timeout',
-					'url', 'verify_host', 'verify_peer'
+				$data_item += CArrayHelper::getByKeys($input, [
+					'key',
+					'http_authtype',
+					'follow_redirects',
+					'headers',
+					'http_proxy',
+					'output_format',
+					'posts',
+					'post_type',
+					'query_fields',
+					'request_method',
+					'retrieve_mode',
+					'ssl_cert_file',
+					'ssl_key_file',
+					'ssl_key_password',
+					'status_codes',
+					'timeout',
+					'url',
+					'verify_host',
+					'verify_peer'
 				]) + [
 					'http_authtype' => ZBX_HTTP_AUTH_NONE,
 					'follow_redirects' => HTTPTEST_STEP_FOLLOW_REDIRECTS_OFF,
@@ -495,14 +622,22 @@ abstract class CControllerPopupItemTest extends CController {
 				$data_host['hostid'] = $this->host['hostid'];
 
 				if ($this->host['status'] != HOST_STATUS_TEMPLATE) {
-					$data_host += CArrayHelper::getByKeysStrict($this->host, ['ipmi_authtype', 'ipmi_privilege',
-						'ipmi_username', 'ipmi_password'
+					$data_host += CArrayHelper::getByKeysStrict($this->host, [
+						'ipmi_authtype',
+						'ipmi_privilege',
+						'ipmi_username',
+						'ipmi_password'
 					]);
 				}
 				break;
 
 			case ITEM_TYPE_SSH:
-				$data_item += CArrayHelper::getByKeys($input, ['key', 'authtype', 'params_es', 'username', 'password',
+				$data_item += CArrayHelper::getByKeys($input, [
+					'key',
+					'authtype',
+					'params_es',
+					'username',
+					'password',
 					'timeout'
 				]) + [
 					'authtype' => ITEM_AUTHTYPE_PASSWORD,
@@ -546,11 +681,9 @@ abstract class CControllerPopupItemTest extends CController {
 		if (in_array($this->item_type, $this->items_support_proxy)) {
 			if (array_key_exists('data', $input) && array_key_exists('test_with', $input['data'])) {
 				$test_with = $input['data']['test_with'];
-			}
-			elseif (array_key_exists('test_with', $input)) {
+			} elseif (array_key_exists('test_with', $input)) {
 				$test_with = $input['test_with'];
-			}
-			else {
+			} else {
 				$test_with = self::TEST_WITH_SERVER;
 			}
 
@@ -559,11 +692,9 @@ abstract class CControllerPopupItemTest extends CController {
 			if ($test_with == self::TEST_WITH_PROXY) {
 				if (array_key_exists('data', $input) && array_key_exists('proxyid', $input['data'])) {
 					$data_host['proxyid'] = $input['data']['proxyid'];
-				}
-				elseif (array_key_exists('proxyid', $input)) {
+				} elseif (array_key_exists('proxyid', $input)) {
 					$data_host['proxyid'] = $input['proxyid'];
-				}
-				elseif ($this->host['status'] != HOST_STATUS_TEMPLATE) {
+				} elseif ($this->host['status'] != HOST_STATUS_TEMPLATE) {
 					$data_host['proxyid'] = $this->host['proxyid'];
 				}
 			}
@@ -572,7 +703,8 @@ abstract class CControllerPopupItemTest extends CController {
 		return ['item' => $data_item, 'host' => $data_host];
 	}
 
-	private function getInterface(array $input, array $exclude_keys = []): array {
+	private function getInterface(array $input, array $exclude_keys = []): array
+	{
 		$interface_input = [];
 
 		if (array_key_exists('data', $input)) {
@@ -581,7 +713,8 @@ abstract class CControllerPopupItemTest extends CController {
 		}
 
 		if (array_key_exists('interface', $input)) {
-			$interface_input += CArrayHelper::getByKeys($input['interface'],
+			$interface_input += CArrayHelper::getByKeys(
+				$input['interface'],
 				['interfaceid', 'useip', 'port', 'address', 'details']
 			);
 		}
@@ -598,7 +731,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return array $interface_data
 	 */
-	protected function getHostInterface(array $inputs) {
+	protected function getHostInterface(array $inputs)
+	{
 		$interface_data = [
 			'address' => '',
 			'port' => '',
@@ -627,7 +761,8 @@ abstract class CControllerPopupItemTest extends CController {
 
 		// Get values from database; resolve macros.
 		if (($this->host['status'] == HOST_STATUS_MONITORED || $this->host['status'] == HOST_STATUS_NOT_MONITORED)
-				&& array_key_exists('interfaceid', $inputs)) {
+			&& array_key_exists('interfaceid', $inputs)
+		) {
 			$output = ['hostid', 'type', 'dns', 'ip', 'port', 'main', 'useip'];
 			$interfaces = [];
 
@@ -655,8 +790,7 @@ abstract class CControllerPopupItemTest extends CController {
 						break;
 					}
 				}
-			}
-			else {
+			} else {
 				$interfaces = API::HostInterface()->get([
 					'output' => $output,
 					'interfaceids' => $inputs['interfaceid'],
@@ -692,8 +826,7 @@ abstract class CControllerPopupItemTest extends CController {
 		foreach ($inputs as $key => $value) {
 			if (is_array($value)) {
 				$interface_data[$key] = $value + $interface_data[$key];
-			}
-			else {
+			} else {
 				$interface_data[$key] = $value;
 			}
 		}
@@ -706,23 +839,21 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return string
 	 */
-	protected function getPrevTime() {
+	protected function getPrevTime()
+	{
 		$time_change = max($this->getInput('time_change', 1), 1);
 
 		if ($time_change >= SEC_PER_DAY) {
 			$n = floor($time_change / SEC_PER_DAY);
-			return 'now-'.$n.'d';
-		}
-		elseif ($time_change >= SEC_PER_HOUR * 5) {
+			return 'now-' . $n . 'd';
+		} elseif ($time_change >= SEC_PER_HOUR * 5) {
 			$n = floor($time_change / SEC_PER_HOUR);
-			return 'now-'.$n.'h';
-		}
-		elseif ($time_change >= SEC_PER_MIN * 5) {
+			return 'now-' . $n . 'h';
+		} elseif ($time_change >= SEC_PER_MIN * 5) {
 			$n = floor($time_change / SEC_PER_MIN);
-			return 'now-'.$n.'m';
-		}
-		else {
-			return 'now-'.$time_change.'s';
+			return 'now-' . $n . 'm';
+		} else {
+			return 'now-' . $time_change . 's';
 		}
 	}
 
@@ -733,7 +864,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return array
 	 */
-	protected function unsetEmptyValues(array $data) {
+	protected function unsetEmptyValues(array $data)
+	{
 		foreach ($data as $key => $value) {
 			if (in_array($key, ['host', 'item', 'options']) && is_array($value)) {
 				$data[$key] = $this->unsetEmptyValues($value);
@@ -741,37 +873,39 @@ abstract class CControllerPopupItemTest extends CController {
 				if (!$data[$key]) {
 					unset($data[$key]);
 				}
-			}
-			elseif ($key === 'interface' && $this->item_type == ITEM_TYPE_SNMP) {
+			} elseif ($key === 'interface' && $this->item_type == ITEM_TYPE_SNMP) {
 				if ($data['interface']['details']['version'] == SNMP_V3) {
 					$unrelated_details = [];
 
 					if ($data['interface']['details']['securitylevel'] == ITEM_SNMPV3_SECURITYLEVEL_NOAUTHNOPRIV) {
 						$unrelated_details = ['authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase'];
-					}
-					elseif ($data['interface']['details']['securitylevel'] == ITEM_SNMPV3_SECURITYLEVEL_AUTHNOPRIV) {
+					} elseif ($data['interface']['details']['securitylevel'] == ITEM_SNMPV3_SECURITYLEVEL_AUTHNOPRIV) {
 						$unrelated_details = ['privprotocol', 'privpassphrase'];
 					}
 
 					array_unshift($unrelated_details, 'community');
-				}
-				else {
-					$unrelated_details = ['contextname', 'securityname', 'securitylevel', 'authprotocol',
-						'authpassphrase', 'privprotocol', 'privpassphrase'
+				} else {
+					$unrelated_details = [
+						'contextname',
+						'securityname',
+						'securitylevel',
+						'authprotocol',
+						'authpassphrase',
+						'privprotocol',
+						'privpassphrase'
 					];
 				}
 
 				unset($data['interface']['type']);
-				$data['interface']['details'] = array_diff_key($data['interface']['details'],
+				$data['interface']['details'] = array_diff_key(
+					$data['interface']['details'],
 					array_flip($unrelated_details)
 				);
-			}
-			elseif (in_array($key, ['query_fields', 'headers', 'parameters'])) {
+			} elseif (in_array($key, ['query_fields', 'headers', 'parameters'])) {
 				if (!$value) {
 					unset($data[$key]);
 				}
-			}
-			elseif ($value === '' || $value === null) {
+			} elseif ($value === '' || $value === null) {
 				unset($data[$key]);
 			}
 		}
@@ -784,7 +918,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return array
 	 */
-	protected function getSupportedMacros(array $inputs) {
+	protected function getSupportedMacros(array $inputs)
+	{
 		$interface = $this->getHostInterface(['interfaceid' => $inputs['interfaceid']]);
 
 		$macros = [
@@ -822,7 +957,8 @@ abstract class CControllerPopupItemTest extends CController {
 			$usermacros = CMacrosResolverHelper::extractItemTestMacros([
 				'steps' => [],
 				'delay' => '',
-				'supported_macros' => array_diff_key($this->macros_by_item_props['key'],
+				'supported_macros' => array_diff_key(
+					$this->macros_by_item_props['key'],
 					['support_user_macros' => true, 'support_lld_macros' => true]
 				),
 				'support_lldmacros' => ($this->test_type == self::ZBX_TEST_TYPE_ITEM_PROTOTYPE),
@@ -848,7 +984,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return array
 	 */
-	protected function resolvePreprocessingStepMacros(array $steps) {
+	protected function resolvePreprocessingStepMacros(array $steps)
+	{
 		// Resolve macros used in parameter fields.
 		$macros_posted = $this->hasInput('macros')
 			? json_decode($this->getInput('macros'), true)
@@ -860,11 +997,11 @@ abstract class CControllerPopupItemTest extends CController {
 		foreach ($steps as &$step) {
 			/*
 			 * Values received from user input form may be transformed so we must remove redundant "\r" before
-			 * sending data to Zabbix server.
+			 * sending data to Advantal server.
 			 */
 			$step['params'] = str_replace("\r\n", "\n", $step['params']);
 
-			// Resolve macros in parameter fields before send data to Zabbix server.
+			// Resolve macros in parameter fields before send data to Advantal server.
 			foreach (['params', 'error_handler_params'] as $field) {
 				$matched_macros = CMacrosResolverGeneral::getMacroPositions($step[$field], $macros_types);
 
@@ -890,7 +1027,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return string
 	 */
-	private function resolveCalcFormulaMacros(string $formula, array $macros_posted): string {
+	private function resolveCalcFormulaMacros(string $formula, array $macros_posted): string
+	{
 		if (!$macros_posted) {
 			return $formula;
 		}
@@ -964,7 +1102,8 @@ abstract class CControllerPopupItemTest extends CController {
 											break;
 
 										case CFilterParser::TOKEN_TYPE_STRING:
-											$string = strtr(CFilterParser::unquoteString($filter_token['match']),
+											$string = strtr(
+												CFilterParser::unquoteString($filter_token['match']),
 												$macros_posted
 											);
 											$expression[] = CFilterParser::quoteString($string);
@@ -1012,7 +1151,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return array
 	 */
-	protected function resolveItemPropertyMacros(array $inputs) {
+	protected function resolveItemPropertyMacros(array $inputs)
+	{
 		// Resolve macros used in parameter fields.
 		$macros_posted = $this->hasInput('macros')
 			? json_decode($this->getInput('macros'), true)
@@ -1077,12 +1217,10 @@ abstract class CControllerPopupItemTest extends CController {
 					}
 				}
 				unset($entry);
-			}
-			elseif (strstr($inputs[$field], '{') !== false) {
+			} elseif (strstr($inputs[$field], '{') !== false) {
 				if ($field === 'key') {
 					$inputs[$field] = CMacrosResolverGeneral::resolveItemKeyMacros($inputs[$field], $macros_posted, $types);
-				}
-				else {
+				} else {
 					$matched_macros = CMacrosResolverGeneral::getMacroPositions($inputs[$field], $types);
 
 					foreach (array_reverse($matched_macros, true) as $pos => $macro) {
@@ -1095,8 +1233,7 @@ abstract class CControllerPopupItemTest extends CController {
 								$macro_value = json_encode($macro_value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 								// Remove " wrapping.
 								$macro_value = substr($macro_value, 1, -1);
-							}
-							elseif ($inputs['post_type'] == ZBX_POSTTYPE_XML) {
+							} elseif ($inputs['post_type'] == ZBX_POSTTYPE_XML) {
 								$macro_value = htmlentities($macro_value);
 							}
 						}
@@ -1134,7 +1271,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return var
 	 */
-	public function getInput($var, $default = null) {
+	public function getInput($var, $default = null)
+	{
 		$value = parent::getInput($var, $default);
 		if ($var === 'value' || $var === 'prev_value') {
 			$value = str_replace("\r\n", "\n", $value);
@@ -1159,19 +1297,23 @@ abstract class CControllerPopupItemTest extends CController {
 	 *
 	 * @return bool
 	 */
-	final protected function validateInterface(array $interface): bool {
+	final protected function validateInterface(array $interface): bool
+	{
 		if ($this->item_type == ITEM_TYPE_SNMP) {
 			if (($interface['details']['version'] == SNMP_V1 || $interface['details']['version'] == SNMP_V2C)
-					&& (!array_key_exists('community', $interface['details'])
-						|| $interface['details']['community'] === '')) {
+				&& (!array_key_exists('community', $interface['details'])
+					|| $interface['details']['community'] === '')
+			) {
 				error(_s('Incorrect value for field "%1$s": %2$s.', _('SNMP community'), _('cannot be empty')));
 
 				return false;
 			}
 
 			if ($interface['details']['version'] == SNMP_V2C || $interface['details']['version'] == SNMP_V3) {
-				if (!array_key_exists('max_repetitions', $interface['details'])
-						|| $interface['details']['max_repetitions'] === '') {
+				if (
+					!array_key_exists('max_repetitions', $interface['details'])
+					|| $interface['details']['max_repetitions'] === ''
+				) {
 					error(_s('Incorrect value for field "%1$s": %2$s.', _('Max repetition count'), _('cannot be empty')));
 
 					return false;
@@ -1197,15 +1339,19 @@ abstract class CControllerPopupItemTest extends CController {
 			}
 		}
 
-		if ($this->items_require_interface[$this->item_type]['address']
-				&& (!array_key_exists('address', $interface) || $interface['address'] === '')) {
+		if (
+			$this->items_require_interface[$this->item_type]['address']
+			&& (!array_key_exists('address', $interface) || $interface['address'] === '')
+		) {
 			error(_s('Incorrect value for field "%1$s": %2$s.', _('Host address'), _('cannot be empty')));
 
 			return false;
 		}
 
-		if ($this->items_require_interface[$this->item_type]['port']
-				&& (!array_key_exists('port', $interface) || $interface['port'] === '')) {
+		if (
+			$this->items_require_interface[$this->item_type]['port']
+			&& (!array_key_exists('port', $interface) || $interface['port'] === '')
+		) {
 			error(_s('Incorrect value for field "%1$s": %2$s.', _('Port'), _('cannot be empty')));
 
 			return false;
@@ -1221,7 +1367,8 @@ abstract class CControllerPopupItemTest extends CController {
 	 * @return array $data['item]
 	 * @return array $data['host]
 	 */
-	protected function prepareTestData(): array {
+	protected function prepareTestData(): array
+	{
 		$data = $this->getItemTestProperties($this->getInputAll(), true);
 		$data['item'] = $this->resolveItemPropertyMacros($data['item']);
 
@@ -1262,7 +1409,8 @@ abstract class CControllerPopupItemTest extends CController {
 	/**
 	 * @param array $item
 	 */
-	protected static function transformHttpFields(array &$item): void {
+	protected static function transformHttpFields(array &$item): void
+	{
 		if (array_key_exists('query_fields', $item)) {
 			foreach ($item['query_fields'] as &$query_field) {
 				$query_field = [$query_field['name'] => $query_field['value']];
@@ -1274,7 +1422,7 @@ abstract class CControllerPopupItemTest extends CController {
 
 		if (array_key_exists('headers', $item)) {
 			foreach ($item['headers'] as &$header) {
-				$header = $header['name'].': '.$header['value'];
+				$header = $header['name'] . ': ' . $header['value'];
 			}
 			unset($header);
 

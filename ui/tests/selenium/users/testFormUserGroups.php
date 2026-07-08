@@ -14,8 +14,8 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @backup usrgrp
@@ -24,14 +24,16 @@ require_once __DIR__.'/../behaviors/CMessageBehavior.php';
  *
  * @onBefore prepareMfaHostgroupData
  */
-class testFormUserGroups extends CWebTest {
+class testFormUserGroups extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
@@ -40,7 +42,8 @@ class testFormUserGroups extends CWebTest {
 	/**
 	 * Create test data for "Multi-factor authentication" field in user group form.
 	 */
-	public function prepareMfaHostgroupData() {
+	public function prepareMfaHostgroupData()
+	{
 		$mfaids = CDataHelper::call('mfa.create', [
 			[
 				'type' => MFA_TYPE_TOTP,
@@ -74,7 +77,7 @@ class testFormUserGroups extends CWebTest {
 						'permission' => PERM_READ
 					],
 					[
-						'id' => 4, // Zabbix servers.
+						'id' => 4, // Advantal servers.
 						'permission' => PERM_DENY
 					],
 					[
@@ -100,7 +103,8 @@ class testFormUserGroups extends CWebTest {
 		]);
 	}
 
-	public function testFormUserGroups_CheckLayout() {
+	public function testFormUserGroups_CheckLayout()
+	{
 		$this->page->login()->open('zabbix.php?action=usergroup.list');
 		$this->query('button:Create user group')->waitUntilClickable()->one()->click();
 
@@ -110,8 +114,17 @@ class testFormUserGroups extends CWebTest {
 		$this->assertEquals(['User group', 'Template permissions', 'Host permissions', 'Problem tag filter'], $form->getTabs());
 		$this->assertEquals('User group', $form->getSelectedTab());
 
-		$this->assertEquals(['Group name', 'Users', 'Frontend access', 'LDAP Server', 'Multi-factor authentication',
-				'Enabled', 'Debug mode'], $form->getLabels(CElementFilter::VISIBLE)->asText()
+		$this->assertEquals(
+			[
+				'Group name',
+				'Users',
+				'Frontend access',
+				'LDAP Server',
+				'Multi-factor authentication',
+				'Enabled',
+				'Debug mode'
+			],
+			$form->getLabels(CElementFilter::VISIBLE)->asText()
 		);
 		$this->assertEquals(['Group name'], $form->getRequiredLabels());
 
@@ -132,7 +145,7 @@ class testFormUserGroups extends CWebTest {
 		$dropdowns = [
 			'Frontend access' => ['System default', 'Internal', 'LDAP', 'Disabled'],
 			'LDAP Server' => ['Default'],
-			'Multi-factor authentication' => ['User groups DUO', 'User groups TOTP','Disabled', 'Default']
+			'Multi-factor authentication' => ['User groups DUO', 'User groups TOTP', 'Disabled', 'Default']
 		];
 
 		foreach ($dropdowns as $field => $options) {
@@ -143,8 +156,7 @@ class testFormUserGroups extends CWebTest {
 			if ($mfa_status) {
 				// Check that warning icon is not visible if MFA is enabled.
 				$this->assertFalse($form->query('id:mfa-warning')->one()->isDisplayed(), 'Warning icon should not be visible.');
-			}
-			else {
+			} else {
 				// Disable MFA and reload the page.
 				CDataHelper::call('authentication.update', ['mfa_status' => $mfa_status]);
 				$this->page->refresh()->waitUntilReady();
@@ -159,7 +171,7 @@ class testFormUserGroups extends CWebTest {
 				$warning_icon = $form->query('id:mfa-warning')->waitUntilVisible()->one();
 				$warning_icon->click();
 				$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->asOverlayDialog()
-						->waitUntilReady()->one();
+					->waitUntilReady()->one();
 				$this->assertEquals('Multi-factor authentication is disabled system-wide.', $hint->getText());
 				$hint->close();
 			}
@@ -183,24 +195,33 @@ class testFormUserGroups extends CWebTest {
 		}
 
 		// Check the action buttons below the form.
-		$this->assertEquals(['Add', 'Cancel'], $this->query('class:tfoot-buttons')->one()->query('tag:button')->all()
+		$this->assertEquals(
+			['Add', 'Cancel'],
+			$this->query('class:tfoot-buttons')->one()->query('tag:button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 
-		// Check that Frontend access, MFA and Enabled fields are read only for Zabbix Administrators.
+		// Check that Frontend access, MFA and Enabled fields are read only for Advantal Administrators.
 		$form->query('button:Cancel')->one()->click();
 		$this->page->waitUntilReady();
-		$this->query('link:Zabbix administrators')->waitUntilClickable()->one()->click();
+		$this->query('link:Advantal Administrators')->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
 
 		$form->invalidate();
 		$admin_fields = [
 			'Group name' => [
-				'value' => 'Zabbix administrators'
+				'value' => 'Advantal Administrators'
 			],
 			'Users' => [
-				'value' => ['Admin (Zabbix Administrator)', 'admin-zabbix', 'admin user for testFormScheduledReport',
-					'filter-create', 'filter-delete', 'filter-update', 'http-auth-admin', 'user-recipient of the report',
+				'value' => [
+					'Admin (Advantal Administrator)',
+					'admin-zabbix',
+					'admin user for testFormScheduledReport',
+					'filter-create',
+					'filter-delete',
+					'filter-update',
+					'http-auth-admin',
+					'user-recipient of the report',
 					'user-zabbix'
 				]
 			],
@@ -227,11 +248,11 @@ class testFormUserGroups extends CWebTest {
 			if (array_key_exists('class', $parameters)) {
 				// Check that read-only fields are represented as text, and check their text.
 				$this->assertEquals($parameters['value'], $field->getText());
-				$this->assertTrue($field->query('xpath:./span[@class='.CXPathHelper::escapeQuotes($parameters['class']).']')
+				$this->assertTrue(
+					$field->query('xpath:./span[@class=' . CXPathHelper::escapeQuotes($parameters['class']) . ']')
 						->one(false)->isValid()
 				);
-			}
-			else {
+			} else {
 				// Check value of the interactable fields and make sure they are enabled.
 				$this->assertEquals($parameters['value'], $field->getValue());
 				$this->assertTrue($field->isEnabled());
@@ -239,12 +260,15 @@ class testFormUserGroups extends CWebTest {
 		}
 
 		// Check the action buttons in User group update form.
-		$this->assertEquals(['Update', 'Delete', 'Cancel'], $this->query('class:tfoot-buttons')->one()->query('tag:button')->all()
+		$this->assertEquals(
+			['Update', 'Delete', 'Cancel'],
+			$this->query('class:tfoot-buttons')->one()->query('tag:button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 	}
 
-	public static function getCommonData() {
+	public static function getCommonData()
+	{
 		return [
 			// #0 Empty space in name.
 			[
@@ -261,10 +285,10 @@ class testFormUserGroups extends CWebTest {
 				[
 					'expected' => TEST_BAD,
 					'fields' => [
-						'Group name' => 'Zabbix administrators'
+						'Group name' => 'Advantal Administrators'
 					],
 					'duplicate' => true,
-					'error' => 'User group "Zabbix administrators" already exists.'
+					'error' => 'User group "Advantal Administrators" already exists.'
 				]
 			],
 			// #2 Adding the current user to a disabled group.
@@ -324,7 +348,8 @@ class testFormUserGroups extends CWebTest {
 		];
 	}
 
-	public static function getCreateData() {
+	public static function getCreateData()
+	{
 		return [
 			// Empty name.
 			[
@@ -343,14 +368,16 @@ class testFormUserGroups extends CWebTest {
 	 * @dataProvider getCommonData
 	 * @dataProvider getCreateData
 	 */
-	public function testFormUserGroups_Create($data) {
+	public function testFormUserGroups_Create($data)
+	{
 		$this->executeAction($data);
 	}
 
 	/**
 	 * @dataProvider getCommonData
 	 */
-	public function testFormUserGroups_Update($data) {
+	public function testFormUserGroups_Update($data)
+	{
 		$this->executeAction($data, true);
 	}
 
@@ -360,9 +387,10 @@ class testFormUserGroups extends CWebTest {
 	 * @param array     $data     data provider
 	 * @param boolean   $update   flag that determines whether the tested scenario is an update scenario
 	 */
-	protected function executeAction($data, $update = false) {
+	protected function executeAction($data, $update = false)
+	{
 		// Add word "update" to update cases to ensure uniqueness. Only for cases where name validation is not checked.
-		if ($update && !in_array($data['fields']['Group name'], [' ', 'Zabbix administrators'])) {
+		if ($update && !in_array($data['fields']['Group name'], [' ', 'Advantal Administrators'])) {
 			$data['fields']['Group name'] = str_replace('group', 'group update', $data['fields']['Group name']);
 		}
 
@@ -372,7 +400,7 @@ class testFormUserGroups extends CWebTest {
 
 		$this->page->login()->open('zabbix.php?action=usergroup.list')->waitUntilReady();
 
-		$button_selector = ($update) ? 'link:'.self::$user_group : 'button:Create user group';
+		$button_selector = ($update) ? 'link:' . self::$user_group : 'button:Create user group';
 		$this->query($button_selector)->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
 
@@ -395,7 +423,8 @@ class testFormUserGroups extends CWebTest {
 				self::$user_group = $data['fields']['Group name'];
 			}
 
-			$this->assertEquals(1, CDBHelper::getCount('SELECT usrgrpid FROM usrgrp WHERE name='.
+			$this->assertEquals(1, CDBHelper::getCount(
+				'SELECT usrgrpid FROM usrgrp WHERE name=' .
 					zbx_dbstr($data['fields']['Group name'])
 			));
 
@@ -403,15 +432,15 @@ class testFormUserGroups extends CWebTest {
 			$this->query('link', $data['fields']['Group name'])->one()->click();
 			$form->invalidate();
 			$form->checkValue($data['fields']);
-		}
-		else {
+		} else {
 			$message = ($update) ? 'Cannot update user group' : 'Cannot add user group';
 			$this->assertMessage(TEST_BAD, $message, $data['error']);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM usrgrp'));
 		}
 	}
 
-	public static function getDeleteData() {
+	public static function getDeleteData()
+	{
 		return [
 			[
 				[
@@ -421,8 +450,8 @@ class testFormUserGroups extends CWebTest {
 			[
 				[
 					'expected' => TEST_BAD,
-					'name' => 'Zabbix administrators',
-					'error' => 'User group "Zabbix administrators" is used in'
+					'name' => 'Advantal Administrators',
+					'error' => 'User group "Advantal Administrators" is used in'
 				]
 			],
 			[
@@ -450,7 +479,8 @@ class testFormUserGroups extends CWebTest {
 	/**
 	 * @dataProvider getDeleteData
 	 */
-	public function testFormUserGroups_Delete($data) {
+	public function testFormUserGroups_Delete($data)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash('SELECT * FROM usrgrp');
 		}
@@ -459,7 +489,7 @@ class testFormUserGroups extends CWebTest {
 
 		// Locate row first, as the user group name may coincides with group actions for other groups ('Internal', 'Disabled').
 		$this->query('class:list-table')->asTable()->one()->findRow('Name', $data['name'])->query('link', $data['name'])
-				->waitUntilClickable()->one()->click();
+			->waitUntilClickable()->one()->click();
 		$this->page->waitUntilReady();
 
 		$this->query('button:Delete')->waitUntilClickable()->one()->click();
@@ -469,9 +499,8 @@ class testFormUserGroups extends CWebTest {
 
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_GOOD) {
 			$this->assertMessage(TEST_GOOD, 'User group deleted');
-			$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM usrgrp WHERE name='.zbx_dbstr($data['name'])));
-		}
-		else {
+			$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM usrgrp WHERE name=' . zbx_dbstr($data['name'])));
+		} else {
 			$this->assertMessage(TEST_BAD, 'Cannot delete user group', $data['error']);
 			$this->assertEquals($old_hash, CDBHelper::getHash('SELECT * FROM usrgrp'));
 		}

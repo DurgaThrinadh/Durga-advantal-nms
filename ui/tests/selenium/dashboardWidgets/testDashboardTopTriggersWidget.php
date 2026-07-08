@@ -14,10 +14,10 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../behaviors/CTagBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../behaviors/CTagBehavior.php';
 
 /**
  * @backup dashboard
@@ -26,12 +26,14 @@ require_once __DIR__.'/../behaviors/CTagBehavior.php';
  *
  * @dataSource UserPermissions
  */
-class testDashboardTopTriggersWidget extends CWebTest {
+class testDashboardTopTriggersWidget extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior, TableBehavior and TagBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -55,15 +57,16 @@ class testDashboardTopTriggersWidget extends CWebTest {
 	 * SQL query to get widget and widget_field tables to compare hash values, but without widget_fieldid
 	 * because it can change.
 	 */
-	const SQL = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,'.
-			' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,'.
-			' w.width, w.height'.
-			' FROM widget_field wf'.
-			' INNER JOIN widget w'.
-			' ON w.widgetid=wf.widgetid ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid,'.
-			' wf.value_itemid, wf.value_graphid';
+	const SQL = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,' .
+		' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,' .
+		' w.width, w.height' .
+		' FROM widget_field wf' .
+		' INNER JOIN widget w' .
+		' ON w.widgetid=wf.widgetid ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid,' .
+		' wf.value_itemid, wf.value_graphid';
 
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		// Create hostgroups for hosts.
 		CDataHelper::call('hostgroup.create', [
 			['name' => 'First Group for TOP triggers check'],
@@ -291,8 +294,9 @@ class testDashboardTopTriggersWidget extends CWebTest {
 		self::$dashboard_data = $response['dashboardids'][2];
 	}
 
-	public function testDashboardTopTriggersWidget_Layout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+	public function testDashboardTopTriggersWidget_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$dialog = $dashboard->edit()->addWidget();
 		$this->assertEquals('Add widget', $dialog->getTitle());
@@ -357,8 +361,18 @@ class testDashboardTopTriggersWidget extends CWebTest {
 			}
 		}
 
-		$this->assertEquals(['Default (No refresh)', 'No refresh', '10 seconds', '30 seconds', '1 minute',
-				'2 minutes', '10 minutes', '15 minutes'], $form->getField('Refresh interval')->getOptions()->asText()
+		$this->assertEquals(
+			[
+				'Default (No refresh)',
+				'No refresh',
+				'10 seconds',
+				'30 seconds',
+				'1 minute',
+				'2 minutes',
+				'10 minutes',
+				'15 minutes'
+			],
+			$form->getField('Refresh interval')->getOptions()->asText()
 		);
 
 		// Check radio buttons and checkboxes.
@@ -371,22 +385,35 @@ class testDashboardTopTriggersWidget extends CWebTest {
 		}
 
 		// Check tag operators and tag table buttons.
-		$this->assertEquals(['Exists', 'Equals', 'Contains', 'Does not exist', 'Does not equal',
-				'Does not contain'], $form->getField('id:tags_0_operator')->asDropdown()->getOptions()->asText()
+		$this->assertEquals(
+			[
+				'Exists',
+				'Equals',
+				'Contains',
+				'Does not exist',
+				'Does not equal',
+				'Does not contain'
+			],
+			$form->getField('id:tags_0_operator')->asDropdown()->getOptions()->asText()
 		);
-		$this->assertEquals(2, $form->query('id:tags_table_tags')->one()->query('button', ['Add', 'Remove'])->all()
+		$this->assertEquals(
+			2,
+			$form->query('id:tags_table_tags')->one()->query('button', ['Add', 'Remove'])->all()
 				->filter((CElementFilter::CLICKABLE))->count()
 		);
 
 		// Check if footer buttons present and clickable.
-		$this->assertEquals(['Add', 'Cancel'], $dialog->getFooter()->query('button')->all()
+		$this->assertEquals(
+			['Add', 'Cancel'],
+			$dialog->getFooter()->query('button')->all()
 				->filter(CElementFilter::CLICKABLE)->asText()
 		);
 
 		$dialog->close();
 	}
 
-	public static function getWidgetData() {
+	public static function getWidgetData()
+	{
 		return [
 			[
 				[
@@ -453,7 +480,7 @@ class testDashboardTopTriggersWidget extends CWebTest {
 				[
 					'expected' => TEST_GOOD,
 					'fields' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Refresh interval' => '10 seconds'
 					]
 				]
@@ -463,7 +490,7 @@ class testDashboardTopTriggersWidget extends CWebTest {
 					'expected' => TEST_GOOD,
 					'fields' => [
 						'Host groups' => [
-							'Zabbix servers',
+							'Advantal servers',
 							'First Group for TOP triggers check'
 						],
 						'Refresh interval' => '30 seconds'
@@ -561,7 +588,7 @@ class testDashboardTopTriggersWidget extends CWebTest {
 						'Name' => STRING_255,
 						'Show header' => false,
 						'Host groups' => [
-							'Zabbix servers',
+							'Advantal servers',
 							'First Group for TOP triggers check'
 						],
 						'Hosts' => [
@@ -641,21 +668,24 @@ class testDashboardTopTriggersWidget extends CWebTest {
 	/**
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardTopTriggersWidget_Create($data) {
+	public function testDashboardTopTriggersWidget_Create($data)
+	{
 		$this->checkWidgetForm($data);
 	}
 
 	/**
 	 * @dataProvider getWidgetData
 	 */
-	public function testDashboardTopTriggersWidget_Update($data) {
+	public function testDashboardTopTriggersWidget_Update($data)
+	{
 		$this->checkWidgetForm($data, true);
 	}
 
-	public function testDashboardTopTriggersWidget_SimpleUpdate() {
+	public function testDashboardTopTriggersWidget_SimpleUpdate()
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboard_create)->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboard_create)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$dashboard->getWidget(self::$update_widget)->edit()->submit();
 		$dashboard->save();
@@ -670,7 +700,8 @@ class testDashboardTopTriggersWidget extends CWebTest {
 	 *
 	 * @param boolean $update	updating is performed
 	 */
-	protected function checkWidgetForm($data, $update = false) {
+	protected function checkWidgetForm($data, $update = false)
+	{
 		$expected = CTestArrayHelper::get($data, 'expected', TEST_GOOD);
 		if ($expected === TEST_BAD) {
 			$old_hash = CDBHelper::getHash(self::SQL);
@@ -678,12 +709,11 @@ class testDashboardTopTriggersWidget extends CWebTest {
 
 		if ($data['fields'] === []) {
 			$data['fields']['Name'] = '';
-		}
-		else {
+		} else {
 			$data['fields']['Name'] = CTestArrayHelper::get($data, 'fields.Name', 'Top triggers ' . microtime());
 		}
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboard_create)->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboard_create)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -694,7 +724,7 @@ class testDashboardTopTriggersWidget extends CWebTest {
 		$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Top triggers')]);
 		$form->fill($data['fields']);
 
-		if (CTestArrayHelper::get($data,'tags')) {
+		if (CTestArrayHelper::get($data, 'tags')) {
 			$this->setTags($data['tags']);
 		}
 
@@ -716,8 +746,7 @@ class testDashboardTopTriggersWidget extends CWebTest {
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 
 			COverlayDialogElement::find()->one()->close();
-		}
-		else {
+		} else {
 			// If name is empty string it is replaced by default name "Top triggers".
 			$header = ($data['fields']['Name'] === '') ? 'Top triggers' : $data['fields']['Name'];
 			if ($update) {
@@ -756,7 +785,8 @@ class testDashboardTopTriggersWidget extends CWebTest {
 		}
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			// Cancel update widget.
 			[
@@ -792,19 +822,19 @@ class testDashboardTopTriggersWidget extends CWebTest {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testDashboardTopTriggersWidget_Cancel($data) {
+	public function testDashboardTopTriggersWidget_Cancel($data)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 		$new_name = 'Widget to be cancelled';
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one()->edit();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
 		// Start updating or creating a widget.
 		if (CTestArrayHelper::get($data, 'update', false)) {
 			$form = $dashboard->getWidget(self::DEFAULT_WIDGET)->edit();
-		}
-		else {
+		} else {
 			$form = $dashboard->addWidget()->asForm();
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Top triggers')]);
 		}
@@ -825,8 +855,7 @@ class testDashboardTopTriggersWidget extends CWebTest {
 
 			// Check that changes took place on the unsaved dashboard.
 			$this->assertTrue($dashboard->getWidget($new_name)->isVisible());
-		}
-		else {
+		} else {
 			$dialog = COverlayDialogElement::find()->one();
 			$dialog->query('button:Cancel')->one()->click();
 			$dialog->ensureNotPresent();
@@ -843,16 +872,16 @@ class testDashboardTopTriggersWidget extends CWebTest {
 		// Save or cancel dashboard update.
 		if (CTestArrayHelper::get($data, 'save_dashboard', false)) {
 			$dashboard->save();
-		}
-		else {
+		} else {
 			$dashboard->cancelEditing();
 		}
 
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 	}
 
-	public function testDashboardTopTriggersWidget_Delete() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid)->waitUntilReady();
+	public function testDashboardTopTriggersWidget_Delete()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one()->edit();
 		$widget = $dashboard->getWidget(self::DELETE_WIDGET);
 		$dashboard->deleteWidget(self::DELETE_WIDGET);
@@ -862,14 +891,16 @@ class testDashboardTopTriggersWidget extends CWebTest {
 
 		// Check that widget is not present on dashboard.
 		$this->assertFalse($dashboard->getWidget(self::DELETE_WIDGET, false)->isValid());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM widget_field wf'.
-				' LEFT JOIN widget w'.
-					' ON w.widgetid=wf.widgetid'.
-					' WHERE w.name='.zbx_dbstr(self::DELETE_WIDGET)
+		$this->assertEquals(0, CDBHelper::getCount(
+			'SELECT * FROM widget_field wf' .
+				' LEFT JOIN widget w' .
+				' ON w.widgetid=wf.widgetid' .
+				' WHERE w.name=' . zbx_dbstr(self::DELETE_WIDGET)
 		));
 	}
 
-	public static function getWidgetTableData() {
+	public static function getWidgetTableData()
+	{
 		return [
 			// Check widget data with all possible severity types and different problems count.
 			[
@@ -1370,14 +1401,15 @@ class testDashboardTopTriggersWidget extends CWebTest {
 	 *
 	 * @dataProvider getWidgetTableData
 	 */
-	public function testDashboardTopTriggersWidget_WidgetTableData($data) {
+	public function testDashboardTopTriggersWidget_WidgetTableData($data)
+	{
 		foreach ($data['trigger_data'] as $params) {
 			for ($i = 1; $i <= $params['problem_count']; $i++) {
 				CDBHelper::setTriggerProblem($params['name'], TRIGGER_VALUE_TRUE, ['clock' => $params['time']]);
 			}
 		}
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboard_data)->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboard_data)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$dashboard->waitUntilReady();
 
@@ -1404,17 +1436,20 @@ class testDashboardTopTriggersWidget extends CWebTest {
 
 		foreach ($data['background_color'] as $trigger => $colors) {
 			$table = $dashboard->getWidget(self::DATA_WIDGET)->getContent()->asTable();
-			$this->assertEquals($colors, $table->findRow('Trigger', $trigger)->getColumn('Severity')
+			$this->assertEquals(
+				$colors,
+				$table->findRow('Trigger', $trigger)->getColumn('Severity')
 					->getAttribute('class')
 			);
 		}
 	}
 
-	public function testDashboardTopTriggersWidget_ContextMenu() {
+	public function testDashboardTopTriggersWidget_ContextMenu()
+	{
 		// Create problem.
 		CDBHelper::setTriggerProblem('First test trigger with tag priority', TRIGGER_VALUE_TRUE);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboard_data)->waitUntilReady();
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboard_data)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
 		$dashboard->waitUntilReady();
 
@@ -1422,11 +1457,11 @@ class testDashboardTopTriggersWidget extends CWebTest {
 			'trigger_menu' => [
 				'VIEW' => [
 					'Problems' => 'zabbix.php?action=problem.view&filter_set=1&triggerids%5B%5D=99252',
-					'History' => [ 'Number of processes' => 'history.php?action=showgraph&itemids%5B%5D=42253']
+					'History' => ['Number of processes' => 'history.php?action=showgraph&itemids%5B%5D=42253']
 				],
 				'CONFIGURATION' => [
 					'Trigger' => 'menu-popup-item',
-					'Items' => [ 'Number of processes' => 'menu-popup-item']
+					'Items' => ['Number of processes' => 'menu-popup-item']
 				]
 			],
 			'host_menu' => [
@@ -1468,7 +1503,8 @@ class testDashboardTopTriggersWidget extends CWebTest {
 	 *
 	 * @param array $data	data provider with fields values
 	 */
-	protected function checkContextMenuLinks($data) {
+	protected function checkContextMenuLinks($data)
+	{
 		// Check popup menu.
 		$popup = CPopupMenuElement::find()->waitUntilVisible()->one();
 		$this->assertTrue($popup->hasTitles(array_keys($data)));
@@ -1483,19 +1519,19 @@ class testDashboardTopTriggersWidget extends CWebTest {
 						// Check 2-level menu links.
 						$item_link = $popup->getItem($menu_level1)->query('xpath:./../ul//a')->one();
 						$this->assertEquals($menu_level2, $item_link->getText());
-						$this->assertStringContainsString($attribute,
-								$item_link->getAttribute(($attribute === 'menu-popup-item') ? 'class' : 'href')
+						$this->assertStringContainsString(
+							$attribute,
+							$item_link->getAttribute(($attribute === 'menu-popup-item') ? 'class' : 'href')
 						);
 					}
-				}
-				else {
+				} else {
 					// Check 1-level menu links.
 					if (str_contains($link, 'menu-popup-item')) {
 						$this->assertEquals($link, $popup->getItem($menu_level1)->getAttribute('class'));
-					}
-					else {
-						$this->assertTrue($popup->query("xpath:.//a[text()=".CXPathHelper::escapeQuotes($menu_level1).
-								" and contains(@href, ".CXPathHelper::escapeQuotes($link).")]")->exists()
+					} else {
+						$this->assertTrue(
+							$popup->query("xpath:.//a[text()=" . CXPathHelper::escapeQuotes($menu_level1) .
+								" and contains(@href, " . CXPathHelper::escapeQuotes($link) . ")]")->exists()
 						);
 					}
 				}

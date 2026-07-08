@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @backup config, widget
@@ -25,7 +25,8 @@ require_once __DIR__.'/../behaviors/CMessageBehavior.php';
  *
  * @onBefore prepareDashboardData
  */
-class testDashboardProblemsWidget extends CWebTest {
+class testDashboardProblemsWidget extends CWebTest
+{
 
 	private static $dashboardid;
 	private static $update_widget = 'Problem widget for updating';
@@ -35,7 +36,8 @@ class testDashboardProblemsWidget extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
@@ -43,15 +45,16 @@ class testDashboardProblemsWidget extends CWebTest {
 	 * SQL query to get widget and widget_field tables to compare hash values, but without widget_fieldid
 	 * because it can change.
 	 */
-	private $sql = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,'.
-			' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,'.
-			' w.width, w.height'.
-			' FROM widget_field wf'.
-			' INNER JOIN widget w'.
-			' ON w.widgetid=wf.widgetid ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid,'.
-			' wf.value_itemid, wf.value_graphid, wf.value_hostid';
+	private $sql = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,' .
+		' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,' .
+		' w.width, w.height' .
+		' FROM widget_field wf' .
+		' INNER JOIN widget w' .
+		' ON w.widgetid=wf.widgetid ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid,' .
+		' wf.value_itemid, wf.value_graphid, wf.value_hostid';
 
-	public function prepareDashboardData() {
+	public function prepareDashboardData()
+	{
 		$response = CDataHelper::call('dashboard.create', [
 			'name' => 'Problem widget dashboard',
 			'auto_start' => 0,
@@ -114,8 +117,9 @@ class testDashboardProblemsWidget extends CWebTest {
 		self::$dashboardid = $response['dashboardids'][0];
 	}
 
-	public function testDashboardProblemsWidget_Layout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardProblemsWidget_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dialog =  CDashboardElement::find()->one()->edit()->addWidget();
 		$form = $dialog->asForm();
 
@@ -123,11 +127,32 @@ class testDashboardProblemsWidget extends CWebTest {
 		$form->fill(['Type' => 'Problems']);
 		$dialog->waitUntilReady();
 
-		$this->assertEquals(['Type', 'Show header', 'Name', 'Refresh interval', 'Show', 'Host groups',
-				'Exclude host groups', 'Hosts', 'Problem', 'Severity', 'Problem tags', 'Show tags', 'Tag name',
-				'Tag display priority', 'Show operational data', 'Show symptoms', 'Show suppressed problems',
-				'Acknowledgement status', 'Sort entries by', 'Show timeline', 'Highlight whole row', 'Show lines'],
-				$form->getLabels()->asText()
+		$this->assertEquals(
+			[
+				'Type',
+				'Show header',
+				'Name',
+				'Refresh interval',
+				'Show',
+				'Host groups',
+				'Exclude host groups',
+				'Hosts',
+				'Problem',
+				'Severity',
+				'Problem tags',
+				'Show tags',
+				'Tag name',
+				'Tag display priority',
+				'Show operational data',
+				'Show symptoms',
+				'Show suppressed problems',
+				'Acknowledgement status',
+				'Sort entries by',
+				'Show timeline',
+				'Highlight whole row',
+				'Show lines'
+			],
+			$form->getLabels()->asText()
 		);
 
 		// Check default fields.
@@ -186,12 +211,26 @@ class testDashboardProblemsWidget extends CWebTest {
 
 		// Check dropdowns options presence.
 		$dropdowns = [
-			'Refresh interval' => ['Default (1 minute)', 'No refresh', '10 seconds', '30 seconds', '1 minute', '2 minutes',
-					'10 minutes', '15 minutes'
+			'Refresh interval' => [
+				'Default (1 minute)',
+				'No refresh',
+				'10 seconds',
+				'30 seconds',
+				'1 minute',
+				'2 minutes',
+				'10 minutes',
+				'15 minutes'
 			],
 			'id:tags_0_operator' => ['Exists', 'Equals', 'Contains', 'Does not exist', 'Does not equal', 'Does not contain'],
-			'Sort entries by' => ['Time (descending)', 'Time (ascending)', 'Severity (descending)', 'Severity (ascending)',
-					'Problem (descending)', 'Problem (ascending)', 'Host (descending)', 'Host (ascending)'
+			'Sort entries by' => [
+				'Time (descending)',
+				'Time (ascending)',
+				'Severity (descending)',
+				'Severity (ascending)',
+				'Problem (descending)',
+				'Problem (ascending)',
+				'Host (descending)',
+				'Host (ascending)'
 			]
 		];
 
@@ -203,8 +242,9 @@ class testDashboardProblemsWidget extends CWebTest {
 		$severities = ['Not classified', 'Information', 'Warning', 'Average', 'High', 'Disaster'];
 
 		foreach ($severities as $id => $label) {
-			$this->assertTrue($form->getField('Severity')->query("xpath:.//label[text()=".
-					CXPathHelper::escapeQuotes($label)."]/../input[@id='severities_".$id."']")->exists()
+			$this->assertTrue(
+				$form->getField('Severity')->query("xpath:.//label[text()=" .
+					CXPathHelper::escapeQuotes($label) . "]/../input[@id='severities_" . $id . "']")->exists()
 			);
 		}
 
@@ -259,7 +299,8 @@ class testDashboardProblemsWidget extends CWebTest {
 		$dialog->close();
 	}
 
-	public static function getCommonData() {
+	public static function getCommonData()
+	{
 		return [
 			// #0 Widget with empty 'Show lines' field.
 			[
@@ -474,7 +515,7 @@ class testDashboardProblemsWidget extends CWebTest {
 				[
 					'fields' => [
 						'Name' => 'Array of groups',
-						'Host groups' => [ 'Group to check Overview',  'Zabbix servers'],
+						'Host groups' => ['Group to check Overview',  'Advantal servers'],
 						'Exclude host groups' => ['Group to copy all graph', 'Inheritance test'],
 						'Hosts' => ['Host to check graph 1', 'Host for triggers filtering']
 					]
@@ -483,7 +524,8 @@ class testDashboardProblemsWidget extends CWebTest {
 		];
 	}
 
-	public static function getCreateDefaultData() {
+	public static function getCreateDefaultData()
+	{
 		return [
 			[
 				[
@@ -499,14 +541,16 @@ class testDashboardProblemsWidget extends CWebTest {
 	 * @dataProvider getCreateDefaultData
 	 * @dataProvider getCommonData
 	 */
-	public function testDashboardProblemsWidget_Create($data) {
+	public function testDashboardProblemsWidget_Create($data)
+	{
 		$this->checkFormProblemsWidget($data);
 	}
 
 	/**
 	 * @dataProvider getCommonData
 	 */
-	public function testDashboardProblemsWidget_Update($data) {
+	public function testDashboardProblemsWidget_Update($data)
+	{
 		$this->checkFormProblemsWidget($data, true);
 	}
 
@@ -516,12 +560,13 @@ class testDashboardProblemsWidget extends CWebTest {
 	 * @param array      $data      data provider
 	 * @param boolean    $update    true if update scenario, false if create
 	 */
-	public function checkFormProblemsWidget($data, $update = false) {
+	public function checkFormProblemsWidget($data, $update = false)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$old_hash = CDBHelper::getHash($this->sql);
 		}
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -533,8 +578,7 @@ class testDashboardProblemsWidget extends CWebTest {
 
 		if (!$update) {
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Problems')]);
-		}
-		elseif (CTestArrayHelper::get($data, 'clear_tag_priority', false)) {
+		} elseif (CTestArrayHelper::get($data, 'clear_tag_priority', false)) {
 			$form->fill(['Show tags' => 1, 'Tag display priority' => '']);
 		}
 
@@ -549,8 +593,7 @@ class testDashboardProblemsWidget extends CWebTest {
 
 			if (empty($data['tag_fields'])) {
 				$tags_table->clear();
-			}
-			else {
+			} else {
 				if ($update) {
 					/**
 					 * The Widget for update already has 2 tags, so we need to update them. The first tag has action
@@ -579,8 +622,7 @@ class testDashboardProblemsWidget extends CWebTest {
 
 			// Check that DB hash is not changed.
 			$this->assertEquals($old_hash, CDBHelper::getHash($this->sql));
-		}
-		else {
+		} else {
 			COverlayDialogElement::ensureNotPresent();
 
 			/**
@@ -592,8 +634,7 @@ class testDashboardProblemsWidget extends CWebTest {
 				$header = ($data['fields']['Name'] === '')
 					? 'Problems'
 					: $data['fields']['Name'];
-			}
-			else {
+			} else {
 				$header = $update ? self::$update_widget : 'Problems';
 			}
 
@@ -633,13 +674,14 @@ class testDashboardProblemsWidget extends CWebTest {
 			}
 
 			// Check that widget is saved in DB.
-			$this->assertEquals(1, CDBHelper::getCount('SELECT * FROM widget w'.
-					' WHERE EXISTS ('.
-						'SELECT NULL'.
-						' FROM dashboard_page dp'.
-						' WHERE w.dashboard_pageid=dp.dashboard_pageid'.
-							' AND dp.dashboardid='.self::$dashboardid.
-							' AND w.name ='.zbx_dbstr(CTestArrayHelper::get($data['fields'], 'Name', '')).')'
+			$this->assertEquals(1, CDBHelper::getCount(
+				'SELECT * FROM widget w' .
+					' WHERE EXISTS (' .
+					'SELECT NULL' .
+					' FROM dashboard_page dp' .
+					' WHERE w.dashboard_pageid=dp.dashboard_pageid' .
+					' AND dp.dashboardid=' . self::$dashboardid .
+					' AND w.name =' . zbx_dbstr(CTestArrayHelper::get($data['fields'], 'Name', '')) . ')'
 			));
 		}
 
@@ -649,11 +691,13 @@ class testDashboardProblemsWidget extends CWebTest {
 		$this->assertMessage(TEST_GOOD, 'Dashboard updated');
 	}
 
-	public function testDashboardProblemsWidget_SimpleUpdate() {
+	public function testDashboardProblemsWidget_SimpleUpdate()
+	{
 		$this->checkNoChanges();
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			// Cancel creating widget with saving the dashboard.
 			[
@@ -693,7 +737,8 @@ class testDashboardProblemsWidget extends CWebTest {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testDashboardProblemsWidget_Cancel($data) {
+	public function testDashboardProblemsWidget_Cancel($data)
+	{
 		$this->checkNoChanges($data['cancel_form'], $data['create_widget'], $data['save_dashboard']);
 	}
 
@@ -704,10 +749,11 @@ class testDashboardProblemsWidget extends CWebTest {
 	 * @param boolean $create			true if create scenario, false if update
 	 * @param boolean $save_dashboard	true if dashboard will be saved, false if not
 	 */
-	private function checkNoChanges($cancel = false, $create = false, $save_dashboard = true) {
+	private function checkNoChanges($cancel = false, $create = false, $save_dashboard = true)
+	{
 		$old_hash = CDBHelper::getHash($this->sql);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 
@@ -719,47 +765,45 @@ class testDashboardProblemsWidget extends CWebTest {
 
 		if ($create) {
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Problems')]);
-		}
-		else {
+		} else {
 			$values = $form->getFields()->asValues();
 		}
 
 		if ($cancel || !$save_dashboard) {
 			$form->fill([
-					'Name' => 'new name',
-					'Refresh interval' => '10 minutes',
-					'Host groups' => 'Empty group',
-					'Show' => 'Problems',
-					'Exclude host groups' => 'Group to copy graph',
-					'Hosts' => 'Available host',
-					'Problem' => 'Test problem',
-					'id:severities_3' => true,
-					'Show tags' => 2,
-					'Tag name' => 'None',
-					'Tag display priority' => 'one, two, four',
-					'Show operational data' => 'With problem name',
-					'Show suppressed problems' => true,
-					'Sort entries by' => 'Time (descending)',
-					'Show timeline' => false,
-					'Show lines' => 99
+				'Name' => 'new name',
+				'Refresh interval' => '10 minutes',
+				'Host groups' => 'Empty group',
+				'Show' => 'Problems',
+				'Exclude host groups' => 'Group to copy graph',
+				'Hosts' => 'Available host',
+				'Problem' => 'Test problem',
+				'id:severities_3' => true,
+				'Show tags' => 2,
+				'Tag name' => 'None',
+				'Tag display priority' => 'one, two, four',
+				'Show operational data' => 'With problem name',
+				'Show suppressed problems' => true,
+				'Sort entries by' => 'Time (descending)',
+				'Show timeline' => false,
+				'Show lines' => 99
 			]);
 
 			$form->getField('id:evaltype')->fill('Or');
 			$form->getField('id:tags_table_tags')->asMultifieldTable()->fill([
-					[
-						'action' => USER_ACTION_UPDATE,
-						'index' => 0,
-						'tag' => 'new tag',
-						'operator' => 'Does not equal',
-						'value' => 'new value'
-					]
+				[
+					'action' => USER_ACTION_UPDATE,
+					'index' => 0,
+					'tag' => 'new tag',
+					'operator' => 'Does not equal',
+					'value' => 'new value'
+				]
 			]);
 		}
 
 		if ($cancel) {
 			$dialog->query('button:Cancel')->one()->click();
-		}
-		else {
+		} else {
 			$form->submit();
 		}
 
@@ -772,8 +816,7 @@ class testDashboardProblemsWidget extends CWebTest {
 		if ($save_dashboard) {
 			$dashboard->save();
 			$this->assertMessage(TEST_GOOD, 'Dashboard updated');
-		}
-		else {
+		} else {
 			$dashboard->cancelEditing();
 		}
 
@@ -790,10 +833,11 @@ class testDashboardProblemsWidget extends CWebTest {
 		$this->assertEquals($old_hash, CDBHelper::getHash($this->sql));
 	}
 
-	public function testDashboardProblemsWidget_Delete() {
+	public function testDashboardProblemsWidget_Delete()
+	{
 		$name = 'Problem widget for delete';
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		$this->assertTrue($dashboard->edit()->getWidget($name)->isEditable());
 		$dashboard->deleteWidget($name);
@@ -803,10 +847,11 @@ class testDashboardProblemsWidget extends CWebTest {
 
 		// Check that widget is not present on dashboard and in DB.
 		$this->assertFalse($dashboard->getWidget($name, false)->isValid());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM widget_field wf'.
-				' LEFT JOIN widget w'.
-					' ON w.widgetid=wf.widgetid'.
-					' WHERE w.name='.zbx_dbstr($name)
+		$this->assertEquals(0, CDBHelper::getCount(
+			'SELECT * FROM widget_field wf' .
+				' LEFT JOIN widget w' .
+				' ON w.widgetid=wf.widgetid' .
+				' WHERE w.name=' . zbx_dbstr($name)
 		));
 	}
 }

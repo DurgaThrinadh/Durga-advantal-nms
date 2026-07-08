@@ -14,17 +14,16 @@
 **/
 
 
-require_once dirname(__FILE__).'/include/func.inc.php';
-require_once dirname(__FILE__).'/include/defines.inc.php';
-require_once dirname(__FILE__).'/include/classes/user/CWebUser.php';
-require_once dirname(__FILE__).'/include/classes/core/CHttpRequest.php';
+require_once dirname(__FILE__) . '/include/func.inc.php';
+require_once dirname(__FILE__) . '/include/defines.inc.php';
+require_once dirname(__FILE__) . '/include/classes/user/CWebUser.php';
+require_once dirname(__FILE__) . '/include/classes/core/CHttpRequest.php';
 
 $requestType = getRequest('type', PAGE_TYPE_JSON);
 if ($requestType == PAGE_TYPE_JSON) {
 	$http_request = new CHttpRequest();
 	$data = json_decode($http_request->body(), true);
-}
-else {
+} else {
 	$data = $_REQUEST;
 }
 
@@ -32,16 +31,18 @@ if (is_array($data) && array_key_exists('method', $data) && $data['method'] === 
 	CWebUser::disableSessionExtension();
 }
 
-require_once dirname(__FILE__).'/include/config.inc.php';
+require_once dirname(__FILE__) . '/include/config.inc.php';
 
 $page['title'] = 'RPC';
 $page['file'] = 'jsrpc.php';
 $page['type'] = detect_page_type($requestType);
 
-require_once dirname(__FILE__).'/include/page_header.php';
+require_once dirname(__FILE__) . '/include/page_header.php';
 
-if (!is_array($data) || !isset($data['method'])
-		|| ($requestType == PAGE_TYPE_JSON && (!isset($data['params']) || !is_array($data['params'])))) {
+if (
+	!is_array($data) || !isset($data['method'])
+	|| ($requestType == PAGE_TYPE_JSON && (!isset($data['params']) || !is_array($data['params'])))
+) {
 	fatal_error('Wrong RPC call to JS RPC!');
 }
 
@@ -60,16 +61,20 @@ switch ($data['method']) {
 		break;
 
 	case 'zabbix.status':
-		if (!CSessionHelper::has('serverCheckResult')
-				|| (CSessionHelper::get('serverCheckTime') + SERVER_CHECK_INTERVAL) <= time()) {
+		if (
+			!CSessionHelper::has('serverCheckResult')
+			|| (CSessionHelper::get('serverCheckTime') + SERVER_CHECK_INTERVAL) <= time()
+		) {
 
 			if ($ZBX_SERVER === null && $ZBX_SERVER_PORT === null) {
 				$is_running = false;
-			}
-			else {
-				$zabbix_server = new CZabbixServer($ZBX_SERVER, $ZBX_SERVER_PORT,
+			} else {
+				$zabbix_server = new CZabbixServer(
+					$ZBX_SERVER,
+					$ZBX_SERVER_PORT,
 					timeUnitToSeconds(CSettingsHelper::get(CSettingsHelper::CONNECT_TIMEOUT)),
-					timeUnitToSeconds(CSettingsHelper::get(CSettingsHelper::SOCKET_TIMEOUT)), 0
+					timeUnitToSeconds(CSettingsHelper::get(CSettingsHelper::SOCKET_TIMEOUT)),
+					0
 				);
 
 				$is_running = $zabbix_server->isRunning(CSessionHelper::getId());
@@ -83,7 +88,7 @@ switch ($data['method']) {
 			'result' => (bool) CSessionHelper::get('serverCheckResult'),
 			'message' => CSessionHelper::get('serverCheckResult')
 				? ''
-				: _('Zabbix server is not running: the information displayed may not be current.')
+				: _('Advantal server is not running: the information displayed may not be current.')
 		];
 		break;
 
@@ -95,8 +100,7 @@ switch ($data['method']) {
 
 			if ($data['mode'] == SCREEN_MODE_JS) {
 				$result = $screen;
-			}
-			elseif (is_object($screen)) {
+			} elseif (is_object($screen)) {
 				$result = $screen->toString();
 			}
 		}
@@ -223,8 +227,7 @@ switch ($data['method']) {
 					$options['search'] = array_key_exists('search', $data) ? ['name' => $data['search']] : null;
 
 					$records = API::ItemPrototype()->get($options);
-				}
-				else {
+				} else {
 					$resolve_macros = array_key_exists('resolve_macros', $data) && $data['resolve_macros'];
 					$name_field = $resolve_macros ? 'name_resolved' : 'name';
 
@@ -250,7 +253,7 @@ switch ($data['method']) {
 						$result[] = [
 							'id' => $record['itemid'],
 							'name' => $record['name'],
-							'prefix' => $record['hosts'][0]['name'].NAME_DELIMITER
+							'prefix' => $record['hosts'][0]['name'] . NAME_DELIMITER
 						];
 					}
 				}
@@ -272,8 +275,7 @@ switch ($data['method']) {
 					$options['selectDiscoveryRule'] = ['hostid'];
 
 					$records = API::GraphPrototype()->get($options);
-				}
-				else {
+				} else {
 					$records = API::Graph()->get($options);
 				}
 
@@ -286,8 +288,7 @@ switch ($data['method']) {
 				foreach ($records as $record) {
 					if ($data['object_name'] === 'graphs') {
 						$host_name = $record['hosts'][0]['name'];
-					}
-					else {
+					} else {
 						$host_names = array_column($record['hosts'], 'name', 'hostid');
 						$host_name = $host_names[$record['discoveryRule']['hostid']];
 					}
@@ -295,7 +296,7 @@ switch ($data['method']) {
 					$result[] = [
 						'id' => $record['graphid'],
 						'name' => $record['name'],
-						'prefix' => $host_name.NAME_DELIMITER
+						'prefix' => $host_name . NAME_DELIMITER
 					];
 				}
 				break;
@@ -404,8 +405,10 @@ switch ($data['method']) {
 					if (array_key_exists('real_hosts', $data) && $data['real_hosts']) {
 						foreach ($triggers as $key => $trigger) {
 							foreach ($triggers[$key]['hosts'] as $host) {
-								if ($host['status'] != HOST_STATUS_MONITORED
-										&& $host['status'] != HOST_STATUS_NOT_MONITORED) {
+								if (
+									$host['status'] != HOST_STATUS_MONITORED
+									&& $host['status'] != HOST_STATUS_NOT_MONITORED
+								) {
 									unset($triggers[$key]);
 									break;
 								}
@@ -427,7 +430,7 @@ switch ($data['method']) {
 						if ($trigger['hosts']) {
 							$trigger['hosts'] = reset($trigger['hosts']);
 
-							$hostName = $trigger['hosts']['name'].NAME_DELIMITER;
+							$hostName = $trigger['hosts']['name'] . NAME_DELIMITER;
 						}
 
 						$result[] = [
@@ -556,10 +559,12 @@ switch ($data['method']) {
 				$search = array_key_exists('search', $data) ? $data['search'] : '';
 
 				$api_methods = array_slice(
-					preg_grep('/'.preg_quote($search).'/',
+					preg_grep(
+						'/' . preg_quote($search) . '/',
 						array_merge(CRoleHelper::getApiMethodMasks($user_type), CRoleHelper::getApiMethods($user_type))
 					),
-					0, $limit
+					0,
+					$limit
 				);
 
 				foreach ($api_methods as $api_method) {
@@ -601,8 +606,7 @@ switch ($data['method']) {
 						'hostids' => $data['hostids'],
 						'preservekeys' => true
 					]);
-				}
-				else {
+				} else {
 					$hosts = API::Template()->get([
 						'output' => ['name'],
 						'templateids' => $data['hostids'],
@@ -618,7 +622,7 @@ switch ($data['method']) {
 				]);
 
 				foreach ($valuemaps as &$valuemap) {
-					$valuemap['prefix'] = $hosts[$valuemap['hostid']]['name'].NAME_DELIMITER;
+					$valuemap['prefix'] = $hosts[$valuemap['hostid']]['name'] . NAME_DELIMITER;
 					unset($valuemap['hostid']);
 				}
 				unset($valuemap);
@@ -766,7 +770,7 @@ switch ($data['method']) {
 			case 'hosts':
 				$options = [
 					'output' => ['name'],
-					'search' => ['name' => $search.($wildcard_enabled ? '*' : '')],
+					'search' => ['name' => $search . ($wildcard_enabled ? '*' : '')],
 					'searchWildcardsEnabled' => $wildcard_enabled,
 					'preservekeys' => true,
 					'sortfield' => 'name',
@@ -808,7 +812,7 @@ switch ($data['method']) {
 
 				$options = [
 					'output' => ['itemid', $name_field],
-					'search' => [$name_field => $search.($wildcard_enabled ? '*' : '')],
+					'search' => [$name_field => $search . ($wildcard_enabled ? '*' : '')],
 					'searchWildcardsEnabled' => $wildcard_enabled,
 					'filter' => array_key_exists('filter', $data) ? $data['filter'] : null,
 					'templated' => array_key_exists('real_hosts', $data) ? false : null,
@@ -828,7 +832,7 @@ switch ($data['method']) {
 			case 'graphs':
 				$options = [
 					'output' => ['name'],
-					'search' => ['name' => $search.($wildcard_enabled ? '*' : '')],
+					'search' => ['name' => $search . ($wildcard_enabled ? '*' : '')],
 					'hostids' => array_key_exists('hostid', $data) ? $data['hostid'] : null,
 					'templated' => array_key_exists('real_hosts', $data) ? false : null,
 					'searchWildcardsEnabled' => $wildcard_enabled,
@@ -897,8 +901,7 @@ switch ($data['method']) {
 				$result = [
 					'error' => array_values(array_column($errors, 'message'))
 				];
-			}
-			elseif ($scripts) {
+			} elseif ($scripts) {
 				$result = $scripts[$data['hostid']][0];
 			}
 		}
@@ -920,8 +923,7 @@ switch ($data['method']) {
 				$result = [
 					'error' => array_values(array_column($errors, 'message'))
 				];
-			}
-			elseif ($scripts) {
+			} elseif ($scripts) {
 				$result = $scripts[$data['eventid']][0];
 			}
 		}
@@ -942,8 +944,7 @@ if ($requestType == PAGE_TYPE_JSON) {
 		session_write_close();
 		exit();
 	}
-}
-elseif ($requestType == PAGE_TYPE_TEXT_RETURN_JSON) {
+} elseif ($requestType == PAGE_TYPE_TEXT_RETURN_JSON) {
 	echo json_encode([
 		'jsonrpc' => '2.0',
 		'result' => $result
@@ -951,9 +952,8 @@ elseif ($requestType == PAGE_TYPE_TEXT_RETURN_JSON) {
 
 	session_write_close();
 	exit();
-}
-elseif ($requestType == PAGE_TYPE_TEXT || $requestType == PAGE_TYPE_JS) {
+} elseif ($requestType == PAGE_TYPE_TEXT || $requestType == PAGE_TYPE_JS) {
 	echo $result;
 }
 
-require_once dirname(__FILE__).'/include/page_footer.php';
+require_once dirname(__FILE__) . '/include/page_footer.php';

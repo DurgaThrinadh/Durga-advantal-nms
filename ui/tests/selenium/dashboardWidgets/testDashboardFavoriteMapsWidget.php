@@ -14,21 +14,23 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
 
 /**
  * @backup profiles
  *
  * @onBefore prepareDashboardData
  */
-class testDashboardFavoriteMapsWidget extends CWebTest {
+class testDashboardFavoriteMapsWidget extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class
 		];
@@ -52,15 +54,16 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 	 * SQL query to get widget and widget_field tables to compare hash values, but without widget_fieldid
 	 * because it can change.
 	 */
-	const SQL = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,'.
-			' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,'.
-			' w.width, w.height'.
-			' FROM widget_field wf'.
-			' INNER JOIN widget w'.
-			' ON w.widgetid=wf.widgetid'.
-			' ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_itemid, wf.value_graphid';
+	const SQL = 'SELECT wf.widgetid, wf.type, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_hostid,' .
+		' wf.value_itemid, wf.value_graphid, wf.value_sysmapid, w.widgetid, w.dashboard_pageid, w.type, w.name, w.x, w.y,' .
+		' w.width, w.height' .
+		' FROM widget_field wf' .
+		' INNER JOIN widget w' .
+		' ON w.widgetid=wf.widgetid' .
+		' ORDER BY wf.widgetid, wf.name, wf.value_int, wf.value_str, wf.value_groupid, wf.value_itemid, wf.value_graphid';
 
-	public static function prepareDashboardData() {
+	public static function prepareDashboardData()
+	{
 		// Create dashboard with Favorite maps widgets.
 		self::$dashboardid = CDataHelper::call('dashboard.create', [
 			[
@@ -99,13 +102,13 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 			]
 		])['dashboardids'][0];
 
-		self::$dashboard_url = 'zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid;
+		self::$dashboard_url = 'zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid;
 
 		// Create host for map.
 		$hosts = CDataHelper::call('host.create', [
 			[
 				'host' => 'Map host',
-				'groups' => ['groupid' => 4] // Zabbix servers.
+				'groups' => ['groupid' => 4] // Advantal servers.
 			]
 		]);
 
@@ -128,7 +131,8 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 	}
 
 	// Add to favorites.
-	public function testDashboardFavoriteMapsWidget_AddFavoriteMap() {
+	public function testDashboardFavoriteMapsWidget_AddFavoriteMap()
+	{
 		$this->page->login()->open('sysmaps.php')->waitUntilReady();
 		$this->page->assertHeader('Maps');
 		$this->query('link', self::MAP_NAME)->waitUntilClickable()->one()->click();
@@ -142,34 +146,39 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		$this->page->login()->open(self::$dashboard_url)->waitUntilReady();
 		$widget = CDashboardElement::find()->one()->getWidget(self::$edit_widget)->waitUntilReady()->getContent();
 
-		$this->assertEquals('zabbix.php?action=map.view&sysmapid='.self::$mapid,
-				$widget->query('link', self::MAP_NAME)->one()->getAttribute('href')
+		$this->assertEquals(
+			'zabbix.php?action=map.view&sysmapid=' . self::$mapid,
+			$widget->query('link', self::MAP_NAME)->one()->getAttribute('href')
 		);
 
-		$this->assertEquals(1, CDBHelper::getCount('SELECT null FROM profiles WHERE idx='.
-				zbx_dbstr('web.favorite.sysmapids').' AND value_id='.zbx_dbstr(self::$mapid))
+		$this->assertEquals(
+			1,
+			CDBHelper::getCount('SELECT null FROM profiles WHERE idx=' .
+				zbx_dbstr('web.favorite.sysmapids') . ' AND value_id=' . zbx_dbstr(self::$mapid))
 		);
 	}
 
-	public function testDashboardFavoriteMapsWidget_RemoveFavoriteMaps() {
-		$favorite_maps = CDBHelper::getAll('SELECT value_id FROM profiles WHERE idx='.zbx_dbstr('web.favorite.sysmapids'));
+	public function testDashboardFavoriteMapsWidget_RemoveFavoriteMaps()
+	{
+		$favorite_maps = CDBHelper::getAll('SELECT value_id FROM profiles WHERE idx=' . zbx_dbstr('web.favorite.sysmapids'));
 
 		$this->page->login()->open(self::$dashboard_url)->waitUntilReady();
 		$widget = CDashboardElement::find()->waitUntilReady()->one()->getWidget(self::$edit_widget)->getContent();
 
 		foreach ($favorite_maps as $map) {
 			// Added variable due to External Hook.
-			$xpath = './/button[@data-sysmapid='.CXPathHelper::escapeQuotes($map['value_id']);
-			$remove_item = $widget->query('xpath', $xpath.' and contains(@onclick, "rm4favorites")]')->waituntilClickable()->one();
+			$xpath = './/button[@data-sysmapid=' . CXPathHelper::escapeQuotes($map['value_id']);
+			$remove_item = $widget->query('xpath', $xpath . ' and contains(@onclick, "rm4favorites")]')->waituntilClickable()->one();
 			$remove_item->click();
 			$remove_item->waitUntilNotVisible();
 		}
 
 		$this->assertEquals('No maps added.', $widget->query('class:no-data-message')->waitUntilVisible()->one()->getText());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM profiles WHERE idx='.zbx_dbstr('web.favorite.sysmapids')));
+		$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM profiles WHERE idx=' . zbx_dbstr('web.favorite.sysmapids')));
 	}
 
-	public function testDashboardFavoriteMapsWidget_Layout() {
+	public function testDashboardFavoriteMapsWidget_Layout()
+	{
 		$this->page->login()->open(self::$dashboard_url)->waitUntilReady();
 		$dialog = CDashboardElement::find()->one()->edit()->addWidget();
 		$form = $dialog->asForm();
@@ -187,17 +196,30 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		]);
 
 		// Check available options for "Refresh interval".
-		$this->assertEquals(['Default (15 minutes)', 'No refresh', '10 seconds', '30 seconds','1 minute', '2 minutes',
-				'10 minutes', '15 minutes'], $form->getField('Refresh interval')->asDropdown()->getOptions()->asText()
+		$this->assertEquals(
+			[
+				'Default (15 minutes)',
+				'No refresh',
+				'10 seconds',
+				'30 seconds',
+				'1 minute',
+				'2 minutes',
+				'10 minutes',
+				'15 minutes'
+			],
+			$form->getField('Refresh interval')->asDropdown()->getOptions()->asText()
 		);
 
 		// Verify visible field labels.
-		$this->assertEquals(['Type', 'Show header', 'Name', 'Refresh interval'],
-				array_values($form->getLabels(CElementFilter::VISIBLE)->asText())
+		$this->assertEquals(
+			['Type', 'Show header', 'Name', 'Refresh interval'],
+			array_values($form->getLabels(CElementFilter::VISIBLE)->asText())
 		);
 
 		// Verify that both Apply and Cancel buttons are clickable.
-		$this->assertEquals(2, $dialog->getFooter()->query('button', ['Add', 'Cancel'])->all()
+		$this->assertEquals(
+			2,
+			$dialog->getFooter()->query('button', ['Add', 'Cancel'])->all()
 				->filter(new CElementFilter(CElementFilter::CLICKABLE))->count()
 		);
 
@@ -209,7 +231,8 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		$dialog->close();
 	}
 
-	public static function getFavoriteMapsWidgetData() {
+	public static function getFavoriteMapsWidgetData()
+	{
 		return [
 			// #0 Special characters in name.
 			[
@@ -252,7 +275,8 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		];
 	}
 
-	public static function getFavoriteMapsWidgetDefaultData() {
+	public static function getFavoriteMapsWidgetDefaultData()
+	{
 		return [
 			// #0 Default widget.
 			[
@@ -265,11 +289,13 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 	 * @dataProvider getFavoriteMapsWidgetDefaultData
 	 * @dataProvider getFavoriteMapsWidgetData
 	 */
-	public function testDashboardFavoriteMapsWidget_Create($data) {
+	public function testDashboardFavoriteMapsWidget_Create($data)
+	{
 		$this->checkWidgetForm($data);
 	}
 
-	public function testDashboardFavoriteMapsWidget_SimpleUpdate() {
+	public function testDashboardFavoriteMapsWidget_SimpleUpdate()
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 		$this->page->login()->open(self::$dashboard_url)->waitUntilReady();
 		$dashboard = CDashboardElement::find()->one();
@@ -284,11 +310,13 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 	/**
 	 * @dataProvider getFavoriteMapsWidgetData
 	 */
-	public function testDashboardFavoriteMapsWidget_Update($data) {
+	public function testDashboardFavoriteMapsWidget_Update($data)
+	{
 		$this->checkWidgetForm($data, true);
 	}
 
-	public function testDashboardFavoriteMapsWidget_Delete() {
+	public function testDashboardFavoriteMapsWidget_Delete()
+	{
 		$this->page->login()->open(self::$dashboard_url)->waitUntilReady();
 
 		$dashboard = CDashboardElement::find()->one()->edit();
@@ -299,12 +327,14 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		$this->assertMessage(TEST_GOOD, 'Dashboard updated');
 
 		$this->assertFalse($dashboard->getWidget(self::DELETE_WIDGET, false)->isValid());
-		$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM widget_field wf'.
-				' LEFT JOIN widget w ON w.widgetid=wf.widgetid WHERE w.name='.zbx_dbstr(self::DELETE_WIDGET)
+		$this->assertEquals(0, CDBHelper::getCount(
+			'SELECT null FROM widget_field wf' .
+				' LEFT JOIN widget w ON w.widgetid=wf.widgetid WHERE w.name=' . zbx_dbstr(self::DELETE_WIDGET)
 		));
 	}
 
-	public static function getCancelData() {
+	public static function getCancelData()
+	{
 		return [
 			// Cancel update widget.
 			[
@@ -340,7 +370,8 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testDashboardFavoriteMapsWidget_Cancel($data) {
+	public function testDashboardFavoriteMapsWidget_Cancel($data)
+	{
 		$old_hash = CDBHelper::getHash(self::SQL);
 		$new_name = 'Cancel test - favorite maps';
 
@@ -352,8 +383,7 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		// Start updating or creating a widget.
 		if (CTestArrayHelper::get($data, 'update')) {
 			$form = $dashboard->getWidget(self::CANCEL_WIDGET)->edit();
-		}
-		else {
+		} else {
 			$form = $dashboard->addWidget()->asForm();
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Favorite maps')]);
 		}
@@ -367,8 +397,7 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		if (CTestArrayHelper::get($data, 'save_widget')) {
 			$form->submit();
 			$this->assertTrue($dashboard->getWidget($new_name)->isVisible());
-		}
-		else {
+		} else {
 			COverlayDialogElement::find()->one()->close(true);
 
 			if (CTestArrayHelper::get($data, 'update')) {
@@ -383,8 +412,7 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		// Save or cancel dashboard changes.
 		if (CTestArrayHelper::get($data, 'save_dashboard')) {
 			$dashboard->save();
-		}
-		else {
+		} else {
 			$dashboard->cancelEditing();
 		}
 
@@ -394,7 +422,8 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 	/**
 	 * Checks the widget form configuration.
 	 */
-	protected function checkWidgetForm($data, $update = false) {
+	protected function checkWidgetForm($data, $update = false)
+	{
 		$data['fields'] = CTestArrayHelper::get($data, 'fields', self::$default_values);
 
 		$this->page->login()->open(self::$dashboard_url)->waitUntilReady();
@@ -403,8 +432,7 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 
 		if ($update) {
 			$form = $dashboard->edit()->getWidget(self::$edit_widget)->edit()->asForm();
-		}
-		else {
+		} else {
 			$form = $dashboard->edit()->addWidget()->asForm();
 			$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Favorite maps')]);
 		}
@@ -443,8 +471,7 @@ class testDashboardFavoriteMapsWidget extends CWebTest {
 		// Check new widget update interval.
 		if (CTestArrayHelper::get($data, 'fields.Refresh interval') === 'Default (15 minutes)') {
 			$refresh = '15 minutes';
-		}
-		else {
+		} else {
 			$default_interval = ($update) ? self::$default_values['Refresh interval'] : '15 minutes';
 			$refresh = CTestArrayHelper::get($data, 'fields.Refresh interval', $default_interval);
 		}

@@ -14,9 +14,9 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../../include/items.inc.php';
-require_once __DIR__.'/../behaviors/CPreprocessingBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../../include/items.inc.php';
+require_once __DIR__ . '/../behaviors/CPreprocessingBehavior.php';
 
 /**
  * @backup items
@@ -26,14 +26,16 @@ require_once __DIR__.'/../behaviors/CPreprocessingBehavior.php';
  * TODO: remove ignoreBrowserErrors after DEV-4233
  * @ignoreBrowserErrors
  */
-class testFormPreprocessingTest extends CWebTest {
+class testFormPreprocessingTest extends CWebTest
+{
 
 	/**
 	 * Attach PreprocessingBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CPreprocessingBehavior::class];
 	}
 
@@ -49,7 +51,8 @@ class testFormPreprocessingTest extends CWebTest {
 		'Discard unchanged'
 	];
 
-	public static function getTestSingleStepData() {
+	public static function getTestSingleStepData()
+	{
 		return [
 			[
 				[
@@ -62,7 +65,7 @@ class testFormPreprocessingTest extends CWebTest {
 						['type' => 'Left trim', 'parameter_1' => 'def'],
 						['type' => 'XML XPath', 'parameter_1' => 'path'],
 						['type' => 'JSONPath', 'parameter_1' => 'path'],
-						['type' => 'CSV to JSON','parameter_1' => ' ', 'parameter_2' => '\\', 'parameter_3' => true],
+						['type' => 'CSV to JSON', 'parameter_1' => ' ', 'parameter_2' => '\\', 'parameter_3' => true],
 						['type' => 'XML to JSON'],
 						['type' => 'Custom multiplier', 'parameter_1' => '123'],
 						['type' => 'Simple change'],
@@ -79,8 +82,12 @@ class testFormPreprocessingTest extends CWebTest {
 						['type' => 'Check for error using regular expression', 'parameter_1' => 'path', 'parameter_2' => 'output'],
 						['type' => 'Discard unchanged'],
 						['type' => 'Discard unchanged with heartbeat', 'parameter_1' => '1'],
-						['type' => 'Prometheus pattern', 'parameter_1' => 'cpu_usage_system', 'parameter_2' => 'label',
-								'parameter_3' => 'label_name'],
+						[
+							'type' => 'Prometheus pattern',
+							'parameter_1' => 'cpu_usage_system',
+							'parameter_2' => 'label',
+							'parameter_3' => 'label_name'
+						],
 						['type' => 'Prometheus to JSON', 'parameter_1' => '']
 					],
 					'action' => 'Test'
@@ -231,17 +238,19 @@ class testFormPreprocessingTest extends CWebTest {
 	/**
 	 * @dataProvider getTestSingleStepData
 	 */
-	public function testFormPreprocessingTest_TestSingleStep($data) {
+	public function testFormPreprocessingTest_TestSingleStep($data)
+	{
 		$this->openPreprocessing($data);
 
 		foreach ($data['preprocessing'] as $i => $step) {
 			$this->addPreprocessingSteps([$step]);
-			$this->checkTestOverlay($data, 'name:preprocessing['.$i.'][test]', in_array($step['type'], $this->change_types), $i);
+			$this->checkTestOverlay($data, 'name:preprocessing[' . $i . '][test]', in_array($step['type'], $this->change_types), $i);
 		}
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public static function getTestAllStepsData() {
+	public static function getTestAllStepsData()
+	{
 		return [
 			[
 				[
@@ -308,7 +317,7 @@ class testFormPreprocessingTest extends CWebTest {
 					'action' => 'Cancel'
 				]
 			],
-						[
+			[
 				[
 					'expected' => TEST_GOOD,
 					'preprocessing' => [
@@ -329,13 +338,13 @@ class testFormPreprocessingTest extends CWebTest {
 					'action' => 'Test'
 				]
 			],
-						[
+			[
 				[
 					'expected' => TEST_GOOD,
 					'preprocessing' => [
 						['type' => 'Discard unchanged with heartbeat', 'parameter_1' => '1'],
 						['type' => 'Change per second'],
-						['type' => 'CSV to JSON','parameter_1' => ',', 'parameter_2' => '"', 'parameter_3' => false],
+						['type' => 'CSV to JSON', 'parameter_1' => ',', 'parameter_2' => '"', 'parameter_3' => false],
 						['type' => 'XML to JSON']
 					],
 					'action' => 'Test'
@@ -359,8 +368,8 @@ class testFormPreprocessingTest extends CWebTest {
 						['type' => 'Simple change'],
 						['type' => 'Change per second']
 					],
-					'error' => 'Invalid parameter "/2": only one object can exist within '.
-							'the combinations of (type)=((9, 10)).'
+					'error' => 'Invalid parameter "/2": only one object can exist within ' .
+						'the combinations of (type)=((9, 10)).'
 				]
 			],
 			[
@@ -377,8 +386,12 @@ class testFormPreprocessingTest extends CWebTest {
 				[
 					'expected' => TEST_BAD,
 					'preprocessing' => [
-						['type' => 'Prometheus pattern', 'parameter_1' => 'cpu_usage_system', 'parameter_2' => 'label',
-								'parameter_3' => 'label_name'],
+						[
+							'type' => 'Prometheus pattern',
+							'parameter_1' => 'cpu_usage_system',
+							'parameter_2' => 'label',
+							'parameter_3' => 'label_name'
+						],
 						['type' => 'Prometheus to JSON', 'parameter_1' => '']
 					],
 					'error' => 'Invalid parameter "/2": only one object can exist within the combinations of (type)=((22, 23)).'
@@ -418,7 +431,7 @@ class testFormPreprocessingTest extends CWebTest {
 					'error' => 'Invalid parameter "/2/params/1": cannot be empty.'
 				]
 			],
-						[
+			[
 				[
 					'expected' => TEST_BAD,
 					'preprocessing' => [
@@ -437,7 +450,8 @@ class testFormPreprocessingTest extends CWebTest {
 	/**
 	 * @dataProvider getTestAllStepsData
 	 */
-	public function testFormPreprocessingTest_TestAllSteps($data) {
+	public function testFormPreprocessingTest_TestAllSteps($data)
+	{
 		$this->openPreprocessing($data);
 
 		foreach ($data['preprocessing'] as $step) {
@@ -456,7 +470,8 @@ class testFormPreprocessingTest extends CWebTest {
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	public static function getSortingData() {
+	public static function getSortingData()
+	{
 		return [
 			[
 				[
@@ -496,7 +511,8 @@ class testFormPreprocessingTest extends CWebTest {
 	 *
 	 * @dataProvider getSortingData
 	 */
-	public function testFormPreprocessingTest_Sorting($data) {
+	public function testFormPreprocessingTest_Sorting($data)
+	{
 		// Result order of steps.
 		$preprocessing = [
 			['type' => 'Check for not supported value'],
@@ -517,7 +533,7 @@ class testFormPreprocessingTest extends CWebTest {
 		$table = $dialog->query('id:preprocessing-steps')->asTable()->waitUntilPresent()->one();
 
 		foreach ($preprocessing as $i => $step) {
-			$this->assertEquals(($i+1).': '.$step['type'], $table->getRow($i)->getText());
+			$this->assertEquals(($i + 1) . ': ' . $step['type'], $table->getRow($i)->getText());
 		}
 
 		$dialog->close();
@@ -525,7 +541,7 @@ class testFormPreprocessingTest extends CWebTest {
 		COverlayDialogElement::ensureNotPresent();
 
 		// Assert right steps order after item saving.
-		$this->page->open('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.self::HOST_ID);
+		$this->page->open('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' . self::HOST_ID);
 		$this->query('link', self::$name)->one()->click();
 		$form->selectTab('Preprocessing');
 		$this->assertPreprocessingSteps($preprocessing);
@@ -533,12 +549,13 @@ class testFormPreprocessingTest extends CWebTest {
 		COverlayDialogElement::find()->one()->close();
 	}
 
-	private function openPreprocessing($data) {
-		$this->page->login()->open('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D='.self::HOST_ID);
+	private function openPreprocessing($data)
+	{
+		$this->page->login()->open('zabbix.php?action=item.list&context=host&filter_set=1&filter_hostids%5B0%5D=' . self::HOST_ID);
 		$this->query('button:Create item')->one()->click();
 		$form = COverlayDialogElement::find()->one()->waitUntilReady()->asForm();
-		self::$key = CTestArrayHelper::get($data, 'Key', false) ? $data['Key'] : 'test.key'.time();
-		self::$name = 'Test name'.time();
+		self::$key = CTestArrayHelper::get($data, 'Key', false) ? $data['Key'] : 'test.key' . time();
+		self::$name = 'Test name' . time();
 
 		$form->fill(['Name' => self::$name, 'Key' => self::$key]);
 		$form->selectTab('Preprocessing');
@@ -554,7 +571,8 @@ class testFormPreprocessingTest extends CWebTest {
 	 * @param boolean $prev_enabled		state of fields "Previous value" and "Prev.time", disabled or enabled
 	 * @param int $id					index of preprocessing step
 	 */
-	private function checkTestOverlay($data, $selector, $prev_enabled, $id = null) {
+	private function checkTestOverlay($data, $selector, $prev_enabled, $id = null)
+	{
 		$this->query($selector)->waitUntilPresent()->one()->click();
 		$dialog = COverlayDialogElement::find()->all()->last()->waitUntilReady();
 
@@ -583,8 +601,8 @@ class testFormPreprocessingTest extends CWebTest {
 
 				$macros = [
 					'expected' => ($id === null)
-							? CTestArrayHelper::get($data, 'macros')
-							: CTestArrayHelper::get($data, 'macros.'.$id),
+						? CTestArrayHelper::get($data, 'macros')
+						: CTestArrayHelper::get($data, 'macros.' . $id),
 					'actual' => []
 				];
 
@@ -606,7 +624,7 @@ class testFormPreprocessingTest extends CWebTest {
 							return strcmp($a['macro'], $b['macro']);
 						});
 					}
-					unset ($array);
+					unset($array);
 
 					$this->assertEquals($macros['expected'], $macros['actual']);
 				}
@@ -615,15 +633,14 @@ class testFormPreprocessingTest extends CWebTest {
 
 				if ($id === null) {
 					foreach ($data['preprocessing'] as $i => $step) {
-						$this->assertEquals(($i+1).': '.$step['type'], $table->getRow($i)->getText());
+						$this->assertEquals(($i + 1) . ': ' . $step['type'], $table->getRow($i)->getText());
 
-						$element = $table->query('id:preproc-test-step-'.$i.'-name')->one();
+						$element = $table->query('id:preproc-test-step-' . $i . '-name')->one();
 						$this->assertEquals(1, $element->getCSSValue('opacity'));
 						$this->assertTrue($element->isEnabled());
 					}
-				}
-				else {
-					$this->assertEquals('1: '.$data['preprocessing'][$id]['type'], $table->getRow(0)->getText());
+				} else {
+					$this->assertEquals('1: ' . $data['preprocessing'][$id]['type'], $table->getRow(0)->getText());
 				}
 
 				$this->chooseDialogActions($data);
@@ -631,7 +648,8 @@ class testFormPreprocessingTest extends CWebTest {
 		}
 	}
 
-	private function chooseDialogActions($data) {
+	private function chooseDialogActions($data)
+	{
 		$dialog = COverlayDialogElement::find()->all()->last()->waitUntilReady();
 		$form = $this->query('id:preprocessing-test-form')->asForm()->waitUntilPresent()->one();
 		switch ($data['action']) {
@@ -651,10 +669,10 @@ class testFormPreprocessingTest extends CWebTest {
 				$form->query('id:eol')->asSegmentedRadio()->waitUntilPresent()->one()->fill('CRLF');
 				$dialog->query('button:Test')->one()->waitUntilVisible()->click();
 
-				// Check Zabbix server down message.
+				// Check Advantal server down message.
 				$message = $form->getOverlayMessage();
 				$this->assertTrue($message->isBad());
-				$this->assertTrue($message->hasLine('Connection to Zabbix server "localhost:10051" refused. Possible reasons:'));
+				$this->assertTrue($message->hasLine('Connection to Advantal server "localhost:10051" refused. Possible reasons:'));
 				$dialog->close();
 				break;
 

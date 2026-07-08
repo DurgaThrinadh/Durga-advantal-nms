@@ -14,16 +14,18 @@
 **/
 
 
-require_once dirname(__FILE__).'/../include/CAPITest.php';
+require_once dirname(__FILE__) . '/../include/CAPITest.php';
 
 /**
  * @onBefore prepareTestData
  *
  * @backup hstgrp
  */
-class testHostGroup extends CAPITest {
+class testHostGroup extends CAPITest
+{
 
-	public static function hostgroup_create() {
+	public static function hostgroup_create()
+	{
 		return [
 			[
 				'hostgroup' => [
@@ -48,9 +50,9 @@ class testHostGroup extends CAPITest {
 			// Check for duplicated host groups names.
 			[
 				'hostgroup' => [
-					'name' => 'Zabbix servers'
+					'name' => 'Advantal servers'
 				],
-				'expected_error' => 'Host group "Zabbix servers" already exists.'
+				'expected_error' => 'Host group "Advantal servers" already exists.'
 			],
 			[
 				'hostgroup' => [
@@ -58,10 +60,10 @@ class testHostGroup extends CAPITest {
 						'name' => 'One host group with existing name'
 					],
 					[
-						'name' => 'Zabbix servers'
+						'name' => 'Advantal servers'
 					]
 				],
-				'expected_error' => 'Host group "Zabbix servers" already exists.'
+				'expected_error' => 'Host group "Advantal servers" already exists.'
 			],
 			[
 				'hostgroup' => [
@@ -117,28 +119,30 @@ class testHostGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider hostgroup_create
-	*/
-	public function testHostGroup_Create($hostgroup, $expected_error) {
+	 * @dataProvider hostgroup_create
+	 */
+	public function testHostGroup_Create($hostgroup, $expected_error)
+	{
 		$result = $this->call('hostgroup.create', $hostgroup, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result']['groupids'] as $index => $groupid) {
-				$dbRow = CDBHelper::getRow('SELECT name,flags FROM hstgrp WHERE groupid='.$groupid);
+				$dbRow = CDBHelper::getRow('SELECT name,flags FROM hstgrp WHERE groupid=' . $groupid);
 				$this->assertEquals($dbRow['name'], $hostgroup[$index]['name']);
 				$this->assertEquals($dbRow['flags'], 0);
 			}
 		}
 	}
 
-	public static function hostgroup_update() {
+	public static function hostgroup_update()
+	{
 		return [
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => 'non existent parameter',
-					'flags' => '4'
+						'groupid' => '50005',
+						'name' => 'non existent parameter',
+						'flags' => '4'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1": unexpected parameter "flags".'
@@ -147,7 +151,7 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'name' => 'without groupid'
+						'name' => 'without groupid'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1": the parameter "groupid" is missing.'
@@ -155,8 +159,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '',
-					'name' => 'empty groupid'
+						'groupid' => '',
+						'name' => 'empty groupid'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1/groupid": a number is expected.'
@@ -164,8 +168,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '123456',
-					'name' => 'groupid with not existing id'
+						'groupid' => '123456',
+						'name' => 'groupid with not existing id'
 					]
 				],
 				'expected_error' => 'No permissions to referred object or it does not exist!'
@@ -173,8 +177,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => 'abc',
-					'name' => 'id not number'
+						'groupid' => 'abc',
+						'name' => 'id not number'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1/groupid": a number is expected.'
@@ -182,8 +186,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '0.0',
-					'name' => 'æųæų'
+						'groupid' => '0.0',
+						'name' => 'æųæų'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1/groupid": a number is expected.'
@@ -192,8 +196,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => ''
+						'groupid' => '50005',
+						'name' => ''
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1/name": cannot be empty.'
@@ -201,8 +205,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => 'Phasellus imperdiet sapien sed justo elementum, quis maximus ipsum iaculis! Proin egestas, felis non efficitur molestie, nulla risus facilisis nisi, sed consectetur lorem mauris non arcu. Aliquam hendrerit massa vel metus maximus consequat. Sed condimen256'
+						'groupid' => '50005',
+						'name' => 'Phasellus imperdiet sapien sed justo elementum, quis maximus ipsum iaculis! Proin egestas, felis non efficitur molestie, nulla risus facilisis nisi, sed consectetur lorem mauris non arcu. Aliquam hendrerit massa vel metus maximus consequat. Sed condimen256'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1/name": value is too long.'
@@ -210,21 +214,21 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => 'Zabbix servers'
+						'groupid' => '50005',
+						'name' => 'Advantal servers'
 					]
 				],
-				'expected_error' => 'Host group "Zabbix servers" already exists.'
+				'expected_error' => 'Host group "Advantal servers" already exists.'
 			],
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => 'API update two host group with the same names'
+						'groupid' => '50005',
+						'name' => 'API update two host group with the same names'
 					],
 					[
-					'groupid' => '50006',
-					'name' => 'API update two host group with the same names'
+						'groupid' => '50006',
+						'name' => 'API update two host group with the same names'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/2": value (name)=(API update two host group with the same names) already exists.'
@@ -232,12 +236,12 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => 'update host group twice1'
+						'groupid' => '50005',
+						'name' => 'update host group twice1'
 					],
 					[
-					'groupid' => '50005',
-					'name' => 'update host group twice2'
+						'groupid' => '50005',
+						'name' => 'update host group twice2'
 					]
 				],
 				'expected_error' => 'Invalid parameter "/2": value (groupid)=(50005) already exists.'
@@ -245,8 +249,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50015',
-					'name' => 'API updated discovered group'
+						'groupid' => '50015',
+						'name' => 'API updated discovered group'
 					]
 				],
 				'expected_error' => 'Cannot update a discovered host group "API discovery group {#HV.NAME}".'
@@ -255,8 +259,8 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50005',
-					'name' => 'API host group updated'
+						'groupid' => '50005',
+						'name' => 'API host group updated'
 					]
 				],
 				'expected_error' => null
@@ -264,12 +268,12 @@ class testHostGroup extends CAPITest {
 			[
 				'hostgroup' => [
 					[
-					'groupid' => '50006',
-					'name' => 'API internal host group updated'
+						'groupid' => '50006',
+						'name' => 'API internal host group updated'
 					],
 					[
-					'groupid' => '50005',
-					'name' => 'Апи УТФ-8 обновлённый'
+						'groupid' => '50005',
+						'name' => 'Апи УТФ-8 обновлённый'
 					]
 				],
 				'expected_error' => null
@@ -278,30 +282,32 @@ class testHostGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider hostgroup_update
-	*/
-	public function testHostGroup_Update($hostgroups, $expected_error) {
+	 * @dataProvider hostgroup_update
+	 */
+	public function testHostGroup_Update($hostgroups, $expected_error)
+	{
 		$result = $this->call('hostgroup.update', $hostgroups, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result']['groupids'] as $index => $groupid) {
-				$dbRow = CDBHelper::getRow('SELECT name,flags FROM hstgrp WHERE groupid='.$groupid);
+				$dbRow = CDBHelper::getRow('SELECT name,flags FROM hstgrp WHERE groupid=' . $groupid);
 				$this->assertEquals($dbRow['name'], $hostgroups[$index]['name']);
 				$this->assertEquals($dbRow['flags'], 0);
 			}
-		}
-		else {
+		} else {
 			foreach ($hostgroups as $hostgroup) {
-				if (array_key_exists('name', $hostgroup) && $hostgroup['name'] !== 'Zabbix servers'){
-					$this->assertEquals(0,
-						CDBHelper::getCount('SELECT * FROM hstgrp WHERE name='.zbx_dbstr($hostgroup['name']))
+				if (array_key_exists('name', $hostgroup) && $hostgroup['name'] !== 'Advantal servers') {
+					$this->assertEquals(
+						0,
+						CDBHelper::getCount('SELECT * FROM hstgrp WHERE name=' . zbx_dbstr($hostgroup['name']))
 					);
 				}
 			}
 		}
 	}
 
-	public static function hostgroup_delete() {
+	public static function hostgroup_delete()
+	{
 		return [
 			[
 				'hostgroup' => [
@@ -418,19 +424,21 @@ class testHostGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider hostgroup_delete
-	*/
-	public function testHostGroup_Delete($hostgroups, $expected_error) {
+	 * @dataProvider hostgroup_delete
+	 */
+	public function testHostGroup_Delete($hostgroups, $expected_error)
+	{
 		$result = $this->call('hostgroup.delete', $hostgroups, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result']['groupids'] as $id) {
-				$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM hstgrp WHERE groupid='.zbx_dbstr($id)));
+				$this->assertEquals(0, CDBHelper::getCount('SELECT * FROM hstgrp WHERE groupid=' . zbx_dbstr($id)));
 			}
 		}
 	}
 
-	public static function hostgroup_user_permission() {
+	public static function hostgroup_user_permission()
+	{
 		return [
 			[
 				'method' => 'hostgroup.create',
@@ -486,14 +494,16 @@ class testHostGroup extends CAPITest {
 	}
 
 	/**
-	* @dataProvider hostgroup_user_permission
-	*/
-	public function testHostGroup_UserPermissions($method, $user, $hostgroups, $expected_error) {
+	 * @dataProvider hostgroup_user_permission
+	 */
+	public function testHostGroup_UserPermissions($method, $user, $hostgroups, $expected_error)
+	{
 		$this->authorize($user['user'], $user['password']);
 		$this->call($method, $hostgroups, $expected_error);
 	}
 
-	public static function hostgroup_get() {
+	public static function hostgroup_get()
+	{
 		return [
 			[
 				'params' => [
@@ -504,7 +514,7 @@ class testHostGroup extends CAPITest {
 				],
 				'expected_result' => false,
 				'expected_error' =>
-					'Deprecated parameter "/monitored_hosts" cannot be used with "/with_monitored_hosts".'
+				'Deprecated parameter "/monitored_hosts" cannot be used with "/with_monitored_hosts".'
 			],
 			[
 				'params' => [
@@ -540,12 +550,13 @@ class testHostGroup extends CAPITest {
 	/**
 	 * @dataProvider hostgroup_get
 	 */
-	public function testHostGroup_Get($params, $expected_result, $expected_error) {
+	public function testHostGroup_Get($params, $expected_result, $expected_error)
+	{
 		$result = $this->call('hostgroup.get', $params, $expected_error);
 
 		if ($expected_error === null) {
 			foreach ($result['result'] as $hostgroup) {
-				foreach ($expected_result as $field => $expected_value){
+				foreach ($expected_result as $field => $expected_value) {
 					$this->assertArrayHasKey($field, $hostgroup, 'Field should be present.');
 					$this->assertEquals($hostgroup[$field], $expected_value, 'Returned value should match.');
 				}
@@ -553,7 +564,8 @@ class testHostGroup extends CAPITest {
 		}
 	}
 
-	public static function hostgroup_Propagate() {
+	public static function hostgroup_Propagate()
+	{
 		return [
 			// Check groupid
 			[
@@ -669,9 +681,10 @@ class testHostGroup extends CAPITest {
 	/**
 	 * @dataProvider hostgroup_propagate
 	 */
-	public function testHostGroup_propagate($hostgroups, $expected_error) {
+	public function testHostGroup_propagate($hostgroups, $expected_error)
+	{
 		if ($expected_error === null) {
-			foreach($hostgroups['groups'] as &$hostgroup) {
+			foreach ($hostgroups['groups'] as &$hostgroup) {
 				$hostgroup['groupid'] = self::$data['groupids'][$hostgroup['groupid']];
 			}
 			unset($hostgroup);
@@ -681,10 +694,10 @@ class testHostGroup extends CAPITest {
 
 		if ($expected_error === null) {
 			foreach ($result['result']['groupids'] as $groupid) {
-				$db_host_groups_row = CDBHelper::getRow('SELECT groupid,name FROM hstgrp WHERE groupid='.$groupid);
-				$group_name = $db_host_groups_row['name'].'/%';
+				$db_host_groups_row = CDBHelper::getRow('SELECT groupid,name FROM hstgrp WHERE groupid=' . $groupid);
+				$group_name = $db_host_groups_row['name'] . '/%';
 				$db_subgroups_row = CDBHelper::getAll(
-					'SELECT groupid FROM hstgrp WHERE name LIKE '.zbx_dbstr($group_name)
+					'SELECT groupid FROM hstgrp WHERE name LIKE ' . zbx_dbstr($group_name)
 				);
 				$groupids = [];
 				$groupids[] = $db_host_groups_row['groupid'];
@@ -692,7 +705,7 @@ class testHostGroup extends CAPITest {
 			}
 
 			if (array_key_exists('permissions', $hostgroups)) {
-				$db_rights_row = CDBHelper::getAll('SELECT id FROM rights WHERE groupid='.self::$data['usrgrpid']);
+				$db_rights_row = CDBHelper::getAll('SELECT id FROM rights WHERE groupid=' . self::$data['usrgrpid']);
 				$rights_groupids = array_flip(array_column($db_rights_row, 'id'));
 				foreach ($groupids as $groupid) {
 					$this->assertArrayHasKey($groupid, $rights_groupids);
@@ -701,7 +714,7 @@ class testHostGroup extends CAPITest {
 
 			if (array_key_exists('tag_filters', $hostgroups)) {
 				$db_tag_filters_row = CDBHelper::getAll(
-					'SELECT * FROM tag_filter WHERE usrgrpid='.self::$data['usrgrpid']
+					'SELECT * FROM tag_filter WHERE usrgrpid=' . self::$data['usrgrpid']
 				);
 				$tag_filters_groupids = array_flip(array_column($db_tag_filters_row, 'groupid'));
 				foreach ($groupids as $groupid) {
@@ -722,7 +735,8 @@ class testHostGroup extends CAPITest {
 	/**
 	 * Prepare data for tests. Set permissions to host groups.
 	 */
-	public function prepareTestData() {
+	public function prepareTestData()
+	{
 		$response = CDataHelper::call('hostgroup.create', [
 			['name' => 'Propagate group 1'],
 			['name' => 'Propagate group 1/Group 1'],

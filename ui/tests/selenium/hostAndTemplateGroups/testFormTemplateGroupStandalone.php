@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormGroups.php';
+require_once __DIR__ . '/../common/testFormGroups.php';
 
 /**
  * @backup hosts
@@ -23,18 +23,21 @@ require_once __DIR__.'/../common/testFormGroups.php';
  *
  * @dataSource HostTemplateGroups
  */
-class testFormTemplateGroupStandalone extends testFormGroups {
+class testFormTemplateGroupStandalone extends testFormGroups
+{
 
 	protected $standalone = true;
 	protected $link = 'zabbix.php?action=templategroup.edit&groupid=';
 	protected $object = 'template';
 	protected static $update_group = 'Group for Update test';
 
-	public function testFormTemplateGroupStandalone_Layout() {
+	public function testFormTemplateGroupStandalone_Layout()
+	{
 		$this->layout('Templates');
 	}
 
-	public static function getTemplateValidationData() {
+	public static function getTemplateValidationData()
+	{
 		return [
 			[
 				[
@@ -48,13 +51,14 @@ class testFormTemplateGroupStandalone extends testFormGroups {
 		];
 	}
 
-	public static function getTemplateCreateData() {
+	public static function getTemplateCreateData()
+	{
 		return [
 			[
 				[
 					'expected' => TEST_GOOD,
 					'fields' => [
-						'Group name' => 'Zabbix servers'
+						'Group name' => 'Advantal servers'
 					]
 				]
 			],
@@ -69,7 +73,8 @@ class testFormTemplateGroupStandalone extends testFormGroups {
 		];
 	}
 
-	public static function getTemplateUpdateData() {
+	public static function getTemplateUpdateData()
+	{
 		return [
 			[
 				[
@@ -95,7 +100,8 @@ class testFormTemplateGroupStandalone extends testFormGroups {
 	 * @dataProvider getTemplateValidationData
 	 * @dataProvider getTemplateCreateData
 	 */
-	public function testFormTemplateGroupStandalone_Create($data) {
+	public function testFormTemplateGroupStandalone_Create($data)
+	{
 		$this->checkForm($data, 'create');
 	}
 
@@ -104,32 +110,37 @@ class testFormTemplateGroupStandalone extends testFormGroups {
 	 * @dataProvider getTemplateValidationData
 	 * @dataProvider getTemplateUpdateData
 	 */
-	public function testFormTemplateGroupStandalone_Update($data) {
+	public function testFormTemplateGroupStandalone_Update($data)
+	{
 		$this->checkForm($data, 'update');
 	}
 
 	/**
 	 * Test group simple update without changing data.
 	 */
-	public function testFormTemplateGroupStandalone_SimpleUpdate() {
+	public function testFormTemplateGroupStandalone_SimpleUpdate()
+	{
 		$this->simpleUpdate('Templates/Databases');
 	}
 
 	/**
 	 * @dataProvider getCloneData
 	 */
-	public function testFormTemplateGroupStandalone_Clone($data) {
+	public function testFormTemplateGroupStandalone_Clone($data)
+	{
 		$this->clone($data);
 	}
 
 	/**
 	 * @dataProvider getCancelData
 	 */
-	public function testFormTemplateGroupStandalone_Cancel($data) {
+	public function testFormTemplateGroupStandalone_Cancel($data)
+	{
 		$this->cancel($data);
 	}
 
-	public static function getTemplateDeleteData() {
+	public static function getTemplateDeleteData()
+	{
 		return [
 			[
 				[
@@ -145,7 +156,8 @@ class testFormTemplateGroupStandalone extends testFormGroups {
 	 * @dataProvider getDeleteData
 	 * @dataProvider getTemplateDeleteData
 	 */
-	public function testFormTemplateGroupStandalone_Delete($data) {
+	public function testFormTemplateGroupStandalone_Delete($data)
+	{
 		$this->delete($data);
 	}
 
@@ -153,7 +165,8 @@ class testFormTemplateGroupStandalone extends testFormGroups {
 	 * @onBeforeOnce prepareSubgroupData
 	 * @dataProvider getSubgroupsData
 	 */
-	public function testFormTemplateGroupStandalone_ApplyPermissionsToSubgroups($data) {
+	public function testFormTemplateGroupStandalone_ApplyPermissionsToSubgroups($data)
+	{
 		$this->checkSubgroupsPermissions($data);
 	}
 }

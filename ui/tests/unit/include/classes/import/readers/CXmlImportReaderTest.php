@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,14 +18,16 @@
 
 use PHPUnit\Framework\TestCase;
 
-class CXmlImportReaderTest extends TestCase {
+class CXmlImportReaderTest extends TestCase
+{
 
-	public function dataProvider() {
+	public function dataProvider()
+	{
 		return [
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'</zabbix_export>',
 				[
 					'zabbix_export' => [
 						'version' => '1.0',
@@ -33,13 +37,13 @@ class CXmlImportReaderTest extends TestCase {
 				]
 			],
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'<hosts>'."\n".
-				'    <host host="Zabbix server"/>'."\n".
-				'    <host host="Zabbix server2"/>'."\n".
-				'</hosts>'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'<hosts>' . "\n" .
+					'    <host host="Advantal server"/>' . "\n" .
+					'    <host host="Advantal server2"/>' . "\n" .
+					'</hosts>' . "\n" .
+					'</zabbix_export>',
 				[
 					'zabbix_export' => [
 						'version' => '1.0',
@@ -47,28 +51,28 @@ class CXmlImportReaderTest extends TestCase {
 						'time' => '14.23',
 						'hosts' => [
 							'host' => [
-								'host' => 'Zabbix server'
+								'host' => 'Advantal server'
 							],
 							'host1' => [
-								'host' => 'Zabbix server2'
+								'host' => 'Advantal server2'
 							]
 						]
 					]
 				]
 			],
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'<hosts>'."\n".
-				'    <host host="Zabbix server">'."\n".
-				'        <status>0</status>'."\n".
-				'    </host>'."\n".
-				'    <host host="Linux server">'."\n".
-				'        <status>0</status>'."\n".
-				'    </host>'."\n".
-				'</hosts>'."\n".
-				'<images/>'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'<hosts>' . "\n" .
+					'    <host host="Advantal server">' . "\n" .
+					'        <status>0</status>' . "\n" .
+					'    </host>' . "\n" .
+					'    <host host="Linux server">' . "\n" .
+					'        <status>0</status>' . "\n" .
+					'    </host>' . "\n" .
+					'</hosts>' . "\n" .
+					'<images/>' . "\n" .
+					'</zabbix_export>',
 				[
 					'zabbix_export' => [
 						'version' => '1.0',
@@ -76,7 +80,7 @@ class CXmlImportReaderTest extends TestCase {
 						'time' => '14.23',
 						'hosts' => [
 							'host' => [
-								'host' => 'Zabbix server',
+								'host' => 'Advantal server',
 								'status' => '0'
 							],
 							'host1' => [
@@ -89,16 +93,16 @@ class CXmlImportReaderTest extends TestCase {
 				]
 			],
 			[
-				'<root>'."\n".
-				'    <tag>tag</tag>'."\n".
-				'    <spaces><![CDATA[  ]]></spaces>'."\n".
-				'    <lr_spaces> string </lr_spaces>'."\n".
-				'    <empty_tag></empty_tag>'."\n".
-				'    <empty />'."\n".
-				'    <array>'."\n".
-				'        <tag>tag</tag>'."\n".
-				'    </array>'."\n".
-				'</root>',
+				'<root>' . "\n" .
+					'    <tag>tag</tag>' . "\n" .
+					'    <spaces><![CDATA[  ]]></spaces>' . "\n" .
+					'    <lr_spaces> string </lr_spaces>' . "\n" .
+					'    <empty_tag></empty_tag>' . "\n" .
+					'    <empty />' . "\n" .
+					'    <array>' . "\n" .
+					'        <tag>tag</tag>' . "\n" .
+					'    </array>' . "\n" .
+					'</root>',
 				[
 					'root' => [
 						'tag' => 'tag',
@@ -113,48 +117,48 @@ class CXmlImportReaderTest extends TestCase {
 				]
 			],
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'<hosts></hosts>'."\n".
-				'text'."\n".
-				'<images></images>'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'<hosts></hosts>' . "\n" .
+					'text' . "\n" .
+					'<images></images>' . "\n" .
+					'</zabbix_export>',
 				'Invalid tag "/zabbix_export": unexpected text "text".'
 			],
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'<hosts>'."\n".
-				'    <host host="Zabbix server">'."\n".
-				'        abc'."\n".
-				'    </host>'."\n".
-				'</hosts>'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'<hosts>' . "\n" .
+					'    <host host="Advantal server">' . "\n" .
+					'        abc' . "\n" .
+					'    </host>' . "\n" .
+					'</hosts>' . "\n" .
+					'</zabbix_export>',
 				'Invalid tag "/zabbix_export/hosts/host": unexpected text "abc".'
 			],
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'<hosts>'."\n".
-				'    <host>'."\n".
-				'        abc'."\n".
-				'        <status>0</status>'."\n".
-				'    </host>'."\n".
-				'</hosts>'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'<hosts>' . "\n" .
+					'    <host>' . "\n" .
+					'        abc' . "\n" .
+					'        <status>0</status>' . "\n" .
+					'    </host>' . "\n" .
+					'</hosts>' . "\n" .
+					'</zabbix_export>',
 				'Invalid tag "/zabbix_export/hosts/host": unexpected text "abc".'
 			],
 			[
-				'<'.'?xml version="1.0"?'.'>'."\n".
-				'<zabbix_export version="1.0" date="09.01.10" time="14.23">'."\n".
-				'<hosts>'."\n".
-				'    <host>'."\n".
-				'        <status>0</status>p'."\n".
-				'        <item type="3" key="icmpping" value_type="3">'."\n".
-				'        </item>'."\n".
-				'    </host>'."\n".
-				'</hosts>'."\n".
-				'</zabbix_export>',
+				'<' . '?xml version="1.0"?' . '>' . "\n" .
+					'<zabbix_export version="1.0" date="09.01.10" time="14.23">' . "\n" .
+					'<hosts>' . "\n" .
+					'    <host>' . "\n" .
+					'        <status>0</status>p' . "\n" .
+					'        <item type="3" key="icmpping" value_type="3">' . "\n" .
+					'        </item>' . "\n" .
+					'    </host>' . "\n" .
+					'</hosts>' . "\n" .
+					'</zabbix_export>',
 				'Invalid tag "/zabbix_export/hosts/host": unexpected text "p".'
 			],
 			[
@@ -178,7 +182,8 @@ class CXmlImportReaderTest extends TestCase {
 	 * @param string $xml
 	 * @param mixed  $expected
 	 */
-	public function testReadXML($xml, $expected) {
+	public function testReadXML($xml, $expected)
+	{
 		$reader = new CXmlImportReader();
 
 		try {
@@ -189,5 +194,4 @@ class CXmlImportReaderTest extends TestCase {
 			$this->assertEquals($expected, $e->getMessage());
 		}
 	}
-
 }

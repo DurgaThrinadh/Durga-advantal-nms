@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -14,9 +16,11 @@
 **/
 
 
-class C10ImportConverterTest extends CImportConverterTest {
+class C10ImportConverterTest extends CImportConverterTest
+{
 
-	public function testTemplateSeparation() {
+	public function testTemplateSeparation()
+	{
 		$this->assertConvert(
 			$this->createExpectedResult([]),
 			$this->createSource()
@@ -86,7 +90,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertGroups() {
+	public function testConvertGroups()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -99,7 +104,7 @@ class C10ImportConverterTest extends CImportConverterTest {
 					'status' => HOST_STATUS_MONITORED,
 					'proxy_hostid' => 0,
 					'groups' => [
-						'Zabbix server',
+						'Advantal server',
 						'Linux server'
 					]
 				],
@@ -108,7 +113,7 @@ class C10ImportConverterTest extends CImportConverterTest {
 					'status' => HOST_STATUS_MONITORED,
 					'proxy_hostid' => 0,
 					'groups' => [
-						'Zabbix server',
+						'Advantal server',
 						'My group'
 					]
 				],
@@ -126,7 +131,7 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$result = $this->createExpectedResult([
 			'groups' => [
 				[
-					'name' => 'Zabbix server'
+					'name' => 'Advantal server'
 				],
 				[
 					'name' => 'Linux server'
@@ -157,7 +162,7 @@ class C10ImportConverterTest extends CImportConverterTest {
 					],
 					'groups' => [
 						[
-							'name' => 'Zabbix server'
+							'name' => 'Advantal server'
 						],
 						[
 							'name' => 'Linux server'
@@ -174,7 +179,7 @@ class C10ImportConverterTest extends CImportConverterTest {
 					],
 					'groups' => [
 						[
-							'name' => 'Zabbix server'
+							'name' => 'Advantal server'
 						],
 						[
 							'name' => 'My group'
@@ -199,7 +204,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($result, $source);
 	}
 
-	public function testConvertHosts() {
+	public function testConvertHosts()
+	{
 		$this->assertConvert(
 			$this->createExpectedResult([]),
 			$this->createSource()
@@ -250,7 +256,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($result, $source);
 	}
 
-	public function testConvertHostInterfaces() {
+	public function testConvertHostInterfaces()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -645,7 +652,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertHostProfiles() {
+	public function testConvertHostProfiles()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -776,7 +784,7 @@ class C10ImportConverterTest extends CImportConverterTest {
 						'software_full' => 'software',
 						'contact' => 'contact',
 						'location' => 'location',
-						'notes' => 'notes'."\r\n\r\n".'device notes',
+						'notes' => 'notes' . "\r\n\r\n" . 'device notes',
 						'alias' => 'device alias',
 						'type_full' => 'device type',
 						'chassis' => 'device chassis',
@@ -844,7 +852,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertItems() {
+	public function testConvertItems()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -1032,7 +1041,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertTriggers() {
+	public function testConvertTriggers()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -1160,7 +1170,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertTriggerDependencies() {
+	public function testConvertTriggerDependencies()
+	{
 		$this->assertConvert(
 			$this->createExpectedResult([]),
 			$this->createSource([])
@@ -1449,7 +1460,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertHostTemplates() {
+	public function testConvertHostTemplates()
+	{
 		$this->assertConvert(
 			$this->createExpectedResult([]),
 			$this->createSource()
@@ -1550,7 +1562,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertGraphs() {
+	public function testConvertGraphs()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -1825,7 +1838,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertMacros() {
+	public function testConvertMacros()
+	{
 		$source = $this->createSource([
 			'hosts' => [
 				[
@@ -1917,7 +1931,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		$this->assertConvert($expectedResult, $source);
 	}
 
-	public function testConvertSysmaps() {
+	public function testConvertSysmaps()
+	{
 		$this->assertConvert(
 			$this->createExpectedResult([]),
 			$this->createSource()
@@ -2033,10 +2048,10 @@ class C10ImportConverterTest extends CImportConverterTest {
 		]);
 
 		$this->assertConvert($expectedResult, $source);
-
 	}
 
-	protected function createSource(array $data = []) {
+	protected function createSource(array $data = [])
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '1.0',
@@ -2046,7 +2061,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function createExpectedResult(array $data = []) {
+	protected function createExpectedResult(array $data = [])
+	{
 		return [
 			'zabbix_export' => array_merge([
 				'version' => '2.0',
@@ -2055,8 +2071,8 @@ class C10ImportConverterTest extends CImportConverterTest {
 		];
 	}
 
-	protected function createConverter() {
+	protected function createConverter()
+	{
 		return new C10ImportConverter();
 	}
-
 }

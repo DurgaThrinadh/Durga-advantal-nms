@@ -14,8 +14,8 @@
 **/
 
 
-require_once __DIR__.'/../include/CAPITest.php';
-require_once __DIR__.'/../include/helpers/CTestDataHelper.php';
+require_once __DIR__ . '/../include/CAPITest.php';
+require_once __DIR__ . '/../include/helpers/CTestDataHelper.php';
 
 /**
  * @onBefore prepareHostsData
@@ -24,7 +24,8 @@ require_once __DIR__.'/../include/helpers/CTestDataHelper.php';
  *
  * @backup hosts
  */
-class testHost extends CAPITest {
+class testHost extends CAPITest
+{
 
 	private static $data = [
 		'hostgroupid' => null,
@@ -96,7 +97,8 @@ class testHost extends CAPITest {
 		'created' => []
 	];
 
-	public function prepareHostsData() {
+	public function prepareHostsData()
+	{
 		// Create host group.
 		$hostgroups = CDataHelper::call('hostgroup.create', [
 			[
@@ -503,7 +505,7 @@ class testHost extends CAPITest {
 				// Template that has item.
 				'templates' => [
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_tpl_with_item']
+						'templateid' => self::$data['templateids']['api_test_hosts_tpl_with_item']
 					]
 				]
 			],
@@ -519,22 +521,22 @@ class testHost extends CAPITest {
 				// Does not matter if templates are manually added or automatically. Important is the order.
 				'templates' => [
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_f_tpl']
+						'templateid' => self::$data['templateids']['api_test_hosts_f_tpl']
 					],
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_c_tpl']
+						'templateid' => self::$data['templateids']['api_test_hosts_c_tpl']
 					],
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_a_tpl']
+						'templateid' => self::$data['templateids']['api_test_hosts_a_tpl']
 					],
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_e_tpl']
+						'templateid' => self::$data['templateids']['api_test_hosts_e_tpl']
 					],
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_b_tpl']
+						'templateid' => self::$data['templateids']['api_test_hosts_b_tpl']
 					],
 					[
-						'templateid' => self::$data['templateids'][ 'api_test_hosts_d_tpl']
+						'templateid' => self::$data['templateids']['api_test_hosts_d_tpl']
 					]
 				]
 			],
@@ -698,10 +700,10 @@ class testHost extends CAPITest {
 		// Add hostmacroid references using the macro name as key: {$MACRO_NAME} => macro_name.
 		foreach ($upd_hostmacro as $hostmacro) {
 			$db_hostmacro = CDBHelper::getRow(
-				'SELECT hm.hostmacroid'.
-				' FROM hostmacro hm'.
-				' WHERE hm.hostid='.zbx_dbstr($hostmacro['where']['hostid']).
-					' AND hm.macro='.zbx_dbstr($hostmacro['where']['macro'])
+				'SELECT hm.hostmacroid' .
+					' FROM hostmacro hm' .
+					' WHERE hm.hostid=' . zbx_dbstr($hostmacro['where']['hostid']) .
+					' AND hm.macro=' . zbx_dbstr($hostmacro['where']['macro'])
 			);
 			$key = str_replace('{$', '', $hostmacro['where']['macro']);
 			$key = str_replace('}', '', $key);
@@ -716,11 +718,11 @@ class testHost extends CAPITest {
 		 * a syntax like that.
 		 */
 		$nextid = CDBHelper::getAll(
-			'SELECT i.nextid'.
-			' FROM ids i'.
-			' WHERE i.table_name='.zbx_dbstr('hosts_templates').
-				' AND i.field_name='.zbx_dbstr('hosttemplateid').
-			' FOR UPDATE'
+			'SELECT i.nextid' .
+				' FROM ids i' .
+				' WHERE i.table_name=' . zbx_dbstr('hosts_templates') .
+				' AND i.field_name=' . zbx_dbstr('hosttemplateid') .
+				' FOR UPDATE'
 		)[0]['nextid'] + 1;
 		$hosts_templates_data = [
 			// Host contains only manual templates.
@@ -753,11 +755,11 @@ class testHost extends CAPITest {
 
 		// Add few manual macros to test host.update method.
 		$nextid = CDBHelper::getAll(
-			'SELECT i.nextid'.
-			' FROM ids i'.
-			' WHERE i.table_name='.zbx_dbstr('hostmacro').
-				' AND i.field_name='.zbx_dbstr('hostmacroid').
-			' FOR UPDATE'
+			'SELECT i.nextid' .
+				' FROM ids i' .
+				' WHERE i.table_name=' . zbx_dbstr('hostmacro') .
+				' AND i.field_name=' . zbx_dbstr('hostmacroid') .
+				' FOR UPDATE'
 		)[0]['nextid'] + 1;
 		$hostmacro_data = [
 			[
@@ -831,7 +833,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostDeleteDataValid() {
+	public static function getHostDeleteDataValid()
+	{
 		return	[
 			'Test host.delete host that has a group in same maintenance' => [
 				'hostids' => [
@@ -853,7 +856,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostDeleteDataInvalid() {
+	public static function getHostDeleteDataInvalid()
+	{
 		return	[
 			'Test host.delete single host in maintenance' => [
 				'hostids' => [
@@ -885,7 +889,8 @@ class testHost extends CAPITest {
 	 * @dataProvider getHostDeleteDataValid
 	 * @dataProvider getHostDeleteDataInvalid
 	 */
-	public function testHost_Delete($hostids, $expected_error) {
+	public function testHost_Delete($hostids, $expected_error)
+	{
 		// Replace ID placeholders with real IDs.
 		foreach ($hostids as &$hostid) {
 			$hostid = self::$data['hostids'][$hostid];
@@ -900,7 +905,7 @@ class testHost extends CAPITest {
 		if ($expected_error === null) {
 			$this->assertNotSame($old_hash_hosts, CDBHelper::getHash($sql_hosts));
 			$this->assertEquals(0, CDBHelper::getCount(
-				'SELECT h.hostid FROM hosts h WHERE '.dbConditionId('h.hostid', $hostids)
+				'SELECT h.hostid FROM hosts h WHERE ' . dbConditionId('h.hostid', $hostids)
 			));
 
 			// host.delete checks if given "hostid" exists, so they need to be removed from self::$data['hostids']
@@ -910,8 +915,7 @@ class testHost extends CAPITest {
 					unset(self::$data['hostids'][$key]);
 				}
 			}
-		}
-		else {
+		} else {
 			$this->assertSame($old_hash_hosts, CDBHelper::getHash($sql_hosts));
 		}
 	}
@@ -921,7 +925,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostCreateDataCommonInvalid() {
+	public static function getHostCreateDataCommonInvalid()
+	{
 		return [
 			'Test host.create common error - empty request' => [
 				'request' => [],
@@ -990,14 +995,14 @@ class testHost extends CAPITest {
 			],
 			'Test host.create common error - host already exists' => [
 				'request' => [
-					'host' => 'Zabbix server',
+					'host' => 'Advantal server',
 					'groups' => [
 						[
 							'groupid' => 'ID'
 						]
 					]
 				],
-				'expected_error' => 'Host with the same name "Zabbix server" already exists.'
+				'expected_error' => 'Host with the same name "Advantal server" already exists.'
 			]
 		];
 	}
@@ -1007,7 +1012,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostCreateDataInvalid() {
+	public static function getHostCreateDataInvalid()
+	{
 		return [
 			// Test create interfaces.
 			'Test host.create interfaces (empty)' => [
@@ -1096,7 +1102,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostCreateDataValid() {
+	public static function getHostCreateDataValid()
+	{
 		return [
 			'Test host.create minimal' => [
 				'request' => [
@@ -1131,7 +1138,8 @@ class testHost extends CAPITest {
 	 * @dataProvider getHostCreateDataInvalid
 	 * @dataProvider getHostCreateDataValid
 	 */
-	public function testHost_Create($hosts, $expected_error) {
+	public function testHost_Create($hosts, $expected_error)
+	{
 		// Accept single and multiple hosts.
 		if (!array_key_exists(0, $hosts)) {
 			$hosts = zbx_toArray($hosts);
@@ -1163,8 +1171,7 @@ class testHost extends CAPITest {
 
 			// Add host IDs to create array, so they can be deleted after tests are complete.
 			self::$data['created'] = array_merge(self::$data['created'], $result['result']['hostids']);
-		}
-		else {
+		} else {
 			$this->assertSame($old_hash_hosts, CDBHelper::getHash($sql_hosts));
 		}
 	}
@@ -1174,7 +1181,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostGetTagsDataValid() {
+	public static function getHostGetTagsDataValid()
+	{
 		return [
 			'Test host.get tag as extend' => [
 				'params' => [
@@ -1229,14 +1237,15 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostGetTagsDataValid
 	 */
-	public function testHost_SelectTags($params, $expected_result) {
+	public function testHost_SelectTags($params, $expected_result)
+	{
 		// Replace ID placeholders with real IDs. Host IDs can also be one host ID as string.
 		$params['hostids'] = self::$data['hostids']['tags'];
 
 		$result = $this->call('host.get', $params);
 
 		foreach ($result['result'] as $host) {
-			foreach ($expected_result as $field => $expected_value){
+			foreach ($expected_result as $field => $expected_value) {
 				$this->assertArrayHasKey($field, $host, 'Field should be present.');
 				$this->assertEquals($host[$field], $expected_value, 'Returned value should match.');
 			}
@@ -1248,7 +1257,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostGetFieldPresenceData() {
+	public static function getHostGetFieldPresenceData()
+	{
 		return [
 			'Check if {"output": "extend"} includes "inventory_mode" and excludes write-only properties' => [
 				'request' => [
@@ -1305,7 +1315,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostGetFieldPresenceData
 	 */
-	public function testHost_GetFieldPresenceAndExclusion($request, $expected_result) {
+	public function testHost_GetFieldPresenceAndExclusion($request, $expected_result)
+	{
 		// Replace ID placeholders with real IDs. Host IDs can also be one host ID as string.
 		$request['hostids'] = self::$data['hostids']['write_only'];
 		$expected_result['hostid'] = self::$data['hostids']['write_only'];
@@ -1315,11 +1326,10 @@ class testHost extends CAPITest {
 		foreach ($result['result'] as $host) {
 			foreach ($expected_result as $key => $value) {
 				if ($value !== null) {
-					$this->assertArrayHasKey($key, $host, 'Key '.$key.' should be present in host output.');
+					$this->assertArrayHasKey($key, $host, 'Key ' . $key . ' should be present in host output.');
 					$this->assertEquals($value, $host[$key], 'Value should match.');
-				}
-				else {
-					$this->assertArrayNotHasKey($key, $host, 'Key '.$key.' should NOT be present in host output');
+				} else {
+					$this->assertArrayNotHasKey($key, $host, 'Key ' . $key . ' should NOT be present in host output');
 				}
 			}
 		}
@@ -1330,7 +1340,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostUpdateTemplatesData() {
+	public static function getHostUpdateTemplatesData()
+	{
 		return [
 			'Test host.update - host has no templates' => [
 				'request' => [
@@ -1760,7 +1771,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostUpdateTemplatesData
 	 */
-	public function testHost_UpdateTemplates($request, $expected_result) {
+	public function testHost_UpdateTemplates($request, $expected_result)
+	{
 		// Replace ID placeholders with real IDs.
 		$request['hostid'] = self::$data['hostids'][$request['hostid']];
 
@@ -1797,8 +1809,10 @@ class testHost extends CAPITest {
 			]);
 			$host = reset($hosts['result']);
 
-			$this->assertSame($expected_result['parentTemplates'], $host['parentTemplates'],
-				'host.update with templates failed for host "'.$host['host'].'".'
+			$this->assertSame(
+				$expected_result['parentTemplates'],
+				$host['parentTemplates'],
+				'host.update with templates failed for host "' . $host['host'] . '".'
 			);
 		}
 
@@ -1810,7 +1824,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostMassUpdateTemplatesData() {
+	public static function getHostMassUpdateTemplatesData()
+	{
 		return [
 			'Test host.massupdate - host has no templates' => [
 				'request' => [
@@ -2217,7 +2232,7 @@ class testHost extends CAPITest {
 						[
 							'hostid' => 'discovered_auto_templates'
 						]
-					]	,
+					],
 					'templates' => [
 						[
 							'templateid' => 'api_test_hosts_c_tpl'
@@ -2356,7 +2371,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostMassUpdateTemplatesData
 	 */
-	public function testHost_MassUpdateTemplates($request, $expected_result) {
+	public function testHost_MassUpdateTemplates($request, $expected_result)
+	{
 		// Replace ID placeholders with real IDs.
 		$hostids = [];
 
@@ -2400,8 +2416,10 @@ class testHost extends CAPITest {
 			$hosts = $hosts['result'];
 
 			foreach ($hosts as $host) {
-				$this->assertSame($expected_result['parentTemplates'], $host['parentTemplates'],
-					'host.massupdate with templates failed for host "'.$host['host'].'".'
+				$this->assertSame(
+					$expected_result['parentTemplates'],
+					$host['parentTemplates'],
+					'host.massupdate with templates failed for host "' . $host['host'] . '".'
 				);
 			}
 		}
@@ -2414,7 +2432,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostMassAddTemplatesData() {
+	public static function getHostMassAddTemplatesData()
+	{
 		return [
 			'Test host.massadd - host has no templates' => [
 				'request' => [
@@ -2627,7 +2646,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostMassAddTemplatesData
 	 */
-	public function testHost_MassAddTemplates($request, $expected_result) {
+	public function testHost_MassAddTemplates($request, $expected_result)
+	{
 		// Replace ID placeholders with real IDs.
 		$hostids = [];
 
@@ -2662,8 +2682,10 @@ class testHost extends CAPITest {
 		$hosts = $hosts['result'];
 
 		foreach ($hosts as $host) {
-			$this->assertSame($expected_result['parentTemplates'], $host['parentTemplates'],
-				'host.massadd with templates failed for host "'.$host['host'].'".'
+			$this->assertSame(
+				$expected_result['parentTemplates'],
+				$host['parentTemplates'],
+				'host.massadd with templates failed for host "' . $host['host'] . '".'
 			);
 		}
 
@@ -2675,7 +2697,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostMassRemoveTemplatesData() {
+	public static function getHostMassRemoveTemplatesData()
+	{
 		return [
 			'Test host.massremove - host has no templates' => [
 				'request' => [
@@ -2772,7 +2795,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostMassRemoveTemplatesData
 	 */
-	public function testHost_MassRemoveTemplates($request, $expected_result) {
+	public function testHost_MassRemoveTemplates($request, $expected_result)
+	{
 		// Replace ID placeholders with real IDs.
 		foreach ($request['hostids'] as &$hostid) {
 			$hostid = self::$data['hostids'][$hostid];
@@ -2804,8 +2828,10 @@ class testHost extends CAPITest {
 		$hosts = $hosts['result'];
 
 		foreach ($hosts as $host) {
-			$this->assertSame($expected_result['parentTemplates'], $host['parentTemplates'],
-				'host.massremove with templates failed for host "'.$host['host'].'".'
+			$this->assertSame(
+				$expected_result['parentTemplates'],
+				$host['parentTemplates'],
+				'host.massremove with templates failed for host "' . $host['host'] . '".'
 			);
 		}
 
@@ -2817,7 +2843,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostInheritanceData() {
+	public static function getHostInheritanceData()
+	{
 		return [
 			'Test host.update inheritance - host has no templates' => [
 				'request' => [
@@ -2878,7 +2905,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostInheritanceData
 	 */
-	public function testHost_Inheritance($host, $expected_results) {
+	public function testHost_Inheritance($host, $expected_results)
+	{
 		// Replace ID placeholder with real ID.
 		$host['hostid'] = self::$data['hostids'][$host['hostid']];
 
@@ -2892,22 +2920,28 @@ class testHost extends CAPITest {
 		// Add/replace templates on host and check if items are inherited on host.
 		$this->call('host.update', $host);
 		$item_keys = $this->getItemKeysOnHost($host['hostid']);
-		$this->assertSame($expected_results['update']['item_keys'], $item_keys,
-			'Updating templates failed: mismatching results on host with ID "'.$host['hostid'].'".'
+		$this->assertSame(
+			$expected_results['update']['item_keys'],
+			$item_keys,
+			'Updating templates failed: mismatching results on host with ID "' . $host['hostid'] . '".'
 		);
 
 		// Then unlink the template from host and check if item still exists on host.
 		$this->restoreTemplates($hosts_old);
 		$item_keys = $this->getItemKeysOnHost($host['hostid']);
-		$this->assertSame($expected_results['unlink']['item_keys'], $item_keys,
-			'Unlinking templates failed: mismatching results on host with ID "'.$host['hostid'].'".'
+		$this->assertSame(
+			$expected_results['unlink']['item_keys'],
+			$item_keys,
+			'Unlinking templates failed: mismatching results on host with ID "' . $host['hostid'] . '".'
 		);
 
 		// Add/replace templates on host again to make the link and check if items are still on host.
 		$this->call('host.update', $host);
 		$item_keys = $this->getItemKeysOnHost($host['hostid']);
-		$this->assertSame($expected_results['update']['item_keys'], $item_keys,
-			'Re-updating templates failed: mismatching results on host with ID "'.$host['hostid'].'".'
+		$this->assertSame(
+			$expected_results['update']['item_keys'],
+			$item_keys,
+			'Re-updating templates failed: mismatching results on host with ID "' . $host['hostid'] . '".'
 		);
 
 		// Then clear the template from host and check if items no longer exist on host.
@@ -2918,8 +2952,10 @@ class testHost extends CAPITest {
 		]);
 		$this->restoreTemplates($hosts['result'], true);
 		$item_keys = $this->getItemKeysOnHost($host['hostid']);
-		$this->assertSame($expected_results['clear']['item_keys'], $item_keys,
-			'Clearing templates failed: mismatching results on host with ID "'.$host['hostid'].'".'
+		$this->assertSame(
+			$expected_results['clear']['item_keys'],
+			$item_keys,
+			'Clearing templates failed: mismatching results on host with ID "' . $host['hostid'] . '".'
 		);
 	}
 
@@ -2928,7 +2964,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostGetTemplatesData() {
+	public static function getHostGetTemplatesData()
+	{
 		return [
 			'Test host.get - host has no templates' => [
 				'request' => [
@@ -2937,7 +2974,9 @@ class testHost extends CAPITest {
 						'discovered_no_templates'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					]
 				],
 				'expected_results' => [
@@ -2954,7 +2993,9 @@ class testHost extends CAPITest {
 						'discovered_manual_templates'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					]
 				],
 				'expected_results' => [
@@ -2982,7 +3023,9 @@ class testHost extends CAPITest {
 						'discovered_auto_templates'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					]
 				],
 				'expected_results' => [
@@ -3010,7 +3053,9 @@ class testHost extends CAPITest {
 						'discovered_auto_and_manual_templates'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					]
 				],
 				'expected_results' => [
@@ -3048,7 +3093,9 @@ class testHost extends CAPITest {
 						'discovered_limit_selects'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					],
 					'limitSelects' => null
 				],
@@ -3097,7 +3144,9 @@ class testHost extends CAPITest {
 						'discovered_limit_selects'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					],
 					'limitSelects' => '0'
 				],
@@ -3146,7 +3195,9 @@ class testHost extends CAPITest {
 						'discovered_limit_selects'
 					],
 					'selectParentTemplates' => [
-						'templateid', 'host', 'link_type'
+						'templateid',
+						'host',
+						'link_type'
 					],
 					'limitSelects' => '3'
 				],
@@ -3181,7 +3232,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostGetTemplatesData
 	 */
-	public function testHost_GetTemplates($request, $expected_results) {
+	public function testHost_GetTemplates($request, $expected_results)
+	{
 		// Replace ID placeholder with real ID.
 		foreach ($request['hostids'] as &$hostid) {
 			$hostid = self::$data['hostids'][$hostid];
@@ -3208,7 +3260,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostGetMacrosData() {
+	public static function getHostGetMacrosData()
+	{
 		return [
 			'Test host.get - host has no macros' => [
 				'request' => [
@@ -3217,7 +3270,11 @@ class testHost extends CAPITest {
 						'discovered_no_macros'
 					],
 					'selectMacros' => [
-						'macro', 'value', 'description', 'type', 'automatic'
+						'macro',
+						'value',
+						'description',
+						'type',
+						'automatic'
 					]
 				],
 				'expected_results' => [
@@ -3234,7 +3291,11 @@ class testHost extends CAPITest {
 						'discovered_manual_macros'
 					],
 					'selectMacros' => [
-						'macro', 'value', 'description', 'type', 'automatic'
+						'macro',
+						'value',
+						'description',
+						'type',
+						'automatic'
 					]
 				],
 				'expected_results' => [
@@ -3272,7 +3333,11 @@ class testHost extends CAPITest {
 						'discovered_auto_macros'
 					],
 					'selectMacros' => [
-						'macro', 'value', 'description', 'type', 'automatic'
+						'macro',
+						'value',
+						'description',
+						'type',
+						'automatic'
 					]
 				],
 				'expected_results' => [
@@ -3310,7 +3375,11 @@ class testHost extends CAPITest {
 						'discovered_auto_and_manual_macros'
 					],
 					'selectMacros' => [
-						'macro', 'value', 'description', 'type', 'automatic'
+						'macro',
+						'value',
+						'description',
+						'type',
+						'automatic'
 					]
 				],
 				'expected_results' => [
@@ -3369,7 +3438,8 @@ class testHost extends CAPITest {
 	 *
 	 * @dataProvider getHostGetMacrosData
 	 */
-	public function testHost_GetMacros($request, $expected_results) {
+	public function testHost_GetMacros($request, $expected_results)
+	{
 		// Replace ID placeholder with real ID.
 		foreach ($request['hostids'] as &$hostid) {
 			$hostid = self::$data['hostids'][$hostid];
@@ -3392,7 +3462,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	public static function getHostUpdateMacrosDataValid() {
+	public static function getHostUpdateMacrosDataValid()
+	{
 		return [
 			// Add manual macros to discovered host.
 			'Test host.update - host has no macros' => [
@@ -3641,7 +3712,8 @@ class testHost extends CAPITest {
 							'value' => 'manual_macro_text_value_e_new',
 							'description' => 'manual_macro_text_description_e_new',
 							'type' => (string) ZBX_MACRO_TYPE_TEXT
-						],[
+						],
+						[
 							// Add new macro and try to add the property. No conversion possible. Already manual macro.
 							'macro' => '{$MANUAL_MACRO_TEXT_F_NEW}',
 							'value' => 'manual_macro_text_value_f_new',
@@ -3726,7 +3798,8 @@ class testHost extends CAPITest {
 		];
 	}
 
-	public static function getHostUpdateMacrosDataInvalid() {
+	public static function getHostUpdateMacrosDataInvalid()
+	{
 		return [
 			'Test host.update - automatic new macro' => [
 				'request' => [
@@ -3742,7 +3815,7 @@ class testHost extends CAPITest {
 					]
 				],
 				'expected_result' => [],
-				'expected_error' => 'Invalid parameter "/1/macros/1/automatic": value must be '.ZBX_USERMACRO_MANUAL.'.'
+				'expected_error' => 'Invalid parameter "/1/macros/1/automatic": value must be ' . ZBX_USERMACRO_MANUAL . '.'
 			],
 			'Test host.update - change existing automatic macro (missing param)' => [
 				'request' => [
@@ -3770,7 +3843,7 @@ class testHost extends CAPITest {
 					]
 				],
 				'expected_result' => [],
-				'expected_error' => 'Invalid parameter "/1/macros/1/automatic": value must be '.ZBX_USERMACRO_MANUAL.'.'
+				'expected_error' => 'Invalid parameter "/1/macros/1/automatic": value must be ' . ZBX_USERMACRO_MANUAL . '.'
 			]
 		];
 	}
@@ -3782,7 +3855,8 @@ class testHost extends CAPITest {
 	 * @dataProvider getHostUpdateMacrosDataValid
 	 * @dataProvider getHostUpdateMacrosDataInvalid
 	 */
-	public function testHost_UpdateMacros($request, $expected_result, $expected_error) {
+	public function testHost_UpdateMacros($request, $expected_result, $expected_error)
+	{
 		// Replace ID placeholders with real IDs.
 		$request['hostid'] = self::$data['hostids'][$request['hostid']];
 
@@ -3808,15 +3882,18 @@ class testHost extends CAPITest {
 			unset($macro);
 
 			// Ignore the order in which $db_host macros are returned when comparing.
-			$this->assertEqualsCanonicalizing($expected_result['macros'], $db_host['macros'],
-				'host.update with macros failed for host "'.$db_host['host'].'".'
+			$this->assertEqualsCanonicalizing(
+				$expected_result['macros'],
+				$db_host['macros'],
+				'host.update with macros failed for host "' . $db_host['host'] . '".'
 			);
 
 			$this->restoreMacros($hosts_old);
 		}
 	}
 
-	public static function prepareTestDataHostPskFieldsCreate() {
+	public static function prepareTestDataHostPskFieldsCreate()
+	{
 		CTestDataHelper::createObjects([
 			'host_groups' => [
 				['name' => 'API tests hosts group']
@@ -3839,7 +3916,8 @@ class testHost extends CAPITest {
 		]);
 	}
 
-	public static function dataProviderInvalidHostPskFieldsCreate() {
+	public static function dataProviderInvalidHostPskFieldsCreate()
+	{
 		$groups = [['groupid' => ':host_group:API tests hosts group']];
 
 		return [
@@ -4011,7 +4089,8 @@ class testHost extends CAPITest {
 		];
 	}
 
-	public static function dataProviderValidHostPskFieldsCreate() {
+	public static function dataProviderValidHostPskFieldsCreate()
+	{
 		$groups = [['groupid' => ':host_group:API tests hosts group']];
 
 		return [
@@ -4040,7 +4119,8 @@ class testHost extends CAPITest {
 	 * @dataProvider dataProviderInvalidHostPskFieldsCreate
 	 * @dataProvider dataProviderValidHostPskFieldsCreate
 	 */
-	public function testHostPskFields_Create($hosts, $expected_error = null) {
+	public function testHostPskFields_Create($hosts, $expected_error = null)
+	{
 		CTestDataHelper::convertHostReferences($hosts);
 		$response = $this->call('host.create', $hosts, $expected_error);
 
@@ -4049,7 +4129,8 @@ class testHost extends CAPITest {
 		}
 	}
 
-	public static function prepareTestDataHostPskFieldsUpdate() {
+	public static function prepareTestDataHostPskFieldsUpdate()
+	{
 		CTestDataHelper::createObjects([
 			'hosts' => [
 				[
@@ -4082,7 +4163,8 @@ class testHost extends CAPITest {
 		]);
 	}
 
-	public static function dataProviderInvalidHostPskFieldsUpdate() {
+	public static function dataProviderInvalidHostPskFieldsUpdate()
+	{
 		return [
 			'Field "tls_psk_identity" cannot be empty when "tls_connect" is HOST_ENCRYPTION_PSK' => [
 				'host' => [
@@ -4165,7 +4247,8 @@ class testHost extends CAPITest {
 		];
 	}
 
-	public static function dataProviderValidHostPskFieldsUpdate() {
+	public static function dataProviderValidHostPskFieldsUpdate()
+	{
 		return [
 			'Can update "tls_psk_identity" and "tls_psk"' => [
 				'host' => [
@@ -4195,12 +4278,14 @@ class testHost extends CAPITest {
 	 * @dataProvider dataProviderInvalidHostPskFieldsUpdate
 	 * @dataProvider dataProviderValidHostPskFieldsUpdate
 	 */
-	public function testHostPskFields_Update($hosts, $expected_error = null) {
+	public function testHostPskFields_Update($hosts, $expected_error = null)
+	{
 		CTestDataHelper::convertHostReferences($hosts);
 		$this->call('host.update', $hosts, $expected_error);
 	}
 
-	public static function prepareTestDataHostPskFieldsMassUpdate() {
+	public static function prepareTestDataHostPskFieldsMassUpdate()
+	{
 		CTestDataHelper::createObjects([
 			'host_groups' => [
 				['name' => 'host.massupdate.pskfields']
@@ -4245,7 +4330,8 @@ class testHost extends CAPITest {
 		]);
 	}
 
-	public static function dataProviderInvalidHostPskFieldsMassUpdate() {
+	public static function dataProviderInvalidHostPskFieldsMassUpdate()
+	{
 		return [
 			'Field "tls_accept" is required when "tls_connect" is set' => [
 				[
@@ -4336,7 +4422,8 @@ class testHost extends CAPITest {
 		];
 	}
 
-	public static function dataProviderValidHostPskFieldsMassUpdate() {
+	public static function dataProviderValidHostPskFieldsMassUpdate()
+	{
 		return [
 			'Can update "tls_psk_identity" and "tls_psk"' => [
 				[
@@ -4381,7 +4468,8 @@ class testHost extends CAPITest {
 	 * @dataProvider dataProviderInvalidHostPskFieldsMassUpdate
 	 * @dataProvider dataProviderValidHostPskFieldsMassUpdate
 	 */
-	public function testHostPskFields_MassUpdate($data, $expected_error = null) {
+	public function testHostPskFields_MassUpdate($data, $expected_error = null)
+	{
 		CTestDataHelper::convertHostReferences($data);
 
 		if (array_key_exists('hosts', $data)) {
@@ -4396,7 +4484,8 @@ class testHost extends CAPITest {
 	 *
 	 * @param string $hostid
 	 */
-	private function getItemKeysOnHost(string $hostid) {
+	private function getItemKeysOnHost(string $hostid)
+	{
 		$items_new = $this->call('item.get', [
 			'output' => ['key_'],
 			'hostids' => $hostid
@@ -4418,7 +4507,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private function backupTemplates(array $hostids) {
+	private function backupTemplates(array $hostids)
+	{
 		// Get data before update.
 		$db_hosts = $this->call('host.get', [
 			'output' => ['hostid', 'host'],
@@ -4436,12 +4526,13 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private function getMacros(array $hostids) {
+	private function getMacros(array $hostids)
+	{
 		$db_hosts = CDBHelper::getAll(
-			'SELECT h.host,h.hostid,hm.hostmacroid,hm.macro,hm.value,hm.description,hm.type,hm.automatic'.
-			' FROM hosts h'.
-			' LEFT JOIN hostmacro hm ON hm.hostid=h.hostid'.
-			' WHERE '.dbConditionId('h.hostid', $hostids)
+			'SELECT h.host,h.hostid,hm.hostmacroid,hm.macro,hm.value,hm.description,hm.type,hm.automatic' .
+				' FROM hosts h' .
+				' LEFT JOIN hostmacro hm ON hm.hostid=h.hostid' .
+				' WHERE ' . dbConditionId('h.hostid', $hostids)
 		);
 
 		$result = [];
@@ -4478,7 +4569,8 @@ class testHost extends CAPITest {
 	 *
 	 * @return array
 	 */
-	private function backupMacros(array $hostids) {
+	private function backupMacros(array $hostids)
+	{
 		return $this->getMacros($hostids);
 	}
 
@@ -4491,21 +4583,21 @@ class testHost extends CAPITest {
 	 * @param string $hosts[]['host']             Host technical name in case of error.
 	 * @param string $hosts[]['parentTemplates']  Array of host original templates.
 	 */
-	private function restoreTemplates(array $hosts, $clear = false) {
+	private function restoreTemplates(array $hosts, $clear = false)
+	{
 		foreach ($hosts as $host) {
 			$name = $host['host'];
 
 			if ($clear) {
 				$host['templates_clear'] = $host['parentTemplates'];
-			}
-			else {
+			} else {
 				$host['templates'] = $host['parentTemplates'];
 			}
 			unset($host['host'], $host['parentTemplates']);
 
 			$host_upd = $this->call('host.update', $host);
 
-			$this->assertArrayHasKey('hostids', $host_upd['result'], 'host.update failed for host "'.$name.'"');
+			$this->assertArrayHasKey('hostids', $host_upd['result'], 'host.update failed for host "' . $name . '"');
 		}
 	}
 
@@ -4518,12 +4610,13 @@ class testHost extends CAPITest {
 	 * @param string $hosts[<hostid>]['hostid']  Host ID.
 	 * @param string $hosts[<hostid>]['macros']  Array of host original macros.
 	 */
-	private function restoreMacros(array $hosts) {
+	private function restoreMacros(array $hosts)
+	{
 		// Records after update has been made. Possibly new macros are stored.
 		$records_current = CDBHelper::getAll(
-			'SELECT hm.hostmacroid,hm.hostid,hm.macro,hm.value,hm.description,hm.type,hm.automatic'.
-			' FROM hostmacro hm'.
-			' WHERE '.dbConditionId('hm.hostid', array_keys($hosts))
+			'SELECT hm.hostmacroid,hm.hostid,hm.macro,hm.value,hm.description,hm.type,hm.automatic' .
+				' FROM hostmacro hm' .
+				' WHERE ' . dbConditionId('hm.hostid', array_keys($hosts))
 		);
 		// Otherwise if no records exist, they must have been deleted, so in any case old recods need to be restored.
 
@@ -4556,27 +4649,29 @@ class testHost extends CAPITest {
 
 					// Prepare the new host macro IDs.
 					$nextid = CDBHelper::getAll(
-						'SELECT i.nextid'.
-						' FROM ids i'.
-						' WHERE i.table_name='.zbx_dbstr('hostmacro').
-							' AND i.field_name='.zbx_dbstr('hostmacroid').
-						' FOR UPDATE'
+						'SELECT i.nextid' .
+							' FROM ids i' .
+							' WHERE i.table_name=' . zbx_dbstr('hostmacro') .
+							' AND i.field_name=' . zbx_dbstr('hostmacroid') .
+							' FOR UPDATE'
 					)[0]['nextid'] + 1;
 
 					$ids = DB::insertBatch('hostmacro', $ins_macros);
 					$newids = array_fill($nextid, count($ins_macros), true);
 
-					$this->assertEquals(array_keys($newids), array_values($ids),
-						'host.update with macros failed for host "'.$host['host'].'".'
+					$this->assertEquals(
+						array_keys($newids),
+						array_values($ids),
+						'host.update with macros failed for host "' . $host['host'] . '".'
 					);
 
 					// Again the macro name must match the key.
 					foreach ($ins_macros as $macro) {
 						$db_hostmacro = CDBHelper::getRow(
-							'SELECT hm.hostmacroid'.
-							' FROM hostmacro hm'.
-							' WHERE hm.hostid='.zbx_dbstr($macro['hostid']).
-								' AND hm.macro='.zbx_dbstr($macro['macro'])
+							'SELECT hm.hostmacroid' .
+								' FROM hostmacro hm' .
+								' WHERE hm.hostid=' . zbx_dbstr($macro['hostid']) .
+								' AND hm.macro=' . zbx_dbstr($macro['macro'])
 						);
 
 						$key = str_replace('{$', '', $macro['macro']);
@@ -4626,7 +4721,8 @@ class testHost extends CAPITest {
 	/**
 	 * Delete all created data after test.
 	 */
-	public static function clearData() {
+	public static function clearData()
+	{
 		// Delete maintenances.
 		CDataHelper::call('maintenance.delete', self::$data['maintenanceids']);
 

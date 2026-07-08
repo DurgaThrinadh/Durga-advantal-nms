@@ -14,27 +14,30 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
 
 /**
  * @backup users
  */
-class testFormUserProfile extends CLegacyWebTest {
+class testFormUserProfile extends CLegacyWebTest
+{
 
 	/**
 	 * Attach MessageBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
 	protected static $old_password = 'zabbix';
 
-	public function testFormUserProfile_SimpleUpdate() {
+	public function testFormUserProfile_SimpleUpdate()
+	{
 		$sqlHashUsers = 'select userid,username,name,surname,passwd,url,autologin,lang,refresh,roleid,theme,attempt_failed,attempt_clock,rows_per_page'
-				. ' from users order by userid';
+			. ' from users order by userid';
 		$oldHashUsers = CDBHelper::getHash($sqlHashUsers);
 
 		$this->zbxTestLogin('zabbix.php?action=userprofile.edit');
@@ -47,13 +50,14 @@ class testFormUserProfile extends CLegacyWebTest {
 		$this->assertEquals($oldHashUsers, CDBHelper::getHash($sqlHashUsers));
 	}
 
-	public function testFormUserProfile_Cancel() {
+	public function testFormUserProfile_Cancel()
+	{
 		$sqlHashUsers = 'select userid,username,name,surname,passwd,url,autologin,lang,refresh,roleid,theme,attempt_failed,attempt_clock,rows_per_page'
-				. ' from users order by userid';
+			. ' from users order by userid';
 		$oldHashUsers = CDBHelper::getHash($sqlHashUsers);
 
 		$this->zbxTestLogin('zabbix.php?action=userprofile.edit');
-		$this->zbxTestCheckHeader('User profile: Zabbix Administrator');
+		$this->zbxTestCheckHeader('User profile: Advantal Administrator');
 		$this->zbxTestInputTypeOverwrite('refresh', '60');
 
 		$this->zbxTestClickWait('cancel');
@@ -62,7 +66,8 @@ class testFormUserProfile extends CLegacyWebTest {
 		$this->assertEquals($oldHashUsers, CDBHelper::getHash($sqlHashUsers));
 	}
 
-	public static function passwords() {
+	public static function passwords()
+	{
 		return [
 			[[
 				'expected' => TEST_BAD,
@@ -112,7 +117,8 @@ class testFormUserProfile extends CLegacyWebTest {
 	/**
 	 * @dataProvider passwords
 	 */
-	public function testFormUserProfile_PasswordChange($data) {
+	public function testFormUserProfile_PasswordChange($data)
+	{
 		$sqlHashUsers = 'select * from users order by userid';
 		$oldHashUsers = CDBHelper::getHash($sqlHashUsers);
 
@@ -124,9 +130,9 @@ class testFormUserProfile extends CLegacyWebTest {
 			$form->query('id', $id)->waitUntilVisible()->one();
 		}
 		$form->fill([
-				'Current password' => (array_key_exists('old_password', $data)) ? $data['old_password'] : self::$old_password,
-				'Password' => $data['password1'],
-				'Password (once again)' => $data['password2']
+			'Current password' => (array_key_exists('old_password', $data)) ? $data['old_password'] : self::$old_password,
+			'Password' => $data['password1'],
+			'Password (once again)' => $data['password2']
 		]);
 		$form->submit();
 
@@ -141,7 +147,8 @@ class testFormUserProfile extends CLegacyWebTest {
 				$this->page->assertTitle('Zabbix');
 				$this->assertTrue($this->query('button:Sign in')->one()->isClickable());
 				$this->page->userLogin('Admin', $data['password1']);
-				$this->assertTrue($this->query('xpath://a[@title="Admin (Zabbix Administrator)" and text()='.
+				$this->assertTrue(
+					$this->query('xpath://a[@title="Admin (Advantal Administrator)" and text()=' .
 						'"User settings"]')->exists()
 				);
 				self::$old_password = $data['password1'];
@@ -149,15 +156,16 @@ class testFormUserProfile extends CLegacyWebTest {
 				$this->page->logout();
 				break;
 			case TEST_BAD:
-				$this->zbxTestWaitUntilMessageTextPresent('msg-bad' , $data['error_msg']);
+				$this->zbxTestWaitUntilMessageTextPresent('msg-bad', $data['error_msg']);
 				$this->zbxTestCheckTitle('User profile');
 				$this->assertEquals($oldHashUsers, CDBHelper::getHash($sqlHashUsers));
 				break;
 		}
 	}
 
-	public function testFormUserProfile_ThemeChange() {
-		$sqlHashUsers = "select * from users where username<>'".PHPUNIT_LOGIN_NAME."' order by userid";
+	public function testFormUserProfile_ThemeChange()
+	{
+		$sqlHashUsers = "select * from users where username<>'" . PHPUNIT_LOGIN_NAME . "' order by userid";
 		$oldHashUsers = CDBHelper::getHash($sqlHashUsers);
 
 		$this->page->login()->open('zabbix.php?action=userprofile.edit')->waitUntilReady();
@@ -167,13 +175,14 @@ class testFormUserProfile extends CLegacyWebTest {
 		CDashboardElement::find()->waitUntilVisible()->waitUntilReady();
 		$this->assertMessage(TEST_GOOD, 'User updated');
 		$this->zbxTestCheckHeader('Global view');
-		$row = DBfetch(DBselect("select theme from users where username='".PHPUNIT_LOGIN_NAME."'"));
+		$row = DBfetch(DBselect("select theme from users where username='" . PHPUNIT_LOGIN_NAME . "'"));
 		$this->assertEquals('blue-theme', $row['theme']);
 
 		$this->assertEquals($oldHashUsers, CDBHelper::getHash($sqlHashUsers));
 	}
 
-	public static function refresh() {
+	public static function refresh()
+	{
 		return [
 			[[
 				'expected' => TEST_BAD,
@@ -244,7 +253,8 @@ class testFormUserProfile extends CLegacyWebTest {
 	/**
 	 * @dataProvider refresh
 	 */
-	public function ttestFormUserProfile_RefreshTime($data) {
+	public function ttestFormUserProfile_RefreshTime($data)
+	{
 		$sqlHashUsers = 'select * from users order by userid';
 		$oldHashUsers = CDBHelper::getHash($sqlHashUsers);
 
@@ -257,11 +267,11 @@ class testFormUserProfile extends CLegacyWebTest {
 			case TEST_GOOD:
 				$this->assertMessage(TEST_GOOD, 'User updated');
 				$this->zbxTestCheckHeader('Global view');
-				$row = DBfetch(DBselect("select refresh from users where username='".PHPUNIT_LOGIN_NAME."'"));
-				$this->assertEquals($data['refresh'] , $row['refresh']);
+				$row = DBfetch(DBselect("select refresh from users where username='" . PHPUNIT_LOGIN_NAME . "'"));
+				$this->assertEquals($data['refresh'], $row['refresh']);
 				break;
 			case TEST_BAD:
-				$this->zbxTestWaitUntilMessageTextPresent('msg-bad' , 'Cannot update user');
+				$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'Cannot update user');
 				$this->zbxTestTextPresent($data['error_msg']);
 				$this->zbxTestCheckTitle('User profile');
 				$this->assertEquals($oldHashUsers, CDBHelper::getHash($sqlHashUsers));
@@ -269,7 +279,8 @@ class testFormUserProfile extends CLegacyWebTest {
 		}
 	}
 
-	public static function autologout() {
+	public static function autologout()
+	{
 		return [
 			[[
 				'expected' => TEST_BAD,
@@ -352,7 +363,8 @@ class testFormUserProfile extends CLegacyWebTest {
 	/**
 	 * @dataProvider autologout
 	 */
-	public function testFormUserProfile_AutologoutTime($data) {
+	public function testFormUserProfile_AutologoutTime($data)
+	{
 		$sqlHashUsers = 'select * from users order by userid';
 		$oldHashUsers = CDBHelper::getHash($sqlHashUsers);
 
@@ -366,18 +378,19 @@ class testFormUserProfile extends CLegacyWebTest {
 			case TEST_GOOD:
 				$this->assertMessage(TEST_GOOD, 'User updated');
 				$this->zbxTestCheckHeader('Global view');
-				$row = DBfetch(DBselect("select autologout from users where username='".PHPUNIT_LOGIN_NAME."'"));
-				$this->assertEquals($data['autologout'] , $row['autologout']);
+				$row = DBfetch(DBselect("select autologout from users where username='" . PHPUNIT_LOGIN_NAME . "'"));
+				$this->assertEquals($data['autologout'], $row['autologout']);
 				break;
 			case TEST_BAD:
-				$this->zbxTestWaitUntilMessageTextPresent('msg-bad' , 'Cannot update user');
+				$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'Cannot update user');
 				$this->zbxTestTextPresent($data['error_msg']);
 				$this->zbxTestCheckTitle('User profile');
 				$this->assertEquals($oldHashUsers, CDBHelper::getHash($sqlHashUsers));
 				break;
 		}
 	}
-	public static function messaging() {
+	public static function messaging()
+	{
 		return [
 			[[
 				'expected' => TEST_BAD,
@@ -469,9 +482,10 @@ class testFormUserProfile extends CLegacyWebTest {
 	/**
 	 * @dataProvider messaging
 	 */
-	public function testFormUserProfile_MessagesTimeout($data) {
+	public function testFormUserProfile_MessagesTimeout($data)
+	{
 		$this->zbxTestLogin('zabbix.php?action=userprofile.edit');
-		$this->zbxTestCheckHeader('User profile: Zabbix Administrator');
+		$this->zbxTestCheckHeader('User profile: Advantal Administrator');
 		$this->zbxTestTabSwitch('Frontend notifications');
 
 		if (array_key_exists('messages_disabled', $data)) {
@@ -493,8 +507,7 @@ class testFormUserProfile extends CLegacyWebTest {
 			$this->zbxTestAssertElementNotPresentXpath("//button[@name='start'][@disabled]");
 			$this->zbxTestAssertElementNotPresentXpath("//button[@name='stop'][@disabled]");
 			$this->zbxTestAssertElementNotPresentXpath("//input[@id='messages_show_suppressed'][@disabled]");
-		}
-		else {
+		} else {
 			$this->zbxTestCheckboxSelect('messages_enabled', false);
 			$this->zbxTestAssertElementPresentXpath("//input[@id='messages_timeout'][@disabled]");
 			$this->zbxTestAssertElementPresentXpath("//z-select[@id='messages_sounds.repeat']/input[@type='hidden']");
@@ -517,13 +530,14 @@ class testFormUserProfile extends CLegacyWebTest {
 				$this->zbxTestCheckHeader('Global view');
 				break;
 			case TEST_BAD:
-				$this->zbxTestWaitUntilMessageTextPresent('msg-bad' , 'Cannot update user');
+				$this->zbxTestWaitUntilMessageTextPresent('msg-bad', 'Cannot update user');
 				$this->zbxTestTextPresent($data['error_msg']);
 				break;
 		}
 	}
 
-	public static function media() {
+	public static function media()
+	{
 		return [
 			[[
 				'expected' => TEST_BAD,
@@ -572,9 +586,10 @@ class testFormUserProfile extends CLegacyWebTest {
 	/**
 	 * @dataProvider media
 	 */
-	public function testFormUserProfile_Media($data) {
+	public function testFormUserProfile_Media($data)
+	{
 		$this->zbxTestLogin('zabbix.php?action=userprofile.edit');
-		$this->zbxTestCheckHeader('User profile: Zabbix Administrator');
+		$this->zbxTestCheckHeader('User profile: Advantal Administrator');
 		$this->zbxTestTabSwitch('Media');
 		$this->zbxTestClickButtonText('Add');
 		$this->zbxTestLaunchOverlayDialog('Media');
@@ -598,7 +613,7 @@ class testFormUserProfile extends CLegacyWebTest {
 				$this->zbxTestClickWait('update');
 				$this->assertMessage(TEST_GOOD, 'User updated');
 				$this->zbxTestCheckHeader('Global view');
-				$sql = "SELECT * FROM media WHERE sendto = '".$data['send_to']."'";
+				$sql = "SELECT * FROM media WHERE sendto = '" . $data['send_to'] . "'";
 				$this->assertEquals(1, CDBHelper::getCount($sql));
 				break;
 			case TEST_BAD:
@@ -611,7 +626,8 @@ class testFormUserProfile extends CLegacyWebTest {
 	/**
 	 * Verify that checkbox state is preserved after failed update.
 	 */
-	public function testFormUserProfile_triggerSeverity() {
+	public function testFormUserProfile_triggerSeverity()
+	{
 		$trigger_severity = [
 			'Recovery' => false,
 			'Not classified' => false,
@@ -627,8 +643,11 @@ class testFormUserProfile extends CLegacyWebTest {
 		$form->selectTab('Frontend notifications');
 		$form->fill(['Frontend notifications' => true, 'Message timeout' => '86401']);
 		$form->fill($trigger_severity)->submit();
-		$this->assertMessage(TEST_BAD, 'Cannot update user',
-				'Incorrect value for field "timeout": value must be one of 30-86400.');
+		$this->assertMessage(
+			TEST_BAD,
+			'Cannot update user',
+			'Incorrect value for field "timeout": value must be one of 30-86400.'
+		);
 		$form->invalidate();
 		$form->checkValue($trigger_severity);
 	}

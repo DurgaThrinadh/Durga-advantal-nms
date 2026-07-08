@@ -14,9 +14,11 @@
 **/
 
 
-class ItemValueWidget {
+class ItemValueWidget
+{
 
-	public static function load() {
+	public static function load()
+	{
 		// Create host for aggregation data tests.
 		$hosts = CDataHelper::createHosts([
 			[
@@ -32,7 +34,7 @@ class ItemValueWidget {
 					]
 				],
 				'groups' => [
-					'groupid' => '4' // 'Zabbix servers' group.
+					'groupid' => '4' // 'Advantal servers' group.
 				],
 				'items' => [
 					[
@@ -83,7 +85,7 @@ class ItemValueWidget {
 			[
 				'host' => 'Host for checking widget without show value option',
 				'groups' => [
-					'groupid' => '4' // 'Zabbix servers' group.
+					'groupid' => '4' // 'Advantal servers' group.
 				],
 				'items' => [
 					[
@@ -131,7 +133,7 @@ class ItemValueWidget {
 					]
 				],
 				'groups' => [
-					'groupid' => '4' // 'Zabbix servers' group.
+					'groupid' => '4' // 'Advantal servers' group.
 				],
 				'items' => [
 					[

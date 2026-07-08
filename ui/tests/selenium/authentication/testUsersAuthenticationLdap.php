@@ -14,31 +14,34 @@
 **/
 
 
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../common/testFormAuthentication.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../common/testFormAuthentication.php';
 
 /**
  * @backup config, userdirectory, usrgrp
  *
  * @dataSource LoginUsers
  */
-class testUsersAuthenticationLdap extends testFormAuthentication {
+class testUsersAuthenticationLdap extends testFormAuthentication
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
 		];
 	}
 
-	public function testUsersAuthenticationLdap_Layout() {
+	public function testUsersAuthenticationLdap_Layout()
+	{
 		$ldap_form = $this->openFormAndCheckBasics('LDAP');
 
 		// Check LDAP form default values.
@@ -103,7 +106,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 			'User name attribute' => ['visible' => false, 'maxlength' => 255, 'value' => ''],
 			'User last name attribute' => ['visible' => false, 'maxlength' => 255, 'value' => ''],
 			'User group mapping' => ['visible' => false],
-			'Media type mapping' => ['visible' => false ],
+			'Media type mapping' => ['visible' => false],
 			'StartTLS' => ['visible'  => false, 'value' => false],
 			'Search filter' => ['visible' => false, 'maxlength' => 255, 'value' => '', 'placeholder' => '(%{attr}=%{user})']
 		];
@@ -127,8 +130,9 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		}
 
 		// Check visible mandatory fields.
-		$this->assertEquals(['Name', 'Host', 'Port', 'Base DN', 'Search attribute'],
-				$server_form->getRequiredLabels()
+		$this->assertEquals(
+			['Name', 'Host', 'Port', 'Base DN', 'Search attribute'],
+			$server_form->getRequiredLabels()
 		);
 
 		// Check invisible mandatory field.
@@ -185,11 +189,11 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		$this->assertTrue($server_form->getField('Search filter')->isVisible());
 
 		$hintboxes = [
-			'Group configuration' => 'memberOf is a preferable way to configure groups because it is faster. '.
-					'Use groupOfNames if your LDAP server does not support memberOf or group filtering is required.',
+			'Group configuration' => 'memberOf is a preferable way to configure groups because it is faster. ' .
+				'Use groupOfNames if your LDAP server does not support memberOf or group filtering is required.',
 			'Reference attribute' => 'Use %{ref} in group filter to reference value of this user attribute.',
-			'Media type mapping' => "Map user's LDAP media attributes (e.g. email) to Zabbix user media for sending".
-					" notifications."
+			'Media type mapping' => "Map user's LDAP media attributes (e.g. email) to Zabbix user media for sending" .
+				" notifications."
 		];
 
 		$mapping_tables = [
@@ -210,7 +214,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		$server_dialog->close();
 	}
 
-	public function getTestData() {
+	public function getTestData()
+	{
 		return [
 			// #0 test without Host, Base DN and Search attribute.
 			[
@@ -309,7 +314,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 			[
 				[
 					'servers_settings' => [
-						'Host' => PHPUNIT_LDAP_HOST ,
+						'Host' => PHPUNIT_LDAP_HOST,
 						'Base DN' => 'cn=users,cn=accounts,dc=demo1,dc=freeipa,dc=org',
 						'Search attribute' => 'uid'
 					],
@@ -448,7 +453,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 					'User group mapping' => [
 						[
 							'LDAP group pattern' => 'Zabbix admins',
-							'User groups' => 'Zabbix administrators',
+							'User groups' => 'Advantal Administrators',
 							'User role' => 'Super admin role'
 						],
 						[
@@ -470,7 +475,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 					],
 					'check_provisioning' => [
 						'role' => 'Super admin role',
-						'groups' => "Zabbix administrators\nGuests",
+						'groups' => "Advantal Administrators\nGuests",
 						'medias' => 'mail'
 					]
 				]
@@ -483,7 +488,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	 *
 	 * @dataProvider getTestData
 	 */
-	public function testUsersAuthenticationLdap_Test($data) {
+	public function testUsersAuthenticationLdap_Test($data)
+	{
 		$form = $this->openLdapForm();
 		$form->fill(['Enable LDAP authentication' => true]);
 		$form->query('button:Add')->waitUntilCLickable()->one()->click();
@@ -513,14 +519,15 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		// Check error messages testing LDAP settings.
 		if (CTestArrayHelper::get($data, 'expected', TEST_BAD) === TEST_GOOD) {
 			$this->assertMessage(TEST_GOOD, 'Login successful');
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_BAD, $data['test_error'], $data['test_error_details']);
 		}
 
 		if (array_key_exists('check_provisioning', $data)) {
 			foreach ($data['check_provisioning'] as $id => $text) {
-				$this->assertEquals($text, $test_form_dialog->query('id:provisioning_'.$id)->waitUntilVisible()
+				$this->assertEquals(
+					$text,
+					$test_form_dialog->query('id:provisioning_' . $id)->waitUntilVisible()
 						->one()->getText()
 				);
 			}
@@ -534,7 +541,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	/**
 	 * Check that remove button works.
 	 */
-	public function testUsersAuthenticationLdap_Remove() {
+	public function testUsersAuthenticationLdap_Remove()
+	{
 		$form = $this->openLdapForm();
 		$table = $form->query('id:ldap-servers')->asTable()->one();
 
@@ -571,7 +579,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	/**
 	 * Check default LDAP server change.
 	 */
-	public function testUsersAuthenticationLdap_Default() {
+	public function testUsersAuthenticationLdap_Default()
+	{
 		$form = $this->openLdapForm();
 		$this->page->assertHeader('Authentication');
 		$this->page->assertTitle('Configuration of authentication');
@@ -579,12 +588,12 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		$table = $form->query('id:ldap-servers')->asTable()->one();
 
 		// To check default we need at least 2 LDAP servers.
-		for ($i = 0; $i <=1; $i++) {
+		for ($i = 0; $i <= 1; $i++) {
 			if ($table->getRows()->count() >= 2) {
 				break;
 			}
 
-			$this->setLdap([], 'button:Add', 'test_'.$i);
+			$this->setLdap([], 'button:Add', 'test_' . $i);
 			$form->submit();
 			$this->assertMessage(TEST_GOOD, 'Authentication settings updated');
 			$form->selectTab('LDAP settings');
@@ -592,15 +601,15 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 
 		foreach ($table->getRows() as $row) {
 			$radio = $row->getColumn('Default');
-			$user_directoryid = CDBHelper::getValue('SELECT userdirectoryid FROM userdirectory_ldap WHERE host='
-					.zbx_dbstr($row->getColumn('Host')->getText())
+			$user_directoryid = CDBHelper::getValue(
+				'SELECT userdirectoryid FROM userdirectory_ldap WHERE host='
+					. zbx_dbstr($row->getColumn('Host')->getText())
 			);
 
 			// Check if LDAP server is set as Default.
 			if ($radio->query('name:ldap_default_row_index')->one()->isAttributePresent('checked') === true) {
 				$this->assertEquals($user_directoryid, CDBHelper::getValue('SELECT ldap_userdirectoryid FROM config'));
-			}
-			else {
+			} else {
 				// Set another LDAP server as default.
 				$this->assertNotEquals($user_directoryid, CDBHelper::getValue('SELECT ldap_userdirectoryid FROM config'));
 				$radio->query('name:ldap_default_row_index')->one()->click();
@@ -611,7 +620,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		}
 
 		// Default LDAP server host name.
-		$hostname = CDBHelper::getValue('SELECT host FROM userdirectory_ldap WHERE userdirectoryid IN '.
+		$hostname = CDBHelper::getValue(
+			'SELECT host FROM userdirectory_ldap WHERE userdirectoryid IN ' .
 				'(SELECT ldap_userdirectoryid FROM config)'
 		);
 
@@ -621,14 +631,15 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		$table->findRow('Host', $hostname)->getColumn('')->query('button:Remove')->one()->click();
 		$form->submit();
 		$this->assertMessage(TEST_GOOD, 'Authentication settings updated');
-		$new_hostname = CDBHelper::getValue('SELECT host FROM userdirectory_ldap udl INNER JOIN config co ON '.
-				'udl.userdirectoryid = co.ldap_userdirectoryid');
+		$new_hostname = CDBHelper::getValue('SELECT host FROM userdirectory_ldap udl INNER JOIN config co ON ' .
+			'udl.userdirectoryid = co.ldap_userdirectoryid');
 
 		// Check that old LDAP server (by host name) is not default now.
 		$this->assertNotEquals($hostname, $new_hostname);
 	}
 
-	public function getUpdateData() {
+	public function getUpdateData()
+	{
 		return [
 			// #0 Update LDAP with empty strings.
 			[
@@ -1216,8 +1227,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 								'usrgrpid' => 92
 							]
 						],
-						'userdirectory_media' => [
-						]
+						'userdirectory_media' => []
 					]
 				]
 			],
@@ -1388,16 +1398,19 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	 *
 	 * @dataProvider getUpdateData
 	 */
-	public function testUsersAuthenticationLdap_Update($data) {
+	public function testUsersAuthenticationLdap_Update($data)
+	{
 		if (CDBHelper::getCount('SELECT * FROM userdirectory_ldap') === 0) {
-			$server_settings['servers_settings'][0]['fields'] = (CTestArrayHelper::get($data, 'start_ldap',
-					[
-						'Name' => 'test_update',
-						'Host' => 'test_update',
-						'Base DN' => 'test_update',
-						'Bind password' => 'test_password',
-						'Search attribute' => 'test_update'
-					]
+			$server_settings['servers_settings'][0]['fields'] = (CTestArrayHelper::get(
+				$data,
+				'start_ldap',
+				[
+					'Name' => 'test_update',
+					'Host' => 'test_update',
+					'Base DN' => 'test_update',
+					'Bind password' => 'test_password',
+					'Search attribute' => 'test_update'
+				]
 			));
 
 			if (array_key_exists('start_group_mapping', $data)) {
@@ -1421,10 +1434,9 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 
 		if (!array_key_exists('expected', $data)) {
 			$this->assertEquals($hash_before, CDBHelper::getHash('SELECT * FROM userdirectory_ldap'));
-		}
-		else {
+		} else {
 			foreach ($data['db_check'] as $table => $rows) {
-				$all_rows = CDBHelper::getAll('SELECT * FROM '.$table.' LIMIT '.count($rows));
+				$all_rows = CDBHelper::getAll('SELECT * FROM ' . $table . ' LIMIT ' . count($rows));
 				foreach ($rows as $i => $row) {
 					foreach ($row as $key => $value) {
 						$this->assertEquals($value, $all_rows[$i][$key]);
@@ -1448,7 +1460,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		}
 	}
 
-	public function getCreateValidationData() {
+	public function getCreateValidationData()
+	{
 		return [
 			// #0 Only default authentication added.
 			[
@@ -2026,7 +2039,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		];
 	}
 
-	public function getCreateData() {
+	public function getCreateData()
+	{
 		return [
 			// #0 Using cyrillic symbols in fields (groupOfNames).
 			[
@@ -2911,7 +2925,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	/**
 	 * @dataProvider getCreateValidationData
 	 */
-	public function testUsersAuthenticationLdap_CreateValidation($data) {
+	public function testUsersAuthenticationLdap_CreateValidation($data)
+	{
 		$this->testLdapCreate($data);
 	}
 
@@ -2920,11 +2935,13 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	 *
 	 * @dataProvider getCreateData
 	 */
-	public function testUsersAuthenticationLdap_Create($data) {
+	public function testUsersAuthenticationLdap_Create($data)
+	{
 		$this->testLdapCreate($data);
 	}
 
-	private function testLdapCreate($data) {
+	private function testLdapCreate($data)
+	{
 		$this->checkLdap($data, 'button:Add');
 
 		// Check error messages.
@@ -2938,12 +2955,11 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 						$rows = array_map('trim', $row);
 					}
 
-					$sql = 'SELECT '.implode(",", array_keys($row)).' FROM '.$table.' LIMIT 1 OFFSET '.$i;
+					$sql = 'SELECT ' . implode(",", array_keys($row)) . ' FROM ' . $table . ' LIMIT 1 OFFSET ' . $i;
 					$this->assertEquals([$row], CDBHelper::getAll($sql));
 				}
 			}
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_BAD, 'Cannot update authentication', $data['error']);
 		}
 	}
@@ -2951,7 +2967,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	/**
 	 * Check that User Group value in table changes after adding LDAP server to any user group.
 	 */
-	public function testUsersAuthenticationLdap_UserGroups() {
+	public function testUsersAuthenticationLdap_UserGroups()
+	{
 		$form = $this->openLdapForm();
 		$table = $form->query('id:ldap-servers')->asTable()->one();
 
@@ -2970,7 +2987,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 
 		// Open existing User group and change it LDAP server.
 		$usrgrpid = CDataHelper::get('LoginUsers.usrgrpids.LDAP user group');
-		$this->page->open('zabbix.php?action=usergroup.edit&usrgrpid='.$usrgrpid)->waitUntilReady();
+		$this->page->open('zabbix.php?action=usergroup.edit&usrgrpid=' . $usrgrpid)->waitUntilReady();
 		$this->query('name:userdirectoryid')->asDropdown()->one()->fill($ldap_name);
 		$this->query('button:Update')->one()->click();
 		$this->assertMessage(TEST_GOOD, 'User group updated');
@@ -2985,7 +3002,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	/**
 	 * Check that Bind password field clears itself after changing Host field.
 	 */
-	public function testUsersAuthenticationLdap_BindPassword() {
+	public function testUsersAuthenticationLdap_BindPassword()
+	{
 		$values = [
 			'servers_settings' => [
 				[
@@ -3016,21 +3034,21 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 
 		// Change fields one by one and check that Bind password field cleared only after Host change.
 		foreach ($values['servers_settings'][0]['fields'] as $field => $value) {
-			$ldap_form->fill([$field => $value.'1']);
+			$ldap_form->fill([$field => $value . '1']);
 			$this->page->removeFocus();
 
 			if ($field === 'Host') {
 				$ldap_form->checkValue(['Bind password' => '']);
 				$bind_password_field->query('xpath:./button[@data-hintbox]')->one()->click();
 				$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->waitUntilPresent()->one();
-				$this->assertEquals('The previous password was cleared due to a host change. Please enter the new password.',
-						$hint->getText()
+				$this->assertEquals(
+					'The previous password was cleared due to a host change. Please enter the new password.',
+					$hint->getText()
 				);
 
 				// Check that Change password button is not available.
 				$this->assertFalse($bind_password_field->query('button:Change password')->one(false)->isClickable());
-			}
-			else {
+			} else {
 				$this->assertTrue($bind_password_field->query('button:Change password')->one()->isClickable());
 
 				// Check that hint is not visible.
@@ -3045,7 +3063,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	 * @param string $auth    default authentication field value
 	 * @param array $data	  data provider to fill Authentication form
 	 */
-	private function openLdapForm($auth = 'Internal', $data = []) {
+	private function openLdapForm($auth = 'Internal', $data = [])
+	{
 		$this->page->login()->open('zabbix.php?action=authentication.edit')->waitUntilReady();
 		$form = $this->query('id:authentication-form')->asForm()->one();
 		$form->fill(['Default authentication' => $auth]);
@@ -3064,7 +3083,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	 * @param string $query     object to click for LDAP creating or updating
 	 * @param string $values    simple LDAP server values
 	 */
-	private function setLdap($data, $query, $values = null) {
+	private function setLdap($data, $query, $values = null)
+	{
 		$form = $this->query('id:authentication-form')->waitUntilVisible()->asForm()->one();
 
 		// Select LDAP setting tab if it is not selected.
@@ -3076,10 +3096,10 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 		$this->query('id:ldap_auth_enabled')->asCheckbox()->one()->set(true);
 		if ($values !== null) {
 			$data['servers_settings'][0]['fields'] = [
-					'Name' => $values,
-					'Host' => $values,
-					'Base DN' => $values,
-					'Search attribute' => $values
+				'Name' => $values,
+				'Host' => $values,
+				'Base DN' => $values,
+				'Search attribute' => $values
 			];
 		}
 
@@ -3097,7 +3117,7 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 			if (array_key_exists('Bind password', $ldap)) {
 				if (!array_key_exists('Host', $ldap['fields'])) {
 					$ldap_form->getFieldContainer('Bind password')->query('button:Change password')->waitUntilClickable()
-							->one()->click();
+						->one()->click();
 				}
 
 				$ldap_form->query('id:bind_password')->one()->waitUntilVisible()->fill($ldap['Bind password']);
@@ -3135,7 +3155,8 @@ class testUsersAuthenticationLdap extends testFormAuthentication {
 	 * @param array     $data	  data provider
 	 * @param string    $query    object to click for LDAP creating or updating
 	 */
-	private function checkLdap($data, $query) {
+	private function checkLdap($data, $query)
+	{
 		$form = $this->openLdapForm('LDAP', $data);
 
 		// Configuration of LDAP servers.

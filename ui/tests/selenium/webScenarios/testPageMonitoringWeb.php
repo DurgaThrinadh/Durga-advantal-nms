@@ -14,11 +14,11 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
-require_once __DIR__.'/../behaviors/CTagBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../behaviors/CTagBehavior.php';
 
 /**
  * @backup hosts, httptest
@@ -27,14 +27,16 @@ require_once __DIR__.'/../behaviors/CTagBehavior.php';
  *
  * @onBefore getContextData
  */
-class testPageMonitoringWeb extends CWebTest {
+class testPageMonitoringWeb extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior, TableBehavior and TagBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -62,15 +64,17 @@ class testPageMonitoringWeb extends CWebTest {
 	/**
 	 * Get the necessary properties of entities used within this test.
 	 */
-	public static function getContextData() {
+	public static function getContextData()
+	{
 		self::$hostid = CDataHelper::get('WebScenarios.hostid');
-		self::$httptestid = CDataHelper::get('WebScenarios.httptestids.'.self::SCENARIO);
+		self::$httptestid = CDataHelper::get('WebScenarios.httptestids.' . self::SCENARIO);
 	}
 
 	/**
 	 * Function which checks the layout of Monitoring Web scenarios page.
 	 */
-	public function testPageMonitoringWeb_CheckLayout() {
+	public function testPageMonitoringWeb_CheckLayout()
+	{
 		// Logins directly into required page.
 		$this->page->login()->open('zabbix.php?action=web.view');
 		$form = $this->query('name:zbx_filter')->asForm()->one();
@@ -83,13 +87,14 @@ class testPageMonitoringWeb extends CWebTest {
 		$this->assertEquals(['Host groups', 'Hosts', 'Tags'], $form->getLabels()->asText());
 
 		// Check if Apply and Reset button are clickable.
-		foreach(['Apply', 'Reset'] as $button) {
+		foreach (['Apply', 'Reset'] as $button) {
 			$this->assertTrue($form->query('button', $button)->one()->isClickable());
 		}
 
 		// Check filter collapse/expand.
 		foreach (['true', 'false'] as $status) {
-			$this->assertTrue($this->query('xpath://li[@aria-expanded='.CXPathHelper::escapeQuotes($status).']')
+			$this->assertTrue(
+				$this->query('xpath://li[@aria-expanded=' . CXPathHelper::escapeQuotes($status) . ']')
 					->one()->isPresent()
 			);
 			//$this->query('xpath://a[@class="filter-trigger ui-tabs-anchor"]')->one()->click();
@@ -97,8 +102,10 @@ class testPageMonitoringWeb extends CWebTest {
 		}
 
 		// Check fields maximum length.
-		foreach(['filter_tags[0][tag]', 'filter_tags[0][value]'] as $field) {
-			$this->assertEquals(255, $form->query('xpath:.//input[@name="'.$field.'"]')
+		foreach (['filter_tags[0][tag]', 'filter_tags[0][value]'] as $field) {
+			$this->assertEquals(
+				255,
+				$form->query('xpath:.//input[@name="' . $field . '"]')
 					->one()->getAttribute('maxlength')
 			);
 		}
@@ -116,14 +123,15 @@ class testPageMonitoringWeb extends CWebTest {
 		$column->query('tag:a')->one()->click();
 
 		$this->page->waitUntilReady();
-		$this->page->assertHeader('Details of web scenario: '.$first_row_name);
+		$this->page->assertHeader('Details of web scenario: ' . $first_row_name);
 		$this->page->assertTitle('Details of web scenario');
 	}
 
 	/**
 	 * Function which checks if button "Reset" works properly.
 	 */
-	public function testPageMonitoringWeb_ResetButtonCheck() {
+	public function testPageMonitoringWeb_ResetButtonCheck()
+	{
 		$this->page->login()->open('zabbix.php?action=web.view&filter_rst=1');
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
 		$this->page->waitUntilReady();
@@ -155,10 +163,24 @@ class testPageMonitoringWeb extends CWebTest {
 	/**
 	 * Function which checks Hosts context menu.
 	 */
-	public function testPageMonitoringWeb_CheckHostContextMenu() {
+	public function testPageMonitoringWeb_CheckHostContextMenu()
+	{
 		$popupitems = [
-			'Dashboards', 'Problems', 'Latest data', 'Graphs', 'Web', 'Inventory', 'Host', 'Items', 'Triggers', 'Graphs',
-			'Discovery', 'Web', 'Detect operating system', 'Ping', 'Traceroute'
+			'Dashboards',
+			'Problems',
+			'Latest data',
+			'Graphs',
+			'Web',
+			'Inventory',
+			'Host',
+			'Items',
+			'Triggers',
+			'Graphs',
+			'Discovery',
+			'Web',
+			'Detect operating system',
+			'Ping',
+			'Traceroute'
 		];
 
 		$this->checkHostContextMenu($popupitems, 'Host for tags testing', 'Graphs');
@@ -174,19 +196,22 @@ class testPageMonitoringWeb extends CWebTest {
 	 * @param string	$disabled		disabled host elements.
 	 *
 	 */
-	private function checkHostContextMenu($popupitems, $hostname, $disabled) {
+	private function checkHostContextMenu($popupitems, $hostname, $disabled)
+	{
 		$this->page->login()->open('zabbix.php?action=web.view&filter_rst=1&sort=hostname&sortorder=DESC');
 		$this->query('class:list-table')->asTable()->one()->findRow('Host', $hostname)->query('link', $hostname)->one()->click();
 		$popup = CPopupMenuElement::find()->waitUntilVisible()->one();
 		$this->assertEquals(['VIEW', 'CONFIGURATION', 'SCRIPTS'], $popup->getTitles()->asText());
 		$this->assertTrue($popup->hasItems($popupitems));
-		$this->assertTrue($popup->query('xpath://a[@aria-label="View, ' .
+		$this->assertTrue(
+			$popup->query('xpath://a[@aria-label="View, ' .
 				$disabled . '" and @class="menu-popup-item disabled"]')->one()->isPresent()
 		);
 		$popup->close();
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			// #0.
 			[
@@ -267,7 +292,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'tag_options' => [
 						'type' => 'Or',
@@ -448,7 +473,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'tag_options' => [
 						'type' => 'Or',
@@ -468,7 +493,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'expected' => [
 						'Scenario for Delete',
@@ -500,7 +525,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => 'Host ZBX6663'
 					],
 					'expected' => [
@@ -514,7 +539,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => [
 							'Host ZBX6663',
 							'Simple form test host'
@@ -556,7 +581,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => [
 							'Simple form test host'
 						]
@@ -590,7 +615,7 @@ class testPageMonitoringWeb extends CWebTest {
 			[
 				[
 					'filter' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'tag_options' => [
 						'type' => 'And/Or',
@@ -608,7 +633,8 @@ class testPageMonitoringWeb extends CWebTest {
 	 *
 	 * @dataProvider getFilterData
 	 */
-	public function testPageMonitoringWeb_Filter($data) {
+	public function testPageMonitoringWeb_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=web.view&filter_rst=1&sort=name&sortorder=ASC');
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
 		$table = $this->query('class:list-table')->waitUntilPresent()->one();
@@ -627,8 +653,7 @@ class testPageMonitoringWeb extends CWebTest {
 
 		if (array_key_exists('expected', $data)) {
 			$this->assertTableDataColumn($data['expected']);
-		}
-		else {
+		} else {
 			$this->assertTableData();
 		}
 	}
@@ -636,14 +661,15 @@ class testPageMonitoringWeb extends CWebTest {
 	/**
 	 * Function which checks number of steps for web services displayed.
 	 */
-	public function testPageMonitoringWeb_CheckWebServiceNumberOfSteps() {
+	public function testPageMonitoringWeb_CheckWebServiceNumberOfSteps()
+	{
 		$this->page->login()->open('zabbix.php?action=web.view&filter_rst=1&sort=name&sortorder=DESC')->waitUntilReady();
 		$row = $this->query('class:list-table')->asTable()->one()->findRow('Name', self::SCENARIO);
 		$this->assertEquals('2', $row->getColumn('Number of steps')->getText());
 
 		// Directly open API created Web scenario and add one more step.
-		$this->page->open('httpconf.php?context=host&form=update&hostid='.self::$hostid.'&httptestid='.self::$httptestid)
-				->waitUntilReady();
+		$this->page->open('httpconf.php?context=host&form=update&hostid=' . self::$hostid . '&httptestid=' . self::$httptestid)
+			->waitUntilReady();
 		$scenario_form = $this->query('id:webscenario-form')->asForm()->one();
 		$scenario_form->selectTab('Steps');
 		$scenario_form->getField('Steps')->query('button:Add')->one()->click();
@@ -664,20 +690,21 @@ class testPageMonitoringWeb extends CWebTest {
 	/**
 	 * Function which checks sorting by Name column.
 	 */
-	public function testPageMonitoringWeb_CheckSorting() {
+	public function testPageMonitoringWeb_CheckSorting()
+	{
 		$this->page->login()->open('zabbix.php?action=web.view&filter_rst=1&sort=hostname&sortorder=ASC');
 		$table = $this->query('class:list-table')->asTable()->one();
 
 		foreach (['Host', 'Name'] as $column_name) {
 			if ($column_name === 'Name') {
-				$table->query('xpath:.//a[text()="'.$column_name.'"]')->one()->click();
+				$table->query('xpath:.//a[text()="' . $column_name . '"]')->one()->click();
 			}
 			$column_values = $this->getTableColumnData($column_name);
 
 			foreach (['asc', 'desc'] as $sorting) {
 				$expected = ($sorting === 'asc') ? $column_values : array_reverse($column_values);
 				$this->assertEquals($expected, $this->getTableColumnData($column_name));
-				$table->query('xpath:.//a[text()="'.$column_name.'"]')->one()->click();
+				$table->query('xpath:.//a[text()="' . $column_name . '"]')->one()->click();
 			}
 		}
 	}
@@ -685,12 +712,13 @@ class testPageMonitoringWeb extends CWebTest {
 	/**
 	 * Function which checks that title field disappears while Kiosk mode is active.
 	 */
-	public function testPageMonitoringWeb_CheckKioskMode() {
+	public function testPageMonitoringWeb_CheckKioskMode()
+	{
 		$this->page->login()->open('zabbix.php?action=web.view')->waitUntilReady();
 
 		// Check title, filter and table display after pressing Kiosk mode/Normal view.
 		foreach (['Kiosk mode', 'Normal view'] as $status) {
-			$this->query('xpath://button[@title="'.$status.'"]')->one()->click();
+			$this->query('xpath://button[@title="' . $status . '"]')->one()->click();
 			$this->page->waitUntilReady();
 
 			$header = $this->query('xpath://h1[@id="page-title-general"]');
@@ -708,13 +736,14 @@ class testPageMonitoringWeb extends CWebTest {
 	/**
 	 * Function which checks if disabled web services aren't displayed.
 	 */
-	public function testPageMonitoringWeb_CheckDisabledWebServices() {
+	public function testPageMonitoringWeb_CheckDisabledWebServices()
+	{
 		$this->page->login()->open('zabbix.php?action=web.view&filter_rst=1&sort=name&sortorder=DESC')->waitUntilReady();
 		$values = $this->getTableColumnData('Name');
 
 		// Turn off/on web services and check table results.
 		foreach (['Disable', 'Enable'] as $status) {
-			$this->page->open('httpconf.php?context=host&filter_set=1&filter_hostids%5B0%5D='.self::$hostid)->waitUntilReady();
+			$this->page->open('httpconf.php?context=host&filter_set=1&filter_hostids%5B0%5D=' . self::$hostid)->waitUntilReady();
 			$this->query('xpath://input[@id="all_httptests"]')->one()->click();
 			$this->query('button', $status)->one()->click();
 			$this->page->acceptAlert();

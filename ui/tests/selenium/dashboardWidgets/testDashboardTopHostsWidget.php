@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testWidgets.php';
+require_once __DIR__ . '/../common/testWidgets.php';
 
 /**
  * @dataSource AllItemValueTypes, ItemValueWidget, TopHostsWidget, MonitoringOverview, GlobalMacros
@@ -23,12 +23,14 @@ require_once __DIR__.'/../common/testWidgets.php';
  *
  * @onBefore prepareData
  */
-class testDashboardTopHostsWidget extends testWidgets {
+class testDashboardTopHostsWidget extends testWidgets
+{
 
 	/**
 	 * Attach Behaviors to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			[
@@ -64,7 +66,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @return CMultifieldTable
 	 */
-	protected function getTreshholdTable() {
+	protected function getTreshholdTable()
+	{
 		return $this->query('id:thresholds_table')->asMultifieldTable([
 			'mapping' => [
 				'' => [
@@ -81,7 +84,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		])->waitUntilVisible()->one();
 	}
 
-	public static function prepareData() {
+	public static function prepareData()
+	{
 		self::$dashboardids = CDataHelper::get('TopHostsWidget.dashboardids');
 		self::$other_dashboardids = CDataHelper::get('ItemValueWidget.dashboardids');
 		self::$aggregation_itemids = CDataHelper::get('ItemValueWidget.itemids');
@@ -95,7 +99,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		CDataHelper::addItemData(self::$top_hosts_itemids['top_hosts_trap_char'], 'characters_here');
 	}
 
-	public function prepareTopHostsDisplayData() {
+	public function prepareTopHostsDisplayData()
+	{
 		$dashboards = CDataHelper::call('dashboard.create', [
 			'name' => 'Dashboard for Top Hosts display check',
 			'auto_start' => 0,
@@ -175,8 +180,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 
 		$itemids = [];
 		foreach ($hostids as $host) {
-			$itemids[] = CDBHelper::getValue('SELECT itemid FROM items WHERE key_='.
-					zbx_dbstr('key[1]').' AND hostid='.zbx_dbstr($host)
+			$itemids[] = CDBHelper::getValue(
+				'SELECT itemid FROM items WHERE key_=' .
+					zbx_dbstr('key[1]') . ' AND hostid=' . zbx_dbstr($host)
 			);
 		}
 
@@ -219,20 +225,36 @@ class testDashboardTopHostsWidget extends testWidgets {
 		]);
 		$maintenanceid = $maintenances['maintenanceids'][0];
 
-		DBexecute('UPDATE hosts SET maintenanceid='.zbx_dbstr($maintenanceid).
-			', maintenance_status=1, maintenance_type='.MAINTENANCE_TYPE_NORMAL.', maintenance_from='.zbx_dbstr(time()-1000).
-			' WHERE hostid='.zbx_dbstr($maintenance_hostid)
+		DBexecute(
+			'UPDATE hosts SET maintenanceid=' . zbx_dbstr($maintenanceid) .
+				', maintenance_status=1, maintenance_type=' . MAINTENANCE_TYPE_NORMAL . ', maintenance_from=' . zbx_dbstr(time() - 1000) .
+				' WHERE hostid=' . zbx_dbstr($maintenance_hostid)
 		);
 	}
 
-	public function testDashboardTopHostsWidget_Layout() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardids[self::DASHBOARD_CREATE]);
+	public function testDashboardTopHostsWidget_Layout()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardids[self::DASHBOARD_CREATE]);
 		$dialog = CDashboardElement::find()->one()->edit()->addWidget();
 		$form = $dialog->asForm();
 		$this->assertEquals('Add widget', $dialog->getTitle());
 		$form->fill(['Type' => CFormElement::RELOADABLE_FILL('Top hosts')]);
-		$this->assertEquals(['Type', 'Show header', 'Name', 'Refresh interval', 'Host groups', 'Hosts', 'Host tags',
-				'Show hosts in maintenance', 'Columns', 'Order by', 'Order', 'Host limit'], $form->getLabels()->asText()
+		$this->assertEquals(
+			[
+				'Type',
+				'Show header',
+				'Name',
+				'Refresh interval',
+				'Host groups',
+				'Hosts',
+				'Host tags',
+				'Show hosts in maintenance',
+				'Columns',
+				'Order by',
+				'Order',
+				'Host limit'
+			],
+			$form->getLabels()->asText()
 		);
 		$form->getRequiredLabels(['Columns', 'Order by', 'Host limit']);
 
@@ -244,8 +266,16 @@ class testDashboardTopHostsWidget extends testWidgets {
 			'id:groupids__ms' => ['value' => '', 'placeholder' => 'type here to search'],
 			'id:evaltype' => ['value' => 'And/Or', 'labels' => ['And/Or', 'Or']],
 			'id:tags_0_tag' => ['value' => '', 'placeholder' => 'tag', 'maxlength' => 255],
-			'id:tags_0_operator' => ['value' => 'Contains', 'options' => ['Exists', 'Equals', 'Contains',
-					'Does not exist', 'Does not equal', 'Does not contain']
+			'id:tags_0_operator' => [
+				'value' => 'Contains',
+				'options' => [
+					'Exists',
+					'Equals',
+					'Contains',
+					'Does not exist',
+					'Does not equal',
+					'Does not contain'
+				]
 			],
 			'id:tags_0_value' => ['value' => '', 'placeholder' => 'value', 'maxlength' => 255],
 			'Order' => ['value' => 'Top N', 'labels' => ['Top N', 'Bottom N']],
@@ -273,17 +303,38 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$column_form = $column_dialog->asForm();
 
 		$this->assertEquals('New column', $column_dialog->getTitle());
-		$this->assertEquals(['Name', 'Data', 'Text', 'Item name', 'Display', 'Min', 'Max','Base colour', 'Thresholds',
-				'Decimal places', 'Aggregation function', 'Time period', 'Widget', 'From', 'To', 'History data'],
-				$column_form->getLabels()->asText()
+		$this->assertEquals(
+			[
+				'Name',
+				'Data',
+				'Text',
+				'Item name',
+				'Display',
+				'Min',
+				'Max',
+				'Base colour',
+				'Thresholds',
+				'Decimal places',
+				'Aggregation function',
+				'Time period',
+				'Widget',
+				'From',
+				'To',
+				'History data'
+			],
+			$column_form->getLabels()->asText()
 		);
 		$form->getRequiredLabels(['Name', 'Item name', 'Aggregation interval']);
 
 		$column_default_fields = [
 			'Name' => ['value' => '', 'maxlength' => 255],
 			'Data' => ['value' => 'Item value', 'options' => ['Item value', 'Host name', 'Text']],
-			'Text' => ['value' => '', 'placeholder' => 'Text, supports {INVENTORY.*}, {HOST.*} macros','maxlength' => 255,
-					'visible' => false, 'enabled' => false
+			'Text' => [
+				'value' => '',
+				'placeholder' => 'Text, supports {INVENTORY.*}, {HOST.*} macros',
+				'maxlength' => 255,
+				'visible' => false,
+				'enabled' => false
 			],
 			'Item name' => ['value' => ''],
 			'Display' => ['value' => 'As is', 'labels' => ['As is', 'Bar', 'Indicators']],
@@ -292,8 +343,18 @@ class testDashboardTopHostsWidget extends testWidgets {
 			'xpath:.//input[@id="base_color"]/..' => ['color' => ''],
 			'Thresholds' => ['visible' => true],
 			'Decimal places' => ['value' => 2, 'maxlength' => 2],
-			'Aggregation function' => ['value' => 'not used', 'options' => ['not used', 'min', 'max', 'avg', 'count', 'sum',
-					'first', 'last']
+			'Aggregation function' => [
+				'value' => 'not used',
+				'options' => [
+					'not used',
+					'min',
+					'max',
+					'avg',
+					'count',
+					'sum',
+					'first',
+					'last'
+				]
 			],
 			'Time period' => ['value' => 'Dashboard', 'labels' => ['Dashboard', 'Widget', 'Custom'], 'visible' => false, 'enabled' => false],
 			'Widget' => ['value' => '', 'visible' => false, 'enabled' => false],
@@ -304,8 +365,18 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$this->checkFieldsAttributes($column_default_fields, $column_form);
 
 		// Reassign new fields' values for comparing them in other 'Data' values.
-		foreach (['Aggregation function', 'Item name', 'Display', 'History data', 'Min',
-				'Max', 'Decimal places', 'Thresholds' ] as $field) {
+		foreach (
+			[
+				'Aggregation function',
+				'Item name',
+				'Display',
+				'History data',
+				'Min',
+				'Max',
+				'Decimal places',
+				'Thresholds'
+			] as $field
+		) {
 			$column_default_fields[$field]['visible'] = false;
 			$column_default_fields[$field]['enabled'] = false;
 		}
@@ -324,8 +395,15 @@ class testDashboardTopHostsWidget extends testWidgets {
 
 		// Adding those fields new info icons appear.
 		$warning_visibility = [
-			'Aggregation function' => ['not used' => false, 'min' => true, 'max' => true, 'avg' => true, 'count' => false,
-					'sum' => true, 'first' => false, 'last' => false
+			'Aggregation function' => [
+				'not used' => false,
+				'min' => true,
+				'max' => true,
+				'avg' => true,
+				'count' => false,
+				'sum' => true,
+				'first' => false,
+				'last' => false
 			],
 			'Display' => ['As is' => false, 'Bar' => true, 'Indicators' => true],
 			'History data' => ['Auto' => false, 'History' => false, 'Trends' => true]
@@ -337,8 +415,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 				$hint_text = ($warning_label === 'History data')
 					? 'This setting applies only to numeric data. Non-numeric data will always be taken from history.'
 					: 'With this setting only numeric data will be displayed.';
-			}
-			else {
+			} else {
 				$hint_text = 'With this setting only numeric items will be displayed.';
 			}
 
@@ -379,13 +456,17 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$this->assertTrue($thresholds_icon->isVisible());
 		$thresholds_container->query('button:Add')->one()->waitUntilClickable()->click();
 
-		$this->checkFieldsAttributes([
+		$this->checkFieldsAttributes(
+			[
 				'xpath:.//input[@id="thresholds_0_color"]/..' => ['color' => 'FF465C'],
 				'id:thresholds_0_threshold' => ['value' => '', 'maxlength' => 255]
-				], $column_form
+			],
+			$column_form
 		);
 
-		$this->assertEquals(2, $thresholds_container->query('button', ['Add', 'Remove'])->all()
+		$this->assertEquals(
+			2,
+			$thresholds_container->query('button', ['Add', 'Remove'])->all()
 				->filter(CElementFilter::CLICKABLE)->count()
 		);
 
@@ -399,7 +480,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$dialog->close();
 	}
 
-	public static function getCreateData() {
+	public static function getCreateData()
+	{
 		return [
 			// #0 Minimum needed values to create and submit widget.
 			[
@@ -420,7 +502,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 					'main_fields' => [
 						'Name' => 'Name of Top hosts widget 😅',
 						'Refresh interval' => 'Default (1 minute)',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => 'ЗАББИКС Сервер',
 						'Show hosts in maintenance' => true,
 						'Order' => 'Bottom N',
@@ -1408,8 +1490,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getCreateData
 	 */
-	public function testDashboardTopHostsWidget_Create($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardids[self::DASHBOARD_CREATE]);
+	public function testDashboardTopHostsWidget_Create($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardids[self::DASHBOARD_CREATE]);
 		$dashboard = CDashboardElement::find()->one();
 		$old_widget_count = $dashboard->getWidgets()->count();
 		$form = $dashboard->edit()->addWidget()->asForm();
@@ -1452,8 +1535,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 			// Check that new widget is not added.
 			$this->assertMessage(TEST_GOOD, 'Dashboard updated');
 			$this->assertEquals($old_widget_count, $dashboard->getWidgets()->count());
-		}
-		else {
+		} else {
 			// Make sure that the widget is present before saving the dashboard.
 			$header = CTestArrayHelper::get($data['main_fields'], 'Name', self::DEFAULT_WIDGET_NAME);
 			$dashboard->getWidget($header);
@@ -1471,11 +1553,12 @@ class testDashboardTopHostsWidget extends testWidgets {
 	/**
 	 * Top Hosts widget simple update without any field change.
 	 */
-	public function testDashboardTopHostsWidget_SimpleUpdate() {
+	public function testDashboardTopHostsWidget_SimpleUpdate()
+	{
 		// Hash before simple update.
 		$old_hash = CDBHelper::getHash(self::SQL);
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardids[self::DASHBOARD_UPDATE]);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardids[self::DASHBOARD_UPDATE]);
 		$dashboard = CDashboardElement::find()->one();
 		$dashboard->edit()->getWidget(self::$updated_name)->edit()->submit();
 		$dashboard->save();
@@ -1486,7 +1569,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
 	}
 
-	public static function getUpdateData() {
+	public static function getUpdateData()
+	{
 		return [
 			// #0 Incorrect threshold color.
 			[
@@ -1790,7 +1874,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 					'main_fields' => [
 						'Name' => 'Updated main fields',
 						'Refresh interval' => '2 minutes',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Hosts' => 'ЗАББИКС Сервер',
 						'Show hosts in maintenance' => true,
 						'Order' => 'Bottom N',
@@ -2053,13 +2137,14 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getUpdateData
 	 */
-	public function testDashboardTopHostsWidget_Update($data) {
+	public function testDashboardTopHostsWidget_Update($data)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			// Hash before update.
 			$old_hash = CDBHelper::getHash(self::SQL);
 		}
 
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardids[self::DASHBOARD_UPDATE]);
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardids[self::DASHBOARD_UPDATE]);
 		$dashboard = CDashboardElement::find()->one();
 		$form = $dashboard->edit()->getWidget(self::$updated_name)->edit();
 
@@ -2095,8 +2180,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 
 			// Compare old hash and new one.
 			$this->assertEquals($old_hash, CDBHelper::getHash(self::SQL));
-		}
-		else {
+		} else {
 			self::$updated_name = (array_key_exists('Name', $data['main_fields']))
 				? $data['main_fields']['Name']
 				: self::$updated_name;
@@ -2116,8 +2200,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 	/**
 	 * Delete top hosts widget.
 	 */
-	public function testDashboardTopHostsWidget_Delete() {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardids[self::DASHBOARD_DELETE]);
+	public function testDashboardTopHostsWidget_Delete()
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardids[self::DASHBOARD_DELETE]);
 		$dashboard = CDashboardElement::find()->one()->edit();
 		$name = 'Top hosts delete';
 		$dashboard->deleteWidget($name);
@@ -2131,11 +2216,12 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$this->assertFalse($dashboard->getWidget($name, false)->isValid());
 
 		// Check that widget is removed from DB.
-		$widget_sql = 'SELECT * FROM widget_field wf LEFT JOIN widget w ON w.widgetid=wf.widgetid WHERE w.name='.zbx_dbstr($name);
+		$widget_sql = 'SELECT * FROM widget_field wf LEFT JOIN widget w ON w.widgetid=wf.widgetid WHERE w.name=' . zbx_dbstr($name);
 		$this->assertEquals(0, CDBHelper::getCount($widget_sql));
 	}
 
-	public static function getRemoveData() {
+	public static function getRemoveData()
+	{
 		return [
 			// #0 Remove column.
 			[
@@ -2166,8 +2252,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getRemoveData
 	 */
-	public function testDashboardTopHostsWidget_Remove($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardids[self::DASHBOARD_REMOVE]);
+	public function testDashboardTopHostsWidget_Remove($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardids[self::DASHBOARD_REMOVE]);
 		$dashboard = CDashboardElement::find()->one();
 		$form = $dashboard->edit()->getWidget('Top hosts for remove')->edit();
 
@@ -2176,8 +2263,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 			$table = $form->query($data['table_id'])->one()->asTable();
 			$amount_before = $table->getRows()->count();
 			$table->query($data['remove_selector'])->one()->click();
-		}
-		else {
+		} else {
 			$form->query('xpath:(.//button[@name="edit"])[1]')->one()->waitUntilVisible()->click();
 			$column_form = COverlayDialogElement::find()->waitUntilReady()->asForm()->all()->last();
 			$table = $column_form->query($data['table_id'])->one()->asTable();
@@ -2189,8 +2275,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 		// After remove column and threshold, form is reloaded.
 		if ($data['table_id'] !== 'id:tags_table_tags') {
 			$form->waitUntilReloaded()->submit();
-		}
-		else {
+		} else {
 			$form->submit();
 		}
 
@@ -2220,7 +2305,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 * @param array     $data          values from data provider
 	 * @param string    $action        check after creation or update
 	 */
-	protected function checkWidget($header, $data, $action) {
+	protected function checkWidget($header, $data, $action)
+	{
 		$dashboard = CDashboardElement::find()->one();
 		$form = $dashboard->edit()->getWidget($header)->edit();
 		$form->checkValue($data['main_fields']);
@@ -2252,23 +2338,21 @@ class testDashboardTopHostsWidget extends testWidgets {
 				// Check that column table has correct data.
 				if ($values['Data'] === 'Item value') {
 					$table_name = $values['Item name'];
-				}
-				elseif ($values['Data'] === 'Host name') {
+				} elseif ($values['Data'] === 'Host name') {
 					$table_name = $values['Data'];
-				}
-				else {
+				} else {
 					$table_name = $values['Text'];
 				}
 				$table->getRow($row_number - 1)->getColumnData('Data', $table_name);
 
-				$form->query('xpath:(.//button[@name="edit"])['.$row_number.']')->one()->click();
+				$form->query('xpath:(.//button[@name="edit"])[' . $row_number . ']')->one()->click();
 				$column_form = COverlayDialogElement::find()->waitUntilReady()->asForm()->all()->last();
 				$form_header = $this->query('xpath://div[@class="overlay-dialogue modal modal-popup"]//h4')->one()->getText();
 				$this->assertEquals('Update column', $form_header);
 
 				// Check Thresholds values.
 				if (array_key_exists('Thresholds', $values)) {
-					foreach($values['Thresholds'] as &$threshold) {
+					foreach ($values['Thresholds'] as &$threshold) {
 						unset($threshold['action'], $threshold['index']);
 					}
 					unset($threshold);
@@ -2296,7 +2380,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 * @param array     $data      values from data provider
 	 * @param string    $action    create or update action
 	 */
-	protected function fillColumnForm($data, $action) {
+	protected function fillColumnForm($data, $action)
+	{
 		// Starting counting column amount from 1 for xpath.
 		if ($action === 'update') {
 			$column_count = 1;
@@ -2305,7 +2390,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$form = $this->query('id:widget-dialogue-form')->one()->asForm();
 		foreach ($data['column_fields'] as $values) {
 			// Open the Column configuration add or column update dialog depending on the action type.
-			$selector = ($action === 'create') ? 'id:add' : 'xpath:(.//button[@name="edit"])['.$column_count.']';
+			$selector = ($action === 'create') ? 'id:add' : 'xpath:(.//button[@name="edit"])[' . $column_count . ']';
 			$dialog_title = ($action === 'update') ? 'Update column' : 'New column';
 			$form->query($selector)->waitUntilClickable()->one()->click();
 			$column_overlay = COverlayDialogElement::get($dialog_title);
@@ -2321,7 +2406,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 
 			// waitUntilClickable is required because selecting an item in "Item name" briefly disables the submit button.
 			$column_overlay->getFooter()->query('button', ($action === 'update') ? 'Update' : 'Add')
-					->waitUntilClickable()->one()->click();
+				->waitUntilClickable()->one()->click();
 
 			// Updating top host several columns, change it count number.
 			if ($action === 'update') {
@@ -2336,7 +2421,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 				}
 
 				$this->assertMessage(TEST_BAD, null, $data['column_error']);
-				$this->query('xpath://div/h4[text()="'.$dialog_title.'"]/../button[@title="Close"]')->one()->click();
+				$this->query('xpath://div/h4[text()="' . $dialog_title . '"]/../button[@title="Close"]')->one()->click();
 			}
 
 			$column_form->waitUntilNotVisible();
@@ -2344,7 +2429,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		}
 	}
 
-	public static function getBarScreenshotsData() {
+	public static function getBarScreenshotsData()
+	{
 		return [
 			// #0 As is.
 			[
@@ -2535,7 +2621,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getBarScreenshotsData
 	 */
-	public function testDashboardTopHostsWidget_WidgetAppearance($data) {
+	public function testDashboardTopHostsWidget_WidgetAppearance($data)
+	{
 		$this->createTopHostsWidget($data, self::$dashboardids[self::DASHBOARD_SCREENSHOTS]);
 
 		// Check widget added and assert screenshots.
@@ -2543,7 +2630,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$this->assertScreenshot($element, $data['screen_name']);
 	}
 
-	public static function getCheckTextItemsData() {
+	public static function getCheckTextItemsData()
+	{
 		return [
 			// #0 Text item - value displayed.
 			[
@@ -2868,16 +2956,20 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getCheckTextItemsData
 	 */
-	public function testDashboardTopHostsWidget_CheckTextItems($data) {
+	public function testDashboardTopHostsWidget_CheckTextItems($data)
+	{
 		$this->createTopHostsWidget($data, self::$dashboardids[self::DASHBOARD_TEXT_ITEMS]);
 
 		// Check if value displayed in column table.
-		$this->assertEquals($data['text'], CDashboardElement::find()->one()->getWidget($data['main_fields']['Name'])
+		$this->assertEquals(
+			$data['text'],
+			CDashboardElement::find()->one()->getWidget($data['main_fields']['Name'])
 				->getContent()->getText()
 		);
 	}
 
-	public static function getWidgetTimePeriodData() {
+	public static function getWidgetTimePeriodData()
+	{
 		return [
 			// Widget with default configuration.
 			[
@@ -3103,8 +3195,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getWidgetTimePeriodData
 	 */
-	public function testDashboardTopHostsWidget_TimePeriodFilter($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$other_dashboardids[self::DASHBOARD_ZOOM]);
+	public function testDashboardTopHostsWidget_TimePeriodFilter($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$other_dashboardids[self::DASHBOARD_ZOOM]);
 		$dashboard = CDashboardElement::find()->one();
 
 		foreach ($data['widgets'] as $widget) {
@@ -3158,22 +3251,23 @@ class testDashboardTopHostsWidget extends testWidgets {
 				$this->assertEquals(1, $this->query('button:Apply')->all()->filter(CElementFilter::CLICKABLE)->count());
 				$this->assertTrue($filter->isExpanded());
 			}
-		}
-		else {
+		} else {
 			$this->assertFalse($this->query('xpath:.//a[@href="#tab_1"]')->one(false)->isValid());
 		}
 
 		// Clear particular dashboard for next test case.
-		DBexecute('DELETE FROM widget'.
-				' WHERE dashboard_pageid'.
-				' IN (SELECT dashboard_pageid'.
-					' FROM dashboard_page'.
-					' WHERE dashboardid='.self::$other_dashboardids[self::DASHBOARD_ZOOM].
+		DBexecute(
+			'DELETE FROM widget' .
+				' WHERE dashboard_pageid' .
+				' IN (SELECT dashboard_pageid' .
+				' FROM dashboard_page' .
+				' WHERE dashboardid=' . self::$other_dashboardids[self::DASHBOARD_ZOOM] .
 				')'
 		);
 	}
 
-	public static function getThresholdData() {
+	public static function getThresholdData()
+	{
 		return [
 			// Numeric (unsigned) item without data.
 			[
@@ -3794,7 +3888,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getThresholdData
 	 */
-	public function testDashboardTopHostsWidget_ThresholdColor($data) {
+	public function testDashboardTopHostsWidget_ThresholdColor($data)
+	{
 		$time = strtotime('now');
 		$this->createTopHostsWidget($data, self::$other_dashboardids[self::DASHBOARD_THRESHOLD]);
 		$dashboard = CDashboardElement::find()->one();
@@ -3819,7 +3914,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 					: implode(', ', sscanf($threshold['color'], "%02x%02x%02x"));
 
 				$opacity = (array_key_exists('opacity', $data)) ? '0' : '1';
-				$this->assertEquals('rgba('.$rgb.', '.$opacity.')', $dashboard->getWidget(self::DEFAULT_WIDGET_NAME)
+				$this->assertEquals(
+					'rgba(' . $rgb . ', ' . $opacity . ')',
+					$dashboard->getWidget(self::DEFAULT_WIDGET_NAME)
 						->query('xpath:.//div[contains(@class, "dashboard-widget-tophosts")]/../..//td')->one()
 						->getCSSValue('background-color')
 				);
@@ -3830,7 +3927,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		$dashboard->edit()->deleteWidget(self::DEFAULT_WIDGET_NAME)->save();
 	}
 
-	public static function getAggregationFunctionData() {
+	public static function getAggregationFunctionData()
+	{
 		return [
 			// Widget with several columns, common item (value mapping), different aggregation functions and time periods.
 			[
@@ -4025,36 +4123,36 @@ class testDashboardTopHostsWidget extends testWidgets {
 						]
 					],
 					'item_data' => [
-							[
-								'name' => 'Item with type of information - numeric (unsigned)',
-								'value' => '5',
-								'time' => '-5 minutes'
-							],
-							[
-								'name' => 'Item with type of information - numeric (float)',
-								'value' => '7.76',
-								'time' => '-6 minutes'
-							],
-							[
-								'name' => 'Item with type of information - numeric (unsigned)',
-								'value' => '4',
-								'time' => '-30 minutes'
-							],
-							[
-								'name' => 'Item with type of information - numeric (unsigned)',
-								'value' => '10',
-								'time' => '-61 minute'
-							],
-							[
-								'name' => 'Item with type of information - numeric (float)',
-								'value' => '7.77',
-								'time' => '-90 minutes'
-							],
-							[
-								'name' => 'Item with type of information - numeric (float)',
-								'value' => '7.78',
-								'time' => '-5 hours'
-							]
+						[
+							'name' => 'Item with type of information - numeric (unsigned)',
+							'value' => '5',
+							'time' => '-5 minutes'
+						],
+						[
+							'name' => 'Item with type of information - numeric (float)',
+							'value' => '7.76',
+							'time' => '-6 minutes'
+						],
+						[
+							'name' => 'Item with type of information - numeric (unsigned)',
+							'value' => '4',
+							'time' => '-30 minutes'
+						],
+						[
+							'name' => 'Item with type of information - numeric (unsigned)',
+							'value' => '10',
+							'time' => '-61 minute'
+						],
+						[
+							'name' => 'Item with type of information - numeric (float)',
+							'value' => '7.77',
+							'time' => '-90 minutes'
+						],
+						[
+							'name' => 'Item with type of information - numeric (float)',
+							'value' => '7.78',
+							'time' => '-5 hours'
+						]
 					],
 					'result' => [
 						[
@@ -5242,7 +5340,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @dataProvider getAggregationFunctionData
 	 */
-	public function testDashboardTopHostsWidget_AggregationFunctionData($data) {
+	public function testDashboardTopHostsWidget_AggregationFunctionData($data)
+	{
 		// Substitute macro in date related fields in test case where fixed history data (not trends) is checked.
 		if (CTestArrayHelper::get($data, 'substitute_date')) {
 			$data = $this->replaceDateMacroInData($data, 'today - 1 week', ['id:time_period_from', 'id:time_period_to']);
@@ -5259,10 +5358,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 
 		if (array_key_exists('screen_name', $data)) {
 			$this->assertScreenshot($dashboard->getWidget($data['widget_name']), $data['screen_name']);
-		}
-		else {
+		} else {
 			$table_data = (array_key_exists('no_data_found', $data)) ? '' : $data['result'];
-			$this->assertTableData($table_data, 'xpath://h4[text()='.CXPathHelper::escapeQuotes($data['widget_name']).']/../..//table');
+			$this->assertTableData($table_data, 'xpath://h4[text()=' . CXPathHelper::escapeQuotes($data['widget_name']) . ']/../..//table');
 		}
 
 		// Necessary not to fill dashboard with widgets and, therefore, avoid slowing down dashboard performance during test.
@@ -5278,8 +5376,9 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @return CDashboardElement
 	 */
-	protected function createTopHostsWidget($data, $dashboardid, $widget_name = null) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.$dashboardid);
+	protected function createTopHostsWidget($data, $dashboardid, $widget_name = null)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . $dashboardid);
 		$dashboard = CDashboardElement::find()->one();
 		if ($widget_name !== null) {
 			$data['main_fields'] = ['Name' => $widget_name];
@@ -5320,7 +5419,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 * @param array           $data    provided data
 	 * @param CFormElement    $form    form to be checked
 	 */
-	protected function checkFieldsAttributes($data, $form) {
+	protected function checkFieldsAttributes($data, $form)
+	{
 		foreach ($data as $label => $attributes) {
 			$field = $form->getField($label);
 			$this->assertTrue($field->isVisible(CTestArrayHelper::get($attributes, 'visible', true)));
@@ -5353,13 +5453,17 @@ class testDashboardTopHostsWidget extends testWidgets {
 	/**
 	 * Test function for assuring that binary items are not available in Top hosts widget.
 	 */
-	public function testDashboardTopHostsWidget_CheckAvailableItems() {
-		$this->checkAvailableItems('zabbix.php?action=dashboard.view&dashboardid='
-				.self::$dashboardids[self::DASHBOARD_CREATE], self::DEFAULT_WIDGET_NAME
+	public function testDashboardTopHostsWidget_CheckAvailableItems()
+	{
+		$this->checkAvailableItems(
+			'zabbix.php?action=dashboard.view&dashboardid='
+				. self::$dashboardids[self::DASHBOARD_CREATE],
+			self::DEFAULT_WIDGET_NAME
 		);
 	}
 
-	public static function getCheckWidgetTableData() {
+	public static function getCheckWidgetTableData()
+	{
 		return [
 			// #0 Filtered by hosts, in column: item which came from two different templates.
 			[
@@ -5547,8 +5651,13 @@ class testDashboardTopHostsWidget extends testWidgets {
 							'{$1} Resolved' => 'Numeric macro' // Resolved user macro.
 						]
 					],
-					'headers' => ['Host name', 'Text: Macro in host', '{#LLD_MACRO}', '{HOST.HOST}',
-						'{$USERMACRO}', '{$1} Resolved'
+					'headers' => [
+						'Host name',
+						'Text: Macro in host',
+						'{#LLD_MACRO}',
+						'{HOST.HOST}',
+						'{$USERMACRO}',
+						'{$1} Resolved'
 					]
 				]
 			],
@@ -5625,8 +5734,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 					],
 					'headers' => ['Host', 'Maintenance Trapper', 'Item1'],
 					'check_maintenance' => [
-						'Host in maintenance' => "Maintenance for Top Hosts widget [Maintenance with data collection]\n".
-								"Maintenance for icon check in Top Hosts widget"
+						'Host in maintenance' => "Maintenance for Top Hosts widget [Maintenance with data collection]\n" .
+							"Maintenance for icon check in Top Hosts widget"
 					]
 				]
 			]
@@ -5640,7 +5749,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 	 *
 	 * @onAfter deleteWidgets
 	 */
-	public function testDashboardTopHostsWidget_CheckWidgetTable($data) {
+	public function testDashboardTopHostsWidget_CheckWidgetTable($data)
+	{
 		$dashboard = $this->createTopHostsWidget($data, static::$dashboardid);
 
 		// Assert widget's table.
@@ -5649,8 +5759,7 @@ class testDashboardTopHostsWidget extends testWidgets {
 
 		if (empty($data['result'])) {
 			$this->assertTableData();
-		}
-		else {
+		} else {
 			$this->assertTableHasData($data['result']);
 		}
 
@@ -5660,8 +5769,8 @@ class testDashboardTopHostsWidget extends testWidgets {
 		// Check maintenance icon and hint text.
 		if (CTestArrayHelper::get($data, 'check_maintenance')) {
 			foreach ($data['check_maintenance'] as $host => $hint_text) {
-				$this->query('xpath://td/a[text()='.CXPathHelper::escapeQuotes($host).
-						']/..//button[contains(@class,"wrench")]')->waitUntilClickable()->one()->click();
+				$this->query('xpath://td/a[text()=' . CXPathHelper::escapeQuotes($host) .
+					']/..//button[contains(@class,"wrench")]')->waitUntilClickable()->one()->click();
 				$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->waitUntilPresent();
 				$this->assertEquals($hint_text, $hint->one()->getText());
 				$hint->one()->query('xpath:.//button[@class="btn-overlay-close"]')->one()->click();

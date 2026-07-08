@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,22 +18,26 @@
 
 use PHPUnit\Framework\TestCase;
 
-class C52EventNameConverterTest extends TestCase {
+class C52EventNameConverterTest extends TestCase
+{
 
 	/**
 	 * @var C52EventNameConverter
 	 */
 	private $converter;
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		$this->converter = new C52EventNameConverter();
 	}
 
-	protected function tearDown(): void {
+	protected function tearDown(): void
+	{
 		$this->converter = null;
 	}
 
-	public function simpleProviderData() {
+	public function simpleProviderData()
+	{
 		return [
 			[
 				'String containing expression macro {?{host:item.last()} = 0}.',
@@ -46,19 +52,19 @@ class C52EventNameConverterTest extends TestCase {
 				'String containing expression macro {?func(//item,"1") = 0}.'
 			],
 			[
-				'String containing expression macro '.
-				'{{?100*'.
-					'{Zabbix Server:system.cpu.load.trendavg(1M,now/M)}'.
-					'/'.
-					'{Zabbix Server:system.cpu.load.trendavg(1M,now/M-1M)}'.
-				'}.fmtnum(0)}'.
-				'%',
+				'String containing expression macro ' .
+					'{{?100*' .
+					'{Advantal server:system.cpu.load.trendavg(1M,now/M)}' .
+					'/' .
+					'{Advantal server:system.cpu.load.trendavg(1M,now/M-1M)}' .
+					'}.fmtnum(0)}' .
+					'%',
 
-				'String containing expression macro {{?100*'.
-					'trendavg(/Zabbix Server/system.cpu.load,1M:now/M)'.
-					'/'.
-					'trendavg(/Zabbix Server/system.cpu.load,1M:now/M-1M)'.
-				'}.fmtnum(0)}%'
+				'String containing expression macro {{?100*' .
+					'trendavg(/Advantal server/system.cpu.load,1M:now/M)' .
+					'/' .
+					'trendavg(/Advantal server/system.cpu.load,1M:now/M-1M)' .
+					'}.fmtnum(0)}%'
 			],
 			[
 				'String containing expression macro {?{host:item.date()}}=1 and {?{host:item.date()}}.',
@@ -81,7 +87,8 @@ class C52EventNameConverterTest extends TestCase {
 	 * @param string $old_event_name
 	 * @param string $new_event_name
 	 */
-	public function testSimpleConversion(string $old_event_name, string $new_event_name) {
+	public function testSimpleConversion(string $old_event_name, string $new_event_name)
+	{
 		$this->assertSame($new_event_name, $this->converter->convert($old_event_name, '', ''));
 	}
 }

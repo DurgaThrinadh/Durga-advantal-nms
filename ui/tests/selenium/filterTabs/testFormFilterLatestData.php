@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testFormFilter.php';
+require_once __DIR__ . '/../common/testFormFilter.php';
 
 /**
  * @dataSource MonitoringOverview
@@ -23,7 +23,8 @@ require_once __DIR__.'/../common/testFormFilter.php';
  *
  * @onBefore prepareUserData, pepareFilterTabsData
  */
-class testFormFilterLatestData extends testFormFilter {
+class testFormFilterLatestData extends testFormFilter
+{
 
 	public $url = 'zabbix.php?action=latest.view';
 
@@ -32,14 +33,16 @@ class testFormFilterLatestData extends testFormFilter {
 		'user-update'
 	];
 
-	private function getTableSelector() {
-		return 'xpath://table['.CXPathHelper::fromClass('list-table fixed').']';
+	private function getTableSelector()
+	{
+		return 'xpath://table[' . CXPathHelper::fromClass('list-table fixed') . ']';
 	}
 
 	/**
 	 * Add user for updating.
 	 */
-	public function prepareUserData() {
+	public function prepareUserData()
+	{
 		$response = CDataHelper::call('user.create', [
 			[
 				'username' => 'latest-filter-delete',
@@ -75,34 +78,36 @@ class testFormFilterLatestData extends testFormFilter {
 	/**
 	 * Function for creating filter tabs in DB.
 	 */
-	public static function pepareFilterTabsData() {
+	public static function pepareFilterTabsData()
+	{
 		// Filters for delete.
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2001, '.
-				zbx_dbstr(self::$users['user-delete']).','.zbx_dbstr('web.monitoring.latest.properties').', 0, 0, 0, '.
-				zbx_dbstr('{"filter_name":""}').', 3)');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2002, '.
-				zbx_dbstr(self::$users['user-delete']).','.zbx_dbstr('web.monitoring.latest.properties').', 2, 0, 0, '.
-				zbx_dbstr('{"hostids":["99012"],"filter_name":"Filter_for_delete_2"}').', 3)');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2003, '.
-				zbx_dbstr(self::$users['user-delete']).','.zbx_dbstr('web.monitoring.latest.properties').', 1, 0, 0, '.
-				zbx_dbstr('{"name":"_item","filter_name":"Filter_for_delete_1","filter_show_counter":1}').', 3)');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2004, '.
-				zbx_dbstr(self::$users['user-delete']).','.zbx_dbstr('web.monitoring.latest.properties').', 2, 0, 0, '.
-				zbx_dbstr('{"hostids":["99012"],"filter_name":"Filter_for_delete_2"}').', 3)');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2005, '.
-				zbx_dbstr(self::$users['user-delete']).','.zbx_dbstr('web.monitoring.latest.properties').', 1, 0, 0, '.
-				zbx_dbstr('{"name":"_item","filter_name":"Filter_for_delete_1","filter_show_counter":1}').', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2001, ' .
+			zbx_dbstr(self::$users['user-delete']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 0, 0, 0, ' .
+			zbx_dbstr('{"filter_name":""}') . ', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2002, ' .
+			zbx_dbstr(self::$users['user-delete']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 2, 0, 0, ' .
+			zbx_dbstr('{"hostids":["99012"],"filter_name":"Filter_for_delete_2"}') . ', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2003, ' .
+			zbx_dbstr(self::$users['user-delete']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 1, 0, 0, ' .
+			zbx_dbstr('{"name":"_item","filter_name":"Filter_for_delete_1","filter_show_counter":1}') . ', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2004, ' .
+			zbx_dbstr(self::$users['user-delete']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 2, 0, 0, ' .
+			zbx_dbstr('{"hostids":["99012"],"filter_name":"Filter_for_delete_2"}') . ', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2005, ' .
+			zbx_dbstr(self::$users['user-delete']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 1, 0, 0, ' .
+			zbx_dbstr('{"name":"_item","filter_name":"Filter_for_delete_1","filter_show_counter":1}') . ', 3)');
 
 		// Filter for update.
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2006, '.
-				zbx_dbstr(self::$users['user-update']).','.zbx_dbstr('web.monitoring.latest.properties').', 0, 0, 0, '.
-				zbx_dbstr('{"filter_name":""}').', 3)');
-		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2007, '.
-				zbx_dbstr(self::$users['user-update']).','.zbx_dbstr('web.monitoring.latest.properties').', 1, 0, 0, '.
-				zbx_dbstr('{"groupids":["50011"],"filter_name":"update_tab","filter_show_counter":1}').', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2006, ' .
+			zbx_dbstr(self::$users['user-update']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 0, 0, 0, ' .
+			zbx_dbstr('{"filter_name":""}') . ', 3)');
+		DBexecute('INSERT INTO profiles (profileid, userid, idx, idx2, value_id, value_int, value_str, type) VALUES (2007, ' .
+			zbx_dbstr(self::$users['user-update']) . ',' . zbx_dbstr('web.monitoring.latest.properties') . ', 1, 0, 0, ' .
+			zbx_dbstr('{"groupids":["50011"],"filter_name":"update_tab","filter_show_counter":1}') . ', 3)');
 	}
 
-	public static function getCheckCreatedFilterData() {
+	public static function getCheckCreatedFilterData()
+	{
 		return [
 			[
 				[
@@ -221,16 +226,18 @@ class testFormFilterLatestData extends testFormFilter {
 	 *
 	 * @dataProvider getCheckCreatedFilterData
 	 */
-	public function testFormFilterLatestData_CheckCreatedFilter($data) {
+	public function testFormFilterLatestData_CheckCreatedFilter($data)
+	{
 		$this->createFilter($data, 'filter-create', 'zabbix', $this->getTableSelector());
 		$this->checkFilters($data, $this->getTableSelector());
 	}
 
-	public static function getCheckRememberedFilterData() {
+	public static function getCheckRememberedFilterData()
+	{
 		return [
 			[
 				[
-					'Host groups' => ['Zabbix servers'],
+					'Host groups' => ['Advantal servers'],
 					'Hosts' => ['ЗАББИКС Сервер'],
 					'Name' => 'Free',
 					'Show tags' => '1'
@@ -252,7 +259,8 @@ class testFormFilterLatestData extends testFormFilter {
 	 *
 	 * @dataProvider getCheckRememberedFilterData
 	 */
-	public function testFormFilterLatestData_CheckRememberedFilter($data) {
+	public function testFormFilterLatestData_CheckRememberedFilter($data)
+	{
 		$this->checkRememberedFilters($data, $this->getTableSelector());
 	}
 
@@ -260,21 +268,24 @@ class testFormFilterLatestData extends testFormFilter {
 	/**
 	 * Delete created filter.
 	 */
-	public function testFormFilterLatestData_Delete() {
+	public function testFormFilterLatestData_Delete()
+	{
 		$this->deleteFilter('latest-filter-delete', 'Delete_filter_passw0rd');
 	}
 
 	/**
 	 * Updating filter form.
 	 */
-	public function testFormFilterLatestData_UpdateForm() {
+	public function testFormFilterLatestData_UpdateForm()
+	{
 		$this->updateFilterForm('latest-filter-update', 'Update_filter_passw0rd', $this->getTableSelector());
 	}
 
 	/**
 	 * Updating saved filter properties.
 	 */
-	public function testFormFilterLatestData_UpdateProperties() {
+	public function testFormFilterLatestData_UpdateProperties()
+	{
 		$this->updateFilterProperties('latest-filter-update', 'Update_filter_passw0rd');
 	}
 }

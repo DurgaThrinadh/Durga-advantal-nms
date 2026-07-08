@@ -13,37 +13,54 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once __DIR__.'/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
 
 /**
  * @backup profiles
  *
  * @browsers chrome
  */
-class testMultiselects extends CWebTest {
+class testMultiselects extends CWebTest
+{
 
-	public function testMultiselects_SuggestExisting() {
-		$this->checkSuggest('zabbix.php?action=problem.view&filter_reset=1', 'zbx_filter',
-				'Host groups', 'z', 'multiselect-suggest'
+	public function testMultiselects_SuggestExisting()
+	{
+		$this->checkSuggest(
+			'zabbix.php?action=problem.view&filter_reset=1',
+			'zbx_filter',
+			'Host groups',
+			'z',
+			'multiselect-suggest'
 		);
 	}
 
-	public function testMultiselects_SuggestNoMatches() {
-		$this->checkSuggest('zabbix.php?action=problem.view&filter_reset=1', 'zbx_filter',
-				'Host groups', 'QQQ', 'multiselect-matches'
+	public function testMultiselects_SuggestNoMatches()
+	{
+		$this->checkSuggest(
+			'zabbix.php?action=problem.view&filter_reset=1',
+			'zbx_filter',
+			'Host groups',
+			'QQQ',
+			'multiselect-matches'
 		);
 	}
 
-	public function testMultiselects_SuggestCreateNew() {
-		$this->checkSuggest('zabbix.php?action=host.edit', 'host-form', 'Host groups', 'QQQwww',
-				'multiselect-suggest'
+	public function testMultiselects_SuggestCreateNew()
+	{
+		$this->checkSuggest(
+			'zabbix.php?action=host.edit',
+			'host-form',
+			'Host groups',
+			'QQQwww',
+			'multiselect-suggest'
 		);
 	}
 
-	public function checkSuggest($link, $query, $name, $string, $class) {
+	public function checkSuggest($link, $query, $name, $string, $class)
+	{
 		$this->page->login()->open($link)->waitUntilReady();
 		$this->page->updateViewport();
-		$field = $this->query('name:'.$query)->asForm()->one()->getField($name);
+		$field = $this->query('name:' . $query)->asForm()->one()->getField($name);
 		$element = $field->query('tag:input')->one();
 		$element->type($string);
 		$this->query('class', $class)->waitUntilVisible();
@@ -53,24 +70,29 @@ class testMultiselects extends CWebTest {
 			? [$element, ['x' => 193, 'y' => 317, 'width' => 452, 'height' => 22]]
 			: [$element];
 
-		$this->assertScreenshotExcept($element->parents('class', (($query === 'host-form') ? 'form-grid' : 'table-forms'))
-				->one(), $covered_region, $string
+		$this->assertScreenshotExcept(
+			$element->parents('class', (($query === 'host-form') ? 'form-grid' : 'table-forms'))
+				->one(),
+			$covered_region,
+			$string
 		);
 	}
 
-	public function testMultiselects_NotSuggestAlreadySelected() {
+	public function testMultiselects_NotSuggestAlreadySelected()
+	{
 		$this->page->login()->open('zabbix.php?action=problem.view&filter_reset=1')->waitUntilReady();
 		$this->page->updateViewport();
 		$form = $this->query('name:zbx_filter')->asForm()->one();
 		$field = $form->getField('Host groups');
-		$field->select('Zabbix servers');
+		$field->select('Advantal servers');
 		$element = $field->query('tag:input')->one();
-		$element->type('Zabbix server');
+		$element->type('Advantal server');
 		$this->query('class:multiselect-matches')->waitUntilVisible();
 		$this->assertScreenshotExcept($element->parents('class:table-forms')->one(), [$element]);
 	}
 
-	public function testMultiselects_SuggestInOverlay() {
+	public function testMultiselects_SuggestInOverlay()
+	{
 		$widget = 'Item navigator';
 
 		$this->page->login()->open('zabbix.php?action=dashboard.list');
@@ -94,8 +116,8 @@ class testMultiselects extends CWebTest {
 		$element->type('Zab');
 		$this->query('class:multiselect-suggest')->waitUntilVisible();
 		$this->assertScreenshotExcept(null, [
-				$element,
-				['query' => 'xpath://footer[text()]']
+			$element,
+			['query' => 'xpath://footer[text()]']
 		]);
 	}
 }

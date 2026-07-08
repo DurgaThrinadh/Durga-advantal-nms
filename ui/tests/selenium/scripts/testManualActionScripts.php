@@ -14,15 +14,16 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
 
 /**
  * @backup scripts
  *
  * @onBefore prepareData
  */
-class testManualActionScripts extends CWebTest {
+class testManualActionScripts extends CWebTest
+{
 
 	const HOST = 'A host for scripts check';
 
@@ -38,11 +39,13 @@ class testManualActionScripts extends CWebTest {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [CMessageBehavior::class];
 	}
 
-	public function prepareData() {
+	public function prepareData()
+	{
 		// Create host and trapper item for manual user input test.
 		$host = CDataHelper::createHosts([
 			[
@@ -85,7 +88,8 @@ class testManualActionScripts extends CWebTest {
 		CDBHelper::setTriggerProblem('Attention: script execution is needed', TRIGGER_VALUE_TRUE);
 	}
 
-	public static function getManualInputData() {
+	public static function getManualInputData()
+	{
 		return [
 			// #0 Host url with {MANUALINPUT} macro, confirmation message and input type - string.
 			[
@@ -100,16 +104,16 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Host id {MANUALINPUT} is selected. Proceed?'
 					],
 					'manual_input' => '0',
 					'prompt' => 'Enter host id',
 					'host' => self::HOST,
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Hosts' => 'zabbix.php?action=host.view',
@@ -131,16 +135,16 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Host id {MANUALINPUT} is selected. Proceed?'
 					],
 					'manual_input' => '0',
 					'prompt' => 'Enter host id',
 					'event' => 'Attention: script execution is needed',
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Global view' => 'zabbix.php?action=dashboard.view&dashboardid=1'
@@ -160,15 +164,15 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => '999999',
 					'prompt' => 'Enter host id',
 					'event' => 'Inheritance trigger with tags',
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Global view' => 'zabbix.php?action=dashboard.view&dashboardid=1'
@@ -188,15 +192,15 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => '0',
 					'prompt' => 'Enter host id',
 					'host' => self::HOST,
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Hosts' => 'zabbix.php?action=host.view',
@@ -581,15 +585,15 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => '1',
 					'prompt' => 'Enter port',
 					'host' => self::HOST,
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Hosts' => 'zabbix.php?action=host.view',
@@ -612,16 +616,16 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Selected port:{MANUALINPUT}. Proceed?'
 					],
 					'manual_input' => '.',
 					'prompt' => 'Enter port',
 					'host' => self::HOST,
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Hosts' => 'zabbix.php?action=host.view',
@@ -644,15 +648,15 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => '?',
 					'prompt' => 'Enter port',
 					'event' => 'Attention: script execution is needed',
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Global view' => 'zabbix.php?action=dashboard.view&dashboardid=1'
@@ -673,16 +677,16 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Selected port:{MANUALINPUT}. Proceed?'
 					],
 					'manual_input' => '',
 					'prompt' => 'Enter port',
 					'event' => 'Attention: script execution is needed',
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9])\b.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Global view' => 'zabbix.php?action=dashboard.view&dashboardid=1'
@@ -700,18 +704,18 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => false
 					],
 					'manual_input' => 'example1',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'host' => self::HOST,
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Hosts' => 'zabbix.php?action=host.view',
@@ -731,19 +735,19 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Are you sure?'
 					],
 					'manual_input' => '.',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'host' => self::HOST,
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Hosts' => 'zabbix.php?action=host.view',
@@ -763,18 +767,18 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => false
 					],
 					'manual_input' => '?',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'event' => 'Attention: script execution is needed',
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Global view' => 'zabbix.php?action=dashboard.view&dashboardid=1'
@@ -792,19 +796,19 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Are you sure?'
 					],
 					'manual_input' => '',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'event' => 'Attention: script execution is needed',
-					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: '.
-							'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$.',
+					'error_message' => 'Incorrect value for field "manualinput": input does not match the provided pattern: ' .
+						'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$.',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
 						'Global view' => 'zabbix.php?action=dashboard.view&dashboardid=1'
@@ -825,8 +829,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => 'id',
@@ -882,8 +886,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => 'id',
@@ -935,8 +939,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Confirm selected host?'
 					],
@@ -996,8 +1000,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter host id',
 						'Default input string' => '1',
-						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
+						'Input validation rule' => '\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 1-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Confirm selected host?'
 					],
@@ -1765,8 +1769,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => '777',
@@ -1822,8 +1826,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => false
 					],
 					'manual_input' => '23',
@@ -1875,8 +1879,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Selected port:{MANUALINPUT}. Proceed?'
 					],
@@ -1936,8 +1940,8 @@ class testManualActionScripts extends CWebTest {
 						'Enable user input' => true,
 						'Input prompt' => 'Enter port',
 						'Default input string' => '22',
-						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]'.
-								'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
+						'Input validation rule' => '\b([1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]' .
+							'|[1-9][0-9][0-9][0-9][0-9])\b', // regex 10-99999 for form validation.
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Selected port:{MANUALINPUT}. Proceed?'
 					],
@@ -1990,15 +1994,15 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => false
 					],
 					'manual_input' => 'gNuSm@s2',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'host' => self::HOST,
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
@@ -2046,15 +2050,15 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => false
 					],
 					'manual_input' => 'gNuSm@s2',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'event' => 'Attention: script execution is needed',
 					'urls' => [
 						'Problems' => 'zabbix.php?action=problem.view',
@@ -2098,16 +2102,16 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Are you sure?'
 					],
-					'manual_input' =>'gNuSm@s2',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'manual_input' => 'gNuSm@s2',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'host' => self::HOST,
 					'confirmation' => 'Are you sure?',
 					'urls' => [
@@ -2158,16 +2162,16 @@ class testManualActionScripts extends CWebTest {
 						'Command' => 'ipmitool -I lan -H localhost -U zabbix -P {MANUALINPUT} -L user sensor',
 						'Advanced configuration' => true,
 						'Enable user input' => true,
-						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-								'one digit, one special character and minimum eight in length',
+						'Input prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+							'one digit, one special character and minimum eight in length',
 						'Default input string' => 'Ex@mple7',
 						'Input validation rule' => '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
 						'Enable confirmation' => true,
 						'Confirmation text' => 'Are you sure?'
 					],
 					'manual_input' => 'gNuSm@s2',
-					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter'.
-							'one digit, one special character and minimum eight in length',
+					'prompt' => 'regex will enforce these rules: At least one upper case letter, one lower case letter' .
+						'one digit, one special character and minimum eight in length',
 					'event' => 'Attention: script execution is needed',
 					'confirmation' => 'Are you sure?',
 					'urls' => [
@@ -2209,14 +2213,15 @@ class testManualActionScripts extends CWebTest {
 	/**
 	 * @dataProvider getManualInputData
 	 */
-	public function testManualActionScripts_ManualUserInput($data) {
+	public function testManualActionScripts_ManualUserInput($data)
+	{
 		$this->page->login()->open('zabbix.php?action=script.list');
 		$this->query('button:Create script')->waitUntilClickable()->one()->click();
 		$modal = COverlayDialogElement::find()->one()->waitUntilReady();
 		$form = $modal->asForm();
 
 		if (($data['manual_input'] === 'id') && (array_key_exists('Dropdown options', $data['fields']))) {
-			$data['fields']['Dropdown options'] = $data['fields']['Dropdown options'].self::$hostid;
+			$data['fields']['Dropdown options'] = $data['fields']['Dropdown options'] . self::$hostid;
 		}
 
 		if (array_key_exists('parameters', $data)) {
@@ -2237,11 +2242,9 @@ class testManualActionScripts extends CWebTest {
 				$this->query('button:Apply')->one()->click();
 				$this->page->waitUntilReady();
 				$table->waitUntilReloaded();
-			}
-			elseif ($content === 'Global view') {
+			} elseif ($content === 'Global view') {
 				$table = CDashboardElement::find()->one()->getWidget('Current problems');
-			}
-			else {
+			} else {
 				$table = $this->query('class:list-table')->asTable()->waitUntilVisible()->one();
 			}
 
@@ -2255,15 +2258,16 @@ class testManualActionScripts extends CWebTest {
 			$manual_input = ($data['manual_input'] === 'id') ? self::$hostid : $data['manual_input'];
 			if (array_key_exists('Input type', $data['fields'])) {
 				$manual_input_dialog->query('name:manualinput')->asDropdown()->one()->select($manual_input);
-			}
-			else {
+			} else {
 				$manual_input_dialog->query('id:manualinput')->one()->fill($manual_input);
 			}
 
 			$action = ($data['fields']['Enable confirmation'] === true) ? 'Continue' : 'Execute';
 
 			// Check if buttons present and clickable.
-			$this->assertEquals(['Cancel', $action], $manual_input_dialog->getFooter()->query('button')->all()
+			$this->assertEquals(
+				['Cancel', $action],
+				$manual_input_dialog->getFooter()->query('button')->all()
 					->filter(CElementFilter::CLICKABLE)->asText()
 			);
 			$manual_input_dialog->getFooter()->query('button', $action)->one()->click();
@@ -2271,8 +2275,7 @@ class testManualActionScripts extends CWebTest {
 			if ($data['expected'] === TEST_BAD) {
 				$this->assertMessage(TEST_BAD, 'Invalid input', $data['error_message']);
 				$manual_input_dialog->close();
-			}
-			else {
+			} else {
 				if (array_key_exists('confirmation', $data)) {
 					$confirmation_message = $this->query('class:confirmation-msg')->waitUntilVisible()->one();
 					$confirmation_dialog = COverlayDialogElement::find()->all()->last()->waitUntilReady();
@@ -2282,7 +2285,9 @@ class testManualActionScripts extends CWebTest {
 					$action = ($data['fields']['Type'] === 'URL') ? 'Open URL' : 'Execute';
 
 					// Check that confirmation popup buttons present and clickable.
-					$this->assertEquals(['Cancel', $action], $confirmation_dialog->getFooter()->query('button')->all()
+					$this->assertEquals(
+						['Cancel', $action],
+						$confirmation_dialog->getFooter()->query('button')->all()
 							->filter(CElementFilter::CLICKABLE)->asText()
 					);
 					$confirmation_dialog->getFooter()->query('button', $action)->one()->click();
@@ -2292,21 +2297,22 @@ class testManualActionScripts extends CWebTest {
 					COverlayDialogElement::ensureNotPresent();
 					$host_name = (array_key_exists('host', $data)) ? $data['host'] : self::HOST;
 					$this->assertEquals($host_name, $this->query('id:host')->one()->getValue());
-				}
-				else {
+				} else {
 					$this->query('button:Ok')->waitUntilVisible()->one();
 					$output_dialog = COverlayDialogElement::find()->waitUntilReady()->one();
 					$this->assertEquals($data['fields']['Name'], $output_dialog->getTitle());
 
-					// Check that Zabbix server is down and return error message.
-					$error = "Connection to Zabbix server \"localhost:10051\" refused. Possible reasons:\n".
-						"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n".
-						"2. Security environment (for example, SELinux) is blocking the connection;\n".
-						"3. Zabbix server daemon not running;\n".
-						"4. Firewall is blocking TCP connection.\n".
+					// Check that Advantal server is down and return error message.
+					$error = "Connection to Advantal server \"localhost:10051\" refused. Possible reasons:\n" .
+						"1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n" .
+						"2. Security environment (for example, SELinux) is blocking the connection;\n" .
+						"3. Advantal server daemon not running;\n" .
+						"4. Firewall is blocking TCP connection.\n" .
 						"Connection refused";
 					$this->assertMessage(TEST_BAD, 'Cannot execute script.', $error);
-					$this->assertEquals(['Ok'], $output_dialog->getFooter()->query('button')->all()
+					$this->assertEquals(
+						['Ok'],
+						$output_dialog->getFooter()->query('button')->all()
 							->filter(CElementFilter::CLICKABLE)->asText()
 					);
 					$output_dialog->close();

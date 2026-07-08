@@ -14,7 +14,8 @@
 **/
 
 
-class CControllerPopupTriggerExpr extends CController {
+class CControllerPopupTriggerExpr extends CController
+{
 
 	private $metrics = [];
 	private $param1SecCount = [];
@@ -39,7 +40,8 @@ class CControllerPopupTriggerExpr extends CController {
 	private $period_optional = [];
 	private $period_seasons = [];
 
-	protected function init() {
+	protected function init()
+	{
 		$this->disableCsrfValidation();
 
 		$this->metrics = [
@@ -55,7 +57,7 @@ class CControllerPopupTriggerExpr extends CController {
 		 */
 		$this->param1SecCount = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => true
@@ -69,7 +71,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->period_optional = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => false
@@ -83,7 +85,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->param1Period = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'A' => true
 			],
@@ -96,7 +98,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->period_seasons = [
 			'last' => [
-				'C' => _('Period').' (T)',
+				'C' => _('Period') . ' (T)',
 				'T' => T_ZBX_INT,
 				'A' => true
 			],
@@ -126,7 +128,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->param1Sec = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'A' => true
 			]
@@ -147,7 +149,7 @@ class CControllerPopupTriggerExpr extends CController {
 				'A' => false
 			],
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => false
@@ -156,7 +158,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->param2SecMode = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'A' => true
 			],
@@ -169,7 +171,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->param2SecCountMode = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => true
@@ -188,7 +190,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->param3SecVal = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => true
@@ -225,7 +227,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->param3SecPercent = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => true
@@ -236,7 +238,7 @@ class CControllerPopupTriggerExpr extends CController {
 				'A' => false
 			],
 			'p' => [
-				'C' => _('Percentage').' (P)',
+				'C' => _('Percentage') . ' (P)',
 				'T' => T_ZBX_DBL,
 				'A' => true
 			]
@@ -244,7 +246,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->paramForecast = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => true
@@ -255,7 +257,7 @@ class CControllerPopupTriggerExpr extends CController {
 				'A' => false
 			],
 			'time' => [
-				'C' => _('Time').' (t)',
+				'C' => _('Time') . ' (t)',
 				'T' => T_ZBX_INT,
 				'A' => true
 			],
@@ -273,7 +275,7 @@ class CControllerPopupTriggerExpr extends CController {
 
 		$this->paramTimeleft = [
 			'last' => [
-				'C' => _('Last of').' (T)',
+				'C' => _('Last of') . ' (T)',
 				'T' => T_ZBX_INT,
 				'M' => $this->metrics,
 				'A' => true
@@ -637,7 +639,7 @@ class CControllerPopupTriggerExpr extends CController {
 			],
 			'fuzzytime' => [
 				'types' => [ZBX_FUNCTION_TYPE_HISTORY],
-				'description' => _('fuzzytime() - Difference between item value (as timestamp) and Zabbix server timestamp is less than or equal to T seconds (1 - true, 0 - false)'),
+				'description' => _('fuzzytime() - Difference between item value (as timestamp) and Advantal server timestamp is less than or equal to T seconds (1 - true, 0 - false)'),
 				'params' => $this->param1Sec,
 				'allowed_types' => $this->allowedTypesNumeric,
 				'operators' => ['=', '<>']
@@ -683,7 +685,7 @@ class CControllerPopupTriggerExpr extends CController {
 				'description' => _('jsonpath() - Returns JSONPath result'),
 				'params' => [
 					'last' => [
-						'C' => _('Last of').' (T)',
+						'C' => _('Last of') . ' (T)',
 						'T' => T_ZBX_INT,
 						'M' => [PARAM_TYPE_COUNTS => _('Count')],
 						'A' => false
@@ -1112,7 +1114,7 @@ class CControllerPopupTriggerExpr extends CController {
 				'description' => _('trendstl() - Anomaly detection for period T'),
 				'params' => [
 					'last' => [
-						'C' => _('Evaluation period').' (T)',
+						'C' => _('Evaluation period') . ' (T)',
 						'T' => T_ZBX_INT,
 						'A' => true
 					],
@@ -1202,7 +1204,7 @@ class CControllerPopupTriggerExpr extends CController {
 				'description' => _('xmlxpath() - Returns XML XPath result'),
 				'params' => [
 					'last' => [
-						'C' => _('Last of').' (T)',
+						'C' => _('Last of') . ' (T)',
 						'T' => T_ZBX_INT,
 						'M' => [PARAM_TYPE_COUNTS => _('Count')],
 						'A' => false
@@ -1231,7 +1233,8 @@ class CControllerPopupTriggerExpr extends CController {
 		CArrayHelper::sort($this->functions, ['description']);
 	}
 
-	protected function checkInput() {
+	protected function checkInput()
+	{
 		$fields = [
 			'dstfrm' =>				'string|fatal',
 			'dstfld1' =>			'string|not_empty',
@@ -1239,10 +1242,10 @@ class CControllerPopupTriggerExpr extends CController {
 			'expression' =>			'string',
 			'itemid' =>				'db items.itemid',
 			'parent_discoveryid' =>	'db items.itemid',
-			'function' =>			'in '.implode(',', array_keys($this->functions)),
-			'operator' =>			'in '.implode(',', $this->operators),
+			'function' =>			'in ' . implode(',', array_keys($this->functions)),
+			'operator' =>			'in ' . implode(',', $this->operators),
 			'params' =>				'',
-			'paramtype' =>			'in '.implode(',', [PARAM_TYPE_TIME, PARAM_TYPE_COUNTS]),
+			'paramtype' =>			'in ' . implode(',', [PARAM_TYPE_TIME, PARAM_TYPE_COUNTS]),
 			'value' =>				'string|not_empty',
 			'hostid' =>				'db hosts.hostid',
 			'groupid' =>			'db hosts_groups.hostgroupid',
@@ -1265,12 +1268,14 @@ class CControllerPopupTriggerExpr extends CController {
 		return $ret;
 	}
 
-	protected function checkPermissions() {
+	protected function checkPermissions()
+	{
 		return $this->checkAccess(CRoleHelper::UI_CONFIGURATION_HOSTS)
 			|| $this->checkAccess(CRoleHelper::UI_CONFIGURATION_TEMPLATES);
 	}
 
-	protected function doAction() {
+	protected function doAction()
+	{
 		$expression_parser = new CExpressionParser(['usermacros' => true, 'lldmacros' => true]);
 		$expression_validator = new CExpressionValidator([
 			'usermacros' => true,
@@ -1327,26 +1332,30 @@ class CControllerPopupTriggerExpr extends CController {
 					 */
 					$index = $function_token_index + 1;
 
-					if (array_key_exists($index, $tokens)
-							&& $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_OPERATOR
-							&& in_array($tokens[$index]['match'], $this->operators)) {
+					if (
+						array_key_exists($index, $tokens)
+						&& $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_OPERATOR
+						&& in_array($tokens[$index]['match'], $this->operators)
+					) {
 						$operator = $tokens[$index]['match'];
 						$index++;
 
 						if (array_key_exists($index, $tokens)) {
-							if ($tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_NUMBER
-									|| $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_MACRO
-									|| $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_USER_MACRO
-									|| $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_LLD_MACRO) {
+							if (
+								$tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_NUMBER
+								|| $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_MACRO
+								|| $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_USER_MACRO
+								|| $tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_LLD_MACRO
+							) {
 								$value = $tokens[$index]['match'];
-							}
-							elseif ($tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_STRING) {
+							} elseif ($tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_STRING) {
 								$value = CExpressionParser::unquoteString($tokens[$index]['match']);
-							}
-							elseif ($tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_OPERATOR
-									&& array_key_exists($index + 1, $tokens)
-									&& $tokens[$index + 1]['type'] == CExpressionParserResult::TOKEN_TYPE_NUMBER) {
-								$value = '-'.$tokens[$index + 1]['match'];
+							} elseif (
+								$tokens[$index]['type'] == CExpressionParserResult::TOKEN_TYPE_OPERATOR
+								&& array_key_exists($index + 1, $tokens)
+								&& $tokens[$index + 1]['type'] == CExpressionParserResult::TOKEN_TYPE_NUMBER
+							) {
+								$value = '-' . $tokens[$index + 1]['match'];
 							}
 						}
 					}
@@ -1360,8 +1369,7 @@ class CControllerPopupTriggerExpr extends CController {
 						if ($hist_function_token && $hist_function_token['data']['function'] === 'last') {
 							$parameters = $hist_function_token['data']['parameters'];
 						}
-					}
-					else {
+					} else {
 						$function = $hist_function_token['data']['function'];
 						$parameters = $hist_function_token['data']['parameters'];
 					}
@@ -1403,21 +1411,18 @@ class CControllerPopupTriggerExpr extends CController {
 							$params[] = ($parameters[1]['type'] == CHistFunctionParser::PARAM_TYPE_QUOTED)
 								? CHistFunctionParser::unquoteParam($parameters[1]['match'])
 								: $parameters[1]['match'];
-						}
-						else {
+						} else {
 							if ($parameters[1]['type'] == CHistFunctionParser::PARAM_TYPE_PERIOD) {
 								$sec_num = $parameters[1]['data']['sec_num'];
 								if ($sec_num !== '' && $sec_num[0] === '#') {
 									$params[] = substr($sec_num, 1);
 									$param_type = PARAM_TYPE_COUNTS;
-								}
-								else {
+								} else {
 									$params[] = $sec_num;
 									$param_type = PARAM_TYPE_TIME;
 								}
 								$params[] = $parameters[1]['data']['time_shift'];
-							}
-							else {
+							} else {
 								$params[] = '';
 								$params[] = '';
 							}
@@ -1455,22 +1460,22 @@ class CControllerPopupTriggerExpr extends CController {
 			$item_value_type = $item['value_type'];
 			$item_key = $item['key_'];
 			$item_host_data = reset($item['hosts']);
-			$description = $item_host_data['name'].NAME_DELIMITER.$item['name'];
-		}
-		else {
+			$description = $item_host_data['name'] . NAME_DELIMITER . $item['name'];
+		} else {
 			$item_key = '';
 			$description = '';
 			$item_value_type = null;
 		}
 
-		if ($param_type === null && array_key_exists($function, $this->functions)
-				&& array_key_exists('params', $this->functions[$function])
-				&& array_key_exists('M', $this->functions[$function]['params'])) {
+		if (
+			$param_type === null && array_key_exists($function, $this->functions)
+			&& array_key_exists('params', $this->functions[$function])
+			&& array_key_exists('M', $this->functions[$function]['params'])
+		) {
 			$param_type = is_array($this->functions[$function]['params']['M'])
 				? reset($this->functions[$function]['params']['M'])
 				: $this->functions[$function]['params']['M'];
-		}
-		elseif ($param_type === null) {
+		} elseif ($param_type === null) {
 			$param_type = PARAM_TYPE_TIME;
 		}
 
@@ -1501,7 +1506,8 @@ class CControllerPopupTriggerExpr extends CController {
 		// Check if submitted function is usable with selected item.
 		foreach ($data['functions'] as $id => $f) {
 			if (($data['itemValueType'] === null || array_key_exists($item_value_type, $f['allowed_types']))
-					&& $id === $function) {
+				&& $id === $function
+			) {
 				$data['selectedFunction'] = $id;
 				break;
 			}
@@ -1532,13 +1538,14 @@ class CControllerPopupTriggerExpr extends CController {
 			try {
 				if (in_array($function, getFunctionsConstants())) {
 					$data['expression'] = sprintf('%s()', $function);
-				}
-				elseif (in_array($function, getStandaloneFunctions())) {
-					$data['expression'] = sprintf('%s()%s%s', $function, $operator,
+				} elseif (in_array($function, getStandaloneFunctions())) {
+					$data['expression'] = sprintf(
+						'%s()%s%s',
+						$function,
+						$operator,
 						CExpressionParser::quoteString($data['value'])
 					);
-				}
-				elseif ($data['item_description']) {
+				} elseif ($data['item_description']) {
 					// Quote function string parameters.
 					$quote_params = [
 						'algorithm',
@@ -1563,29 +1570,74 @@ class CControllerPopupTriggerExpr extends CController {
 					// Combine sec|#num and <time_shift|period_shift> parameters into one.
 					if (array_key_exists('last', $data['params'])) {
 						if ($data['paramtype'] == PARAM_TYPE_COUNTS && zbx_is_int($data['params']['last'])) {
-							$data['params']['last'] = '#'.$data['params']['last'];
+							$data['params']['last'] = '#' . $data['params']['last'];
 						}
-					}
-					else {
+					} else {
 						$data['params']['last'] = '';
 					}
 
 					if (array_key_exists('shift', $data['params']) && $data['params']['shift'] !== '') {
-						$data['params']['last'] .= ':'.$data['params']['shift'];
-					}
-					elseif (array_key_exists('period_shift', $data['params'])
-							&& $data['params']['period_shift'] !== '') {
-						$data['params']['last'] .= ':'.$data['params']['period_shift'];
+						$data['params']['last'] .= ':' . $data['params']['shift'];
+					} elseif (
+						array_key_exists('period_shift', $data['params'])
+						&& $data['params']['period_shift'] !== ''
+					) {
+						$data['params']['last'] .= ':' . $data['params']['period_shift'];
 					}
 					unset($data['params']['shift'], $data['params']['period_shift']);
 
 					// Functions where item is wrapped in last() like func(last(/host/item)).
 					$last_functions = [
-						'abs', 'acos', 'ascii', 'asin', 'atan', 'atan2', 'between', 'bitand', 'bitlength', 'bitlshift',
-						'bitnot', 'bitor', 'bitrshift', 'bitxor', 'bytelength', 'cbrt', 'ceil', 'char', 'concat', 'cos',
-						'cosh', 'cot', 'degrees', 'exp', 'expm1', 'floor', 'in', 'insert', 'jsonpath', 'left', 'length',
-						'log', 'log10', 'ltrim', 'mid', 'mod', 'power', 'radians', 'repeat', 'replace', 'right', 'round',
-						'signum', 'sin', 'sinh', 'sqrt', 'tan', 'trim', 'truncate', 'xmlxpath'
+						'abs',
+						'acos',
+						'ascii',
+						'asin',
+						'atan',
+						'atan2',
+						'between',
+						'bitand',
+						'bitlength',
+						'bitlshift',
+						'bitnot',
+						'bitor',
+						'bitrshift',
+						'bitxor',
+						'bytelength',
+						'cbrt',
+						'ceil',
+						'char',
+						'concat',
+						'cos',
+						'cosh',
+						'cot',
+						'degrees',
+						'exp',
+						'expm1',
+						'floor',
+						'in',
+						'insert',
+						'jsonpath',
+						'left',
+						'length',
+						'log',
+						'log10',
+						'ltrim',
+						'mid',
+						'mod',
+						'power',
+						'radians',
+						'repeat',
+						'replace',
+						'right',
+						'round',
+						'signum',
+						'sin',
+						'sinh',
+						'sqrt',
+						'tan',
+						'trim',
+						'truncate',
+						'xmlxpath'
 					];
 
 					if (in_array($function, $last_functions)) {
@@ -1593,30 +1645,30 @@ class CControllerPopupTriggerExpr extends CController {
 						unset($data['params']['last']);
 						$fn_params = rtrim(implode(',', $data['params']), ',');
 
-						$data['expression'] = sprintf('%s(last(/%s/%s%s)%s)%s%s',
+						$data['expression'] = sprintf(
+							'%s(last(/%s/%s%s)%s)%s%s',
 							$function,
 							$item_host_data['host'],
 							$data['item_key'],
-							($last_params === '') ? '' : ','.$last_params,
-							($fn_params === '') ? '' : ','.$fn_params,
+							($last_params === '') ? '' : ',' . $last_params,
+							($fn_params === '') ? '' : ',' . $fn_params,
 							$operator,
 							CExpressionParser::quoteString($data['value'])
 						);
-					}
-					else {
+					} else {
 						$fn_params = rtrim(implode(',', $data['params']), ',');
 
-						$data['expression'] = sprintf('%s(/%s/%s%s)%s%s',
+						$data['expression'] = sprintf(
+							'%s(/%s/%s%s)%s%s',
 							$function,
 							$item_host_data['host'],
 							$data['item_key'],
-							($fn_params === '') ? '' : ','.$fn_params,
+							($fn_params === '') ? '' : ',' . $fn_params,
 							$operator,
 							CExpressionParser::quoteString($data['value'])
 						);
 					}
-				}
-				else {
+				} else {
 					error(_('Item not selected'));
 				}
 
@@ -1626,13 +1678,11 @@ class CControllerPopupTriggerExpr extends CController {
 						if (!$expression_validator->validate($expression_parser->getResult()->getTokens())) {
 							error(_s('Invalid condition: %1$s.', $expression_validator->getError()));
 						}
-					}
-					else {
+					} else {
 						error($expression_parser->getError());
 					}
 				}
-			}
-			catch (Exception $e) {
+			} catch (Exception $e) {
 				error($e->getMessage());
 			}
 
@@ -1643,8 +1693,7 @@ class CControllerPopupTriggerExpr extends CController {
 						'messages' => array_column($messages, 'message')
 					]
 				];
-			}
-			else {
+			} else {
 				$output = [
 					'expression' => $data['expression'],
 					'dstfld1' => $data['dstfld1'],
@@ -1655,8 +1704,7 @@ class CControllerPopupTriggerExpr extends CController {
 			$this->setResponse(
 				(new CControllerResponseData(['main_block' => json_encode($output)]))->disableView()
 			);
-		}
-		else {
+		} else {
 			$this->setResponse(new CControllerResponseData(
 				$data + [
 					'title' => _('Condition'),

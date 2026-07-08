@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -13,7 +15,7 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
 
 define("ALL_PRINTABLE_ASCII", ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~');
 
@@ -39,7 +41,8 @@ define("REDUCTED_PRINTABLE_ASCII", '!"#$%&\'()*+,-./0123456789:;<=>?@[\\]^_`{|}~
  * @hosts test_macros
  * @onAfter clearData
  */
-class testMacros extends CIntegrationTest {
+class testMacros extends CIntegrationTest
+{
 
 	private static $host_id;
 	private static $trigger_id;
@@ -402,7 +405,7 @@ class testMacros extends CIntegrationTest {
 		EOT;
 
 	const MACRO_FUNCS_RESOLVED =
-		"ACTION.NAME.btoa() -> YWN0aW9uX25hbWVfICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX4= <-\n" .
+	"ACTION.NAME.btoa() -> YWN0aW9uX25hbWVfICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX4= <-\n" .
 		"USER_MACRO_GLOBAL_DOUBLE.fmtnum(15) -> 0.123456789012346 <-\n" . 	// NOTE last 12346, not 123456 !
 		"USER_MACRO_GLOBAL_TIME.fmttime(%H) -> 23 <-\n" .
 		"ACTION.NAME.htmldecode() -> " . self::ACTION_NAME . " <-\n" .
@@ -417,7 +420,7 @@ class testMacros extends CIntegrationTest {
 		"ACTION.NAME.urlencode() -> action_name_%20%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~ <-";
 
 	const INVENTORY_RESOLVED =
-		"INVENTORY.ALIAS -> "					. REDUCTED_PRINTABLE_ASCII		. " <-\n" .
+	"INVENTORY.ALIAS -> "					. REDUCTED_PRINTABLE_ASCII		. " <-\n" .
 		"INVENTORY.ASSET.TAG -> "				. REDUCTED_PRINTABLE_ASCII		. " <-\n" .
 		"INVENTORY.CHASSIS -> "					. REDUCTED_PRINTABLE_ASCII		. " <-\n" .
 		"INVENTORY.CONTACT-> "					. REDUCTED_PRINTABLE_ASCII		. " <-\n" .
@@ -491,20 +494,21 @@ class testMacros extends CIntegrationTest {
 	/**
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		self::$event_tags_json = json_encode(array(['tag' => self::TAG_NAME, 'value' => self::TAG_VALUE]), JSON_UNESCAPED_SLASHES);
 
 		self::$trigger_expression_explain = self::VALUE_TO_FIRE_TRIGGER . '=' . self::VALUE_TO_FIRE_TRIGGER .
-				' or ' .
-				self::VALUE_TO_RECOVER_TRIGGER . '=' . self::VALUE_TO_FIRE_TRIGGER;
+			' or ' .
+			self::VALUE_TO_RECOVER_TRIGGER . '=' . self::VALUE_TO_FIRE_TRIGGER;
 		self::$trigger_recovery_expression_explain = self::VALUE_TO_FIRE_TRIGGER . '=' . self::VALUE_TO_RECOVER_TRIGGER;
 
-		self::$trigger_expression = 'last(/'.self::HOST_NAME.'/'.self::TRAPPER_ITEM_KEY.'1)='.self::VALUE_TO_FIRE_TRIGGER.' or '.
-				'last(/'.self::HOST_NAME.'/'.self::TRAPPER_ITEM_KEY.'2)='.self::VALUE_TO_FIRE_TRIGGER;
+		self::$trigger_expression = 'last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '1)=' . self::VALUE_TO_FIRE_TRIGGER . ' or ' .
+			'last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '2)=' . self::VALUE_TO_FIRE_TRIGGER;
 
-		self::$trigger_recovery_expression = 'last(/'.self::HOST_NAME.'/'.self::TRAPPER_ITEM_KEY.'1)='.self::VALUE_TO_RECOVER_TRIGGER;
+		self::$trigger_recovery_expression = 'last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '1)=' . self::VALUE_TO_RECOVER_TRIGGER;
 
-		self::$event_name = self::EVENT_PREFIX.'{?last(/{HOST.HOST}/'.self::TRAPPER_ITEM_KEY.'1)}';
+		self::$event_name = self::EVENT_PREFIX . '{?last(/{HOST.HOST}/' . self::TRAPPER_ITEM_KEY . '1)}';
 
 		self::$event_name_resolved = self::EVENT_PREFIX . self::VALUE_TO_FIRE_TRIGGER;
 
@@ -529,7 +533,7 @@ class testMacros extends CIntegrationTest {
 			"HOST.HOST -> "								. self::HOST_NAME								. " <-\n" .
 			"HOST.IP -> "								. '127.0.0.1'									. " <-\n" .
 			"HOST.NAME -> "								. self::HOST_NAME								. " <-\n" .
-			"HOST.PORT -> "								. PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX	. " <-\n" .
+			"HOST.PORT -> "								. PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX	. " <-\n" .
 			"ITEM.DESCRIPTION -> "						. ''											. " <-\n" .
 			"ITEM.DESCRIPTION.ORIG -> "					. ''											. " <-\n" .
 			"ITEM.KEY -> "								. self::TRAPPER_ITEM_KEY . '1'					. " <-\n" .
@@ -548,7 +552,7 @@ class testMacros extends CIntegrationTest {
 			"TRIGGER.EVENTS.PROBLEM.ACK -> "			. '0'											. " <-\n" .
 			"TRIGGER.EVENTS.PROBLEM.UNACK -> "			. '1'											. " <-\n" .
 			"TRIGGER.EVENTS.UNACK -> "					. '1'											. " <-\n" .
-			"TRIGGER.HOSTGROUP.NAME -> "				. 'Zabbix servers'								. " <-\n" . // 4 -> 'Zabbix servers'
+			"TRIGGER.HOSTGROUP.NAME -> "				. 'Advantal servers'								. " <-\n" . // 4 -> 'Advantal servers'
 			"TRIGGER.EXPRESSION -> "					. self::$trigger_expression						. " <-\n" .
 			"TRIGGER.EXPRESSION.RECOVERY -> "			. self::$trigger_recovery_expression			. " <-\n" .
 			"TRIGGER.NAME -> "							. 'trigger_trap'								. " <-\n" .
@@ -686,8 +690,8 @@ class testMacros extends CIntegrationTest {
 		for ($i = 1; $i < 3; $i++) {
 			$items[] = [
 				'hostid' => self::$host_id,
-				'name' => self::TRAPPER_ITEM_NAME.$i,
-				'key_' => self::TRAPPER_ITEM_KEY.$i,
+				'name' => self::TRAPPER_ITEM_NAME . $i,
+				'key_' => self::TRAPPER_ITEM_KEY . $i,
 				'type' => ITEM_TYPE_TRAPPER,
 				'value_type' => ITEM_VALUE_TYPE_UINT64
 			];
@@ -751,8 +755,8 @@ class testMacros extends CIntegrationTest {
 					'opmessage' => [
 						'default_msg' => 0,
 						'mediatypeid' => 1,
-						'subject' => self::SUBJECT_PREFIX.'{?last(//'.self::TRAPPER_ITEM_KEY.'1)}',
-						'message' => self::MESSAGE_PREFIX.'{?last(/'.self::HOST_NAME.'/'.self::TRAPPER_ITEM_KEY.'1)}' . "\n" .
+						'subject' => self::SUBJECT_PREFIX . '{?last(//' . self::TRAPPER_ITEM_KEY . '1)}',
+						'message' => self::MESSAGE_PREFIX . '{?last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '1)}' . "\n" .
 							'===1===' . "\n" .
 							self::BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON . "\n" .
 							'===2===' . "\n" .
@@ -782,15 +786,15 @@ class testMacros extends CIntegrationTest {
 					'opmessage' => [
 						'default_msg' => 0,
 						'mediatypeid' => 4,
-						'subject' => self::SUBJECT_PREFIX.'{?first(//'.self::TRAPPER_ITEM_KEY.'1,1h)}',
-						'message' => self::MESSAGE_PREFIX.'{?last(/{HOST.HOST}/'.self::TRAPPER_ITEM_KEY.'1,1h)}' . "\n" .
+						'subject' => self::SUBJECT_PREFIX . '{?first(//' . self::TRAPPER_ITEM_KEY . '1,1h)}',
+						'message' => self::MESSAGE_PREFIX . '{?last(/{HOST.HOST}/' . self::TRAPPER_ITEM_KEY . '1,1h)}' . "\n" .
 							'===1===' . "\n" .
-								'/host/macro:{?last(/'.self::HOST_NAME.'/{ITEM.KEY})}'.
-								'/empty/macro:{?last(//{ITEM.KEY})}'.
-								'/macro/macro:{?last(/{HOST.HOST}/{ITEM.KEY})}'.
-								'/macroN/macro:{?last(/{HOST.HOST1}/{ITEM.KEY})}'.
-								'/macro/macroN:{?last(/{HOST.HOST}/{ITEM.KEY2})}'.
-								'/empty/macroN:{?last(//{ITEM.KEY2})}'. "\n" .
+							'/host/macro:{?last(/' . self::HOST_NAME . '/{ITEM.KEY})}' .
+							'/empty/macro:{?last(//{ITEM.KEY})}' .
+							'/macro/macro:{?last(/{HOST.HOST}/{ITEM.KEY})}' .
+							'/macroN/macro:{?last(/{HOST.HOST1}/{ITEM.KEY})}' .
+							'/macro/macroN:{?last(/{HOST.HOST}/{ITEM.KEY2})}' .
+							'/empty/macroN:{?last(//{ITEM.KEY2})}' . "\n" .
 							'===2===' . "\n" .
 							self::BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON . "\n" .
 							'===3===' . "\n" .
@@ -835,8 +839,8 @@ class testMacros extends CIntegrationTest {
 					'opmessage' => [
 						'default_msg' => 0,
 						'mediatypeid' => 0,
-						'subject' => self::SUBJECT_PREFIX_RECOVERY.'{?last(//'.self::TRAPPER_ITEM_KEY.'1)}',
-						'message' => self::MESSAGE_PREFIX_RECOVERY.'{?last(//'.self::TRAPPER_ITEM_KEY.'1,#2)}' . "\n" .
+						'subject' => self::SUBJECT_PREFIX_RECOVERY . '{?last(//' . self::TRAPPER_ITEM_KEY . '1)}',
+						'message' => self::MESSAGE_PREFIX_RECOVERY . '{?last(//' . self::TRAPPER_ITEM_KEY . '1,#2)}' . "\n" .
 							'===1===' . "\n" .
 							self::BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON . "\n" .
 							'===2===' . "\n" .
@@ -871,7 +875,8 @@ class testMacros extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function serverConfigurationProvider() {
+	public function serverConfigurationProvider()
+	{
 		return [
 			self::COMPONENT_SERVER => [
 				'DebugLevel' => 4,
@@ -880,10 +885,11 @@ class testMacros extends CIntegrationTest {
 		];
 	}
 
-	public function testMacros_getData() {
-		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY.'2', self::VALUE_TO_RECOVER_TRIGGER);
-		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY.'1', self::VALUE_TO_RECOVER_TRIGGER);
-		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY.'1', self::VALUE_TO_FIRE_TRIGGER);
+	public function testMacros_getData()
+	{
+		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY . '2', self::VALUE_TO_RECOVER_TRIGGER);
+		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY . '1', self::VALUE_TO_RECOVER_TRIGGER);
+		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY . '1', self::VALUE_TO_FIRE_TRIGGER);
 
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'In escalation_execute()', true);
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'End of escalation_execute()', true, 10, 3);
@@ -899,7 +905,7 @@ class testMacros extends CIntegrationTest {
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'In escalation_execute()', true, 95, 3);
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'End of escalation_execute()', true, 10, 3);
 
-		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY.'1', self::VALUE_TO_RECOVER_TRIGGER);
+		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY . '1', self::VALUE_TO_RECOVER_TRIGGER);
 
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'In escalation_recover()', true);
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'End of escalation_recover()', true, 10, 3);
@@ -918,7 +924,8 @@ class testMacros extends CIntegrationTest {
 	/**
 	 * Test macros resolution during the initial operation (when trigger fire first time).
 	 */
-	public function testMacros_checkProblemMessage() {
+	public function testMacros_checkProblemMessage()
+	{
 		$message_expect = self::MESSAGE_PREFIX . self::VALUE_TO_FIRE_TRIGGER . "\n" .
 			'===1===' . "\n" .
 			self::$BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON_RESOLVED . "\n" .
@@ -940,24 +947,25 @@ class testMacros extends CIntegrationTest {
 		$this->assertEquals($message_expect, self::$alert_response['result'][0]['message']);
 
 		/* Test expression macro with empty hostname. */
-		$this->assertEquals(self::SUBJECT_PREFIX.self::VALUE_TO_FIRE_TRIGGER, self::$alert_response['result'][0]['subject']);
+		$this->assertEquals(self::SUBJECT_PREFIX . self::VALUE_TO_FIRE_TRIGGER, self::$alert_response['result'][0]['subject']);
 
 		/* Test expression macro in function with argument. */
-		$this->assertEquals(self::SUBJECT_PREFIX.self::VALUE_TO_RECOVER_TRIGGER, self::$alert_response['result'][1]['subject']);
+		$this->assertEquals(self::SUBJECT_PREFIX . self::VALUE_TO_RECOVER_TRIGGER, self::$alert_response['result'][1]['subject']);
 	}
 
 	/**
 	 * Test macro resolution during the first escalation step (1 minute passed after trigger was fired).
 	 */
-	public function testMacros_checkProblemMessage2() {
-		$message_expect = self::MESSAGE_PREFIX.self::VALUE_TO_FIRE_TRIGGER . "\n" .
+	public function testMacros_checkProblemMessage2()
+	{
+		$message_expect = self::MESSAGE_PREFIX . self::VALUE_TO_FIRE_TRIGGER . "\n" .
 			'===1===' . "\n" .
-				'/host/macro:' . self::VALUE_TO_FIRE_TRIGGER .
-				'/empty/macro:' . self::VALUE_TO_FIRE_TRIGGER .
-				'/macro/macro:' . self::VALUE_TO_FIRE_TRIGGER .
-				'/macroN/macro:' . self::VALUE_TO_FIRE_TRIGGER .
-				'/macro/macroN:' . self::VALUE_TO_RECOVER_TRIGGER .
-				'/empty/macroN:' . self::VALUE_TO_RECOVER_TRIGGER . "\n" .
+			'/host/macro:' . self::VALUE_TO_FIRE_TRIGGER .
+			'/empty/macro:' . self::VALUE_TO_FIRE_TRIGGER .
+			'/macro/macro:' . self::VALUE_TO_FIRE_TRIGGER .
+			'/macroN/macro:' . self::VALUE_TO_FIRE_TRIGGER .
+			'/macro/macroN:' . self::VALUE_TO_RECOVER_TRIGGER .
+			'/empty/macroN:' . self::VALUE_TO_RECOVER_TRIGGER . "\n" .
 			'===2===' . "\n" .
 			self::$BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON_RESOLVED . "\n" .
 			'===3===' . "\n" .
@@ -981,7 +989,8 @@ class testMacros extends CIntegrationTest {
 	/**
 	 * Test macro resolution during the second escalation step (2 minutes passed after trigger was fired).
 	 */
-	public function testMacros_checkProblemMessage3_InconsistentMacros() {
+	public function testMacros_checkProblemMessage3_InconsistentMacros()
+	{
 		$inconsistent_macros_resolved = "/ACTION.ID[\s\S]*" .
 			"ESC.HISTORY[\s\S]*" .
 			"DATE[\s\S]*" .
@@ -998,10 +1007,11 @@ class testMacros extends CIntegrationTest {
 		$this->assertRegExp($inconsistent_macros_resolved, self::$alert_response['result'][2]['message']);
 	}
 
-	public function testMacros_checkRecoveryMessage() {
+	public function testMacros_checkRecoveryMessage()
+	{
 		$trigger_expression_explain = self::VALUE_TO_RECOVER_TRIGGER . '=' . self::VALUE_TO_FIRE_TRIGGER .
-				' or ' .
-				self::VALUE_TO_RECOVER_TRIGGER . '=' . self::VALUE_TO_FIRE_TRIGGER;
+			' or ' .
+			self::VALUE_TO_RECOVER_TRIGGER . '=' . self::VALUE_TO_FIRE_TRIGGER;
 
 		$trigger_recovery_expression_explain = self::VALUE_TO_RECOVER_TRIGGER . '=' . self::VALUE_TO_RECOVER_TRIGGER;
 
@@ -1026,7 +1036,7 @@ class testMacros extends CIntegrationTest {
 			"HOST.HOST -> "								. self::HOST_NAME								. " <-\n" .
 			"HOST.IP -> "								. '127.0.0.1'									. " <-\n" .
 			"HOST.NAME -> "								. self::HOST_NAME								. " <-\n" .
-			"HOST.PORT -> "								. PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX	. " <-\n" .
+			"HOST.PORT -> "								. PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX	. " <-\n" .
 			"ITEM.DESCRIPTION -> "						. ''											. " <-\n" .
 			"ITEM.DESCRIPTION.ORIG -> "					. ''											. " <-\n" .
 			"ITEM.KEY -> "								. self::TRAPPER_ITEM_KEY . '1'					. " <-\n" .
@@ -1045,7 +1055,7 @@ class testMacros extends CIntegrationTest {
 			"TRIGGER.EVENTS.PROBLEM.ACK -> "			. '0'											. " <-\n" .
 			"TRIGGER.EVENTS.PROBLEM.UNACK -> "			. '1'											. " <-\n" .
 			"TRIGGER.EVENTS.UNACK -> "					. '2'											. " <-\n" .
-			"TRIGGER.HOSTGROUP.NAME -> "				. 'Zabbix servers'								. " <-\n" . // 4 -> 'Zabbix servers'
+			"TRIGGER.HOSTGROUP.NAME -> "				. 'Advantal servers'								. " <-\n" . // 4 -> 'Advantal servers'
 			"TRIGGER.EXPRESSION -> "					. self::$trigger_expression						. " <-\n" .
 			"TRIGGER.EXPRESSION.RECOVERY -> "			. self::$trigger_recovery_expression			. " <-\n" .
 			"TRIGGER.NAME -> "							. 'trigger_trap'								. " <-\n" .
@@ -1085,14 +1095,15 @@ class testMacros extends CIntegrationTest {
 			self::MACRO_FUNCS_RESOLVED;
 
 
-		$this->assertEquals(self::SUBJECT_PREFIX_RECOVERY.self::VALUE_TO_RECOVER_TRIGGER, self::$alert_response['result'][3]['subject']);
+		$this->assertEquals(self::SUBJECT_PREFIX_RECOVERY . self::VALUE_TO_RECOVER_TRIGGER, self::$alert_response['result'][3]['subject']);
 		$this->assertEquals($recovery_message_expect, self::$alert_response['result'][3]['message']);
 
 		/* Test expression macro in event name. */
-		$this->assertEquals(self::EVENT_PREFIX.self::VALUE_TO_FIRE_TRIGGER, self::$event_response['result'][0]['name']);
+		$this->assertEquals(self::EVENT_PREFIX . self::VALUE_TO_FIRE_TRIGGER, self::$event_response['result'][0]['name']);
 	}
 
-	private function removeValue(array &$array, $value): void {
+	private function removeValue(array &$array, $value): void
+	{
 		$key = array_search($value, $array, true);
 		if ($key !== false) {
 			unset($array[$key]);
@@ -1102,14 +1113,14 @@ class testMacros extends CIntegrationTest {
 
 		Test macro resolution (source: internal event).
 
-	***************************************************************************************************************/
-private static $internal_action_id;
-private static $host_id_disable;
-private $alert_response_internal_LLD;
-const SUBJECT_INTERNAL = "Internal";
+	 ***************************************************************************************************************/
+	private static $internal_action_id;
+	private static $host_id_disable;
+	private $alert_response_internal_LLD;
+	const SUBJECT_INTERNAL = "Internal";
 
 	/*Subset of COMMON macros that are consistently resolved for internal events only.*/
-	const BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON_INTERNAL =<<<'EOT'
+	const BUILTIN_MACROS_CONSISTENT_RESOLVE_COMMON_INTERNAL = <<<'EOT'
 		ACTION.NAME -> {ACTION.NAME} <-
 		EVENT.NAME -> {EVENT.NAME} <-
 		EVENT.OBJECT -> {EVENT.OBJECT} <-
@@ -1322,7 +1333,7 @@ const SUBJECT_INTERNAL = "Internal";
 		{TRIGGER.TEMPLATE.NAME}
 		EOT;
 
-/* Inconsistent macros (internal event) */
+	/* Inconsistent macros (internal event) */
 	const BUILTIN_MACROS_INCONSISTENT_RESOLVE_INTERNAL = <<<'EOT'
 		ACTION.ID -> {ACTION.ID} <-
 		ESC.HISTORY -> {ESC.HISTORY} <-
@@ -1337,12 +1348,13 @@ const SUBJECT_INTERNAL = "Internal";
 		ITEM.ID -> {ITEM.ID} <-
 		EOT;
 
-	private function disableHost(){
+	private function disableHost()
+	{
 
 		$response = $this->call('host.get', [
 			'output' => ['hostid'],
 			'filter' => [
-				'host' => ['Zabbix server']
+				'host' => ['Advantal server']
 			]
 		]);
 		$this->assertArrayHasKey('hostid', $response['result'][0]);
@@ -1358,7 +1370,8 @@ const SUBJECT_INTERNAL = "Internal";
 		$this->assertEquals(1, count($response['result']['hostids']));
 	}
 
-	public function testMacros_InternalEvent() {
+	public function testMacros_InternalEvent()
+	{
 
 		CDataHelper::call('action.delete', [self::$trigger_action_id]); // delete previous action
 		$this->removeValue(self::$action_ids, self::$trigger_action_id);
@@ -1427,7 +1440,7 @@ const SUBJECT_INTERNAL = "Internal";
 		self::$action_ids = array_merge(self::$action_ids, [$response['result']['actionids'][0]]);
 
 		$this->reloadConfigurationCache(self::COMPONENT_SERVER);
-		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY.'1', self::TRAPPER_ITEM_NAME);
+		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY . '1', self::TRAPPER_ITEM_NAME);
 
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'End of escalation_execute()', true);
 
@@ -1476,7 +1489,7 @@ const SUBJECT_INTERNAL = "Internal";
 			"HOST.HOST -> "				. self::HOST_NAME								. " <-\n" .
 			"HOST.IP -> "				. '127.0.0.1'									. " <-\n" .
 			"HOST.NAME -> "				. self::HOST_NAME								. " <-\n" .
-			"HOST.PORT -> "				. PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX	. " <-\n" .
+			"HOST.PORT -> "				. PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX	. " <-\n" .
 			"ITEM.DESCRIPTION -> "		. ''											. " <-\n" .
 			"ITEM.DESCRIPTION.ORIG -> "	. ''											. " <-\n" .
 			"ITEM.KEY -> "				. self::TRAPPER_ITEM_KEY . '1'					. " <-\n" .
@@ -1507,22 +1520,22 @@ const SUBJECT_INTERNAL = "Internal";
 			'===7===' . "\n" .
 			self::MACRO_FUNCS_RESOLVED;
 
-			$this->assertEquals($message_expect, $alert_response_internal['result'][1]['message']);
+		$this->assertEquals($message_expect, $alert_response_internal['result'][1]['message']);
 
-			// enable default host
-			$response = $this->call('host.update', [
-				'hostid' => self::$host_id_disable,
-				'status' => ITEM_STATUS_ACTIVE
-			]);
-			$this->assertArrayHasKey('hostids', $response['result']);
-			$this->assertEquals(1, count($response['result']['hostids']));
+		// enable default host
+		$response = $this->call('host.update', [
+			'hostid' => self::$host_id_disable,
+			'status' => ITEM_STATUS_ACTIVE
+		]);
+		$this->assertArrayHasKey('hostids', $response['result']);
+		$this->assertEquals(1, count($response['result']['hostids']));
 	}
 
 	/***********************************************************************************************************************
 
 		Test macro resolution (source: internal event LLD).
 
-	***********************************************************************************************************************/
+	 ***********************************************************************************************************************/
 
 	private static $internal_lld_action_id;
 	const LLD_RULE_NAME = "LLD";
@@ -1740,18 +1753,19 @@ const SUBJECT_INTERNAL = "Internal";
 		EOT;
 
 	/**
-	* Component configuration provider for agent related tests.
-	*
-	* @return array
-	*/
-	public function agentConfigurationProvider() {
+	 * Component configuration provider for agent related tests.
+	 *
+	 * @return array
+	 */
+	public function agentConfigurationProvider()
+	{
 		self::$metadata_file = "/tmp/zabbix_agent_metadata_file_" . microtime() . ".txt";
 
 		return [
 			self::COMPONENT_AGENT => [
 				'Hostname'		=>	self::HOST_NAME,
-				'ServerActive' => '127.0.0.1:'.self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort'),
-				'HostMetadataItem'	=>	'vfs.file.contents['.self::$metadata_file.']'
+				'ServerActive' => '127.0.0.1:' . self::getConfigurationValue(self::COMPONENT_SERVER, 'ListenPort'),
+				'HostMetadataItem'	=>	'vfs.file.contents[' . self::$metadata_file . ']'
 			]
 		];
 	}
@@ -1762,7 +1776,8 @@ const SUBJECT_INTERNAL = "Internal";
 	 * @required-components server, agent
 	 */
 
-	public function testMacros_InternalEventLLD() {
+	public function testMacros_InternalEventLLD()
+	{
 
 		CDataHelper::call('action.delete', [self::$internal_action_id]); // delete previous action
 		$this->removeValue(self::$action_ids, self::$internal_action_id);
@@ -1830,16 +1845,16 @@ const SUBJECT_INTERNAL = "Internal";
 		$response = $this->call('hostinterface.get', [
 			'hostids' => self::$host_id,
 			'output' => ['interfaceid']
-			]);
+		]);
 		$interface_id = $response['result'][0]['interfaceid'];
 
 		//Create LLD rule
 		$response = $this->call('discoveryrule.create', [
-		'hostid' => self::$host_id,
+			'hostid' => self::$host_id,
 			'name' => self::LLD_RULE_NAME,
 			'key_' => self::LLD_KEY,
 			'type' => ITEM_TYPE_ZABBIX,
-			'delay'=> "3s",
+			'delay' => "3s",
 			'interfaceid' => $interface_id
 		]);
 
@@ -1888,7 +1903,7 @@ const SUBJECT_INTERNAL = "Internal";
 			"HOST.HOST -> "					. self::HOST_NAME																			. " <-\n" .
 			"HOST.IP -> "					. '127.0.0.1'																				. " <-\n" .
 			"HOST.NAME -> "					. self::HOST_NAME																			. " <-\n" .
-			"HOST.PORT -> "					. PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX												. " <-\n" .
+			"HOST.PORT -> "					. PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX												. " <-\n" .
 			"LLDRULE.DESCRIPTION -> "		. ''																						. " <-\n" .
 			"LLDRULE.DESCRIPTION.ORIG -> "	. ''																						. " <-\n" .
 			"LLDRULE.KEY -> "				. 'vfs.file.contents[/tmp/0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz]'	. " <-\n" .
@@ -1918,14 +1933,14 @@ const SUBJECT_INTERNAL = "Internal";
 			'===7===' . "\n" .
 			self::MACRO_FUNCS_RESOLVED;
 
-			$this->assertEquals($message_expect, $alert_response_internal_LLD['result'][1]['message']);
+		$this->assertEquals($message_expect, $alert_response_internal_LLD['result'][1]['message']);
 	}
 
 	/***********************************************************************************************************************
 
 	Test macro resolution (source: internal event trigger).
 
-	***********************************************************************************************************************/
+	 ***********************************************************************************************************************/
 
 	private static $internal_trigger_action_id;
 
@@ -2126,7 +2141,8 @@ const SUBJECT_INTERNAL = "Internal";
 		{ITEM.LOG.TIME}
 		EOT;
 
-	public function testMacros_InternalEventTrigger() {
+	public function testMacros_InternalEventTrigger()
+	{
 
 		CDataHelper::call('action.delete', [self::$internal_lld_action_id]); // delete previous action
 		$this->removeValue(self::$action_ids, self::$internal_lld_action_id);
@@ -2193,7 +2209,7 @@ const SUBJECT_INTERNAL = "Internal";
 		self::$internal_trigger_action_id = $response['result']['actionids'][0];
 		self::$action_ids = array_merge(self::$action_ids, [$response['result']['actionids'][0]]);
 
-		$trigger_expression_internal = 'last(/'.self::HOST_NAME.'/'.self::TRAPPER_ITEM_KEY.'2)='.self::VALUE_TO_FIRE_TRIGGER;
+		$trigger_expression_internal = 'last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY . '2)=' . self::VALUE_TO_FIRE_TRIGGER;
 
 		//create trigger
 		$response = $this->call('trigger.create', [
@@ -2226,7 +2242,7 @@ const SUBJECT_INTERNAL = "Internal";
 		$this->reloadConfigurationCache(self::COMPONENT_SERVER);
 
 		// mark item as unsupported to force trigger into an unknown state
-		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY.'2', self::TRAPPER_ITEM_NAME);
+		$this->sendSenderValue(self::HOST_NAME, self::TRAPPER_ITEM_KEY . '2', self::TRAPPER_ITEM_NAME);
 
 		$this->waitForLogLineToBePresent(self::COMPONENT_SERVER, 'End of add_message_alert()', true);
 
@@ -2270,7 +2286,7 @@ const SUBJECT_INTERNAL = "Internal";
 			"HOST.HOST -> "						. self::HOST_NAME																	. " <-\n" .
 			"HOST.IP -> "						. '127.0.0.1'																		. " <-\n" .
 			"HOST.NAME -> "						. self::HOST_NAME																	. " <-\n" .
-			"HOST.PORT -> "						. PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX										. " <-\n" .
+			"HOST.PORT -> "						. PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX										. " <-\n" .
 			"PROXY.DESCRIPTION -> "				. ''																				. " <-\n" .
 			"PROXY.NAME -> "					. ''																				. " <-\n" .
 			"ITEM.DESCRIPTION -> "				. ''																				. " <-\n" .
@@ -2283,7 +2299,7 @@ const SUBJECT_INTERNAL = "Internal";
 			"TRIGGER.STATE -> "					. 'Unknown'																			. " <-\n" .
 			"TRIGGER.STATE.ERROR -> "			. 'Cannot evaluate function last(/test_macros_host/trap2): item is not supported.'	. " <-\n" .
 			"TRIGGER.DESCRIPTION -> "			. 'strata_trigger_comment_' . ALL_PRINTABLE_ASCII									. " <-\n" .
-			"TRIGGER.HOSTGROUP.NAME -> "		. 'Zabbix servers'																	. " <-\n" .
+			"TRIGGER.HOSTGROUP.NAME -> "		. 'Advantal servers'																	. " <-\n" .
 			"TRIGGER.EXPRESSION -> "			. 'last(/test_macros_host/trap2)=3'													. " <-\n" .
 			"TRIGGER.EXPRESSION.RECOVERY -> "	. 'last(/test_macros_host/trap1)=2147483647'										. " <-\n" .
 			"TRIGGER.NAME -> "					. 'triger_internal'																	. " <-\n" .
@@ -2309,22 +2325,22 @@ const SUBJECT_INTERNAL = "Internal";
 			'===7===' . "\n" .
 			self::MACRO_FUNCS_RESOLVED;
 
-			$this->assertEquals($message_expect, $alert_response_internal_trigger['result'][1]['message']);
+		$this->assertEquals($message_expect, $alert_response_internal_trigger['result'][1]['message']);
 
-			// enable default host
-			$response = $this->call('host.update', [
-				'hostid' => self::$host_id_disable,
-				'status' => ITEM_STATUS_ACTIVE
-			]);
-			$this->assertArrayHasKey('hostids', $response['result']);
-			$this->assertEquals(1, count($response['result']['hostids']));
+		// enable default host
+		$response = $this->call('host.update', [
+			'hostid' => self::$host_id_disable,
+			'status' => ITEM_STATUS_ACTIVE
+		]);
+		$this->assertArrayHasKey('hostids', $response['result']);
+		$this->assertEquals(1, count($response['result']['hostids']));
 	}
 
 	/***************************************************************************************************************
 
 		Test macro resolution (source: service event).
 
-	***************************************************************************************************************/
+	 ***************************************************************************************************************/
 	private static $service_id;
 	private static $service_action_id;
 	const TRAPPER_ITEM_KEY_SERVICE = 'trap_service';
@@ -2563,7 +2579,8 @@ const SUBJECT_INTERNAL = "Internal";
 		EOT . "\n" .
 		"SERVICE.ROOTCAUSE -> {SERVICE.ROOTCAUSE} <-";	// added to inconsistens - Age: field (seconds)
 
-	public function testMacros_ServiceEvent() {
+	public function testMacros_ServiceEvent()
+	{
 
 		CDataHelper::call('action.delete', [self::$internal_trigger_action_id]); // delete previous action
 		$this->removeValue(self::$action_ids, self::$internal_trigger_action_id);
@@ -2578,7 +2595,7 @@ const SUBJECT_INTERNAL = "Internal";
 		$this->assertArrayHasKey('itemids', $response['result']);
 		$this->assertEquals(1, count($response['result']['itemids']));
 
-		self::$trigger_expression = 'last(/'.self::HOST_NAME.'/'.self::TRAPPER_ITEM_KEY_SERVICE.')='.self::VALUE_TO_FIRE_TRIGGER;
+		self::$trigger_expression = 'last(/' . self::HOST_NAME . '/' . self::TRAPPER_ITEM_KEY_SERVICE . ')=' . self::VALUE_TO_FIRE_TRIGGER;
 
 		//create trigger
 		$response = $this->call('trigger.create', [
@@ -2754,7 +2771,7 @@ const SUBJECT_INTERNAL = "Internal";
 
 		Test macro resolution (source: event created by a discovery rule).
 
-	***************************************************************************************************************/
+	 ***************************************************************************************************************/
 	private static $drule_id;
 	private static $discovery_action_id;
 	const DRULE_NAME = "Discovery1";
@@ -2997,7 +3014,8 @@ const SUBJECT_INTERNAL = "Internal";
 		DISCOVERY.SERVICE.UPTIME -> *UNKNOWN* <-
 		EOT;
 
-	public function testMacros_DiscoveryRuleEvent() {
+	public function testMacros_DiscoveryRuleEvent()
+	{
 
 		CDataHelper::call('action.delete', [self::$service_action_id]);
 		$this->removeValue(self::$action_ids, self::$service_action_id);
@@ -3138,7 +3156,7 @@ const SUBJECT_INTERNAL = "Internal";
 
 		Test macro resolution (source: event created by an autoregestration).
 
-	***************************************************************************************************************/
+	 ***************************************************************************************************************/
 	const SUBJECT_AUTOREG = 'Autoregistration';
 	private static $autoregistration_action_id;
 	private static $host_deleted;
@@ -3367,7 +3385,8 @@ const SUBJECT_INTERNAL = "Internal";
 	 * @required-components server, agent
 	 */
 
-	public function testMacros_AutoregestrationEvent() {
+	public function testMacros_AutoregestrationEvent()
+	{
 		if (file_exists(self::$metadata_file)) {
 			unlink(self::$metadata_file);
 		}
@@ -3503,7 +3522,8 @@ const SUBJECT_INTERNAL = "Internal";
 		$this->assertRegExp($inconsistent_macros_resolved, $macros[1]);
 	}
 
-	public static function clearData(): void {
+	public static function clearData(): void
+	{
 
 		if (!empty(self::$action_ids)) {
 			CDataHelper::call('action.delete', self::$action_ids);

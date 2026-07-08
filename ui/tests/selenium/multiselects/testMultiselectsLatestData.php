@@ -14,22 +14,24 @@
 **/
 
 
-require_once __DIR__.'/../common/testMultiselectDialogs.php';
+require_once __DIR__ . '/../common/testMultiselectDialogs.php';
 
 /**
  * Test for checking that multiselects' dialogs do not contain any errors before and after filling.
  *
  * @backup profiles
  */
-class testMultiselectsLatestData extends testMultiselectDialogs {
+class testMultiselectsLatestData extends testMultiselectDialogs
+{
 
-	public static function getCheckDialogsData() {
+	public static function getCheckDialogsData()
+	{
 		return [
 			// #0.
 			[
 				[
 					'fields' => [
-						'Host groups' => 'Zabbix servers'
+						'Host groups' => 'Advantal servers'
 					],
 					'check_empty' => true
 				]
@@ -48,15 +50,17 @@ class testMultiselectsLatestData extends testMultiselectDialogs {
 	/**
 	 * @dataProvider getCheckDialogsData
 	 */
-	public function testMultiselectsLatestData_CheckDialogs($data) {
+	public function testMultiselectsLatestData_CheckDialogs($data)
+	{
 		$this->page->login()->open('zabbix.php?action=latest.view');
 		$filter_form = $this->query('name:zbx_filter')->asForm()->one();
 
 		// Check empty filter popup.
 		if (CTestArrayHelper::get($data, 'check_empty', false)) {
 			$empty_dialog = $filter_form->getField('Hosts')->edit();
-			$this->assertEquals("Filter is not set\nUse the filter to display results",
-					$empty_dialog->query('class:no-data-message')->one()->getText()
+			$this->assertEquals(
+				"Filter is not set\nUse the filter to display results",
+				$empty_dialog->query('class:no-data-message')->one()->getText()
 			);
 			$empty_dialog->close();
 		}

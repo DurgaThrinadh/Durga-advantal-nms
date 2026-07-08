@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -32,8 +34,8 @@ $form_grid = (new CFormGrid());
 $operation = $data['operation'];
 
 $operationtype_value = $operation['opcommand']['scriptid'] != 0
-	? 'scriptid['.$operation['opcommand']['scriptid'].']'
-	: 'cmd['. $operation['operationtype'].']';
+	? 'scriptid[' . $operation['opcommand']['scriptid'] . ']'
+	: 'cmd[' . $operation['operationtype'] . ']';
 
 // Operation type row.
 if (count($data['operation_types']) > 1) {
@@ -44,8 +46,7 @@ if (count($data['operation_types']) > 1) {
 			->setValue($operationtype_value ?? 0)
 			->setId('operation-type-select')
 	))->setId('operation-type');
-}
-else {
+} else {
 	$select_operationtype = (new CFormField([
 		new CLabel($data['operation_types']),
 		(new CInput('hidden', 'operation[operationtype]', $operationtype_value))
@@ -55,7 +56,7 @@ else {
 
 if ($data['scripts_with_warning']) {
 	$select_operationtype->addItem(
-		makeWarningIcon(_('Global script execution on Zabbix server is disabled by server configuration.'))
+		makeWarningIcon(_('Global script execution on Advantal server is disabled by server configuration.'))
 			->addClass('js-script-warning-icon')
 			->addStyle('display: none;')
 	);
@@ -68,11 +69,11 @@ $form_grid->addItem([
 
 // Operation escalation steps row.
 if (($data['eventsource'] == EVENT_SOURCE_TRIGGERS || $data['eventsource'] == EVENT_SOURCE_INTERNAL
-		|| $data['eventsource'] == EVENT_SOURCE_SERVICE) && $data['recovery'] == ACTION_OPERATION) {
+	|| $data['eventsource'] == EVENT_SOURCE_SERVICE) && $data['recovery'] == ACTION_OPERATION) {
 	$step_from = (new CNumericBox('operation[esc_step_from]', $operation['esc_step_from'] ?? 1, 5))
 		->setWidth(ZBX_TEXTAREA_NUMERIC_STANDARD_WIDTH)
 		->setId('operation_esc_step_from');
-	$step_from->onChange($step_from->getAttribute('onchange').' if (this.value < 1) this.value = 1;');
+	$step_from->onChange($step_from->getAttribute('onchange') . ' if (this.value < 1) this.value = 1;');
 
 	$step_to = (new CNumericBox('operation[esc_step_to]', 0, 5, false, false, false))
 		->setAttribute('value', $operation['esc_step_to'] ?? 0)
@@ -82,10 +83,12 @@ if (($data['eventsource'] == EVENT_SOURCE_TRIGGERS || $data['eventsource'] == EV
 		(new CLabel(_('Steps'), 'operation_esc_step_from'))->setId('operation-step-range-label'),
 		(new CFormField([
 			$step_from,
-			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN), '-',
+			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN),
+			'-',
 			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN),
 			$step_to,
-			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN), _('(0 - infinitely)')
+			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN),
+			_('(0 - infinitely)')
 		]))->setId('operation-step-range')
 	]);
 
@@ -96,7 +99,8 @@ if (($data['eventsource'] == EVENT_SOURCE_TRIGGERS || $data['eventsource'] == EV
 			(new CTextBox('operation[esc_period]', 0))
 				->setAttribute('value', $operation['esc_period'] ?? 0)
 				->setWidth(ZBX_TEXTAREA_SMALL_WIDTH)->setId('operation_esc_period'),
-			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN), _('(0 - use action default)')
+			(new CDiv())->addClass(ZBX_STYLE_FORM_INPUT_MARGIN),
+			_('(0 - use action default)')
 		]))->setId('operation-step-duration')
 	]);
 }
@@ -104,7 +108,7 @@ if (($data['eventsource'] == EVENT_SOURCE_TRIGGERS || $data['eventsource'] == EV
 // Message recipient is required notice row.
 $form_grid->addItem(
 	(new CFormField((new CLabel(_('At least one user or user group must be selected.')))
-		->setAsteriskMark()
+			->setAsteriskMark()
 	))->setId('operation-message-notice')
 );
 
@@ -134,7 +138,7 @@ $form_grid->addItem([
 ]);
 
 $form_grid->addItem([
-	(new CLabel(_('Send to users'),'operation_opmessage_usr__userid_ms'))
+	(new CLabel(_('Send to users'), 'operation_opmessage_usr__userid_ms'))
 		->setId('users-label'),
 	(new CFormField(
 		(new CMultiSelect([
@@ -148,12 +152,13 @@ $form_grid->addItem([
 					'srcfld1' => 'userid',
 					'srcfld2' => 'fullname',
 					'dstfrm' => $form->getName(),
-					'dstfld1'=> 'operation_opmessage_usr__userid'
+					'dstfld1' => 'operation_opmessage_usr__userid'
 				]
 			]
 		]))
 			->setAriaRequired()
-			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH))
+			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH)
+	)
 	)->setId('operation-message-users')
 ]);
 
@@ -208,9 +213,11 @@ $form_grid->addItem([
 	(new CLabel(_('Subject'), 'operation-opmessage-subject'))->setId('operation-message-subject-label'),
 	(new CFormField(
 		(new CTextBox('operation[opmessage][subject]'))
-			->setAttribute('value', $operation['opmessage']['default_msg'] == 1
-				? ''
-				: $operation['opmessage']['subject']
+			->setAttribute(
+				'value',
+				$operation['opmessage']['default_msg'] == 1
+					? ''
+					: $operation['opmessage']['subject']
 			)
 			->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
 			->setId('operation-opmessage-subject')
@@ -238,8 +245,7 @@ if (array_key_exists('opcommand_hst', $operation)) {
 			if (array_key_exists('id', $host)) {
 				if ($host['id'] == 0) {
 					$opcommand_hst_value = 0;
-				}
-				else {
+				} else {
 					$hosts_ms[] = $host;
 				}
 			}
@@ -305,7 +311,7 @@ if (array_key_exists('opcommand_hst', $operation) && array_key_exists('opcommand
 		))
 			->setId('operation-command-targets')
 			->addClass(ZBX_STYLE_TABLE_FORMS_SEPARATOR)
-			->addStyle('min-width: '.ZBX_TEXTAREA_STANDARD_WIDTH.'px;')
+			->addStyle('min-width: ' . ZBX_TEXTAREA_STANDARD_WIDTH . 'px;')
 	]);
 }
 
@@ -331,7 +337,8 @@ $form_grid->addItem([
 		]))
 			->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
 			->setAriaRequired()
-			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH))
+			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH)
+	)
 	)->setId('operation-attr-hostgroups')
 ]);
 
@@ -351,14 +358,18 @@ $form_grid->addItem(
 			->addItem(
 				(new CRow([
 					(new CCol(
-						(new CTextAreaFlexible('operation[optag][#{row_index}][tag]', '#{tag}',
+						(new CTextAreaFlexible(
+							'operation[optag][#{row_index}][tag]',
+							'#{tag}',
 							['add_post_js' => false]
 						))
 							->setWidth(ZBX_TEXTAREA_TAG_WIDTH)
 							->setAttribute('placeholder', _('tag'))
 					))->addClass(ZBX_STYLE_TEXTAREA_FLEXIBLE_PARENT),
 					(new CCol(
-						(new CTextAreaFlexible('operation[optag][#{row_index}][value]', '#{value}',
+						(new CTextAreaFlexible(
+							'operation[optag][#{row_index}][value]',
+							'#{value}',
 							['add_post_js' => false]
 						))
 							->setWidth(ZBX_TEXTAREA_TAG_VALUE_WIDTH)
@@ -371,7 +382,7 @@ $form_grid->addItem(
 					))->addClass(ZBX_STYLE_NOWRAP)
 				]))
 					->addClass('form_row')
-					->setAttribute('data-id','#{row_index}')
+					->setAttribute('data-id', '#{row_index}')
 			)
 	]))->setId('operation-host-tags')
 );
@@ -397,7 +408,8 @@ $form_grid->addItem([
 			]
 		]))->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
 			->setAriaRequired()
-			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH))
+			->setWidth(ZBX_TEXTAREA_MEDIUM_WIDTH)
+	)
 	)->setId('operation-attr-templates')
 ]);
 
@@ -476,13 +488,13 @@ if ($data['eventsource'] == EVENT_SOURCE_TRIGGERS && $data['recovery'] == ACTION
 					])
 					)
 				]))
-					->setAttribute('data-id','#{row_index}')
+					->setAttribute('data-id', '#{row_index}')
 					->addClass('form_row')
 			)
 		]))
 			->setId('operation-condition-table')
 			->addClass(ZBX_STYLE_TABLE_FORMS_SEPARATOR)
-			->addStyle('min-width: '.ZBX_TEXTAREA_STANDARD_WIDTH.'px;')
+			->addStyle('min-width: ' . ZBX_TEXTAREA_STANDARD_WIDTH . 'px;')
 	]);
 }
 
@@ -502,14 +514,14 @@ $output = [
 	'header' => _('Operation details'),
 	'body' => $form->toString(),
 	'buttons' => $buttons,
-	'script_inline' => getPagePostJs().$this->readJsFile('popup.operation.edit.js.php').
-		'operation_popup.init('.json_encode([
+	'script_inline' => getPagePostJs() . $this->readJsFile('popup.operation.edit.js.php') .
+		'operation_popup.init(' . json_encode([
 			'eventsource' => $data['eventsource'],
 			'recovery_phase' => $data['recovery'],
 			'data' => $operation,
 			'scripts_with_warning' => $data['scripts_with_warning'],
 			'actionid' => $data['actionid']
-		]).');'
+		]) . ');'
 ];
 
 if ($data['user']['debug_mode'] == GROUP_DEBUG_MODE_ENABLED) {

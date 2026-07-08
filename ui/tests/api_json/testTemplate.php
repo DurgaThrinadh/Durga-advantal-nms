@@ -14,7 +14,7 @@
 **/
 
 
-require_once dirname(__FILE__).'/../include/CAPITest.php';
+require_once dirname(__FILE__) . '/../include/CAPITest.php';
 
 /**
  * @onBefore prepareTestData
@@ -22,7 +22,8 @@ require_once dirname(__FILE__).'/../include/CAPITest.php';
  * @backup hstgrp
  * @backup hosts
  */
-class testTemplate extends CAPITest {
+class testTemplate extends CAPITest
+{
 
 	private static $data = [
 		'templateids' => [
@@ -30,7 +31,8 @@ class testTemplate extends CAPITest {
 		]
 	];
 
-	public function prepareTestData() {
+	public function prepareTestData()
+	{
 		$templates_data = [
 			[
 				'host' => 'api_vendor_test',
@@ -44,7 +46,8 @@ class testTemplate extends CAPITest {
 		self::$data['templateids']['api_vendor_test'] = $templates['templateids'][0];
 	}
 
-	public function dataProviderCreate() {
+	public function dataProviderCreate()
+	{
 		return [
 			[
 				'request' => [
@@ -137,32 +140,32 @@ class testTemplate extends CAPITest {
 				],
 				'expected_error' => 'Template with visible name "test-template-09" already exists.'
 			],
-			// The next two test cases depends on the existing host "Zabbix server".
+			// The next two test cases depends on the existing host "Advantal server".
 			[
 				'request' => [
 					[
-						'host' => 'Zabbix server',
+						'host' => 'Advantal server',
 						'groups' => ['groupid' => 1]
 					]
 				],
-				'expected_error' => 'Host with host name "Zabbix server" already exists.'
+				'expected_error' => 'Host with host name "Advantal server" already exists.'
 			],
 			[
 				'request' => [
 					[
 						'host' => 'test-template-11',
-						'name' => 'Zabbix server',
+						'name' => 'Advantal server',
 						'groups' => ['groupid' => 1]
 					]
 				],
-				'expected_error' => 'Host with visible name "Zabbix server" already exists.'
+				'expected_error' => 'Host with visible name "Advantal server" already exists.'
 			],
 			[
 				'request' => [
 					[
 						'host' => 'test-template-12',
 						'groups' => ['groupid' => 1],
-						'templates' => ['templateid' => 10047 /* "Zabbix server health" */]
+						'templates' => ['templateid' => 10047 /* "Advantal server health" */]
 					]
 				]
 			],
@@ -181,7 +184,7 @@ class testTemplate extends CAPITest {
 					[
 						'host' => 'test-template-14',
 						'groups' => ['groupid' => 1],
-						'templates' => ['templateid' => 10047 /* "Zabbix server health" */]
+						'templates' => ['templateid' => 10047 /* "Advantal server health" */]
 					]
 				],
 				'expected_error' => 'Invalid parameter "/1/groups/1": object does not exist, or you have no permissions to it.',
@@ -211,7 +214,8 @@ class testTemplate extends CAPITest {
 		];
 	}
 
-	public function dataProviderUpdate() {
+	public function dataProviderUpdate()
+	{
 		return [
 			[
 				'request' => [
@@ -264,14 +268,16 @@ class testTemplate extends CAPITest {
 	/**
 	 * @dataProvider dataProviderCreate
 	 */
-	public function testTemplate_Create(array $request, ?string $expected_error = null, ?array $user = null) {
+	public function testTemplate_Create(array $request, ?string $expected_error = null, ?array $user = null)
+	{
 		if ($user !== null) {
 			$this->authorize($user['user'], $user['password']);
 		}
 		$this->call('template.create', $request, $expected_error);
 	}
 
-	public function testTemplate_CreateUUID() {
+	public function testTemplate_CreateUUID()
+	{
 		$result = $this->call('template.create', [
 			[
 				'host' => 'test-template-uuid-01',
@@ -295,7 +301,8 @@ class testTemplate extends CAPITest {
 		$this->assertNotSame($db_templates[0]['uuid'], $db_templates[1]['uuid']);
 	}
 
-	public function testTemplate_CreateDoubleLink() {
+	public function testTemplate_CreateDoubleLink()
+	{
 		/*        +-------------+
 		 *        | template-01 |
 		 *        +-------------+
@@ -363,7 +370,8 @@ class testTemplate extends CAPITest {
 		], 'Cannot link template "test-template-double-link-03" to template "test-template-double-link-04", because its parent template "test-template-double-link-01" would be linked twice.');
 	}
 
-	public function testTemplate_CreateTriggerDependency() {
+	public function testTemplate_CreateTriggerDependency()
+	{
 		/*
 		 *                     +---------------------------+
 		 *                     V                           |  "trigger-02" depends on "trigger-01"
@@ -477,7 +485,8 @@ class testTemplate extends CAPITest {
 		], 'Cannot link template "test-template-trigger-dependency-02" without template "test-template-trigger-dependency-01" to template "test-template-trigger-dependency-05" due to dependency of trigger "trigger-02".');
 	}
 
-	public function testTemplate_CreateTriggerExpression() {
+	public function testTemplate_CreateTriggerExpression()
+	{
 		/*
 		 * +-------------+---------+-------------+
 		 * | template-01 | trigger | template-02 |  The "trigger" contains items from both templates.
@@ -573,7 +582,8 @@ class testTemplate extends CAPITest {
 	/**
 	 * @dataProvider dataProviderUpdate
 	 */
-	public function testTemplate_Update(array $request, ?string $expected_error = null, ?array $user = null) {
+	public function testTemplate_Update(array $request, ?string $expected_error = null, ?array $user = null)
+	{
 		if ($user !== null) {
 			$this->authorize($user['user'], $user['password']);
 		}

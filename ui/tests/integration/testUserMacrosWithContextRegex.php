@@ -13,8 +13,8 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
-require_once dirname(__FILE__).'/../include/CIntegrationTest.php';
-require_once dirname(__FILE__).'/../include/CAPITest.php';
+require_once dirname(__FILE__) . '/../include/CIntegrationTest.php';
+require_once dirname(__FILE__) . '/../include/CAPITest.php';
 
 /**
  * Test suite for macros with regular expression context.
@@ -88,7 +88,8 @@ require_once dirname(__FILE__).'/../include/CAPITest.php';
  *
  * @onAfter clearData
  */
-class testUserMacrosWithContextRegex extends CIntegrationTest {
+class testUserMacrosWithContextRegex extends CIntegrationTest
+{
 	const TEMPLATE_NAME_T1 = 'T1'; // template level 1
 	const HOSTNAME = 'host_user_macros_with_context_regex';
 
@@ -100,9 +101,9 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	const TRAPPER_ITEM_KEY_T1 = 'trap_t1';
 	const TRAPPER_ITEM_KEY_G = 'trap_g';
 
-	const TRIGGER_EXPRESSION_H = 'last(/'.self::HOSTNAME.'/'.self::TRAPPER_ITEM_KEY_H.')>{$HOSTMACRO:regex:abc}';
-	const TRIGGER_EXPRESSION_T1 = 'last(/'.self::HOSTNAME.'/'.self::TRAPPER_ITEM_KEY_T1.')>{$TEMPLATEMACRO1:regex:abc}';
-	const TRIGGER_EXPRESSION_G = 'last(/'.self::HOSTNAME.'/'.self::TRAPPER_ITEM_KEY_G.')>{$GLOBALMACRO:regex:abc}';
+	const TRIGGER_EXPRESSION_H = 'last(/' . self::HOSTNAME . '/' . self::TRAPPER_ITEM_KEY_H . ')>{$HOSTMACRO:regex:abc}';
+	const TRIGGER_EXPRESSION_T1 = 'last(/' . self::HOSTNAME . '/' . self::TRAPPER_ITEM_KEY_T1 . ')>{$TEMPLATEMACRO1:regex:abc}';
+	const TRIGGER_EXPRESSION_G = 'last(/' . self::HOSTNAME . '/' . self::TRAPPER_ITEM_KEY_G . ')>{$GLOBALMACRO:regex:abc}';
 
 	const TRIGGER_EVT_NAME_H = 'event name|{$HOSTMACRO}|{$HOSTMACRO:regex:abc}|{$HOSTMACRO:regex:x}|';
 	const TRIGGER_EVT_NAME_T1 = 'event name|{$TEMPLATEMACRO1}|{$TEMPLATEMACRO1:regex:abc}|{$TEMPLATEMACRO1:regex:x}|';
@@ -130,7 +131,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	/**
 	 * @inheritdoc
 	 */
-	public function prepareData() {
+	public function prepareData()
+	{
 		// Create template
 		$response = $this->call('template.create', [
 			'host' => self::TEMPLATE_NAME_T1,
@@ -151,9 +153,9 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 					'useip' => 1,
 					'ip' => '127.0.0.1',
 					'dns' => '',
-					'port' => PHPUNIT_PORT_PREFIX.self::AGENT_PORT_SUFFIX
+					'port' => PHPUNIT_PORT_PREFIX . self::AGENT_PORT_SUFFIX
 				],
-				'groups' => [['groupid' => 4]], // Zabbix servers
+				'groups' => [['groupid' => 4]], // Advantal servers
 				'templates' => [['templateid' => self::$templateId]],
 				'status' => HOST_STATUS_MONITORED
 			]
@@ -279,7 +281,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	 *
 	 * @return array
 	 */
-	public function agentConfigurationProvider() {
+	public function agentConfigurationProvider()
+	{
 		return [
 			self::COMPONENT_AGENT => [
 				'Hostname' => self::HOSTNAME,
@@ -290,8 +293,9 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 
 	/**
 	 * Creates host or template user macros.
-	*/
-	private function usermacroCreate($macros, $hostId) {
+	 */
+	private function usermacroCreate($macros, $hostId)
+	{
 		foreach ($macros as $macro => $value) {
 			$response = $this->call('usermacro.create', [
 				'hostid' => $hostId,
@@ -308,8 +312,9 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 
 	/**
 	 * Creates global user macros.
-	*/
-	private function usermacroCreateGlobal($macros) {
+	 */
+	private function usermacroCreateGlobal($macros)
+	{
 		foreach ($macros as $macro => $value) {
 			$response = $this->call('usermacro.createglobal', [
 				'macro'  => $macro,
@@ -325,8 +330,9 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 
 	/**
 	 * Cleans up all previously defined host or template user macros.
-	*/
-	private function usermacroCleanup() {
+	 */
+	private function usermacroCleanup()
+	{
 		if (!empty(self::$macroIds)) {
 			CDataHelper::call('usermacro.delete', self::$macroIds);
 			self::$macroIds = [];
@@ -335,8 +341,9 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 
 	/**
 	 * Cleans up all previously defined global user macros.
-	*/
-	private function usermacroCleanupGlobal() {
+	 */
+	private function usermacroCleanupGlobal()
+	{
 		if (!empty(self::$globalMacroIds)) {
 			CDataHelper::call('usermacro.deleteglobal', self::$globalMacroIds);
 			self::$globalMacroIds = [];
@@ -346,7 +353,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	/**
 	 * Test macro expansion in event name
 	 */
-	private function testEventName(int $trigggerId, string $expectedEvtName) {
+	private function testEventName(int $trigggerId, string $expectedEvtName)
+	{
 		$response = $this->callUntilDataIsPresent('problem.get', [
 			'output' => ['name'],
 			'objectids' => $trigggerId,
@@ -363,7 +371,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	/**
 	 * Test macro expansion in event names
 	 */
-	private function testAgentItemKey(string $expectedItemValue) {
+	private function testAgentItemKey(string $expectedItemValue)
+	{
 		$wait_iterations = 10;
 		$wait_iteration_delay = 2;
 
@@ -393,7 +402,7 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 			sleep($wait_iteration_delay);
 		}
 
-		$lastValues =[];
+		$lastValues = [];
 		foreach (self::$agentItemIds as $itemId) {
 			$this->assertArrayHasKey('lastvalue', $response['result'][$itemId]);
 			$lastValues[] = $response['result'][$itemId]['lastvalue'];
@@ -404,7 +413,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 		$this->assertEquals($expectedItemValue, $lastValues[2], 'Test case for macros {$GLOBALMACRO} {$GLOBALMACRO:regex:abc} {$GLOBALMACRO:regex:x} {$GLOBALMACRO:regex:y} in agent item key failed');
 	}
 
-	private function testItemNamesResolutionByAPI($expectedResolution) {
+	private function testItemNamesResolutionByAPI($expectedResolution)
+	{
 		$response = $this->call('item.get', [
 			'output' => ['name_resolved'],
 			'itemids' => self::$agentItemIds,
@@ -412,22 +422,23 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 		]);
 		$this->assertArrayHasKey('result', $response);
 
-		$namesResolved =[];
+		$namesResolved = [];
 		foreach (self::$agentItemIds as $itemId) {
 			$this->assertArrayHasKey('name_resolved', $response['result'][$itemId]);
 			$namesResolved[] = $response['result'][$itemId]['name_resolved'];
 		}
 
-		$this->assertEquals('agent item H '.$expectedResolution, $namesResolved[0], 'Test case for macros {$HOSTMACRO} {$HOSTMACRO:regex:abc} {$HOSTMACRO:regex:x} {$HOSTMACRO:regex:y} in agent item name failed');
-		$this->assertEquals('agent item T1 '.$expectedResolution, $namesResolved[1], 'Test case for macros {$TEMPLATEMACRO1} {$TEMPLATEMACRO1:regex:abc} {$TEMPLATEMACRO1:regex:x} {$TEMPLATEMACRO1:regex:y} in agent item name failed');
-		$this->assertEquals('agent item G '.$expectedResolution, $namesResolved[2], 'Test case for macros {$GLOBALMACRO} {$GLOBALMACRO:regex:abc} {$GLOBALMACRO:regex:x} {$GLOBALMACRO:regex:y} in agent item name failed');
+		$this->assertEquals('agent item H ' . $expectedResolution, $namesResolved[0], 'Test case for macros {$HOSTMACRO} {$HOSTMACRO:regex:abc} {$HOSTMACRO:regex:x} {$HOSTMACRO:regex:y} in agent item name failed');
+		$this->assertEquals('agent item T1 ' . $expectedResolution, $namesResolved[1], 'Test case for macros {$TEMPLATEMACRO1} {$TEMPLATEMACRO1:regex:abc} {$TEMPLATEMACRO1:regex:x} {$TEMPLATEMACRO1:regex:y} in agent item name failed');
+		$this->assertEquals('agent item G ' . $expectedResolution, $namesResolved[2], 'Test case for macros {$GLOBALMACRO} {$GLOBALMACRO:regex:abc} {$GLOBALMACRO:regex:x} {$GLOBALMACRO:regex:y} in agent item name failed');
 	}
 
 	/**
 	 * @required-components server, agent
 	 * @configurationDataProvider agentConfigurationProvider
 	 */
-	public function testUserMacrosWithContextRegex_macrosInEventNamesAndAgentItemKeysX() {
+	public function testUserMacrosWithContextRegex_macrosInEventNamesAndAgentItemKeysX()
+	{
 		// Configure macros and reload config cache
 		$this->usermacroCreate([
 			'{$HOSTMACRO}' => '33',
@@ -475,7 +486,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	 * Test macro resolution in item names by API.
 	 * It helps to test consistency in macro resolution between server and API.
 	 */
-	public function testUserMacrosWithContextRegex_macrosInItemNamesResolutionByAPIX() {
+	public function testUserMacrosWithContextRegex_macrosInItemNamesResolutionByAPIX()
+	{
 
 		$this->testItemNamesResolutionByAPI('33 15 15 15');
 	}
@@ -484,7 +496,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	 * @required-components server, agent
 	 * @configurationDataProvider agentConfigurationProvider
 	 */
-	public function testUserMacrosWithContextRegex_macrosInEventNamesAndAgentItemKeysY() {
+	public function testUserMacrosWithContextRegex_macrosInEventNamesAndAgentItemKeysY()
+	{
 		// Cleanup for the previous test is done here to make sure it runs even if the previous test failed.
 
 		// Recover from problems started during the previous test
@@ -549,7 +562,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	 * Test macro resolution in item names by API.
 	 * It helps to test consistency in macro resolution between server and API.
 	 */
-	public function testUserMacrosWithContextRegex_macrosInItemNamesResolutionByAPIY() {
+	public function testUserMacrosWithContextRegex_macrosInItemNamesResolutionByAPIY()
+	{
 
 		$this->testItemNamesResolutionByAPI('15 15 15 33');
 	}
@@ -558,7 +572,8 @@ class testUserMacrosWithContextRegex extends CIntegrationTest {
 	 * Delete data objects created for this test suite
 	 *
 	 */
-	public static function clearData(): void {
+	public static function clearData(): void
+	{
 		// Triggers, items, user macros at hosts and templates should be cascade deleted.
 		if (!empty(self::$globalMacroIds)) {
 			CDataHelper::call('usermacro.deleteglobal', self::$globalMacroIds);

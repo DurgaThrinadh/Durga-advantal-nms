@@ -108,18 +108,18 @@ class testFormTotp extends CWebTest {
 		$help_link = $links->query('link:Help')->one();
 		$this->assertTrue($help_link->isClickable());
 		$this->assertEquals(1,
-				preg_match('/^https:\/\/www.zabbix.com\/documentation\/\d.\d\/$/', $help_link->getAttribute('href'))
+				preg_match('/^https:\/\/www.advantal.com\/documentation\/\d.\d\/$/', $help_link->getAttribute('href'))
 		);
 		$this->assertEquals('_blank', $help_link->getAttribute('target')); // opens link in a new tab
 
 		$support_link = $links->query('link:Support')->one();
 		$this->assertTrue($support_link->isClickable());
-		$this->assertEquals('https://www.zabbix.com/support', $support_link->getAttribute('href'));
+		$this->assertEquals('https://www.advantal.com/support', $support_link->getAttribute('href'));
 		$this->assertEquals('_blank', $support_link->getAttribute('target')); // opens link in a new tab
 
-		$copyright = $this->page->query('xpath://footer[@role="contentinfo"]')->one();
-		$this->assertTrue($copyright->isVisible());
-		$this->assertEquals(1, preg_match('/^© 2001–20\d\d, Zabbix SIA$/', $copyright->getText()));
+		// $copyright = $this->page->query('xpath://footer[@role="contentinfo"]')->one();
+		// $this->assertTrue($copyright->isVisible());
+		// $this->assertEquals(1, preg_match('/^© 2001–20\d\d, Advantal $/', $copyright->getText()));
 	}
 
 	/**

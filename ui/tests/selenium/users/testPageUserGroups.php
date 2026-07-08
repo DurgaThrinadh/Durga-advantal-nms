@@ -14,28 +14,32 @@
 **/
 
 
-require_once __DIR__.'/../../include/CLegacyWebTest.php';
+require_once __DIR__ . '/../../include/CLegacyWebTest.php';
 
 /**
  * @backup usrgrp
  */
-class testPageUserGroups extends CLegacyWebTest {
+class testPageUserGroups extends CLegacyWebTest
+{
 
 	/**
 	 * Attach MessageBehavior, TableBehavior and TagBehavior to the test.
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CTableBehavior::class,
 			CMessageBehavior::class
 		];
 	}
 
-	public static function allGroups() {
+	public static function allGroups()
+	{
 		return CDBHelper::getDataProvider("select * from usrgrp where name<>'Disabled' and name<>'Internal' order by usrgrpid");
 	}
 
-	public function testPageUserGroups_CheckLayout() {
+	public function testPageUserGroups_CheckLayout()
+	{
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$this->zbxTestCheckTitle('Configuration of user groups');
 		$this->zbxTestCheckHeader('User groups');
@@ -60,7 +64,8 @@ class testPageUserGroups extends CLegacyWebTest {
 	/**
 	 * @dataProvider allGroups
 	 */
-	public function testPageUserGroups_SimpleUpdate($group) {
+	public function testPageUserGroups_SimpleUpdate($group)
+	{
 		$usrgrpid = $group['usrgrpid'];
 		$name = $group['name'];
 
@@ -83,13 +88,14 @@ class testPageUserGroups extends CLegacyWebTest {
 	}
 
 	/**
-	* @dataProvider allGroups
-	*/
-	public function testPageUserGroups_MassDisable($group) {
+	 * @dataProvider allGroups
+	 */
+	public function testPageUserGroups_MassDisable($group)
+	{
 		$usrgrpid = $group['usrgrpid'];
 		$name = $group['name'];
 
-		$cannotDisable = ('Zabbix administrators' == $name);
+		$cannotDisable = ('Advantal Administrators' == $name);
 
 		$sqlHashGroups = "select * from usrgrp where usrgrpid<>$usrgrpid order by usrgrpid";
 		$oldHashGroups = CDBHelper::getHash($sqlHashGroups);
@@ -97,23 +103,21 @@ class testPageUserGroups extends CLegacyWebTest {
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$this->zbxTestCheckTitle('Configuration of user groups');
 
-		$this->zbxTestCheckboxSelect('usrgrpids_'.$usrgrpid);
+		$this->zbxTestCheckboxSelect('usrgrpids_' . $usrgrpid);
 		$this->zbxTestClickXpath('//button[text()="Disable"]');
 
 		$this->zbxTestAcceptAlert();
 		$this->zbxTestCheckTitle('Configuration of user groups');
 		if ($cannotDisable) {
 			$this->zbxTestTextPresent('User cannot add oneself to a disabled group or a group with disabled GUI access.');
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, 'User group updated');
 		}
 
-		$sql = "select * from usrgrp where usrgrpid=$usrgrpid and users_status=".GROUP_STATUS_DISABLED;
+		$sql = "select * from usrgrp where usrgrpid=$usrgrpid and users_status=" . GROUP_STATUS_DISABLED;
 		if ($cannotDisable) {
 			$this->assertEquals(0, CDBHelper::getCount($sql));
-		}
-		else {
+		} else {
 			$this->assertEquals(1, CDBHelper::getCount($sql));
 		}
 
@@ -121,9 +125,10 @@ class testPageUserGroups extends CLegacyWebTest {
 	}
 
 	/**
-	* @dataProvider allGroups
-	*/
-	public function testPageUserGroups_MassEnable($group) {
+	 * @dataProvider allGroups
+	 */
+	public function testPageUserGroups_MassEnable($group)
+	{
 		$usrgrpid = $group['usrgrpid'];
 		$name = $group['name'];
 
@@ -133,23 +138,24 @@ class testPageUserGroups extends CLegacyWebTest {
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$this->zbxTestCheckTitle('Configuration of user groups');
 
-		$this->zbxTestCheckboxSelect('usrgrpids_'.$usrgrpid);
+		$this->zbxTestCheckboxSelect('usrgrpids_' . $usrgrpid);
 		$this->zbxTestClickXpath('//button[text()="Enable"]');
 
 		$this->zbxTestAcceptAlert();
 		$this->zbxTestCheckTitle('Configuration of user groups');
 		$this->assertMessage(TEST_GOOD, 'User group updated');
 
-		$sql="select * from usrgrp where usrgrpid=$usrgrpid and users_status=".GROUP_STATUS_ENABLED;
+		$sql = "select * from usrgrp where usrgrpid=$usrgrpid and users_status=" . GROUP_STATUS_ENABLED;
 		$this->assertEquals(1, CDBHelper::getCount($sql));
 
 		$this->assertEquals($oldHashGroups, CDBHelper::getHash($sqlHashGroups));
 	}
 
 	/**
-	* @dataProvider allGroups
-	*/
-	public function testPageUserGroups_MassEnableDEBUG($group) {
+	 * @dataProvider allGroups
+	 */
+	public function testPageUserGroups_MassEnableDEBUG($group)
+	{
 		$usrgrpid = $group['usrgrpid'];
 		$name = $group['name'];
 
@@ -159,23 +165,24 @@ class testPageUserGroups extends CLegacyWebTest {
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$this->zbxTestCheckTitle('Configuration of user groups');
 
-		$this->zbxTestCheckboxSelect('usrgrpids_'.$usrgrpid);
+		$this->zbxTestCheckboxSelect('usrgrpids_' . $usrgrpid);
 		$this->zbxTestClickXpath('//button[text()="Enable debug mode"]');
 		$this->zbxTestAcceptAlert();
 
 		$this->zbxTestCheckTitle('Configuration of user groups');
 		$this->assertMessage(TEST_GOOD, 'User group updated');
 
-		$sql="select * from usrgrp where usrgrpid=$usrgrpid and debug_mode=".GROUP_DEBUG_MODE_ENABLED;
+		$sql = "select * from usrgrp where usrgrpid=$usrgrpid and debug_mode=" . GROUP_DEBUG_MODE_ENABLED;
 		$this->assertEquals(1, CDBHelper::getCount($sql));
 
 		$this->assertEquals($oldHashGroups, CDBHelper::getHash($sqlHashGroups));
 	}
 
 	/**
-	* @dataProvider allGroups
-	*/
-	public function testPageUserGroups_MassDisableDEBUG($group) {
+	 * @dataProvider allGroups
+	 */
+	public function testPageUserGroups_MassDisableDEBUG($group)
+	{
 		$usrgrpid = $group['usrgrpid'];
 		$name = $group['name'];
 
@@ -185,31 +192,33 @@ class testPageUserGroups extends CLegacyWebTest {
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$this->zbxTestCheckTitle('Configuration of user groups');
 
-		$this->zbxTestCheckboxSelect('usrgrpids_'.$usrgrpid);
+		$this->zbxTestCheckboxSelect('usrgrpids_' . $usrgrpid);
 		$this->zbxTestClickXpath('//button[text()="Disable debug mode"]');
 		$this->zbxTestAcceptAlert();
 
 		$this->zbxTestCheckTitle('Configuration of user groups');
 		$this->assertMessage(TEST_GOOD, 'User group updated');
 
-		$sql = "select * from usrgrp where usrgrpid=$usrgrpid and debug_mode=".GROUP_DEBUG_MODE_DISABLED;
+		$sql = "select * from usrgrp where usrgrpid=$usrgrpid and debug_mode=" . GROUP_DEBUG_MODE_DISABLED;
 		$this->assertEquals(1, CDBHelper::getCount($sql));
 
 		$this->assertEquals($oldHashGroups, CDBHelper::getHash($sqlHashGroups));
 	}
 
-	public function testPageUserGroups_FilterByName() {
+	public function testPageUserGroups_FilterByName()
+	{
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$table = $this->getTable();
-		$this->zbxTestInputTypeOverwrite('filter_name', 'Zabbix administrators');
+		$this->zbxTestInputTypeOverwrite('filter_name', 'Advantal Administrators');
 		$this->zbxTestClickButtonText('Apply');
 		$table->waitUntilReloaded();
-		$this->zbxTestAssertElementText("//tbody/tr[1]/td[2]/a", 'Zabbix administrators');
+		$this->zbxTestAssertElementText("//tbody/tr[1]/td[2]/a", 'Advantal Administrators');
 		$this->page->waitUntilReady();
 		$this->zbxTestTextNotPresent('Displaying 0 of 0 found');
 	}
 
-	public function testPageUserGroups_FilterNone() {
+	public function testPageUserGroups_FilterNone()
+	{
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$table = $this->getTable();
 		$this->zbxTestInputTypeOverwrite('filter_name', '1928379128ksdhksdjfh');
@@ -223,10 +232,11 @@ class testPageUserGroups extends CLegacyWebTest {
 		$this->assertTableStats(0);
 	}
 
-	public function testPageUserGroups_FilterByStatus() {
+	public function testPageUserGroups_FilterByStatus()
+	{
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$table = $this->getTable();
-		$this->zbxTestInputTypeOverwrite('filter_name', 'Zabbix administrators');
+		$this->zbxTestInputTypeOverwrite('filter_name', 'Advantal Administrators');
 		$this->zbxTestClickXpathWait("//label[@for='filter_user_status_1']");
 		$this->zbxTestClickButtonText('Apply');
 		$table->waitUntilReloaded();
@@ -234,7 +244,8 @@ class testPageUserGroups extends CLegacyWebTest {
 		$this->assertTableStats(1);
 	}
 
-	public function testPageUserGroups_FilterReset() {
+	public function testPageUserGroups_FilterReset()
+	{
 		$this->zbxTestLogin('zabbix.php?action=usergroup.list');
 		$this->zbxTestClickButtonText('Reset');
 		$table = $this->getTable();

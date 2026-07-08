@@ -14,7 +14,7 @@
 **/
 
 
-require_once __DIR__.'/../common/testWidgets.php';
+require_once __DIR__ . '/../common/testWidgets.php';
 
 /**
  * @backup config, hstgrp, widget
@@ -23,7 +23,8 @@ require_once __DIR__.'/../common/testWidgets.php';
  *
  * @onBefore prepareDashboardData, prepareProblemsData
  */
-class testDashboardProblemsWidgetDisplay extends testWidgets {
+class testDashboardProblemsWidgetDisplay extends testWidgets
+{
 
 	protected static $dashboardid;
 	protected static $time;
@@ -39,7 +40,8 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class,
@@ -51,7 +53,8 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		];
 	}
 
-	public function prepareDashboardData() {
+	public function prepareDashboardData()
+	{
 		$response = CDataHelper::call('dashboard.create', [
 			'name' => 'Dashboard for Problem widget check',
 			'auto_start' => 0,
@@ -67,7 +70,8 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		self::$dashboardid = $response['dashboardids'][0];
 	}
 
-	public function prepareProblemsData() {
+	public function prepareProblemsData()
+	{
 		// Remove PROBLEM event status blinking to get correct status in table column.
 		CDataHelper::call('settings.update', [
 			'problem_unack_style' => 0
@@ -190,17 +194,22 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		CDBHelper::setTriggerProblem(array_keys(CDataHelper::getIds('description')), TRIGGER_VALUE_TRUE, ['clock' => self::$time]);
 
 		// Manual close is true for the problem: Trigger for widget 1 char.
-		DBexecute('UPDATE triggers SET value=1, manual_close=1 WHERE description='.
+		DBexecute(
+			'UPDATE triggers SET value=1, manual_close=1 WHERE description=' .
 				zbx_dbstr('Trigger for widget 1 char')
 		);
 
 		// Get event ids.
 		$eventids = [];
 		$event_names = [
-			'Cause problem', 'Symptom problem', 'Symptom problem 2', 'Trigger for widget text', 'Trigger for widget 2 unsigned'
+			'Cause problem',
+			'Symptom problem',
+			'Symptom problem 2',
+			'Trigger for widget text',
+			'Trigger for widget 2 unsigned'
 		];
 		foreach ($event_names as $event_name) {
-			$eventids[$event_name] = CDBHelper::getValue('SELECT eventid FROM events WHERE name='.zbx_dbstr($event_name));
+			$eventids[$event_name] = CDBHelper::getValue('SELECT eventid FROM events WHERE name=' . zbx_dbstr($event_name));
 		}
 
 		self::$cause_problemid = $eventids['Cause problem'];
@@ -210,19 +219,23 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		self::$eventid_for_widget_unsigned = $eventids['Trigger for widget 2 unsigned'];
 
 		// Set cause and symptoms.
-		DBexecute('UPDATE problem SET cause_eventid='.self::$cause_problemid.' WHERE name IN ('.
-				zbx_dbstr('Symptom problem').', '.zbx_dbstr('Symptom problem 2').')'
+		DBexecute(
+			'UPDATE problem SET cause_eventid=' . self::$cause_problemid . ' WHERE name IN (' .
+				zbx_dbstr('Symptom problem') . ', ' . zbx_dbstr('Symptom problem 2') . ')'
 		);
-		DBexecute('INSERT INTO event_symptom (eventid, cause_eventid) VALUES ('.self::$symptom_problemid.', '.
-				self::$cause_problemid.')'
+		DBexecute(
+			'INSERT INTO event_symptom (eventid, cause_eventid) VALUES (' . self::$symptom_problemid . ', ' .
+				self::$cause_problemid . ')'
 		);
-		DBexecute('INSERT INTO event_symptom (eventid, cause_eventid) VALUES ('.self::$symptom_problemid2.', '.
-				self::$cause_problemid.')'
+		DBexecute(
+			'INSERT INTO event_symptom (eventid, cause_eventid) VALUES (' . self::$symptom_problemid2 . ', ' .
+				self::$cause_problemid . ')'
 		);
 
 		// Suppress the problem: 'Trigger for widget text'.
-		DBexecute('INSERT INTO event_suppress (event_suppressid, eventid, maintenanceid, suppress_until, userid) VALUES '.
-				'(100990, '.self::$eventid_for_widget_text.', NULL, 0, 1)'
+		DBexecute(
+			'INSERT INTO event_suppress (event_suppressid, eventid, maintenanceid, suppress_until, userid) VALUES ' .
+				'(100990, ' . self::$eventid_for_widget_text . ', NULL, 0, 1)'
 		);
 
 		// Acknowledge the problem: 'Trigger for widget 2 unsigned' and get acknowledge time.
@@ -239,7 +252,8 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		self::$acktime = CTestArrayHelper::get($event, '0.acknowledges.0.clock');
 	}
 
-	public static function getCheckWidgetTableData() {
+	public static function getCheckWidgetTableData()
+	{
 		return [
 			// #0 Filtered by Host group.
 			[
@@ -263,7 +277,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 							'zi-alert-with-content' => [
 								[
 									'Time' => 'acknowledged',
-									'User' => 'Admin (Zabbix Administrator)',
+									'User' => 'Admin (Advantal Administrator)',
 									'Message' => 'Acknowledged event'
 								]
 							],
@@ -272,7 +286,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 							'zi-bullet-right-with-content' => [
 								[
 									'Time' => 'acknowledged',
-									'User/Recipient' => 'Admin (Zabbix Administrator)',
+									'User/Recipient' => 'Admin (Advantal Administrator)',
 									'Action' => '',
 									'Message/Command' => 'Acknowledged event',
 									'Status' => '',
@@ -308,7 +322,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 					],
 					'check_suppressed_icon' => [
 						'problem' => 'Trigger for widget text',
-						'text' => "Suppressed till: Indefinitely\nManually by: Admin (Zabbix Administrator)"
+						'text' => "Suppressed till: Indefinitely\nManually by: Admin (Advantal Administrator)"
 					]
 				]
 			],
@@ -359,8 +373,16 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 						['Problem • Severity' => 'Trigger for widget 2 log'],
 						['Problem • Severity' => 'Trigger for widget 2 unsigned']
 					],
-					'headers' => ['Time', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity', 'Duration',
-							'Update', 'Actions'
+					'headers' => [
+						'Time',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions'
 					]
 				]
 			],
@@ -386,7 +408,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 						'Name' => 'Group, Excluded groups',
 						'Exclude host groups' => [
 							'Group for Problems Widgets',
-							'Zabbix servers',
+							'Advantal servers',
 							'Group to check triggers filtering',
 							'Another group to check Overview',
 							'Group to check Overview',
@@ -436,7 +458,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 				[
 					'fields' => [
 						'Name' => 'Group, tags, show 1',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Show tags' => 1
 					],
 					'Tags' => [
@@ -458,8 +480,19 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 							'Tags' => 'Alpha: a'
 						]
 					],
-					'headers' => ['Time', '', '', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity',
-							'Duration', 'Update', 'Actions', 'Tags'
+					'headers' => [
+						'Time',
+						'',
+						'',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions',
+						'Tags'
 					]
 				]
 			],
@@ -468,7 +501,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 				[
 					'fields' => [
 						'Name' => 'Group, tags, show 2',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Show tags' => 2
 					],
 					'Tags' => [
@@ -494,8 +527,19 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 						'Fourth test trigger with tag priority' => "Delta: t\nEta: e\nGamma: g\nTheta: t",
 						'Second test trigger with tag priority' => "Beta: b\nEpsilon: e\nEta: e\nZeta: z"
 					],
-					'headers' => ['Time', '', '', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity',
-							'Duration', 'Update', 'Actions', 'Tags'
+					'headers' => [
+						'Time',
+						'',
+						'',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions',
+						'Tags'
 					]
 				]
 			],
@@ -504,7 +548,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 				[
 					'fields' => [
 						'Name' => 'Group, tags, show 3, shortened',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Show tags' => 3,
 						'Tag name' => 'Shortened',
 						'Show timeline' => false,
@@ -538,8 +582,17 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 							'Tags' => "The: t\nAlp: a\nIot: i"
 						]
 					],
-					'headers' => ['Time', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity', 'Duration',
-							'Update', 'Actions', 'Tags'
+					'headers' => [
+						'Time',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions',
+						'Tags'
 					]
 				]
 			],
@@ -548,7 +601,7 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 				[
 					'fields' => [
 						'Name' => 'Group, tags, show 3, shortened, tag priority',
-						'Host groups' => 'Zabbix servers',
+						'Host groups' => 'Advantal servers',
 						'Show tags' => 3,
 						'Tag name' => 'None',
 						'Show timeline' => false,
@@ -574,8 +627,17 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 							'Tags' => "g\ne\nt"
 						]
 					],
-					'headers' => ['Time', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity', 'Duration',
-							'Update', 'Actions', 'Tags'
+					'headers' => [
+						'Time',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions',
+						'Tags'
 					]
 				]
 			],
@@ -611,8 +673,19 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 							'Operational data' => 'Item value: 0'
 						]
 					],
-					'headers' => ['Time', '', '', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity',
-							'Operational data', 'Duration', 'Update', 'Actions'
+					'headers' => [
+						'Time',
+						'',
+						'',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Operational data',
+						'Duration',
+						'Update',
+						'Actions'
 					]
 				]
 			],
@@ -660,8 +733,20 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 						['Problem • Severity' => 'Symptom problem 2'],
 						['Problem • Severity' => 'Symptom problem']
 					],
-					'headers' => ['', '', 'Time', '', '', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity',
-							'Duration', 'Update', 'Actions'
+					'headers' => [
+						'',
+						'',
+						'Time',
+						'',
+						'',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions'
 					]
 				]
 			],
@@ -680,8 +765,20 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 						['Problem • Severity' => 'Symptom problem 2'],
 						['Problem • Severity' => 'Symptom problem']
 					],
-					'headers' => ['', '', 'Time', '', '', 'Recovery time', 'Status', 'Info', 'Host', 'Problem • Severity',
-							'Duration', 'Update', 'Actions'
+					'headers' => [
+						'',
+						'',
+						'Time',
+						'',
+						'',
+						'Recovery time',
+						'Status',
+						'Info',
+						'Host',
+						'Problem • Severity',
+						'Duration',
+						'Update',
+						'Actions'
 					]
 				]
 			],
@@ -761,8 +858,9 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 	 *
 	 * @onAfter deleteWidgets
 	 */
-	public function testDashboardProblemsWidgetDisplay_CheckTable($data) {
-		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid='.self::$dashboardid);
+	public function testDashboardProblemsWidgetDisplay_CheckTable($data)
+	{
+		$this->page->login()->open('zabbix.php?action=dashboard.view&dashboardid=' . self::$dashboardid);
 		$dashboard = CDashboardElement::find()->one()->waitUntilReady();
 		$form = $this->openWidgetAndFill($dashboard, 'Problems', $data['fields']);
 
@@ -802,14 +900,14 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 				$action_cell = $table->findRow('Problem • Severity', $problem)->getColumn('Actions');
 
 				foreach ($action as $class => $hint_rows) {
-					$icon = $action_cell->query('xpath:.//*['.CXPathHelper::fromClass($class).']')->one();
+					$icon = $action_cell->query('xpath:.//*[' . CXPathHelper::fromClass($class) . ']')->one();
 					$this->assertTrue($icon->isVisible());
 
 					if ($class !== 'color-positive') {
 						// Click on icon and open hint.
 						$icon->click();
 						$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->asOverlayDialog()
-								->waitUntilReady()->one();
+							->waitUntilReady()->one();
 						$hint_table = $hint->query('class:list-table')->asTable()->waitUntilVisible()->one();
 
 						// Check rows in hint's table.
@@ -840,17 +938,29 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 
 			// Assert table stats.
 			$this->assertEquals($data['stats'], $table->getRow(count($data['result']))->getText());
-		}
-		elseif (empty($data['result'])) {
+		} elseif (empty($data['result'])) {
 			$this->assertTableData();
-		}
-		else {
+		} else {
 			$this->assertTableHasData($data['result']);
 		}
 
 		// Assert table headers depending on widget settings.
-		$headers = (CTestArrayHelper::get($data, 'headers', ['Time', '', '', 'Recovery time', 'Status', 'Info',
-				'Host', 'Problem • Severity', 'Duration', 'Update', 'Actions']
+		$headers = (CTestArrayHelper::get(
+			$data,
+			'headers',
+			[
+				'Time',
+				'',
+				'',
+				'Recovery time',
+				'Status',
+				'Info',
+				'Host',
+				'Problem • Severity',
+				'Duration',
+				'Update',
+				'Actions'
+			]
 		));
 		$this->assertEquals($headers, $table->getHeadersText());
 
@@ -861,9 +971,9 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		if (CTestArrayHelper::get($data, 'check_tag_ellipsis')) {
 			foreach ($data['check_tag_ellipsis'] as $problem => $ellipsis_text) {
 				$table->findRow('Problem • Severity', $problem)->getColumn('Tags')->query('class:zi-more')
-						->waitUntilClickable()->one()->click();
+					->waitUntilClickable()->one()->click();
 				$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->asOverlayDialog()
-						->waitUntilVisible()->one();
+					->waitUntilVisible()->one();
 				$this->assertEquals($ellipsis_text, $hint->getText());
 				$hint->close();
 			}
@@ -872,9 +982,9 @@ class testDashboardProblemsWidgetDisplay extends testWidgets {
 		// Check eye icon for suppressed problem.
 		if (CTestArrayHelper::get($data, 'check_suppressed_icon')) {
 			$table->findRow('Problem • Severity', $data['check_suppressed_icon']['problem'])->getColumn('Info')
-					->query('class:zi-eye-off')->waitUntilClickable()->one()->click();
+				->query('class:zi-eye-off')->waitUntilClickable()->one()->click();
 			$hint = $this->query('xpath://div[@class="overlay-dialogue wordbreak"]')->asOverlayDialog()
-					->waitUntilVisible()->one();
+				->waitUntilVisible()->one();
 			$this->assertEquals($data['check_suppressed_icon']['text'], $hint->getText());
 			$hint->close();
 		}

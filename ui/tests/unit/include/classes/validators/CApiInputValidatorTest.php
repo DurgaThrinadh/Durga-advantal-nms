@@ -1,4 +1,6 @@
-<?php declare(strict_types = 0);
+<?php
+
+declare(strict_types=0);
 /*
 ** Copyright (C) 2001-2026 Zabbix SIA
 **
@@ -16,11 +18,13 @@
 
 use PHPUnit\Framework\TestCase;
 
-class CApiInputValidatorTest extends TestCase {
+class CApiInputValidatorTest extends TestCase
+{
 
 	protected $default_timezone;
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		$settings = $this->createMock(CSettings::class);
 		$settings->method('get')
 			->will($this->returnValue([
@@ -41,11 +45,13 @@ class CApiInputValidatorTest extends TestCase {
 		date_default_timezone_set('UTC');
 	}
 
-	protected function tearDown(): void {
+	protected function tearDown(): void
+	{
 		date_default_timezone_set($this->default_timezone);
 	}
 
-	public function dataProviderInput() {
+	public function dataProviderInput()
+	{
 		return [
 			[
 				['type' => API_CALC_FORMULA],
@@ -146,7 +152,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_CALC_FORMULA],
 				// broken UTF-8 byte sequence
-				"\xd1".'12345',
+				"\xd1" . '12345',
 				'/1/formula',
 				'Invalid parameter "/1/formula": invalid byte sequence in UTF-8.'
 			],
@@ -201,7 +207,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_COLOR],
 				// broken UTF-8 byte sequence
-				"\xd1".'12345',
+				"\xd1" . '12345',
 				'/1/color',
 				'Invalid parameter "/1/color": invalid byte sequence in UTF-8.'
 			],
@@ -268,7 +274,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_COLORS],
 				// broken UTF-8 byte sequence
-				["\xd1".'12345'],
+				["\xd1" . '12345'],
 				'/1/colors',
 				'Invalid parameter "/1/colors/1": invalid byte sequence in UTF-8.'
 			],
@@ -329,7 +335,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_COND_FORMULA],
 				// broken UTF-8 byte sequence
-				"\xd1".'12345',
+				"\xd1" . '12345',
 				'/1/formula',
 				'Invalid parameter "/1/formula": invalid byte sequence in UTF-8.'
 			],
@@ -378,19 +384,19 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_COND_FORMULAID],
 				// broken UTF-8 byte sequence
-				"\xd1".'12345',
+				"\xd1" . '12345',
 				'/1/formulaid',
 				'Invalid parameter "/1/formulaid": invalid byte sequence in UTF-8.'
 			],
 			[
 				['type' => API_STRING_UTF8, 'length' => 16],
-				'Zabbix server',
+				'Advantal server',
 				'/1/name',
-				'Zabbix server'
+				'Advantal server'
 			],
 			[
 				['type' => API_STRING_UTF8, 'length' => 16],
-				'Zabbix Server++++',
+				'Advantal server++++',
 				'/1/name',
 				'Invalid parameter "/1/name": value is too long.'
 			],
@@ -439,7 +445,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_STRING_UTF8],
 				// broken UTF-8 byte sequence
-				'Заббикс '."\xd1".'сервер',
+				'Заббикс ' . "\xd1" . 'сервер',
 				'/1/name',
 				'Invalid parameter "/1/name": invalid byte sequence in UTF-8.'
 			],
@@ -542,7 +548,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_STRINGS_UTF8],
 				// broken UTF-8 byte sequence
-				['abc'."\xd1".'e'],
+				['abc' . "\xd1" . 'e'],
 				'/output',
 				'Invalid parameter "/output/1": invalid byte sequence in UTF-8.'
 			],
@@ -1880,7 +1886,7 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_OBJECT, 'fields' => []],
-				['host' => 'Zabbix server'],
+				['host' => 'Advantal server'],
 				'/',
 				'Invalid parameter "/": should be empty.'
 			],
@@ -1888,17 +1894,17 @@ class CApiInputValidatorTest extends TestCase {
 				['type' => API_OBJECT, 'fields' => [
 					'host' => ['type' => API_STRING_UTF8]
 				]],
-				['host' => 'Zabbix server'],
+				['host' => 'Advantal server'],
 				'/',
-				['host' => 'Zabbix server']
+				['host' => 'Advantal server']
 			],
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'host' => ['type' => API_STRING_UTF8]
 				]],
 				[
-					'host' => 'Zabbix server',
-					'name' => 'Zabbix server'
+					'host' => 'Advantal server',
+					'name' => 'Advantal server'
 				],
 				'/',
 				'Invalid parameter "/": unexpected parameter "name".'
@@ -1908,13 +1914,13 @@ class CApiInputValidatorTest extends TestCase {
 					'host' => ['type' => API_STRING_UTF8]
 				]],
 				[
-					'host' => 'Zabbix server',
-					'name' => 'Zabbix server'
+					'host' => 'Advantal server',
+					'name' => 'Advantal server'
 				],
 				'/',
 				[
-					'host' => 'Zabbix server',
-					'name' => 'Zabbix server'
+					'host' => 'Advantal server',
+					'name' => 'Advantal server'
 				]
 			],
 			[
@@ -1923,11 +1929,11 @@ class CApiInputValidatorTest extends TestCase {
 					'name' => ['type' => API_STRING_UTF8]
 				]],
 				[
-					'host' => 'Zabbix server'
+					'host' => 'Advantal server'
 				],
 				'/',
 				[
-					'host' => 'Zabbix server'
+					'host' => 'Advantal server'
 				]
 			],
 			[
@@ -1936,11 +1942,11 @@ class CApiInputValidatorTest extends TestCase {
 					'name' => ['type' => API_STRING_UTF8]
 				]],
 				[
-					'host' => 'Zabbix server'
+					'host' => 'Advantal server'
 				],
 				'/',
 				[
-					'host' => 'Zabbix server'
+					'host' => 'Advantal server'
 				]
 			],
 			[
@@ -1949,13 +1955,13 @@ class CApiInputValidatorTest extends TestCase {
 					'name' => ['type' => API_STRING_UTF8]
 				]],
 				[
-					'host' => 'Zabbix server',
-					'name' => 'Zabbix server'
+					'host' => 'Advantal server',
+					'name' => 'Advantal server'
 				],
 				'/',
 				[
-					'host' => 'Zabbix server',
-					'name' => 'Zabbix server'
+					'host' => 'Advantal server',
+					'name' => 'Advantal server'
 				]
 			],
 			[
@@ -1965,11 +1971,11 @@ class CApiInputValidatorTest extends TestCase {
 				]],
 				[
 					'uuid' => '',
-					'name' => 'Zabbix server'
+					'name' => 'Advantal server'
 				],
 				'/',
 				[
-					'name' => 'Zabbix server'
+					'name' => 'Advantal server'
 				]
 			],
 			[
@@ -1979,7 +1985,7 @@ class CApiInputValidatorTest extends TestCase {
 				]],
 				[
 					'uuid' => '56079badd056419383cc26e6a4fcc7e0',
-					'name' => 'Zabbix server'
+					'name' => 'Advantal server'
 				],
 				'/',
 				'Invalid parameter "/uuid": value must be empty.'
@@ -1990,7 +1996,7 @@ class CApiInputValidatorTest extends TestCase {
 					'name' => ['type' => API_STRING_UTF8, 'flags' => API_REQUIRED]
 				]],
 				[
-					'host' => 'Zabbix server'
+					'host' => 'Advantal server'
 				],
 				'/',
 				'Invalid parameter "/": the parameter "name" is missing.'
@@ -2012,7 +2018,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>	['type' => API_ID],
-					'host' =>	['type'=> API_STRING_UTF8],
+					'host' =>	['type' => API_STRING_UTF8],
 					'ruleid' =>	['type' => API_UNEXPECTED]
 				]],
 				[
@@ -2028,7 +2034,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>	['type' => API_ID],
-					'host' =>	['type'=> API_STRING_UTF8],
+					'host' =>	['type' => API_STRING_UTF8],
 					'ruleid' =>	['type' => API_UNEXPECTED]
 				]],
 				[
@@ -2041,7 +2047,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>	['type' => API_ID],
-					'host' =>	['type'=> API_UNEXPECTED, 'error_type' => API_ERR_INHERITED]
+					'host' =>	['type' => API_UNEXPECTED, 'error_type' => API_ERR_INHERITED]
 				]],
 				[
 					'hostid' => '10428',
@@ -2053,7 +2059,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>	['type' => API_ID],
-					'host' =>	['type'=> API_UNEXPECTED, 'error_type' => API_ERR_DISCOVERED]
+					'host' =>	['type' => API_UNEXPECTED, 'error_type' => API_ERR_DISCOVERED]
 				]],
 				[
 					'hostid' => '10428',
@@ -2065,10 +2071,10 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>				['type' => API_ID],
-					'custom_interface' =>	['type'=> API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
+					'custom_interface' =>	['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
 					'interface_ip' =>		['type' => API_MULTIPLE, 'rules' => [
-												['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
-												['else' => true, 'type' => API_UNEXPECTED]
+						['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
+						['else' => true, 'type' => API_UNEXPECTED]
 					]]
 				]],
 				[
@@ -2086,10 +2092,10 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>				['type' => API_ID],
-					'custom_interface' =>	['type'=> API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
+					'custom_interface' =>	['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
 					'interface_ip' =>		['type' => API_MULTIPLE, 'rules' => [
-												['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
-												['else' => true, 'type' => API_UNEXPECTED]
+						['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
+						['else' => true, 'type' => API_UNEXPECTED]
 					]]
 				]],
 				[
@@ -2103,10 +2109,10 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>				['type' => API_ID],
-					'custom_interface' =>	['type'=> API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
+					'custom_interface' =>	['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
 					'interface_ip' =>		['type' => API_MULTIPLE, 'rules' => [
-												['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
-												['else' => true, 'type' => API_UNEXPECTED, 'error_type' => API_ERR_INHERITED]
+						['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
+						['else' => true, 'type' => API_UNEXPECTED, 'error_type' => API_ERR_INHERITED]
 					]]
 				]],
 				[
@@ -2120,10 +2126,10 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECT, 'fields' => [
 					'hostid' =>				['type' => API_ID],
-					'custom_interface' =>	['type'=> API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
+					'custom_interface' =>	['type' => API_INT32, 'flags' => API_REQUIRED, 'in' => '0,1'],
 					'interface_ip' =>		['type' => API_MULTIPLE, 'rules' => [
-												['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
-												['else' => true, 'type' => API_UNEXPECTED, 'error_type' => API_ERR_DISCOVERED]
+						['if' => ['field' => 'custom_interface', 'in' => '1'], 'type' => API_IP],
+						['else' => true, 'type' => API_UNEXPECTED, 'error_type' => API_ERR_DISCOVERED]
 					]]
 				]],
 				[
@@ -2322,15 +2328,15 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_OBJECTS, 'fields' => []],
-				[['host' => 'Zabbix server']],
+				[['host' => 'Advantal server']],
 				'/',
 				'Invalid parameter "/1": should be empty.'
 			],
 			[
 				['type' => API_OBJECTS, 'flags' => API_ALLOW_UNEXPECTED, 'fields' => []],
-				[['host' => 'Zabbix server']],
+				[['host' => 'Advantal server']],
 				'/',
-				[['host' => 'Zabbix server']]
+				[['host' => 'Advantal server']]
 			],
 			[
 				['type' => API_OBJECTS, 'fields' => [
@@ -2338,13 +2344,13 @@ class CApiInputValidatorTest extends TestCase {
 					'name' => ['type' => API_STRING_UTF8]
 				]],
 				[
-					['host' => 'Zabbix server', 'name' => 'Zabbix server'],
-					['host' => 'Zabbix server']
+					['host' => 'Advantal server', 'name' => 'Advantal server'],
+					['host' => 'Advantal server']
 				],
 				'/',
 				[
-					['host' => 'Zabbix server', 'name' => 'Zabbix server'],
-					['host' => 'Zabbix server']
+					['host' => 'Advantal server', 'name' => 'Advantal server'],
+					['host' => 'Advantal server']
 				]
 			],
 			[
@@ -2356,13 +2362,13 @@ class CApiInputValidatorTest extends TestCase {
 					'height' => ['type' => API_INT32]
 				]],
 				[
-					['name' => 'Zabbix server 1'],
-					['name' => 'Zabbix server 2', 'col' => 5, 'row' => 10, 'width' => 1, 'height' => 1]
+					['name' => 'Advantal server 1'],
+					['name' => 'Advantal server 2', 'col' => 5, 'row' => 10, 'width' => 1, 'height' => 1]
 				],
 				'/',
 				[
-					['name' => 'Zabbix server 1', 'col' => 0, 'row' => 1],
-					['name' => 'Zabbix server 2', 'col' => 5, 'row' => 10, 'width' => 1, 'height' => 1]
+					['name' => 'Advantal server 1', 'col' => 0, 'row' => 1],
+					['name' => 'Advantal server 2', 'col' => 5, 'row' => 10, 'width' => 1, 'height' => 1]
 				]
 			],
 			[
@@ -2371,8 +2377,8 @@ class CApiInputValidatorTest extends TestCase {
 					'name' => ['type' => API_STRING_UTF8, 'flags' => API_REQUIRED]
 				]],
 				[
-					['host' => 'Zabbix server', 'name' => 'Zabbix server'],
-					['host' => 'Zabbix server']
+					['host' => 'Advantal server', 'name' => 'Advantal server'],
+					['host' => 'Advantal server']
 				],
 				'/',
 				'Invalid parameter "/2": the parameter "name" is missing.'
@@ -3038,7 +3044,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OBJECTS, 'fields' => [
 					'hostid' =>	['type' => API_ID],
-					'host' =>	['type'=> API_STRING_UTF8],
+					'host' =>	['type' => API_STRING_UTF8],
 					'ruleid' =>	['type' => API_UNEXPECTED]
 				]],
 				[
@@ -3056,13 +3062,13 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_HG_NAME, 'length' => 16],
-				'Zabbix servers',
+				'Advantal servers',
 				'/1/name',
-				'Zabbix servers'
+				'Advantal servers'
 			],
 			[
 				['type' => API_HG_NAME, 'length' => 16],
-				'Zabbix Servers+++',
+				'Advantal servers+++',
 				'/1/name',
 				'Invalid parameter "/1/name": value is too long.'
 			],
@@ -3093,7 +3099,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_HG_NAME],
 				// broken UTF-8 byte sequence
-				'Заббикс '."\xd1".'сервера',
+				'Заббикс ' . "\xd1" . 'сервера',
 				'/1/name',
 				'Invalid parameter "/1/name": invalid byte sequence in UTF-8.'
 			],
@@ -3129,13 +3135,13 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_H_NAME, 'length' => 16],
-				'Zabbix server',
+				'Advantal server',
 				'/1/name',
-				'Zabbix server'
+				'Advantal server'
 			],
 			[
 				['type' => API_H_NAME, 'length' => 16],
-				'Zabbix server++++',
+				'Advantal server++++',
 				'/1/name',
 				'Invalid parameter "/1/name": value is too long.'
 			],
@@ -3166,7 +3172,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_H_NAME],
 				// broken UTF-8 byte sequence
-				'Zabbix '."\xd1".'server',
+				'Zabbix ' . "\xd1" . 'server',
 				'/1/name',
 				'Invalid parameter "/1/name": invalid byte sequence in UTF-8.'
 			],
@@ -3406,7 +3412,7 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_SCRIPT_MENU_PATH],
-				'folder1/'.'/folder2',
+				'folder1/' . '/folder2',
 				'/1/menu_path',
 				'Invalid parameter "/1/menu_path": directory cannot be empty.'
 			],
@@ -3424,9 +3430,9 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_SCRIPT_MENU_PATH],
-				'/folder1/\/'.'/',
+				'/folder1/\/' . '/',
 				'/1/menu_path',
-				'/folder1/\/'.'/'
+				'/folder1/\/' . '/'
 			],
 			[
 				['type' => API_SCRIPT_MENU_PATH],
@@ -3623,7 +3629,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_USER_MACRO],
 				// broken UTF-8 byte sequence
-				'{$MACRO: '."\xd1".'ontext}',
+				'{$MACRO: ' . "\xd1" . 'ontext}',
 				'/1/macro',
 				'Invalid parameter "/1/macro": invalid byte sequence in UTF-8.'
 			],
@@ -3684,7 +3690,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_TIME_PERIOD],
 				// broken UTF-8 byte sequence
-				'1-7'."\xd1".',00:00-24:00',
+				'1-7' . "\xd1" . ',00:00-24:00',
 				'/1/period',
 				'Invalid parameter "/1/period": invalid byte sequence in UTF-8.'
 			],
@@ -3739,7 +3745,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_REGEX],
 				// broken UTF-8 byte sequence
-				'^'."\xd1".'$',
+				'^' . "\xd1" . '$',
 				'/1/expression',
 				'Invalid parameter "/1/expression": invalid byte sequence in UTF-8.'
 			],
@@ -3855,7 +3861,7 @@ class CApiInputValidatorTest extends TestCase {
 				['type' => API_HTTP_POST, 'name-length' => 255],
 				[
 					[
-						'name' => str_repeat('Long ', 95).'name',
+						'name' => str_repeat('Long ', 95) . 'name',
 						'value' => 'value'
 					]
 				],
@@ -3867,7 +3873,7 @@ class CApiInputValidatorTest extends TestCase {
 				[
 					[
 						'name' => 'name',
-						'value' => str_repeat('Long ', 95).'value'
+						'value' => str_repeat('Long ', 95) . 'value'
 					]
 				],
 				'/1/posts',
@@ -3904,8 +3910,7 @@ class CApiInputValidatorTest extends TestCase {
 						'name' => 'Host',
 						'value' => 'www.zabbix.com:8080'
 					],
-					[
-					]
+					[]
 				],
 				'/1/posts',
 				'Invalid parameter "/1/posts/2": the parameter "name" is missing.'
@@ -4288,7 +4293,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_OUTPUT],
 				// broken UTF-8 byte sequence
-				['abc'."\xd1".'e'],
+				['abc' . "\xd1" . 'e'],
 				'/output',
 				'Invalid parameter "/output/1": invalid byte sequence in UTF-8.'
 			],
@@ -4379,7 +4384,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_PSK],
 				// broken UTF-8 byte sequence
-				'abc'."\xd1".'e',
+				'abc' . "\xd1" . 'e',
 				'/psk',
 				'Invalid parameter "/psk": invalid byte sequence in UTF-8.'
 			],
@@ -4464,7 +4469,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_SORTORDER],
 				// broken UTF-8 byte sequence
-				'abc'."\xd1".'e',
+				'abc' . "\xd1" . 'e',
 				'/sortorder',
 				'Invalid parameter "/sortorder": invalid byte sequence in UTF-8.'
 			],
@@ -4561,7 +4566,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_URL],
 				// broken UTF-8 byte sequence
-				'hosts.'."\xd1".'hp',
+				'hosts.' . "\xd1" . 'hp',
 				'/1/url',
 				'Invalid parameter "/1/url": invalid byte sequence in UTF-8.'
 			],
@@ -4634,7 +4639,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_IP, 'flags' => API_ALLOW_USER_MACRO],
 				// broken UTF-8 byte sequence
-				'{$MACRO: "'."\xd1".'"}',
+				'{$MACRO: "' . "\xd1" . '"}',
 				'/1/ip',
 				'Invalid parameter "/1/ip": invalid byte sequence in UTF-8.'
 			],
@@ -4863,7 +4868,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_DNS, 'flags' => API_ALLOW_USER_MACRO],
 				// broken UTF-8 byte sequence
-				'{$MACRO: "'."\xd1".'"}',
+				'{$MACRO: "' . "\xd1" . '"}',
 				'/1/dns',
 				'Invalid parameter "/1/dns": invalid byte sequence in UTF-8.'
 			],
@@ -5002,7 +5007,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_PORT, 'flags' => API_ALLOW_USER_MACRO],
 				// broken UTF-8 byte sequence
-				'{$MACRO: "'."\xd1".'"}',
+				'{$MACRO: "' . "\xd1" . '"}',
 				'/1/port',
 				'Invalid parameter "/1/port": invalid byte sequence in UTF-8.'
 			],
@@ -6059,15 +6064,15 @@ class CApiInputValidatorTest extends TestCase {
 			],
 			[
 				['type' => API_EXEC_PARAMS],
-				'ab'."\n".'c',
+				'ab' . "\n" . 'c',
 				'/1/exec_params',
 				'Invalid parameter "/1/exec_params": the last new line feed is missing.'
 			],
 			[
 				['type' => API_EXEC_PARAMS],
-				'abc'."\n",
+				'abc' . "\n",
 				'/1/exec_params',
-				'abc'."\n"
+				'abc' . "\n"
 			],
 			[
 				['type' => API_TIMESTAMP],
@@ -6358,7 +6363,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_VALUE],
 				// broken UTF-8 byte sequence
-				"\xd1".'12345',
+				"\xd1" . '12345',
 				'/1/value',
 				'Invalid parameter "/1/value": invalid byte sequence in UTF-8.'
 			],
@@ -6648,7 +6653,7 @@ class CApiInputValidatorTest extends TestCase {
 				['type' => API_ITEM_DELAY],
 				SEC_PER_DAY + 1,
 				'/1/item_delay',
-				'Invalid parameter "/1/item_delay": value must be one of 0-'.SEC_PER_DAY.'.'
+				'Invalid parameter "/1/item_delay": value must be one of 0-' . SEC_PER_DAY . '.'
 			],
 			[
 				['type' => API_ITEM_DELAY],
@@ -8597,7 +8602,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_VAULT_SECRET, 'provider' => ZBX_VAULT_TYPE_HASHICORP],
 				// broken UTF-8 byte sequence
-				'{$MACRO: '."\xd1".'ontext}',
+				'{$MACRO: ' . "\xd1" . 'ontext}',
 				'/1/secret',
 				'Invalid parameter "/1/secret": invalid byte sequence in UTF-8.'
 			],
@@ -8634,7 +8639,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_HOST_ADDRESS, 'flags' => API_ALLOW_USER_MACRO],
 				// Broken UTF-8 byte sequence.
-				'{$MACRO: "'."\xd1".'"}',
+				'{$MACRO: "' . "\xd1" . '"}',
 				'/1/address',
 				'Invalid parameter "/1/address": invalid byte sequence in UTF-8.'
 			],
@@ -8917,7 +8922,7 @@ class CApiInputValidatorTest extends TestCase {
 			[
 				['type' => API_NUMBER],
 				// broken UTF-8 byte sequence
-				'{$MACRO: "'."\xd1".'"}',
+				'{$MACRO: "' . "\xd1" . '"}',
 				'/1/number',
 				'Invalid parameter "/1/number": invalid byte sequence in UTF-8.'
 			],
@@ -8957,7 +8962,8 @@ class CApiInputValidatorTest extends TestCase {
 	 * @param mixed       $expected
 	 * @param string|null $deprecation_message
 	 */
-	public function testApiInputValidator(array $rule, $data, $path, $expected, $deprecation_expected = null) {
+	public function testApiInputValidator(array $rule, $data, $path, $expected, $deprecation_expected = null)
+	{
 		$rc = CApiInputValidator::validate($rule, $data, $path, $error);
 
 		if ($deprecation_expected !== null) {
@@ -8974,14 +8980,14 @@ class CApiInputValidatorTest extends TestCase {
 			$this->assertSame('string', gettype($error));
 			$this->assertSame($expected, $data);
 			$this->assertSame('', $error);
-		}
-		else {
+		} else {
 			$this->assertSame(gettype($expected), gettype($error));
 			$this->assertSame($expected, $error);
 		}
 	}
 
-	public function dataProviderUniqueness() {
+	public function dataProviderUniqueness()
+	{
 		return [
 			[
 				['type' => API_IDS, 'uniq' => true],
@@ -9845,7 +9851,8 @@ class CApiInputValidatorTest extends TestCase {
 	 * @param bool   $rc_expected
 	 * @param mixed  $error_expected
 	 */
-	public function testApiUniqueness(array $rule, $data, $path, $rc_expected, $error_expected) {
+	public function testApiUniqueness(array $rule, $data, $path, $rc_expected, $error_expected)
+	{
 		$rc = CApiInputValidator::validateUniqueness($rule, $data, $path, $error);
 
 		$this->assertSame(gettype($rc_expected), gettype($rc));

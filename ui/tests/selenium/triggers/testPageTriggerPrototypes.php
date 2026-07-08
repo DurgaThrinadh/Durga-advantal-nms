@@ -14,14 +14,15 @@
 **/
 
 
-require_once __DIR__.'/../common/testPagePrototypes.php';
+require_once __DIR__ . '/../common/testPagePrototypes.php';
 
 /**
  * @backup hosts
  *
  * @onBefore prepareTriggerPrototypeData
  */
-class testPageTriggerPrototypes extends testPagePrototypes {
+class testPageTriggerPrototypes extends testPagePrototypes
+{
 
 	public $source = 'trigger';
 	public $tag = 'a3 Trigger prototype monitored not discovered_{#KEY}';
@@ -30,7 +31,8 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 	protected static $prototype_triggerids;
 	protected static $host_druleids;
 
-	public function prepareTriggerPrototypeData() {
+	public function prepareTriggerPrototypeData()
+	{
 		$host_result = CDataHelper::createHosts([
 			[
 				'host' => 'Host for prototype check',
@@ -48,7 +50,7 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 						]
 					]
 				],
-				'groups' => [['groupid' => 4]], // Zabbix server
+				'groups' => [['groupid' => 4]], // Advantal server
 				'discoveryrules' => [
 					[
 						'name' => 'Drule for prototype check',
@@ -73,7 +75,7 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 				'delay' => 0
 			]
 		]);
-		$this->assertArrayHasKey('itemids', $item_prototype );
+		$this->assertArrayHasKey('itemids', $item_prototype);
 
 		CDataHelper::call('triggerprototype.create', [
 			[
@@ -131,8 +133,9 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 		self::$entity_count = count(self::$prototype_triggerids);
 	}
 
-	public function testPageTriggerPrototypes_Layout() {
-		$this->page->login()->open($this->link.'parent_discoveryid='.self::$host_druleids)->waitUntilReady();
+	public function testPageTriggerPrototypes_Layout()
+	{
+		$this->page->login()->open($this->link . 'parent_discoveryid=' . self::$host_druleids)->waitUntilReady();
 		$this->checkLayout();
 	}
 
@@ -141,9 +144,10 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 	 *
 	 * @dataProvider getTriggerPrototypesSortingData
 	 */
-	public function testPageTriggerPrototypes_Sorting($data) {
-		$this->page->login()->open('zabbix.php?action=trigger.prototype.list&context=host&sort='.$data['sort'].'&sortorder=ASC&'.
-				'parent_discoveryid='.self::$host_druleids)->waitUntilReady();
+	public function testPageTriggerPrototypes_Sorting($data)
+	{
+		$this->page->login()->open('zabbix.php?action=trigger.prototype.list&context=host&sort=' . $data['sort'] . '&sortorder=ASC&' .
+			'parent_discoveryid=' . self::$host_druleids)->waitUntilReady();
 		$this->executeSorting($data);
 	}
 
@@ -152,8 +156,9 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 	 *
 	 * @dataProvider getTriggerPrototypesButtonLinkData
 	 */
-	public function testPageTriggerPrototypes_ButtonLink($data) {
-		$this->page->login()->open($this->link.'parent_discoveryid='.self::$host_druleids)->waitUntilReady();
+	public function testPageTriggerPrototypes_ButtonLink($data)
+	{
+		$this->page->login()->open($this->link . 'parent_discoveryid=' . self::$host_druleids)->waitUntilReady();
 		$this->checkTableAction($data);
 	}
 
@@ -162,8 +167,9 @@ class testPageTriggerPrototypes extends testPagePrototypes {
 	 *
 	 * @dataProvider getTriggerPrototypesDeleteData
 	 */
-	public function testPageTriggerPrototypes_Delete($data) {
-		$this->page->login()->open($this->link.'parent_discoveryid='.self::$host_druleids)->waitUntilReady();
+	public function testPageTriggerPrototypes_Delete($data)
+	{
+		$this->page->login()->open($this->link . 'parent_discoveryid=' . self::$host_druleids)->waitUntilReady();
 
 		$ids = [];
 		foreach ($data['name'] as $name) {

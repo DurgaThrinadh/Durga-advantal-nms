@@ -3852,13 +3852,13 @@ msgstr "Nelze číst YAML: %1$s."
 
 #: include/classes/server/CZabbixServer.php:502
 #, c-format
-msgid "Cannot read response from Zabbix server \"%1$s\"."
-msgstr "Nelze přečíst odpověď ze Zabbix serveru \"%1$s\"."
+msgid "Cannot read response from Advantal server \"%1$s\"."
+msgstr "Nelze přečíst odpověď ze Advantal serveru \"%1$s\"."
 
 #: include/classes/server/CZabbixServer.php:567
 #, c-format
-msgid "Cannot read the response, check connection with the Zabbix server \"%1$s\"."
-msgstr "Není možné číst odpověď, zkontrolujte spojení se Zabbix serverem \"%1$s\"."
+msgid "Cannot read the response, check connection with the Advantal server \"%1$s\"."
+msgstr "Není možné číst odpověď, zkontrolujte spojení se Advantal serverem \"%1$s\"."
 
 #: app/controllers/CControllerPopupMassupdateHost.php:363
 #, c-format
@@ -3889,8 +3889,8 @@ msgstr "Nepodařilo se uložit widget \"%1$s\"."
 
 #: include/classes/server/CZabbixServer.php:508
 #, c-format
-msgid "Cannot send command, check connection with Zabbix server \"%1$s\"."
-msgstr "Není možné poslat příkaz, zkontrolujte spojení se Zabbix serverem \"%1$s\"."
+msgid "Cannot send command, check connection with Advantal server \"%1$s\"."
+msgstr "Není možné poslat příkaz, zkontrolujte spojení se Advantal serverem \"%1$s\"."
 
 #: app/controllers/CControllerItemMassCheckNow.php:124
 #: app/controllers/CControllerItemMassCheckNow.php:140
@@ -5121,27 +5121,27 @@ msgstr "Bezpečnost připojení"
 
 #: include/classes/server/CZabbixServer.php:521
 #, c-format
-msgid "Connection timeout of %1$s seconds exceeded when connecting to Zabbix server \"%2$s\"."
-msgstr "Časový limit připojení %1$s sekund vypršel při připojení k Zabbix serveru \"%2$s\"."
+msgid "Connection timeout of %1$s seconds exceeded when connecting to Advantal server \"%2$s\"."
+msgstr "Časový limit připojení %1$s sekund vypršel při připojení k Advantal serveru \"%2$s\"."
 
 #: include/classes/server/CZabbixServer.php:634
 #, c-format
 msgid ""
-"Connection to Zabbix server \"%1$s\" failed. Possible reasons:\n"
+"Connection to Advantal server \"%1$s\" failed. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Incorrect DNS server configuration.\n"
 msgstr ""
-"Připojení k Zabbix serveru \"%1$s\" se nezdařilo. Možné důvody:\n"
+"Připojení k Advantal serveru \"%1$s\" se nezdařilo. Možné důvody:\n"
 "1. Nesprávné \"NodeAddress\" nebo \"ListenPort\" v \"zabbix_server.conf\" nebo přepsání IP/DNS serveru v \"zabbix.conf.php\";\n"
 "2. Nesprávná konfigurace DNS serverů.\n"
 
 #: include/classes/server/CZabbixServer.php:622
 #, c-format
 msgid ""
-"Connection to Zabbix server \"%1$s\" refused. Possible reasons:\n"
+"Connection to Advantal server \"%1$s\" refused. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Security environment (for example, SELinux) is blocking the connection;\n"
-"3. Zabbix server daemon not running;\n"
+"3. Advantal server daemon not running;\n"
 "4. Firewall is blocking TCP connection.\n"
 msgstr ""
 "Připojení k serveru Zabbix \"%1$s\" bylo odmítnuto. Možné důvody:\n"
@@ -5153,7 +5153,7 @@ msgstr ""
 #: include/classes/server/CZabbixServer.php:630
 #, c-format
 msgid ""
-"Connection to Zabbix server \"%1$s\" timed out. Possible reasons:\n"
+"Connection to Advantal server \"%1$s\" timed out. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Firewall is blocking TCP connection.\n"
 msgstr ""
@@ -5162,7 +5162,7 @@ msgstr ""
 "2. Firewall blokuje TCP spojení.\n"
 
 #: include/classes/server/CZabbixServer.php:614
-msgid "Connection to Zabbix server failed. Incorrect configuration."
+msgid "Connection to Advantal server failed. Incorrect configuration."
 msgstr "Připojení k serveru Zabbix se nezdařilo. Nesprávná konfigurace."
 
 #: include/classes/setup/CSetupWizard.php:647
@@ -8124,8 +8124,8 @@ msgstr "Chybná zpráva"
 #: app/partials/administration.system.info.php:148
 #: app/partials/administration.system.info.php:160
 #: app/partials/administration.system.info.php:173
-msgid "Error! Unable to start Zabbix server."
-msgstr "Chyba! Nelze spustit Zabbix server."
+msgid "Error! Unable to start Advantal server."
+msgstr "Chyba! Nelze spustit Advantal server."
 
 #: include/classes/screens/CScreenHttpTestDetails.php:111
 #: include/classes/screens/CScreenHttpTestDetails.php:182
@@ -9011,12 +9011,12 @@ msgstr "Globální regulární výraz \"%1$s\" neexistuje."
 #: app/views/administration.script.edit.php:122
 #: app/views/popup.operation.edit.php:63
 #: include/classes/api/services/CScript.php:950
-msgid "Global script execution on Zabbix server is disabled by server configuration."
+msgid "Global script execution on Advantal server is disabled by server configuration."
 msgstr "Globální spouštění skriptů na serveru Zabbix je zakázáno v konfiguraci serveru."
 
 #: app/partials/administration.system.info.php:138
-msgid "Global scripts on Zabbix server"
-msgstr "Globální skripty na Zabbix serveru"
+msgid "Global scripts on Advantal server"
+msgstr "Globální skripty na Advantal serveru"
 
 #: app/views/popup.proxy.edit.php:199
 msgid "Global timeouts"
@@ -10955,8 +10955,8 @@ msgstr "Neplatný regulární výraz \"%1$s\": \"%2$s\""
 #: include/classes/server/CZabbixServer.php:575
 #: include/classes/server/CZabbixServer.php:582
 #, c-format
-msgid "Incorrect response received from Zabbix server \"%1$s\"."
-msgstr "Neplatná odpověď přijatá od Zabbix serveru \"%1$s\"."
+msgid "Incorrect response received from Advantal server \"%1$s\"."
+msgstr "Neplatná odpověď přijatá od Advantal serveru \"%1$s\"."
 
 #: app/controllers/CControllerSlaCreateUpdate.php:34
 #: app/controllers/CControllerSlaCreateUpdate.php:84
@@ -15328,8 +15328,8 @@ msgstr "Počet položek ve frontě, které jsou zpožděné od do sekund včetn�
 
 #: include/classes/data/CItemData.php:2615
 #: include/classes/data/CItemData.php:2778
-msgid "Number of items in the queue which are delayed in Zabbix server or proxy by \"from\" till \"to\" seconds, inclusive."
-msgstr "Počet položek v řadě, které jsou zpožděny Zabbix serverem nebo proxy pomocí \"od\" \"do\" vteřin, zahrnuje."
+msgid "Number of items in the queue which are delayed in Advantal server or proxy by \"from\" till \"to\" seconds, inclusive."
+msgstr "Počet položek v řadě, které jsou zpožděny Advantal serverem nebo proxy pomocí \"od\" \"do\" vteřin, zahrnuje."
 
 #: include/classes/data/CItemData.php:2687
 msgid "Number of monitored hosts"
@@ -17765,8 +17765,8 @@ msgid "Required host permissions"
 msgstr "Požadované oprávnění na hosta"
 
 #: include/classes/data/CItemData.php:2771
-msgid "Required performance of the Zabbix server, in new values per second expected."
-msgstr "Požadovaný výkon Zabbix serveru, očekávaná hodnota v nových údajích za sekundu."
+msgid "Required performance of the Advantal server, in new values per second expected."
+msgstr "Požadovaný výkon Advantal serveru, očekávaná hodnota v nových údajích za sekundu."
 
 #: app/partials/administration.system.info.php:101
 msgid "Required server performance, new values per second"
@@ -17888,8 +17888,8 @@ msgstr "Odezva"
 
 #: include/classes/server/CZabbixServer.php:498
 #, c-format
-msgid "Response timeout of %1$s exceeded when connecting to Zabbix server \"%2$s\"."
-msgstr "Časový limit odezvy %1$s sekund byl překročen při připojování k Zabbix serveru \"%2$s\"."
+msgid "Response timeout of %1$s exceeded when connecting to Advantal server \"%2$s\"."
+msgstr "Časový limit odezvy %1$s sekund byl překročen při připojování k Advantal serveru \"%2$s\"."
 
 #: app/controllers/CControllerMediatypeTestSend.php:182
 msgid "Response type: JSON"
@@ -17985,8 +17985,8 @@ msgstr "Vrátí pole JSON popisující hostovská síťová rozhraní nakonfigur
 
 #: include/classes/data/CItemData.php:2623
 #: include/classes/data/CItemData.php:2785
-msgid "Returns a JSON object containing Zabbix server or proxy internal metrics."
-msgstr "Vrátí JSON objekt obsahující Zabbix server nebo interní metriky proxy."
+msgid "Returns a JSON object containing Advantal server or proxy internal metrics."
+msgstr "Vrátí JSON objekt obsahující Advantal server nebo interní metriky proxy."
 
 #: include/classes/data/CItemData.php:2673
 msgid "Returns availability of a particular type of checks on the host. Value of this item corresponds to availability icons in the host list. Valid types are: agent, active_agent, snmp, ipmi, jmx."
@@ -18082,8 +18082,8 @@ msgstr "Pravidla"
 
 #: include/actions.inc.php:578
 #, c-format
-msgid "Run script \"%1$s\" on Zabbix server"
-msgstr "Spusťit skript \"%1$s\" na Zabbix serveru"
+msgid "Run script \"%1$s\" on Advantal server"
+msgstr "Spusťit skript \"%1$s\" na Advantal serveru"
 
 #: include/actions.inc.php:591
 #, c-format
@@ -19376,8 +19376,8 @@ msgid "Show value"
 msgstr "Ukázat hodnotu"
 
 #: app/views/administration.gui.edit.php:110
-msgid "Show warning if Zabbix server is down"
-msgstr "Zobrazit varování když je Zabbix server vypnutý"
+msgid "Show warning if Advantal server is down"
+msgstr "Zobrazit varování když je Advantal server vypnutý"
 
 #: include/views/configuration.graph.edit.php:126
 msgid "Show working time"
@@ -19521,8 +19521,8 @@ msgstr "Velikost"
 
 #: include/classes/server/CZabbixServer.php:554
 #, c-format
-msgid "Size of the response received from Zabbix server \"%1$s\" exceeds the allowed size of %2$s bytes. This value can be increased in the ZBX_SOCKET_BYTES_LIMIT constant in include/defines.inc.php."
-msgstr "Velikost odpovědi přijaté od Zabbix serveru \"%1$s\" dosáhla povolené velikosti %2$s bytů. Tuto povolenou hodnotu můžete zvýšit nastavením ZBX_SOCKET_BYTES_LIMIT v include/defines.inc.php."
+msgid "Size of the response received from Advantal server \"%1$s\" exceeds the allowed size of %2$s bytes. This value can be increased in the ZBX_SOCKET_BYTES_LIMIT constant in include/defines.inc.php."
+msgstr "Velikost odpovědi přijaté od Advantal serveru \"%1$s\" dosáhla povolené velikosti %2$s bytů. Tuto povolenou hodnotu můžete zvýšit nastavením ZBX_SOCKET_BYTES_LIMIT v include/defines.inc.php."
 
 #: include/locales.inc.php:61
 msgid "Slovak (sk_SK)"
@@ -19698,8 +19698,8 @@ msgid "Starting TLS failed."
 msgstr "Spuštění TLS selhalo."
 
 #: include/classes/data/CItemData.php:2631
-msgid "Startup time of Zabbix server, Unix timestamp."
-msgstr "Čas startu Zabbix serveru, Unix timestamp."
+msgid "Startup time of Advantal server, Unix timestamp."
+msgstr "Čas startu Advantal serveru, Unix timestamp."
 
 #: app/partials/configuration.filter.items.php:180
 #: app/partials/monitoring.latest.filter.php:187
@@ -20099,7 +20099,7 @@ msgid "System default"
 msgstr "Výchozí nastavení"
 
 #: include/func.inc.php:1848
-msgid "System error occurred. Please contact Zabbix administrator."
+msgid "System error occurred. Please contact Advantal Administrator."
 msgstr "Nastala chyba systému. Kontaktujte prosím administrátora Zabbixu."
 
 #: include/classes/core/CJsonRpc.php:230
@@ -22295,8 +22295,8 @@ msgid "Uptime"
 msgstr "Doba spuštění"
 
 #: include/classes/data/CItemData.php:2806
-msgid "Uptime of Zabbix server process in seconds."
-msgstr "Doba provozu Zabbix server procesů v sekundách."
+msgid "Uptime of Advantal server process in seconds."
+msgstr "Doba provozu Advantal server procesů v sekundách."
 
 #: include/actions.inc.php:61
 msgid "Uptime/Downtime"
@@ -23414,7 +23414,7 @@ msgid "Version of Zabbix agent. Returns string"
 msgstr "Verze Zabbix agenta. Vráti řetězec"
 
 #: include/classes/data/CItemData.php:2827
-msgid "Version of Zabbix server or proxy"
+msgid "Version of Advantal server or proxy"
 msgstr "Verze serveru Zabbix nebo proxy"
 
 #: widgets/hostavail/includes/WidgetForm.php:57
@@ -24093,7 +24093,7 @@ msgid "Zabbix agent (passive checks)"
 msgstr "Agent Zabbix (pasivní kontroly)"
 
 #: app/partials/administration.system.info.php:45
-msgid "Zabbix frontend version"
+msgid "Advantal frontend version"
 msgstr "Verze frontendu Zabbix"
 
 #: include/validate.inc.php:387
@@ -24117,39 +24117,39 @@ msgid "Zabbix proxy or server"
 msgstr "Zabbix proxy nebo server"
 
 #: app/views/administration.script.edit.php:116
-msgid "Zabbix server"
-msgstr "Zabbix server"
+msgid "Advantal server"
+msgstr "Advantal server"
 
 #: include/classes/server/CZabbixServer.php:626
 #, c-format
 msgid ""
-"Zabbix server \"%1$s\" cannot be reached. Possible reasons:\n"
+"Advantal server \"%1$s\" cannot be reached. Possible reasons:\n"
 "1. Incorrect \"NodeAddress\" or \"ListenPort\" in the \"zabbix_server.conf\" or server IP/DNS override in the \"zabbix.conf.php\";\n"
 "2. Incorrect network configuration.\n"
 msgstr ""
-"Zabbix server \"%1$s\" je nedostupný. Možné důvody:\n"
+"Advantal server \"%1$s\" je nedostupný. Možné důvody:\n"
 "1. Nesprávné \"NodeAddress\" nebo \"ListenPort\" v \"zabbix_server.conf\" nebo přepsání IP/DNS serveru v \"zabbix.conf.php\";\n"
 "2. Nesprávná konfigurace sítě.\n"
 
 #: app/views/administration.script.edit.php:115
-msgid "Zabbix server (proxy)"
-msgstr "Zabbix server (proxy)"
+msgid "Advantal server (proxy)"
+msgstr "Advantal server (proxy)"
 
 #: jsrpc.php:91
-msgid "Zabbix server is not running: the information displayed may not be current."
-msgstr "Zabbix server není v provozu: zobrazované informace nemusí být aktuální."
+msgid "Advantal server is not running: the information displayed may not be current."
+msgstr "Advantal server není v provozu: zobrazované informace nemusí být aktuální."
 
 #: app/partials/administration.system.info.php:34
-msgid "Zabbix server is running"
-msgstr "Zabbix server běží"
+msgid "Advantal server is running"
+msgstr "Advantal server běží"
 
 #: include/classes/setup/CSetupWizard.php:711
 #: include/classes/setup/CSetupWizard.php:870
-msgid "Zabbix server name"
-msgstr "Zabbix server jméno"
+msgid "Advantal server name"
+msgstr "Advantal server jméno"
 
 #: app/partials/administration.system.info.php:40
-msgid "Zabbix server version"
+msgid "Advantal server version"
 msgstr "Verze serveru Zabbix"
 
 #: include/items.inc.php:92
@@ -25139,8 +25139,8 @@ msgid "fourth"
 msgstr "čtvrtý"
 
 #: app/controllers/CControllerPopupTriggerExpr.php:645
-msgid "fuzzytime() - Difference between item value (as timestamp) and Zabbix server timestamp is less than or equal to T seconds (1 - true, 0 - false)"
-msgstr "fuzzytime() - Rozdíl mezi hodnotou položky (časovou značkou) a časovou značkou Zabbix serveru je menší nebo rovná T vteřinám (1 ano, 0 - ne)"
+msgid "fuzzytime() - Difference between item value (as timestamp) and Advantal server timestamp is less than or equal to T seconds (1 - true, 0 - false)"
+msgstr "fuzzytime() - Rozdíl mezi hodnotou položky (časovou značkou) a časovou značkou Advantal serveru je menší nebo rovná T vteřinám (1 ano, 0 - ne)"
 
 #: include/classes/validators/CApiInputValidator.php:3317
 msgid "geographical coordinates (values of comma separated latitude and longitude) are expected"
@@ -25155,7 +25155,7 @@ msgid "global housekeeping settings"
 msgstr "globálně nastavené údržby"
 
 #: include/classes/api/services/CScript.php:726
-msgid "global script execution on Zabbix server is disabled by server configuration"
+msgid "global script execution on Advantal server is disabled by server configuration"
 msgstr "globální spouštění skriptů na serveru Zabbix je zakázáno v konfiguraci serveru"
 
 #: include/html.inc.php:795 include/html.inc.php:800 include/html.inc.php:805

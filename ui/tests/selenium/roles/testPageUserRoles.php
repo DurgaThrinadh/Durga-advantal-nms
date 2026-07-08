@@ -14,10 +14,10 @@
 **/
 
 
-require_once __DIR__.'/../../include/CWebTest.php';
-require_once __DIR__.'/../../include/helpers/CDataHelper.php';
-require_once __DIR__.'/../behaviors/CMessageBehavior.php';
-require_once __DIR__.'/../behaviors/CTableBehavior.php';
+require_once __DIR__ . '/../../include/CWebTest.php';
+require_once __DIR__ . '/../../include/helpers/CDataHelper.php';
+require_once __DIR__ . '/../behaviors/CMessageBehavior.php';
+require_once __DIR__ . '/../behaviors/CTableBehavior.php';
 
 /**
  * @dataSource ExecuteNowAction, LoginUsers, ScheduledReports, UserPermissions
@@ -26,14 +26,16 @@ require_once __DIR__.'/../behaviors/CTableBehavior.php';
  *
  * @onBefore prepareRoleData
  */
-class testPageUserRoles extends CWebTest {
+class testPageUserRoles extends CWebTest
+{
 
 	/**
 	 * Attach MessageBehavior and TableBehavior to the test.
 	 *
 	 * @return array
 	 */
-	public function getBehaviors() {
+	public function getBehaviors()
+	{
 		return [
 			CMessageBehavior::class,
 			CTableBehavior::class
@@ -43,7 +45,8 @@ class testPageUserRoles extends CWebTest {
 	/**
 	 * Function used to create roles.
 	 */
-	public function prepareRoleData() {
+	public function prepareRoleData()
+	{
 		CDataHelper::call('role.create', [
 			[
 				'name' => 'Remove_role_1',
@@ -71,7 +74,8 @@ class testPageUserRoles extends CWebTest {
 	/**
 	 * Check layout in user roles list.
 	 */
-	public function testPageUserRoles_Layout() {
+	public function testPageUserRoles_Layout()
+	{
 		$this->page->login()->open('zabbix.php?action=userrole.list');
 		$this->page->assertTitle('Configuration of user roles');
 		$this->page->assertHeader('User roles');
@@ -87,7 +91,7 @@ class testPageUserRoles extends CWebTest {
 
 		// Check that non-sortable headers is not clickable.
 		foreach (['#', 'Users'] as $header) {
-			$this->assertFalse($table->query('xpath://th/a[text()="'.$header.'"]')->one(false)->isValid());
+			$this->assertFalse($table->query('xpath://th/a[text()="' . $header . '"]')->one(false)->isValid());
 		}
 
 		// Check roles list sort order.
@@ -102,10 +106,9 @@ class testPageUserRoles extends CWebTest {
 		$db_roles = CDBHelper::getAll('SELECT roleid, name FROM role');
 		foreach ($db_roles as $id) {
 			if ($id['name'] === 'Super admin role') {
-				$this->assertFalse($this->query('id:roleids_'.$id['roleid'])->one()->isEnabled());
-			}
-			else {
-				$this->assertTrue($this->query('id:roleids_'.$id['roleid'])->one()->isEnabled());
+				$this->assertFalse($this->query('id:roleids_' . $id['roleid'])->one()->isEnabled());
+			} else {
+				$this->assertTrue($this->query('id:roleids_' . $id['roleid'])->one()->isEnabled());
 			}
 		}
 
@@ -132,7 +135,7 @@ class testPageUserRoles extends CWebTest {
 		$this->assertTrue($delete_button->isEnabled());
 		$selected = $table->query('class:row-selected')->all()->count();
 		$this->assertEquals($roles_count - 1, $selected);
-		$this->assertEquals($selected.' selected', $this->query('id:selected_count')->one()->getText());
+		$this->assertEquals($selected . ' selected', $this->query('id:selected_count')->one()->getText());
 
 		$table_data = [
 			[
@@ -173,7 +176,7 @@ class testPageUserRoles extends CWebTest {
 			[
 				'Name' => 'Super admin role',
 				'#' => 'Users 6',
-				'Users' => 'Admin (Zabbix Administrator), filter-create, filter-delete, filter-update, LDAP user, test-timezone'
+				'Users' => 'Admin (Advantal Administrator), filter-create, filter-delete, filter-update, LDAP user, test-timezone'
 			],
 			[
 				'Name' => 'UR1-executenow-on',
@@ -194,7 +197,8 @@ class testPageUserRoles extends CWebTest {
 		$this->assertTableData($table_data);
 	}
 
-	public static function getFilterData() {
+	public static function getFilterData()
+	{
 		return [
 			[
 				[
@@ -296,7 +300,8 @@ class testPageUserRoles extends CWebTest {
 	 *
 	 * @dataProvider getFilterData
 	 */
-	public function testPageUserRoles_Filter($data) {
+	public function testPageUserRoles_Filter($data)
+	{
 		$this->page->login()->open('zabbix.php?action=userrole.list');
 		$table = $this->getTable();
 		$form = $this->query('name:zbx_filter')->waitUntilPresent()->asForm()->one();
@@ -305,7 +310,8 @@ class testPageUserRoles extends CWebTest {
 		$this->assertTableDataColumn($data['result'], 'Name');
 	}
 
-	public static function getDeleteData() {
+	public static function getDeleteData()
+	{
 		return [
 			[
 				[
@@ -363,7 +369,8 @@ class testPageUserRoles extends CWebTest {
 	 *
 	 * @dataProvider getDeleteData
 	 */
-	public function testPageUserRoles_Delete($data) {
+	public function testPageUserRoles_Delete($data)
+	{
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$hash_before = CDBHelper::getHash('SELECT * FROM role');
 		}
@@ -376,8 +383,7 @@ class testPageUserRoles extends CWebTest {
 		foreach ($data['roles'] as $role) {
 			if ($role === 'All') {
 				$table->getRows()->select();
-			}
-			else {
+			} else {
 				$table->findRow('Name', $role)->select();
 			}
 		}
@@ -390,13 +396,12 @@ class testPageUserRoles extends CWebTest {
 		if (CTestArrayHelper::get($data, 'expected', TEST_GOOD) === TEST_BAD) {
 			$this->assertMessage(TEST_BAD, $data['message_header'], $data['message_details']);
 			$this->assertEquals($hash_before, CDBHelper::getHash('SELECT * FROM role'));
-		}
-		else {
+		} else {
 			$this->assertMessage(TEST_GOOD, $data['message_header']);
 			$after_delete = array_values(array_diff($before_delete, $data['roles']));
 			$this->assertTableDataColumn($after_delete, 'Name');
 			foreach ($data['roles'] as $role_name) {
-				$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM role WHERE name='.zbx_dbstr($role_name)));
+				$this->assertEquals(0, CDBHelper::getCount('SELECT null FROM role WHERE name=' . zbx_dbstr($role_name)));
 			}
 		}
 	}
