@@ -30,6 +30,9 @@ An enterprise-class, open-source distributed network monitoring solution by **Ad
 ```bash
 docker load -i advantal-server.tar
 docker load -i advantal-web.tar
+docker load -i advantal-db.tar
+docker load -i advantal-agent.tar
+docker load -i advantal-snmptraps.tar
 ```
 
 ### Step 2: Start All Services
