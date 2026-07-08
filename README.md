@@ -76,8 +76,6 @@ docker compose down
 # Stop and DELETE all data
 docker compose down -v
 
-# Check agent status
-docker compose logs advantal-agent
 ```
 
 ---
